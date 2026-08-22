@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      - name: Simplify rules self-check
+        run: npx tsx scripts/test-simplify.ts
+
+      # Catches codegen drift: import signatures, protected-division rails,
+      # opcode swaps — across every ledger champion with an AST.
+      - name: WASM↔JS parity (all ledger champions)
+        run: npx tsx scripts/test-wasm-parity.ts
