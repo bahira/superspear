@@ -1,4 +1,4 @@
-﻿# SPEAR Lab — Symbolic Pareto Evolutionary Algorithm for Research
+# SPEAR Lab — Symbolic Pareto Evolutionary Algorithm for Research
 
 A **symbolic regression** engine (multi-objective genetic programming) that discovers **closed-form mathematical laws** from data — then compiles them to **verified WebAssembly** and **MISRA-C:2012 C99**, with machine-checked parity.
 
@@ -10,10 +10,26 @@ Best discoveries across all seeds (full ledger: [`spear-hall-of-fame.json`](./sp
 
 **⚡ Speed column**: `cost(exact reference kernel) / cost(discovered formula)` in GPU ALU/SFU units (`mul/add` = 1, `div` = 4, `sqrt` = 2, `exp/sin/cos/log` ≈ 20).
 
+### Record progression — what generic primitives unlocked
+
+Adding two humble building blocks to the seed pools — reciprocal powers (`1/x`, `1/x²`) and the rsqrt family (`c/√(c₂ ± d·x²)`) — plus a parallel farm runner produced the largest single-run jump of the project:
+
+| Task | Before | After | Gain |
+|---|---|---|---|
+| **Kerr light deflection** (weak field) | 5.4e-5 | **1.4e-7** | ~380× |
+| **Kerr deflection with spin a≠0** | 2.9e-5 | **1.4e-7** | ~200× |
+| **Lennard-Jones potential** | 9.0e-2 | **4.4e-4** | ~200× |
+| **KdV soliton** | 9.6e-1 | **7.4e-3** | ~130× |
+| **Deep-RL actor distillation** | 2.3e-4 | **1.6e-4** | +32 % |
+| **Damped pendulum** | level 0, 8.9e-2 | **level 2, 7.0e-2** | first real milestone |
+
+Lesson learned (twice now): discovery quality depends less on budget than on which algebraic bricks are available at warm-up.
+
 ### Physical laws recovered exactly
 
 | Task | Record (MSE) | ⚡ Speed | Discovered formula | Seed |
 |---|---|---|---|---|
+| **Lorentz factor γ(β)** | **0 (exact)** | ×0.89 | `1/√(1 − b²)` — full relativistic law | 4242 |
 | **Free fall** | 2.5e-4 | ×0.67 | `4.905·t²` → **g = 9.81 m·s⁻²** | 9999 |
 | **Kepler's third law** | 4.7e-2 | — | `1.0009·a·√\|a\|` — the 3/2 exponent, recovered | 555666 |
 | **RC circuit** | **7.3e-5** | — | `-0.998·min(exp(−t), 2) + 0.997` ≈ `1 − e^(−t/τ)` | 777888 |
@@ -28,8 +44,7 @@ Best discoveries across all seeds (full ledger: [`spear-hall-of-fame.json`](./sp
 |---|---|---|---|---|
 | **Kerr light deflection** (weak field) | **1.4e-7** | ×1.31 | rational form recovered near-exactly | 777 |
 | **Kerr deflection with spin a≠0** (Lense-Thirring) | **1.4e-7** | ×1.50 | two-var rational form | 777 |
-| **Lorentz factor γ(β)** | **0 (exact)** | ×0.89 | `1/√(1 − b²)` — full relativistic law, level 5 | 4242 |
-| **KdV soliton** | **7.4e-3** | ×1.96 | travelling-wave approx of `2·sech²(x−4t)` | 777 |
+| **KdV soliton** | 7.4e-3 | ×1.96 | travelling-wave approx of `2·sech²(x−4t)` | 777 |
 
 ### LLM / image kernels replaced by pure algebra
 
@@ -37,11 +52,11 @@ Best discoveries across all seeds (full ledger: [`spear-hall-of-fame.json`](./sp
 |---|---|---|---|---|
 | **Diffusion β(t)** | **1.8e-5** | ×0.53 | `-5.61·exp(cos(min(c,t) − t²)) + 3.05` | cosine schedule |
 | **Gaussian blur kernel** | **9.2e-5** | ×0.53 | `-0.427·(−exp(cos(x))) − 0.14` ⚠️ in-domain | `exp(−x²/2σ²)` |
-| **SiLU/Swish** | 8.3e-4 | **×2.43** | `x·(0.501 + 0.589·x/(0.83 + √(1+x²)))` | HardSwish, ReLU |
+| **SiLU/Swish** | 8.2e-4 | **×2.43** | `x·(0.501 + 0.589·x/(0.83 + √(1+x²)))` | HardSwish, ReLU |
 | **GELU** | 5.3e-4 | **×6.57** | `x·min(1.002, relu(0.308x + 0.501))` | GELU-tanh |
 | **Sigmoid** | 0 (exact)* | ×1.26 | `1 − 1/(1 + e⁻ˣ)` | Hard-sigmoid TFLite |
-| **Deep-RL actor distillation** | 1.6e-4 | **×2.83** | `(x + 0.145x³)/(0.556 + 0.75x²)` — Padé [3/2] found **spontaneously** | tanh network |
 | **Softplus ln(1+eˣ)** | 1.4e-3 | ×5.13 | algebraic rational approximant | smooth ReLU kernels |
+| **Deep-RL actor distillation** | 1.6e-4 | **×2.83** | `(x + 0.145x³)/(0.556 + 0.75x²)` — Padé [3/2] found spontaneously | tanh network |
 
 \* the sigmoid task allows `exp` as a primitive — the point is cost comparison, not algebraic purity.
 
@@ -49,8 +64,8 @@ Best discoveries across all seeds (full ledger: [`spear-hall-of-fame.json`](./sp
 
 | Task | Record | ⚡ Speed | Discovered formula | Note |
 |---|---|---|---|---|
-| **Hill dose-response** 🏥 | 7.2e-4 | — | blended rational/saturation form | cheaper than the EC50 law at equal accuracy |
-| **Lennard-Jones 12-6 potential** 🧪 | **4.4e-4** | ×0.55 | inverse-power rational double-well | repulsive+attractive terms |
+| **Hill dose-response** 🏥 | 7.2e-4 | — | blended rational/saturation form | deployable drug-model shape |
+| **Lennard-Jones 12-6 potential** 🧪 | **4.4e-4** | ×0.55 | inverse-power rational double-well | repulsive + attractive terms |
 | **Damped oscillation e^(−t/τ)cos(ωt)** 📡 | 2.4e-2 | ×1.69 | exp-decay envelope × carrier | DSP staple |
 | **Logistic growth** 📈 | 5.4e-4 | ×1.00 | saturation curve recovered | adoption / population model |
 | **Inverted-pendulum hybrid control** 🎛️ | 2.1 | ×7.52 | cheap surrogate of the full 173-unit law | textbook Pareto trade-off point |
@@ -72,7 +87,7 @@ Every discovered formula is exported as strict C99 and audited automatically ([`
 3. **Numeric parity C ↔ WASM** — both backends evaluated on identical sweeps, relative difference reported;
 4. **Wall-clock benchmark** — discovered formula vs exact reference law, *both* compiled to WebAssembly, timed over 200k evaluations.
 
-Latest full-audit run (24 tasks, budget 1000): **MISRA ✓ 24/24 · gcc ✓ 23/23 compiled · parity ≤ 1e-6 relative**. Measured speedups include softplus ×4.11, Kerr ×1.93, Kepler ×1.54 — and honest ×0.5 entries where the evolved formula is heavier than the law itself.
+Latest full-audit run: **MISRA ✓ on every task · gcc ✓ · parity ≤ 1e-6 relative**. Measured speedups include softplus ×4.11–5.13 and Kerr ×1.93 — alongside honest ×0.5 entries where the evolved formula is heavier than the law itself.
 
 The audit caught a real latent bug along the way: multi-variable WASM modules silently returned NaN because the JS wrapper passed an array where positional f64 parameters were expected. Fixed; the parity check now guards every future emission.
 
@@ -89,12 +104,13 @@ The engine (`src/lib/spear/`) combines:
 - **Multi-objective GP**: non-dominated sorting + crowding distance, growing parsimony pressure (formulas must be *small* AND *accurate*);
 - **End-to-end seeded RNG**: datasets, evolution and noise are reproducible from one integer (`setSeed` + injected uniform source);
 - **Operator set**: `add sub mul pdiv relu abs neg sq sqrt cube max min exp sin cos log` — transcendental ops are allowed but priced honestly (≈20 ALU/SFU units vs 1 for `mul`);
-- **Multi-start warm-up**: primitive shapes (rationals, Padé [3/2], exponentials) tuned by coordinate descent before evolution starts;
+- **Multi-start warm-up**: primitive shapes (rationals, Padé [3/2], exponential decay, inverse powers, rsqrt family) tuned by coordinate descent before evolution starts;
 - **UCB budget allocation** across tasks: exploit what improves, explore what stagnates;
 - **Anti-stagnation**: constant polishing, structural mutations, shape re-injection;
 - **Honest scoring**: selection on train split, reporting on an unseen holdout (KV-cache task);
 - **Algebraic simplification**: constant folding, nested-constant collapsing (`c₁·(c₂·x) → (c₁c₂)·x`, `(x+a)−a → x`) — kills degenerate records and sped the search up ~3×;
-- **Verified exports**: every formula is emitted to **Python (torch)**, **CUDA C**, **strict MISRA-C99**, and **WebAssembly**, with op-by-op parity checks.
+- **Verified exports**: every formula is emitted to **Python (torch)**, **CUDA C**, **strict MISRA-C99**, and **WebAssembly**, with op-by-op parity checks;
+- **Light/full snapshots**: periodic UI snapshots stay cheap; codegen + WASM compile + speed benchmarks run once on the final snapshot.
 
 ## Getting started
 
@@ -125,7 +141,7 @@ npx tsx scripts/run-farm.ts [seed] [budget] [workers]
 npx tsx wasm-smoke.test.ts
 ```
 
-The farm splits the task registry across worker processes via a `SPEAR_TASKS` filter, runs them concurrently inside the same 45 s window, and merges records into the ledger — a full 27-task sweep at budget 1000 completes in ~30 s wall instead of exceeding the single-process deadline.
+The farm splits the task registry across worker processes via a `SPEAR_TASKS` filter and merges records into the ledger — a full sweep completes well inside the single-process deadline while using every core.
 
 ## Reproducibility
 
@@ -142,13 +158,13 @@ Same seed ⇒ same data, same formulas, same metrics. The ledger tracks **which 
 ```
 src/lib/spear/
   engine.ts       # AST, seeded RNG, simplify, NSGA-II, GP operators, codegen (torch/C/MISRA-C)
-  benchmarks.ts   # 27 benchmark tasks + exact-law ASTs for the cost model
+  benchmarks.ts   # benchmark tasks + exact-law ASTs for the cost model
   loop.ts         # grounded loop: UCB, warm-up, anti-stagnation, light/full snapshots
   presets.ts      # single-task labs (activation, KV-cache, custom CSV)
   wasm.ts         # AST → WebAssembly compiler (hand-rolled encoder, no toolchain)
   math-utils.ts   # mse, linf, erf, gaussians
-src/app/          # Next.js 16 dashboard + API routes (Postgres/Drizzle)
-scripts/          # hall-of-fame ledger, MISRA/wasm/bench export audit
+src/app/          # Next.js dashboard + API routes (Postgres/Drizzle)
+scripts/          # hall-of-fame ledger, export audit, parallel farm
 ```
 
 ## Honesty notes
@@ -157,7 +173,7 @@ scripts/          # hall-of-fame ledger, MISRA/wasm/bench export audit
 - "Oracle" baselines (the exact law, future attention) bound achievable scores: beating the *deployable* baselines is the real signal.
 - Regression milestones are calibrated against the **measured noise floor**, not arbitrary thresholds.
 - Speed multipliers marked "—" predate the cost-model extension; they backfill automatically whenever a run reproduces the champion formula (speedup is a pure function of the AST).
-- A ×34 entry with poor accuracy (inverted-pendulum control) is displayed exactly as that: the search surfaced a cheap-but-crude surrogate — a legitimate Pareto point, not hidden behind the headline number.
+- A ×7.52 entry with poor accuracy (inverted-pendulum control) is displayed exactly as that: the search surfaced a cheap-but-crude surrogate — a legitimate Pareto point, not hidden behind the headline number.
 
 ## Provenance
 

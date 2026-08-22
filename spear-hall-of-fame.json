@@ -1,7 +1,7 @@
 {
   "silu": {
     "taskId": "silu",
-    "title": "SiLU / Swish (LLaMA · Mistral · Qwen — SwiGLU)",
+    "title": "SiLU / Swish (LLM feed-forward)",
     "direction": "min",
     "metric": 0.0008182706992436293,
     "level": 2,
@@ -16,7 +16,7 @@
   },
   "gelu": {
     "taskId": "gelu",
-    "title": "GELU (GPT ┬À BERT ÔÇö GEGLU)",
+    "title": "GELU",
     "direction": "min",
     "metric": 0.000533,
     "level": 2,
@@ -31,7 +31,7 @@
   },
   "sigmoid": {
     "taskId": "sigmoid",
-    "title": "Sigmoid (routage MoE ┬À portes d'attention)",
+    "title": "Sigmoid",
     "direction": "min",
     "metric": 0,
     "level": 5,
@@ -46,7 +46,7 @@
   },
   "kv_cache": {
     "taskId": "kv_cache",
-    "title": "R├¿gle d'├®viction du KV-cache",
+    "title": "KV-cache eviction rule",
     "direction": "max",
     "metric": 67.040357,
     "level": 2,
@@ -56,7 +56,7 @@
   },
   "free_fall": {
     "taskId": "free_fall",
-    "title": "Loi de chute libre",
+    "title": "Free fall law",
     "direction": "min",
     "metric": 0.00024778800470084093,
     "level": 5,
@@ -71,7 +71,7 @@
   },
   "kepler": {
     "taskId": "kepler",
-    "title": "3ßÁë loi de Kepler",
+    "title": "Kepler's third law",
     "direction": "min",
     "metric": 0.047018,
     "level": 5,
@@ -81,7 +81,7 @@
   },
   "gaussian_cdf": {
     "taskId": "gaussian_cdf",
-    "title": "Répartition gaussienne Φ(x)",
+    "title": "Gaussian CDF Φ(x)",
     "direction": "min",
     "metric": 0.0002696727132265258,
     "level": 2,
@@ -96,7 +96,7 @@
   },
   "damped_pendulum": {
     "taskId": "damped_pendulum",
-    "title": "Pendule amorti · état terminal",
+    "title": "Damped pendulum terminal state",
     "direction": "min",
     "metric": 0.0700401848625212,
     "level": 2,
@@ -106,7 +106,7 @@
   },
   "rl_distillation": {
     "taskId": "rl_distillation",
-    "title": "Distillation d'acteur Deep-RL",
+    "title": "Deep-RL actor distillation",
     "direction": "min",
     "metric": 0.00015509445364142197,
     "level": 2,
@@ -121,7 +121,7 @@
   },
   "lambert_w": {
     "taskId": "lambert_w",
-    "title": "Fonction implicite Lambert WÔéÇ(x)",
+    "title": "Lambert W₀ function",
     "direction": "min",
     "metric": 0,
     "level": 5,
@@ -131,7 +131,7 @@
   },
   "rc_circuit": {
     "taskId": "rc_circuit",
-    "title": "Circuit RC ┬À tension terminale",
+    "title": "RC circuit step response",
     "direction": "min",
     "metric": 0.000073,
     "level": 5,
@@ -141,7 +141,7 @@
   },
   "layernorm_scale": {
     "taskId": "layernorm_scale",
-    "title": "LayerNorm ┬À ├®chelle 1/ÔêÜ(var+╬Á)",
+    "title": "LayerNorm rsqrt scale",
     "direction": "min",
     "metric": 0,
     "level": 2,
@@ -151,7 +151,7 @@
   },
   "gaussian_kernel": {
     "taskId": "gaussian_kernel",
-    "title": "Blur gaussien ┬À noyau exp(ÔêÆx┬▓/2¤â┬▓)",
+    "title": "Gaussian blur kernel",
     "direction": "min",
     "metric": 0.000092,
     "level": 2,
@@ -161,7 +161,7 @@
   },
   "diffusion_beta": {
     "taskId": "diffusion_beta",
-    "title": "Diffusion · schedule de bruit β(t)",
+    "title": "Diffusion noise schedule β(t)",
     "direction": "min",
     "metric": 0.00001820178082161451,
     "level": 2,
@@ -176,7 +176,7 @@
   },
   "bilinear_interp": {
     "taskId": "bilinear_interp",
-    "title": "Upsampling ┬À poids bilin├®aire (1ÔêÆu)",
+    "title": "Bilinear upsampling weight",
     "direction": "min",
     "metric": 0,
     "level": 1,
@@ -191,7 +191,7 @@
   },
   "european_call": {
     "taskId": "european_call",
-    "title": "Prime d'un call europ├®en",
+    "title": "European call premium",
     "direction": "min",
     "metric": 0.206371,
     "level": 5,
@@ -201,7 +201,7 @@
   },
   "temporal_grad": {
     "taskId": "temporal_grad",
-    "title": "Vidéo · gradient temporel ∂I/∂t",
+    "title": "Video temporal gradient ∂I/∂t",
     "direction": "min",
     "metric": 0,
     "level": 5,
@@ -216,7 +216,7 @@
   },
   "lorentz": {
     "taskId": "lorentz",
-    "title": "Facteur de Lorentz γ(β)",
+    "title": "Lorentz factor γ(β)",
     "direction": "min",
     "metric": 0,
     "level": 5,
@@ -231,7 +231,7 @@
   },
   "hill": {
     "taskId": "hill",
-    "title": "Équation de Hill · dose-réponse",
+    "title": "Hill dose-response equation",
     "direction": "min",
     "metric": 0.0007158477212275259,
     "level": 2,
@@ -246,7 +246,7 @@
   },
   "kerr": {
     "taskId": "kerr",
-    "title": "Déflexion de Kerr · lentille gravitationnelle",
+    "title": "Kerr light deflection (weak field)",
     "direction": "min",
     "metric": 1.39756685796311e-7,
     "level": 2,
@@ -261,7 +261,7 @@
   },
   "lennard_jones": {
     "taskId": "lennard_jones",
-    "title": "Potentiel de Lennard-Jones 12-6",
+    "title": "Lennard-Jones 12-6 potential",
     "direction": "min",
     "metric": 0.0004361391643108304,
     "level": 2,
@@ -276,7 +276,7 @@
   },
   "damped_oscillation": {
     "taskId": "damped_oscillation",
-    "title": "Oscillation amortie e^(−t/τ)·cos(ωt)",
+    "title": "Damped oscillation e^(−t/τ)·cos(ωt)",
     "direction": "min",
     "metric": 0.023729880255433135,
     "level": 0,
@@ -291,7 +291,7 @@
   },
   "logistic_growth": {
     "taskId": "logistic_growth",
-    "title": "Croissance logistique",
+    "title": "Logistic growth curve",
     "direction": "min",
     "metric": 0.0005428852894057588,
     "level": 1,
@@ -321,7 +321,7 @@
   },
   "kdv_soliton": {
     "taskId": "kdv_soliton",
-    "title": "Soliton KdV · sech²",
+    "title": "KdV soliton sech²",
     "direction": "min",
     "metric": 0.00741453057207225,
     "level": 2,
@@ -336,7 +336,7 @@
   },
   "kerr_spin": {
     "taskId": "kerr_spin",
-    "title": "Déflexion Kerr avec spin (Lense-Thirring)",
+    "title": "Kerr deflection with spin (Lense-Thirring)",
     "direction": "min",
     "metric": 1.4122603373783278e-7,
     "level": 2,
@@ -351,7 +351,7 @@
   },
   "pendulum_hybrid": {
     "taskId": "pendulum_hybrid",
-    "title": "Contrôle hybride pendule inversé",
+    "title": "Inverted-pendulum hybrid control law",
     "direction": "min",
     "metric": 2.1414286945178356,
     "level": 0,
