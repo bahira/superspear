@@ -20,6 +20,8 @@ interface Finding {
   iteration: number;
   tree?: unknown;
   speed?: { formulaCost: number; exactCost: number; speedup: number; vsIterative?: { label: string; speedup: number } };
+  fast?: { formula: string; metric: number; level: number; formulaCost: number };
+  fastTree?: unknown;
 }
 type Ledger = Record<string, Finding>;
 
@@ -70,13 +72,28 @@ async function main() {
       totalBt++;
       const prev = ledger[f.taskId];
       if (!prev || better(f.direction, f.metric, prev.metric)) {
+        // demote the displaced champion to the fast slot if it is cheaper
+        if (prev?.speed && f.speed && prev.speed.formulaCost < f.speed.formulaCost && (prev.level ?? 0) >= 2) {
+          const demoted = { formula: prev.formula, metric: prev.metric, level: prev.level, formulaCost: prev.speed.formulaCost };
+          if (!f.fast || demoted.formulaCost < f.fast.formulaCost) {
+            f.fast = demoted;
+            f.fastTree = prev.tree;
+          }
+        }
         ledger[f.taskId] = f;
         records++;
-      } else if (prev.formula === f.formula) {
-        // backfill missing annotations on reproduced champions
-        if (!prev.speed && f.speed) prev.speed = f.speed;
-        if (prev.speed && !prev.speed.vsIterative && f.speed?.vsIterative) prev.speed.vsIterative = f.speed.vsIterative;
-        if (!prev.tree && f.tree) prev.tree = f.tree;
+      } else {
+        if (prev.formula === f.formula) {
+          // backfill missing annotations on reproduced champions
+          if (!prev.speed && f.speed) prev.speed = f.speed;
+          if (prev.speed && !prev.speed.vsIterative && f.speed?.vsIterative) prev.speed.vsIterative = f.speed.vsIterative;
+          if (!prev.tree && f.tree) prev.tree = f.tree;
+        }
+        // fast-slot: keep the cheapest VALIDATED form ever seen
+        if (f.fast && f.fast.level >= 2 && f.fast.formulaCost < (prev.fast?.formulaCost ?? Infinity)) {
+          prev.fast = f.fast;
+          prev.fastTree = f.fastTree;
+        }
       }
     }
   }

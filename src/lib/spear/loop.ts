@@ -20,11 +20,12 @@ import {
   toPython,
   toMisraC,
   tournamentSelect,
+  serializeNode,
+  type SerializedNode,
   type SpearNode,
 } from "./engine";
 import { buildTasks, taskOpProfile, type TaskBaseline, type TaskDef } from "./benchmarks";
 import { toWasmBytes } from "./wasm";
-import { serializeNode, type SerializedNode } from "./engine";
 
 export interface LoopFrontEntry {
   formula: string;
@@ -56,6 +57,13 @@ export interface LoopTaskSnapshot {
   c99: string | null;
   /** serialized AST of the champion — enables cross-task bootstrap seeding */
   tree: SerializedNode | null;
+  /**
+   * Cheapest VALIDATED form (level >= 2): the deployment-grade "fast" variant.
+   * Graphics / LLM hot loops accept looser accuracy for big speed wins, so the
+   * ledger keeps one form per operating point instead of a single champion.
+   */
+  fast: { formula: string; metric: number; level: number; formulaCost: number } | null;
+  fastTree: SerializedNode | null;
   /** base64-encoded WebAssembly binary of the discovered law */
   wasm: string | null;
   chart: { x: number; target: number; predicted: number }[] | null;
@@ -291,6 +299,19 @@ function snapshotTask(rt: TaskRuntime, full: boolean): LoopTaskSnapshot {
   // speed bench only run on the final full snapshot
   const speed = full && rt.bestNode ? benchmarkSpeed(t, rt.bestNode) : null;
 
+  // cheapest VALIDATED form (level >= 2) — the "fast" deployment variant.
+  // ponytail: frontRaw holds <=12 elite members, not the whole search — the
+  // true cheapest validated form may be missed; upgrade path is a dedicated
+  // cost-sorted archive in the loop.
+  let fastPick: { node: SpearNode; metric: number } | null = null;
+  for (const f of rt.frontRaw) {
+    if (levelOf(t, f.metric) < 2) continue;
+    if (!fastPick || estimateCost(f.node) < estimateCost(fastPick.node)) fastPick = { node: f.node, metric: f.metric };
+  }
+  const fast = fastPick
+    ? { formula: nodeToString(fastPick.node), metric: fastPick.metric, level: levelOf(t, fastPick.metric), formulaCost: estimateCost(fastPick.node) }
+    : null;
+
   return {
     taskId: t.id,
     family: t.family,
@@ -315,6 +336,8 @@ function snapshotTask(rt: TaskRuntime, full: boolean): LoopTaskSnapshot {
       : null,
     wasm: full && rt.bestNode ? Buffer.from(toWasmBytes(rt.bestNode)).toString("base64") : null,
     tree: full && rt.bestNode ? serializeNode(rt.bestNode) : null,
+    fast,
+    fastTree: full && fastPick ? serializeNode(fastPick.node) : null,
     chart: full && rt.bestNode && t.chart ? t.chart(rt.bestNode) : null,
     ops: full && rt.bestNode ? taskOpProfile(rt.bestNode) : null,
     verifyNote: full && rt.bestNode && t.verify ? t.verify(rt.bestNode) : null,

@@ -86,6 +86,19 @@ For several tasks the *standard* way to compute the answer is not another closed
 
 Arithmetic is documented in [`src/lib/spear/benchmarks.ts`](./src/lib/spear/benchmarks.ts) (`ITERATIVE_BASELINES`). These are cost-model units, cross-checked by wall-clock benchmarks in the export audit.
 
+### 🎚️ Two operating points per law: `precise` and `fast`
+
+One formula per task hides the accuracy/latency trade-off that real deployments live by: a rendering loop or an LLM hot path happily accepts 1e-4 relative error if it shaves half the ALU bill; a physics integration does not. So the ledger keeps **two validated forms per task**: the *precise* champion (lowest error ever found) and the *fast* variant (cheapest form that still passes the engine's level-2 validation gate).
+
+| Task | Precise | Fast | Fast wins |
+|---|---|---|---|
+| **Kerr deflection w/ spin** | 1.32e-8, 15 units (×160 vs RK4) | `10.49/(s+b)`, 3.6e-5, 5 units | **×480 vs RK4** |
+| **Damped pendulum state** | 6.8e-4, 46 units (×33 vs Euler-Cromer) | 1.9e-3, 26 units | **×58 vs Euler-Cromer** |
+| **Hill dose-response** | 1.16e-4 | 9.2e-4, ×1.80 cheaper | latency-critical scoring |
+| **Softplus** | 2.29e-4 | 3.2e-3, 2 units | inner-loop activation |
+
+Displaced champions are never lost: when a more accurate form takes over, the old one is demoted to the fast slot, and [`scripts/backfill-fast.ts`](./scripts/backfill-fast.ts) resurrects historical forms from git archaeology.
+
 **Note on protected division:** the engine's `pdiv` clamps denominators below 1e-4 and outputs beyond ±1e4. The Gaussian CDF champion *exploits these rails as free saturation* — its tiny divisor (3.4e-5) turns the division into a hard plateau, exactly the shape of Φ. The algebraic optimizer (`div-by-const → mul-by-reciprocal`, −3 units per site) therefore only rewrites divisors above the protection floor, and every rewrite passes a metric-parity gate before entering the ledger.
 
 ### Decision-making (KV-cache)
@@ -162,6 +175,9 @@ npx tsx scripts/refresh-speeds.ts
 # Algebraic optimization pass over ledger trees (parity-gated)
 npx tsx scripts/optimize-ledger.ts
 npx tsx scripts/test-simplify.ts
+
+# Resurrect cheap validated forms from git history into the `fast` slot
+npx tsx scripts/backfill-fast.ts
 
 # Op-by-op WASM parity smoke test
 npx tsx wasm-smoke.test.ts

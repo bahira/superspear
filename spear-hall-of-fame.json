@@ -375,6 +375,13 @@
           "v": 0.5257325770169758
         }
       ]
+    },
+    "fast": {
+      "formula": "((0.941033 * (x / exp(sqrt(|x|)))) + 0.5)",
+      "metric": 0.0002696727132265258,
+      "level": 2,
+      "formulaCost": 28,
+      "seed": 777
     }
   },
   "damped_pendulum": {
@@ -460,6 +467,83 @@
         "label": "Euler-Cromer · 60 pas",
         "speedup": 32.608695652173914
       }
+    },
+    "fast": {
+      "formula": "((1.386443 * (cos((t * 2.756615)) + (-0.030419 * (t * 2.771615)))) + 0.143605)",
+      "metric": 0.0019020804196978615,
+      "level": 2,
+      "formulaCost": 26,
+      "seed": 700004,
+      "speed": {
+        "formulaCost": 26,
+        "vsIterative": {
+          "label": "Euler-Cromer · 60 pas",
+          "speedup": 57.69230769230769
+        }
+      }
+    },
+    "fastTree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 1.386443
+            },
+            {
+              "o": "add",
+              "c": [
+                {
+                  "o": "cos",
+                  "c": [
+                    {
+                      "o": "mul",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "t"
+                        },
+                        {
+                          "o": "const",
+                          "v": 2.756615
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": -0.030419
+                    },
+                    {
+                      "o": "mul",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "t"
+                        },
+                        {
+                          "o": "const",
+                          "v": 2.771615
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.143605
+        }
+      ]
     }
   },
   "rl_distillation": {
@@ -938,6 +1022,13 @@
           "v": -0.008972
         }
       ]
+    },
+    "fast": {
+      "formula": "((0.531674 * min(c, min((c)², 1.833607))) + -0.016796)",
+      "metric": 0.0009225802066077555,
+      "level": 2,
+      "formulaCost": 5,
+      "seed": 424242
     }
   },
   "kerr": {
@@ -1215,6 +1306,39 @@
           "v": 0.6507988992446906
         }
       ]
+    },
+    "fast": {
+      "formula": "((5.281056 + x) * x)",
+      "metric": 0.003247485960553713,
+      "level": 2,
+      "formulaCost": 2,
+      "speed": {
+        "formulaCost": 2,
+        "exactCost": 41,
+        "speedup": 20.5
+      }
+    },
+    "fastTree": {
+      "o": "mul",
+      "c": [
+        {
+          "o": "add",
+          "c": [
+            {
+              "o": "const",
+              "v": 5.281056
+            },
+            {
+              "o": "var",
+              "n": "x"
+            }
+          ]
+        },
+        {
+          "o": "var",
+          "n": "x"
+        }
+      ]
     }
   },
   "kdv_soliton": {
@@ -1386,6 +1510,43 @@
         {
           "o": "const",
           "v": 0.0007355052819719532
+        }
+      ]
+    },
+    "fast": {
+      "formula": "(10.493311 / (s + b))",
+      "metric": 0.000036390411548739514,
+      "level": 2,
+      "formulaCost": 5,
+      "speed": {
+        "formulaCost": 5,
+        "exactCost": 21,
+        "speedup": 4.2,
+        "vsIterative": {
+          "label": "RK4 géodésique · 200 pas",
+          "speedup": 480
+        }
+      }
+    },
+    "fastTree": {
+      "o": "pdiv",
+      "c": [
+        {
+          "o": "const",
+          "v": 10.493311
+        },
+        {
+          "o": "add",
+          "c": [
+            {
+              "o": "var",
+              "n": "s"
+            },
+            {
+              "o": "var",
+              "n": "b"
+            }
+          ]
         }
       ]
     }

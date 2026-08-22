@@ -29,6 +29,8 @@ async function main() {
           }
         : undefined,
       tree: t.tree ?? undefined,
+      fast: t.fast ?? undefined,
+      fastTree: t.fastTree ?? undefined,
     }));
   writeFileSync(outPath, JSON.stringify(partial));
   console.log(`[child ${process.pid}] ${partial.length} tâches, status=${progress.status}, iters=${progress.iterationsUsed}`);
