@@ -18,7 +18,8 @@ interface Finding {
   formula: string;
   seed: number;
   iteration: number;
-  speed?: { formulaCost: number; exactCost: number; speedup: number };
+  tree?: unknown;
+  speed?: { formulaCost: number; exactCost: number; speedup: number; vsIterative?: { label: string; speedup: number } };
 }
 type Ledger = Record<string, Finding>;
 

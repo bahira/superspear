@@ -527,6 +527,15 @@ export function simplify(node: SpearNode): SpearNode {
     case "pdiv":
       if (isConst(kids[1], 1)) return kids[0];
       if (isConst(kids[0], 0)) return makeNode("const", { value: 0 });
+      // x / c -> x * (1/c): div costs 4 units, mul costs 1. ONLY legal when
+      // |c| >= 1e-4 (the evaluator's protection floor): below it, pdiv clamps
+      // both denominator and output, and discovered formulas may lean on those
+      // rails as free saturation (gaussian_cdf champion does exactly that).
+      // Result-clamp cases above the floor (huge numerator) are left alone
+      // here and caught by the parity gate in scripts/optimize-ledger.ts.
+      if (kids[1].op === "const" && Math.abs(kids[1].value) >= 1e-4) {
+        return simplify(makeNode("mul", { children: [kids[0], makeNode("const", { value: 1 / kids[1].value })] }));
+      }
       break;
     case "neg":
       if (kids[0].op === "neg") return kids[0].children[0];

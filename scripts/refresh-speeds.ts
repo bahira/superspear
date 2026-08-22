@@ -9,7 +9,7 @@ async function main() {
   const path = join(import.meta.dirname ?? ".", "..", "spear-hall-of-fame.json");
   const ledger = JSON.parse(readFileSync(path, "utf8")) as Record<string, {
     formulaCost?: number;
-    speed?: { formulaCost: number; exactCost: number; speedup: number; vsIterative?: { label: string; speedup: number } };
+    speed?: { formulaCost: number; exactCost?: number; speedup?: number; vsIterative?: { label: string; speedup: number } };
     tree?: unknown;
   }>;
   const defs = new Map(buildTasks().map((t) => [t.id, t]));

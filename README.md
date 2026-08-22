@@ -56,7 +56,7 @@ Lesson learned (twice now): discovery quality depends less on budget than on whi
 | **SiLU/Swish** | 7.8e-4 | **×2.43** | `x·(0.501 + 0.587·x/(0.815 + √(1+x²)))` | HardSwish, ReLU |
 | **GELU** | 5.3e-4 | **×6.57** | `x·min(1.002, relu(0.308x + 0.501))` | GELU-tanh |
 | **Sigmoid** | 0 (exact)* | ×1.26 | `1 − 1/(1 + e⁻ˣ)` | Hard-sigmoid TFLite |
-| **Gaussian CDF Φ(x)** | 2.1e-4 | ×0.97 | refined rational form | HardSwish |
+| **Gaussian CDF Φ(x)** | 2.1e-4 | ×1.17 | refined rational form, div→mul strength reduction | HardSwish |
 | **Softplus ln(1+eˣ)** | **2.4e-4** | ×4.56 | piecewise-rational approximant (bootstrap child) | smooth ReLU kernels |
 | **Deep-RL actor distillation** | 1.6e-4 | **×2.83** | `(x + 0.145x³)/(0.556 + 0.75x²)` — Padé [3/2] found spontaneously | tanh network |
 
@@ -79,12 +79,14 @@ For several tasks the *standard* way to compute the answer is not another closed
 
 | Task | Discovered formula cost | Iterative baseline | Speedup |
 |---|---|---|---|
-| **Gaussian CDF Φ(x)** | 35 units | Monte-Carlo estimation, 1000 Box-Muller draws (46,000) | **×1314** |
+| **Gaussian CDF Φ(x)** | 29 units | Monte-Carlo estimation, 1000 Box-Muller draws (46,000) | **×1586** |
 | **Kerr deflection with spin** | 13 units | RK4 geodesic integration, 200 steps (2,400) | **×185** |
 | **Damped oscillation trajectory** | 30 units | RKF45 adaptive solve, 300 steps (5,400) | **×200** |
 | **Damped pendulum terminal state** | 26 units | Euler-Cromer integration, 60 steps (1,500) | **×58** |
 
 Arithmetic is documented in [`src/lib/spear/benchmarks.ts`](./src/lib/spear/benchmarks.ts) (`ITERATIVE_BASELINES`). These are cost-model units, cross-checked by wall-clock benchmarks in the export audit.
+
+**Note on protected division:** the engine's `pdiv` clamps denominators below 1e-4 and outputs beyond ±1e4. The Gaussian CDF champion *exploits these rails as free saturation* — its tiny divisor (3.4e-5) turns the division into a hard plateau, exactly the shape of Φ. The algebraic optimizer (`div-by-const → mul-by-reciprocal`, −3 units per site) therefore only rewrites divisors above the protection floor, and every rewrite passes a metric-parity gate before entering the ledger.
 
 ### Decision-making (KV-cache)
 
@@ -156,6 +158,10 @@ npx tsx scripts/run-farm.ts [seed] [budget] [workers]
 
 # Recompute cost/speed multipliers for every ledger entry carrying an AST
 npx tsx scripts/refresh-speeds.ts
+
+# Algebraic optimization pass over ledger trees (parity-gated)
+npx tsx scripts/optimize-ledger.ts
+npx tsx scripts/test-simplify.ts
 
 # Op-by-op WASM parity smoke test
 npx tsx wasm-smoke.test.ts
