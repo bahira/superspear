@@ -2234,39 +2234,21 @@
       ]
     },
     "fast": {
-      "formula": "((4.732085 / b) + 4.383332)",
-      "metric": 0.0001323874547581251,
+      "formula": "(s / b)",
+      "metric": 0.0001323874547581254,
       "level": 2,
-      "formulaCost": 5,
-      "speed": {
-        "formulaCost": 5,
-        "exactCost": 21,
-        "speedup": 4.2,
-        "vsIterative": {
-          "label": "RK4 géodésique · 200 pas",
-          "speedup": 480
-        }
-      }
+      "formulaCost": 4
     },
     "fastTree": {
-      "o": "add",
+      "o": "pdiv",
       "c": [
         {
-          "o": "pdiv",
-          "c": [
-            {
-              "o": "const",
-              "v": 4.732085
-            },
-            {
-              "o": "var",
-              "n": "b"
-            }
-          ]
+          "o": "var",
+          "n": "s"
         },
         {
-          "o": "const",
-          "v": 4.383332
+          "o": "var",
+          "n": "b"
         }
       ]
     }

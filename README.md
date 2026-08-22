@@ -96,6 +96,19 @@ Short answer explored empirically: **the matmul itself already IS the minimal cl
 
 Cross-variable and trigonometric carrier seeds (shape-only, no answer constants) unlocked the exact RoPE recovery at depth 6000 — the seed pool now covers bilinear interactions (`x₀·x₁`, `x₀±x₁`) and carriers (`cos x`, `sin x`).
 
+### 🔬 Edge CPU measurements (WASM, this machine)
+
+Production kernels vs SPEAR forms compiled to WASM, 200k elements on `[-6,6]` (`npx tsx scripts/bench-edge.ts`):
+
+| Kernel | Reference | SPEAR | Gain | Max abs err |
+|---|---|---|---|---|
+| **SiLU** (SwiGLU) | exp-based, 864 ns/el | algebraic, 409 ns/el | **×2.12** | 7.0e-2 |
+| **GELU** | tanh-approx (industry), 757 ns/el | algebraic, 326 ns/el | **×2.32** | 8.0e-2 |
+| Softplus | exp-based, 1403 ns/el | algebraic, 1113 ns/el | ×1.26 | 4.2e-1 |
+| Sigmoid fast-slot | exp-based, 1075 ns/el | `x/(1+\|x\|)`, 1307 ns/el | ×0.82 — slower, reported as measured | 8.6e-1 |
+
+FFN block simulation (decode, d=2048, ffn=5632): the full block runs **10.2 % faster** end-to-end with the SPEAR SiLU swapped in, even through naive per-element JS↔WASM invocation. Honest caveats: max errors ~0.07–0.08 are visible-but-bounded activation distortion (perplexity delta unmeasured); the sigmoid fast variant loses on this backend; batched invocation would remove the per-call boundary overhead.
+
 ### ⚡ vs iterative solvers — the honest big multipliers
 
 For several tasks the *standard* way to compute the answer is not another closed form but an **iterative numerical solver**. Counting the solver's full bill (every iteration, in ALU/SFU units) against our O(1) formula gives large — and legitimate — accelerations:
