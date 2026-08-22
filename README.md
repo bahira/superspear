@@ -44,7 +44,7 @@ Lesson learned (twice now): discovery quality depends less on budget than on whi
 | Task | Record | ⚡ Speed | Discovered formula | Seed |
 |---|---|---|---|---|
 | **Kerr light deflection** (weak field) | **1.4e-7** | ×1.31 | rational form recovered near-exactly | 777 |
-| **Kerr deflection with spin a≠0** (Lense-Thirring) | **2.7e-8** | ×1.62 | two-pole rational `(3.04/(b−3.79) + 4.19/b)` | 700002 |
+| **Kerr deflection with spin a≠0** (Lense-Thirring) | **2.6e-8** | ×2.33 | rational `(b/(b−s)·1/(3.109−b))` — faster AND more accurate | 920404 |
 | **KdV soliton** | 3.9e-3 | ×2.04 | travelling-wave approx of `2·sech²(x−4t)` | 700002 |
 
 ### LLM / image kernels replaced by pure algebra
@@ -52,12 +52,12 @@ Lesson learned (twice now): discovery quality depends less on budget than on whi
 | Task | Record | ⚡ Speed | Discovered formula | Baseline beaten |
 |---|---|---|---|---|
 | **Diffusion β(t)** | **1.8e-6** | ×1.04 | `−0.496·cos(3.162t) + 0.501` (refined) | cosine schedule |
-| **Gaussian blur kernel** | **1.2e-6** | ×0.96 | `0.999·exp(−0.504x²)` — the true kernel structure | `exp(−x²/2σ²)` |
+| **Gaussian blur kernel** | **5.4e-34 — EXACT** | — | `√|exp(−x²)|` = e^(−x²/2): the law recovered to machine precision | `exp(−x²/2σ²)` |
 | **SiLU/Swish** | 7.8e-4 | **×2.43** | `x·(0.501 + 0.587·x/(0.815 + √(1+x²)))` | HardSwish, ReLU |
 | **GELU** | 5.3e-4 | **×6.57** | `x·min(1.002, relu(0.308x + 0.501))` | GELU-tanh |
 | **Sigmoid** | 0 (exact)* | ×1.26 | `1 − 1/(1 + e⁻ˣ)` | Hard-sigmoid TFLite |
 | **Gaussian CDF Φ(x)** | 2.1e-4 | ×1.17 | refined rational form, div→mul strength reduction | HardSwish |
-| **Softplus ln(1+eˣ)** | **2.4e-4** | ×4.56 | piecewise-rational approximant (bootstrap child) | smooth ReLU kernels |
+| **Softplus ln(1+eˣ)** | **2.3e-4** | ×4.56 | piecewise-rational approximant (bootstrap child) | smooth ReLU kernels |
 | **Deep-RL actor distillation** | 1.6e-4 | **×2.83** | `(x + 0.145x³)/(0.556 + 0.75x²)` — Padé [3/2] found spontaneously | tanh network |
 
 \* the sigmoid task allows `exp` as a primitive — the point is cost comparison, not algebraic purity.
@@ -66,7 +66,7 @@ Lesson learned (twice now): discovery quality depends less on budget than on whi
 
 | Task | Record | ⚡ Speed | Discovered formula | Note |
 |---|---|---|---|---|
-| **Hill dose-response** 🏥 | **1.2e-4** | — | exp-blended saturation ratio | deployable drug-model shape |
+| **Hill dose-response** 🏥 | **1.16e-4** | — | min-cascade saturation on c² | deployable drug-model shape |
 | **Lennard-Jones 12-6 potential** 🧪 | **4.4e-4** | ×0.55 | inverse-power rational double-well | repulsive + attractive terms |
 | **Damped oscillation e^(−t/τ)cos(ωt)** 📡 | **3.1e-4** | ×1.63 | polynomial envelope × carrier: `(t−16.4)(t−8.3)·cos(2.996t)` — amplitude modulation | DSP staple |
 | **Logistic growth** 📈 | **8.6e-5** | ×0.65 | level 2 saturation curve | adoption / population model |
@@ -80,7 +80,7 @@ For several tasks the *standard* way to compute the answer is not another closed
 | Task | Discovered formula cost | Iterative baseline | Speedup |
 |---|---|---|---|
 | **Gaussian CDF Φ(x)** | 29 units | Monte-Carlo estimation, 1000 Box-Muller draws (46,000) | **×1586** |
-| **Kerr deflection with spin** | 13 units | RK4 geodesic integration, 200 steps (2,400) | **×185** |
+| **Kerr deflection with spin** | 9 units | RK4 geodesic integration, 200 steps (2,400) | **×267** |
 | **Damped oscillation trajectory** | 30 units | RKF45 adaptive solve, 300 steps (5,400) | **×200** |
 | **Damped pendulum terminal state** | 26 units | Euler-Cromer integration, 60 steps (1,500) | **×58** |
 
