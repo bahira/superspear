@@ -67,6 +67,13 @@ export interface TaskDef {
   exactCost?: number;
   /** the true law as an AST — exactCost falls back to estimateCost(this) */
   exactRefNode?: SpearNode;
+  /**
+   * The way practitioners actually compute this quantity WITHOUT a closed
+   * form: an iterative numerical solver. `totalCost` is the full ALU/SFU bill
+   * of one complete solve (all iterations included), in engine cost units.
+   * The honest big-multiplier comparison is totalCost / formulaCost.
+   */
+  iterativeBaseline?: { label: string; totalCost: number };
   /** generic algebraic primitives used to seed the population (no published
    *  baseline formula is ever injected) */
   seedPool?: SpearNode[];
@@ -372,6 +379,7 @@ function buildActivationTask(spec: ActivationSpec, points = 400): TaskDef {
     codeVarDecl: "const float x",
     exactFn: spec.fn,
     exactCost: spec.id === "gelu" ? 46 : 34,
+    iterativeBaseline: ITERATIVE_BASELINES[spec.id],
   };
 }
 
@@ -767,6 +775,20 @@ const EXACT_LAWS: Record<string, SpearNode> = {
   })(),
 };
 
+// Iterative baselines: how each quantity is computed WITHOUT a closed form.
+// Cost arithmetic (engine units: mul/add=1, div=4, sqrt=2, transcendental=20):
+//  - geodesic u''=3u²−u via RK4: 4 stages × ~3 u = 12/step × 200 steps = 2400
+//  - pendulum (θ,ω) Euler-Cromer: sinθ + 3 ops ≈ 25/step × 60 steps = 1500
+//  - damped harmonic (x,v) via RKF45: 6 stages × ~3 u × 2 dims = 18×300 = 5400
+//  - CDF by Monte-Carlo: 1000 draws × Box-Muller (log+sqrt+cos+muls ≈ 46) = 46000
+const ITERATIVE_BASELINES: Record<string, { label: string; totalCost: number }> = {
+  kerr: { label: "RK4 géodésique · 200 pas", totalCost: 2400 },
+  kerr_spin: { label: "RK4 géodésique · 200 pas", totalCost: 2400 },
+  damped_pendulum: { label: "Euler-Cromer · 60 pas", totalCost: 1500 },
+  damped_oscillation: { label: "RKF45 · 300 pas", totalCost: 5400 },
+  gaussian_cdf: { label: "Monte-Carlo · 1000 tirages", totalCost: 46000 },
+};
+
 function buildRegressionTask(cfg: {
   id: string;
   title: string;
@@ -903,6 +925,7 @@ function buildRegressionTask(cfg: {
     verify: cfg.verify,
     codeVarDecl: `const float ${varNames.join(", const float ")}`,
     exactRefNode: cfg.exactLaw ?? EXACT_LAWS[cfg.id],
+    iterativeBaseline: ITERATIVE_BASELINES[cfg.id],
   };
 }
 

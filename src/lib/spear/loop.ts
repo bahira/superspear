@@ -61,7 +61,16 @@ export interface LoopTaskSnapshot {
   chart: { x: number; target: number; predicted: number }[] | null;
   ops: { total: number; transcendental: number } | null;
   verifyNote: string | null;
-  speed: { formulaCost: number; exactCost: number; estimatedSpeedup: number; ops: number; transcendental: number; elements: number } | null;
+  speed: {
+    formulaCost: number;
+    exactCost: number;
+    estimatedSpeedup: number;
+    ops: number;
+    transcendental: number;
+    elements: number;
+    /** vs the iterative solver practitioners would run instead */
+    vsIterative?: { label: string; speedup: number };
+  } | null;
   baselines: (TaskBaseline & { beaten: boolean; ratio: number | null })[];
   bestBaselineName: string | null;
   milestonesHit: string[];
@@ -253,6 +262,9 @@ function benchmarkSpeed(t: TaskDef, node: SpearNode): LoopTaskSnapshot["speed"] 
     ops: profile.total,
     transcendental: profile.transcendental,
     elements: n,
+    vsIterative: t.iterativeBaseline
+      ? { label: t.iterativeBaseline.label, speedup: t.iterativeBaseline.totalCost / Math.max(1, formulaCost) }
+      : undefined,
   };
 }
 

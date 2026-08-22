@@ -15,7 +15,12 @@ interface Finding {
   seed: number;
   iteration: number;
   /** cost model vs the exact reference kernel (ALU/SFU units) */
-  speed?: { formulaCost: number; exactCost: number; speedup: number };
+  speed?: {
+    formulaCost: number;
+    exactCost: number;
+    speedup: number;
+    vsIterative?: { label: string; speedup: number };
+  };
   /** serialized AST — the bootstrap brick for future runs */
   tree?: unknown;
 }
@@ -116,7 +121,12 @@ async function main() {
         iteration: t.iterations,
         tree: t.tree ?? undefined,
         speed: t.speed
-          ? { formulaCost: t.speed.formulaCost, exactCost: t.speed.exactCost, speedup: t.speed.estimatedSpeedup }
+          ? {
+              formulaCost: t.speed.formulaCost,
+              exactCost: t.speed.exactCost,
+              speedup: t.speed.estimatedSpeedup,
+              vsIterative: t.speed.vsIterative,
+            }
           : undefined,
       });
     }
@@ -128,9 +138,10 @@ async function main() {
       const entry = ledger[t.taskId] as Finding | undefined;
       if (!entry || entry.formula !== t.best?.formula) continue;
       if (!entry.speed && t.speed) {
-        entry.speed = { formulaCost: t.speed.formulaCost, exactCost: t.speed.exactCost, speedup: t.speed.estimatedSpeedup };
+        entry.speed = { formulaCost: t.speed.formulaCost, exactCost: t.speed.exactCost, speedup: t.speed.estimatedSpeedup, vsIterative: t.speed.vsIterative };
         backfilled++;
       }
+      if (entry.speed && !entry.speed.vsIterative && t.speed?.vsIterative) entry.speed.vsIterative = t.speed.vsIterative;
       if (!entry.tree && t.tree) entry.tree = t.tree;
     }
     console.log(`terminé: ${p.breakthroughs.length} breakthroughs, ${n} nouveaux records, ${backfilled} speeds backfillés\n`);
@@ -156,7 +167,10 @@ async function main() {
   console.log("╔═══════════════════════ HALL OF FAME SPEAR ═══════════════════════╗");
   for (const r of rows) {
     const metricStr = r.direction === "min" ? r.metric.toExponential(2) : r.metric.toFixed(1) + "%";
-    const speedStr = r.speed ? `  vitesse: ×${r.speed.speedup.toFixed(2)} vs loi exacte (${r.speed.formulaCost}/${r.speed.exactCost} unités)` : "";
+    const speedStr = r.speed
+      ? `  vitesse: ×${r.speed.speedup.toFixed(2)} vs loi exacte` +
+        (r.speed.vsIterative ? ` | ×${r.speed.vsIterative.speedup.toFixed(1)} vs ${r.speed.vsIterative.label}` : "")
+      : "";
     console.log(`\n[${r.taskId}] ${r.title}`);
     console.log(`  best=${metricStr}  L${r.level}  trouvé: seed ${r.seed}, it ${r.iteration}${speedStr}`);
     console.log(`  ${r.formula}`);

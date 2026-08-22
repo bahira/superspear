@@ -20,7 +20,14 @@ async function main() {
       formula: t.best!.formula,
       seed,
       iteration: t.iterations,
-      speed: t.speed ? { formulaCost: t.speed.formulaCost, exactCost: t.speed.exactCost, speedup: t.speed.estimatedSpeedup } : undefined,
+      speed: t.speed
+        ? {
+            formulaCost: t.speed.formulaCost,
+            exactCost: t.speed.exactCost,
+            speedup: t.speed.estimatedSpeedup,
+            vsIterative: t.speed.vsIterative,
+          }
+        : undefined,
       tree: t.tree ?? undefined,
     }));
   writeFileSync(outPath, JSON.stringify(partial));

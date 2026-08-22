@@ -70,8 +70,11 @@ async function main() {
       if (!prev || better(f.direction, f.metric, prev.metric)) {
         ledger[f.taskId] = f;
         records++;
-      } else if (!prev.speed && f.speed && prev.formula === f.formula) {
-        prev.speed = f.speed; // backfill speed on reproduced champions
+      } else if (prev.formula === f.formula) {
+        // backfill missing annotations on reproduced champions
+        if (!prev.speed && f.speed) prev.speed = f.speed;
+        if (prev.speed && !prev.speed.vsIterative && f.speed?.vsIterative) prev.speed.vsIterative = f.speed.vsIterative;
+        if (!prev.tree && f.tree) prev.tree = f.tree;
       }
     }
   }

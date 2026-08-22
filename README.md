@@ -73,6 +73,19 @@ Lesson learned (twice now): discovery quality depends less on budget than on whi
 | **European call premium** 💰 | 1.77e-1 | ×1.00 | `19.22·(1+σ)³ − 19.11` — level 5 | Black-Scholes ATM approx |
 | **Inverted-pendulum hybrid control** 🎛️ | 2.1 | ×7.52 | cheap surrogate of the full 173-unit law | textbook Pareto trade-off point |
 
+### ⚡ vs iterative solvers — the honest big multipliers
+
+For several tasks the *standard* way to compute the answer is not another closed form but an **iterative numerical solver**. Counting the solver's full bill (every iteration, in ALU/SFU units) against our O(1) formula gives large — and legitimate — accelerations:
+
+| Task | Discovered formula cost | Iterative baseline | Speedup |
+|---|---|---|---|
+| **Gaussian CDF Φ(x)** | 35 units | Monte-Carlo estimation, 1000 Box-Muller draws (46,000) | **×1314** |
+| **Kerr deflection with spin** | 13 units | RK4 geodesic integration, 200 steps (2,400) | **×185** |
+| **Damped oscillation trajectory** | 60 units | RKF45 adaptive solve, 300 steps (5,400) | **×115** |
+| **Damped pendulum terminal state** | 26 units | Euler-Cromer integration, 60 steps (1,500) | **×58** |
+
+Arithmetic is documented in [`src/lib/spear/benchmarks.ts`](./src/lib/spear/benchmarks.ts) (`ITERATIVE_BASELINES`). These are cost-model units, cross-checked by wall-clock benchmarks in the export audit.
+
 ### Decision-making (KV-cache)
 
 | Task | Record | Discovered rule | Baselines beaten |
@@ -140,6 +153,9 @@ npx tsx scripts/export-audit.ts [seed] [budget]
 
 # Parallel farm: N worker processes on disjoint task slices (uses all cores)
 npx tsx scripts/run-farm.ts [seed] [budget] [workers]
+
+# Recompute cost/speed multipliers for every ledger entry carrying an AST
+npx tsx scripts/refresh-speeds.ts
 
 # Op-by-op WASM parity smoke test
 npx tsx wasm-smoke.test.ts

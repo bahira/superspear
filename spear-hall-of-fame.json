@@ -221,7 +221,11 @@
     "speed": {
       "formulaCost": 35,
       "exactCost": 34,
-      "speedup": 0.9714285714285714
+      "speedup": 0.9714285714285714,
+      "vsIterative": {
+        "label": "Monte-Carlo · 1000 tirages",
+        "speedup": 1314.2857142857142
+      }
     },
     "tree": {
       "o": "add",
@@ -358,6 +362,13 @@
           "v": 0.143605
         }
       ]
+    },
+    "speed": {
+      "formulaCost": 26,
+      "vsIterative": {
+        "label": "Euler-Cromer · 60 pas",
+        "speedup": 57.69230769230769
+      }
     }
   },
   "rl_distillation": {
@@ -373,6 +384,74 @@
       "formulaCost": 12,
       "exactCost": 34,
       "speedup": 2.8333333333333335
+    },
+    "tree": {
+      "o": "mul",
+      "c": [
+        {
+          "o": "const",
+          "v": 1.143472
+        },
+        {
+          "o": "pdiv",
+          "c": [
+            {
+              "o": "add",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "x"
+                },
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 0.135
+                    },
+                    {
+                      "o": "cube",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "x"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "o": "add",
+              "c": [
+                {
+                  "o": "const",
+                  "v": 0.584
+                },
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 0.75
+                    },
+                    {
+                      "o": "sq",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "x"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   },
   "lambert_w": {
@@ -788,7 +867,11 @@
     "speed": {
       "formulaCost": 47,
       "exactCost": 44,
-      "speedup": 0.9361702127659575
+      "speedup": 0.9361702127659575,
+      "vsIterative": {
+        "label": "RKF45 · 300 pas",
+        "speedup": 114.8936170212766
+      }
     },
     "tree": {
       "o": "add",
@@ -1024,15 +1107,15 @@
     "taskId": "kdv_soliton",
     "title": "Soliton KdV · sech²",
     "direction": "min",
-    "metric": 0.0038984209457481145,
+    "metric": 0.003813380727304276,
     "level": 2,
-    "formula": "((0.083004 * ((relu(x) * t) * (cos(x) + 1.159011))) + -0.01467)",
-    "seed": 700002,
-    "iteration": 120,
+    "formula": "((0.945947 * cos(max((x + -0.38048), 3.101136))) + 0.975597)",
+    "seed": 800802,
+    "iteration": 114,
     "speed": {
-      "formulaCost": 26,
+      "formulaCost": 24,
       "exactCost": 53,
-      "speedup": 2.0384615384615383
+      "speedup": 2.2083333333333335
     },
     "tree": {
       "o": "add",
@@ -1042,44 +1125,30 @@
           "c": [
             {
               "o": "const",
-              "v": 0.08300407756912187
+              "v": 0.945947
             },
             {
-              "o": "mul",
+              "o": "cos",
               "c": [
                 {
-                  "o": "mul",
+                  "o": "max",
                   "c": [
                     {
-                      "o": "relu",
+                      "o": "add",
                       "c": [
                         {
                           "o": "var",
                           "n": "x"
-                        }
-                      ]
-                    },
-                    {
-                      "o": "var",
-                      "n": "t"
-                    }
-                  ]
-                },
-                {
-                  "o": "add",
-                  "c": [
-                    {
-                      "o": "cos",
-                      "c": [
+                        },
                         {
-                          "o": "var",
-                          "n": "x"
+                          "o": "const",
+                          "v": -0.38048
                         }
                       ]
                     },
                     {
                       "o": "const",
-                      "v": 1.159011
+                      "v": 3.101136
                     }
                   ]
                 }
@@ -1089,7 +1158,7 @@
         },
         {
           "o": "const",
-          "v": -0.014669504941283763
+          "v": 0.975597
         }
       ]
     }
@@ -1106,7 +1175,11 @@
     "speed": {
       "formulaCost": 13,
       "exactCost": 21,
-      "speedup": 1.6153846153846154
+      "speedup": 1.6153846153846154,
+      "vsIterative": {
+        "label": "RK4 géodésique · 200 pas",
+        "speedup": 184.6153846153846
+      }
     },
     "tree": {
       "o": "add",
