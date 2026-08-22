@@ -30,9 +30,10 @@ Lesson learned (twice now): discovery quality depends less on budget than on whi
 | Task | Record (MSE) | ⚡ Speed | Discovered formula | Seed |
 |---|---|---|---|---|
 | **Lorentz factor γ(β)** | **0 (exact)** | ×0.89 | `1/√(1 − b²)` — full relativistic law | 4242 |
-| **Free fall** | 2.5e-4 | ×0.67 | `4.905·t²` → **g = 9.81 m·s⁻²** | 9999 |
+| **Free fall** | **1.9e-4** | ×0.67 | `4.906·t²` → **g = 9.812 m·s⁻²** | 3333 |
 | **Kepler's third law** | 4.7e-2 | — | `1.0009·a·√\|a\|` — the 3/2 exponent, recovered | 555666 |
 | **RC circuit** | **7.3e-5** | — | `-0.998·min(exp(−t), 2) + 0.997` ≈ `1 − e^(−t/τ)` | 777888 |
+| **Damped pendulum** | 7.0e-2 | — | level 2 reached on a numerically-simulated target | 777 |
 | **Lambert W₀** | 0 (exact) | — | `x·relu(exp(x))` | 12345 |
 | **Optical-flow gradient** | 0 (exact) | ×1.00 | `b − a` | 8888 |
 | **Bilinear upsampling weight** | 0 (exact) | ×0.50 | `1 − u` | 12345 |
@@ -50,12 +51,13 @@ Lesson learned (twice now): discovery quality depends less on budget than on whi
 
 | Task | Record | ⚡ Speed | Discovered formula | Baseline beaten |
 |---|---|---|---|---|
-| **Diffusion β(t)** | **1.8e-5** | ×0.53 | `-5.61·exp(cos(min(c,t) − t²)) + 3.05` | cosine schedule |
+| **Diffusion β(t)** | **3.0e-6** | ×0.96 | `-5.61·exp(cos(min(c,t) − t²)) + 3.05` (refined) | cosine schedule |
 | **Gaussian blur kernel** | **9.2e-5** | ×0.53 | `-0.427·(−exp(cos(x))) − 0.14` ⚠️ in-domain | `exp(−x²/2σ²)` |
 | **SiLU/Swish** | 8.2e-4 | **×2.43** | `x·(0.501 + 0.589·x/(0.83 + √(1+x²)))` | HardSwish, ReLU |
 | **GELU** | 5.3e-4 | **×6.57** | `x·min(1.002, relu(0.308x + 0.501))` | GELU-tanh |
 | **Sigmoid** | 0 (exact)* | ×1.26 | `1 − 1/(1 + e⁻ˣ)` | Hard-sigmoid TFLite |
-| **Softplus ln(1+eˣ)** | 1.4e-3 | ×5.13 | algebraic rational approximant | smooth ReLU kernels |
+| **Gaussian CDF Φ(x)** | 2.7e-4 | ×1.21 | rational Padé-family form | HardSwish |
+| **Softplus ln(1+eˣ)** | 1.4e-3 | ×5.12 | algebraic rational approximant | smooth ReLU kernels |
 | **Deep-RL actor distillation** | 1.6e-4 | **×2.83** | `(x + 0.145x³)/(0.556 + 0.75x²)` — Padé [3/2] found spontaneously | tanh network |
 
 \* the sigmoid task allows `exp` as a primitive — the point is cost comparison, not algebraic purity.
@@ -67,7 +69,8 @@ Lesson learned (twice now): discovery quality depends less on budget than on whi
 | **Hill dose-response** 🏥 | 7.2e-4 | — | blended rational/saturation form | deployable drug-model shape |
 | **Lennard-Jones 12-6 potential** 🧪 | **4.4e-4** | ×0.55 | inverse-power rational double-well | repulsive + attractive terms |
 | **Damped oscillation e^(−t/τ)cos(ωt)** 📡 | 2.4e-2 | ×1.69 | exp-decay envelope × carrier | DSP staple |
-| **Logistic growth** 📈 | 5.4e-4 | ×1.00 | saturation curve recovered | adoption / population model |
+| **Logistic growth** 📈 | **2.1e-4** | ×0.54 | saturation curve recovered, level 2 | adoption / population model |
+| **European call premium** 💰 | 2.0e-1 | ×0.09 | `−93.11·cos(√(exp(σ))) + 50.43` — level 5 | Black-Scholes ATM approx |
 | **Inverted-pendulum hybrid control** 🎛️ | 2.1 | ×7.52 | cheap surrogate of the full 173-unit law | textbook Pareto trade-off point |
 
 ### Decision-making (KV-cache)
