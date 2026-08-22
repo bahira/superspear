@@ -182,7 +182,7 @@
     "taskId": "sigmoid",
     "title": "Sigmoid",
     "direction": "min",
-    "metric": 0,
+    "metric": 4.790511494175498e-33,
     "level": 5,
     "formula": "((-(1 / (1 + exp(x)))) + 1)",
     "seed": 987654,
@@ -227,6 +227,47 @@
               ]
             }
           ]
+        }
+      ]
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "neg",
+          "c": [
+            {
+              "o": "pdiv",
+              "c": [
+                {
+                  "o": "const",
+                  "v": 1
+                },
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 1
+                    },
+                    {
+                      "o": "exp",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "x"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 1
         }
       ]
     }
@@ -377,6 +418,47 @@
           ]
         }
       ]
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 1.000934
+            },
+            {
+              "o": "mul",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "a"
+                },
+                {
+                  "o": "sqrt",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "a"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": -0.023116
+        }
+      ]
+    },
+    "speed": {
+      "formulaCost": 5,
+      "exactCost": 3,
+      "speedup": 0.6
     }
   },
   "gaussian_cdf": {
@@ -825,7 +907,7 @@
     "taskId": "rc_circuit",
     "title": "RC circuit step response",
     "direction": "min",
-    "metric": 0.000073,
+    "metric": 0.0001058221329252825,
     "level": 5,
     "formula": "((-0.998327 * min(exp((-t)), 2)) + 0.996889)",
     "seed": 777888,
@@ -854,6 +936,52 @@
           ]
         }
       ]
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": -0.998327
+            },
+            {
+              "o": "min",
+              "c": [
+                {
+                  "o": "exp",
+                  "c": [
+                    {
+                      "o": "neg",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "t"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "const",
+                  "v": 2
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.996889
+        }
+      ]
+    },
+    "speed": {
+      "formulaCost": 24,
+      "exactCost": 22,
+      "speedup": 0.9166666666666666
     }
   },
   "layernorm_scale": {
@@ -1370,7 +1498,11 @@
     "speed": {
       "formulaCost": 13,
       "exactCost": 17,
-      "speedup": 1.3076923076923077
+      "speedup": 1.3076923076923077,
+      "vsIterative": {
+        "label": "RK4 géodésique · 200 pas",
+        "speedup": 184.6153846153846
+      }
     },
     "fast": {
       "formula": "((0.630738 / b))Â²",
@@ -1402,6 +1534,69 @@
               "n": "b"
             }
           ]
+        }
+      ]
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 4.044113
+            },
+            {
+              "o": "pdiv",
+              "c": [
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "add",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 2.83748
+                        },
+                        {
+                          "o": "pdiv",
+                          "c": [
+                            {
+                              "o": "const",
+                              "v": 10.692104
+                            },
+                            {
+                              "o": "var",
+                              "n": "b"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "o": "var",
+                      "n": "b"
+                    }
+                  ]
+                },
+                {
+                  "o": "sq",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "b"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": -0.001252
         }
       ]
     }

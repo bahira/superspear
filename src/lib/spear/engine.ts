@@ -294,7 +294,7 @@ function fmt(v: number): string {
 
 export function nodeToString(node: SpearNode): string {
   switch (node.op) {
-    case "var": return node.name;
+    case "var": return node.name ?? "?";
     case "const": return fmt(node.value);
     case "relu": return `relu(${nodeToString(node.children[0])})`;
     case "abs": return `|${nodeToString(node.children[0])}|`;
@@ -314,6 +314,103 @@ export function nodeToString(node: SpearNode): string {
     case "mul": return `(${nodeToString(node.children[0])} * ${nodeToString(node.children[1])})`;
     default: return "?";
   }
+}
+
+// ------------------------------------------------------------ formula parser
+// Inverse of nodeToString: reconstructs an AST from a printed formula.
+// Display-rounding caveat: constants come back at their printed (6-decimal)
+// precision, so parsed trees may differ from originals in far decimals.
+
+export function parseFormula(src: string): SpearNode {
+  // repair double-encoded superscripts (Â² -> ²) left by old Windows writes
+  src = src.replace(/\u00C2\u00B2/g, "\u00B2").replace(/\u00C2\u00B3/g, "\u00B3");
+  const toks: string[] = [];
+  {
+    const NUMRE = /^[0-9]*\.?[0-9]+(?:[eE][+-]?[0-9]+)?/;
+    let i = 0;
+    let prev: "#" | "v" | "op" | null = null;
+    while (i < src.length) {
+      const c = src[i];
+      if (c === " ") { i++; continue; }
+      // '-' merged into a numeric literal only in operand-start position
+      if (c === "-" && NUMRE.test(src.slice(i + 1)) && prev !== "v" && prev !== "#") {
+        const m = src.slice(i + 1).match(NUMRE) as RegExpMatchArray;
+        toks.push("-" + m[0]); prev = "#"; i += 1 + m[0].length; continue;
+      }
+      if (/[0-9.]/.test(c)) {
+        const m = src.slice(i).match(NUMRE) as RegExpMatchArray;
+        toks.push(m[0]); prev = "#"; i += m[0].length; continue;
+      }
+      if (/[a-z_]/i.test(c)) {
+        let j = i + 1;
+        while (j < src.length && /[a-z0-9_]/i.test(src[j])) j++;
+        toks.push(src.slice(i, j)); prev = "v"; i = j; continue;
+      }
+      toks.push(c); prev = "op"; i++;
+    }
+  }
+  let p = 0;
+  const peek = () => toks[p];
+  const eat = (t?: string): string => {
+    const tok = toks[p];
+    if (t !== undefined && tok !== t) throw new Error(`parseFormula: attendu "${t}", trouvé "${tok}" @${p} dans ${src}`);
+    p++;
+    return tok;
+  };
+
+  const BIN: Record<string, NodeOp> = { "+": "add", "-": "sub", "*": "mul", "/": "pdiv" };
+  const FUNCS = new Set(["relu", "sqrt", "exp", "sin", "cos", "log", "max", "min"]);
+
+  const atom = (): SpearNode => {
+    const t = peek();
+    if (t === "(") {
+      eat("(");
+      if (peek() === "-") { // (-E) negation form
+        eat("-");
+        const e = expr();
+        eat(")");
+        return makeNode("neg", { children: [e] });
+      }
+      const e1 = expr();
+      if (peek() !== undefined && peek() in BIN) {
+        const op = BIN[eat()];
+        const e2 = expr();
+        eat(")");
+        return makeNode(op, { children: [e1, e2] });
+      }
+      eat(")");
+      if (peek() === "\u00B2") { eat(); return makeNode("sq", { children: [e1] }); }
+      if (peek() === "\u00B3") { eat(); return makeNode("cube", { children: [e1] }); }
+      return e1;
+    }
+    if (t === "|") { eat("|"); const e = expr(); eat("|"); return makeNode("abs", { children: [e] }); }
+    if (t === "-") { eat("-"); return makeNode("neg", { children: [atom()] }); }
+    if (/[a-z_]/.test(t[0])) {
+      eat();
+      if (peek() === "(" && FUNCS.has(t)) {
+        eat("(");
+        const args: SpearNode[] = [expr()];
+        while (peek() === ",") { eat(","); args.push(expr()); }
+        eat(")");
+        if (t === "log" && args.length === 1 && args[0].op === "max" &&
+            args[0].children[1].op === "const" && Math.abs(args[0].children[1].value - 1e-30) < 1e-24) {
+          return makeNode("log", { children: [args[0].children[0]] }); // unwrap printed guard
+        }
+        if (t === "sqrt" && args.length === 1 && args[0].op === "abs") {
+          return makeNode("sqrt", { children: [args[0].children[0]] }); // printer adds its own |·|
+        }
+        return makeNode(t as NodeOp, { children: args });
+      }
+      return makeNode("var", { name: t });
+    }
+    return makeNode("const", { value: Number(eat()) });
+  };
+
+  const expr = (): SpearNode => atom();
+
+  const out = expr();
+  if (p < toks.length) throw new Error(`parseFormula: ${toks.length - p} tokens restants dans ${src}`);
+  return out;
 }
 
 const PY: Record<NodeOp, string> = {
