@@ -1,15 +1,19 @@
+import { readFileSync } from "node:fs";
 import {
   ALL_OPS,
+  canonicalKey,
   countOps,
   evaluateNode,
   evaluateScalar,
   fitLinearScaling,
   makeNode,
+  parseNode,
   rand,
   refineConstants,
   simplify,
   wrapAffine,
   type GpConfig,
+  type SerializedNode,
   type SpearNode,
 } from "./engine";
 import { erf, gaussianRandom, linfError, linspace, mapArray, mse, silu } from "./math-utils";
@@ -261,6 +265,8 @@ function buildActivationTask(spec: ActivationSpec, points = 400): TaskDef {
     },
     seedPool: [
       makeNode("var", { name: "x" }),
+      // cultural bootstrap: champions from other tasks, renamed to x
+      ...loadBootstrapSeeds(["x"], spec.id),
       makeNode("sq", { children: [makeNode("var", { name: "x" })] }),
       makeNode("mul", { children: [makeNode("var", { name: "x" }), makeNode("var", { name: "x" })] }),
       makeNode("pdiv", { children: [makeNode("sq", { children: [makeNode("var", { name: "x" })] }), makeNode("add", { children: [makeNode("abs", { children: [makeNode("var", { name: "x" })] }), makeNode("const", { value: 1 })] })] }),
@@ -635,6 +641,46 @@ function buildKvTask(): TaskDef {
 // Reference kernels for the cost model: the true generating law expressed as
 // an AST per task id. estimateCost on these gives the ALU/SFU baseline that a
 // discovered formula is compared against (speedup = exactCost / formulaCost).
+/**
+ * Cultural bootstrap: load champion ASTs from a previous hall-of-fame ledger
+ * and offer them as warm-up bricks for OTHER tasks (never the task that found
+ * them — no self-distillation of an already-solved answer). Variables are
+ * renamed to the target task's variables; oversized trees are dropped and the
+ * smallest shapes come first. Enabled whenever the ledger file exists.
+ */
+function loadBootstrapSeeds(varNames: string[], excludeId: string, maxSeeds = 5): SpearNode[] {
+  if (process.env.SPEAR_NO_BOOTSTRAP === "1") return [];
+  try {
+    const path = process.env.SPEAR_LEDGER ?? "spear-hall-of-fame.json";
+    const ledger = JSON.parse(readFileSync(path, "utf8")) as Record<string, { tree?: SerializedNode; taskId?: string }>;
+    const candidates: SpearNode[] = [];
+    for (const [id, entry] of Object.entries(ledger)) {
+      if (id === excludeId || !entry.tree) continue;
+      const tree = parseNode(entry.tree);
+      if (tree.size > 14 || tree.depth > 6) continue;
+      // rename every variable to the target's variables, positionally by
+      // first appearance — single-var targets absorb everything cleanly
+      let vi = 0;
+      const rename = (nd: SpearNode): SpearNode => {
+        if (nd.op === "var") {
+          const name = varNames[vi++ % varNames.length];
+          return makeNode("var", { name });
+        }
+        return makeNode(nd.op, { value: nd.value, children: nd.children.map(rename) });
+      };
+      const renamed = simplify(rename(tree));
+      // anti-cheat: skip if it IS this task's exact published law
+      const law = EXACT_LAWS[excludeId];
+      if (law && canonicalKey(renamed) === canonicalKey(law)) continue;
+      candidates.push(renamed);
+    }
+    candidates.sort((a, b) => a.size - b.size);
+    return candidates.slice(0, maxSeeds);
+  } catch {
+    return []; // no ledger yet, or unreadable — cold start is fine
+  }
+}
+
 const V = (name: string): SpearNode => makeNode("var", { name });
 const C = (value: number): SpearNode => makeNode("const", { value });
 const EXACT_LAWS: Record<string, SpearNode> = {
@@ -816,6 +862,7 @@ function buildRegressionTask(cfg: {
       }
     },
     seedPool: [
+      ...loadBootstrapSeeds(varNames, cfg.id),
       makeNode("sq", { children: [makeNode("var", { name: varNames[0] })] }),
       makeNode("mul", { children: [makeNode("var", { name: varNames[0] }), makeNode("sqrt", { children: [makeNode("var", { name: varNames[0] })] })] }),
       makeNode("sqrt", { children: [makeNode("cube", { children: [makeNode("var", { name: varNames[0] })] })] }),

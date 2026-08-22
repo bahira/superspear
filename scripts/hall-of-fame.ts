@@ -16,6 +16,8 @@ interface Finding {
   iteration: number;
   /** cost model vs the exact reference kernel (ALU/SFU units) */
   speed?: { formulaCost: number; exactCost: number; speedup: number };
+  /** serialized AST — the bootstrap brick for future runs */
+  tree?: unknown;
 }
 type Ledger = Record<string, Finding>;
 
@@ -112,22 +114,24 @@ async function main() {
         formula: t.best.formula,
         seed,
         iteration: t.iterations,
+        tree: t.tree ?? undefined,
         speed: t.speed
           ? { formulaCost: t.speed.formulaCost, exactCost: t.speed.exactCost, speedup: t.speed.estimatedSpeedup }
           : undefined,
       });
     }
     const n = mergeInto(ledger, finds);
-    // backfill speed on records found by earlier runs when this run reproduces
-    // the exact same champion formula (speedup is a pure function of the AST)
+    // backfill speed/tree on records found by earlier runs when this run
+    // reproduces the exact same champion formula (both are AST-pure)
     let backfilled = 0;
     for (const t of p.tasks) {
       const entry = ledger[t.taskId] as Finding | undefined;
-      if (!entry || entry.speed || !t.speed) continue;
-      if (entry.formula === t.best?.formula) {
+      if (!entry || entry.formula !== t.best?.formula) continue;
+      if (!entry.speed && t.speed) {
         entry.speed = { formulaCost: t.speed.formulaCost, exactCost: t.speed.exactCost, speedup: t.speed.estimatedSpeedup };
         backfilled++;
       }
+      if (!entry.tree && t.tree) entry.tree = t.tree;
     }
     console.log(`terminé: ${p.breakthroughs.length} breakthroughs, ${n} nouveaux records, ${backfilled} speeds backfillés\n`);
   } else {

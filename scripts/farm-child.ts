@@ -21,6 +21,7 @@ async function main() {
       seed,
       iteration: t.iterations,
       speed: t.speed ? { formulaCost: t.speed.formulaCost, exactCost: t.speed.exactCost, speedup: t.speed.estimatedSpeedup } : undefined,
+      tree: t.tree ?? undefined,
     }));
   writeFileSync(outPath, JSON.stringify(partial));
   console.log(`[child ${process.pid}] ${partial.length} tâches, status=${progress.status}, iters=${progress.iterationsUsed}`);

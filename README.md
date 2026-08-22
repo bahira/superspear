@@ -105,6 +105,7 @@ The engine (`src/lib/spear/`) combines:
 - **End-to-end seeded RNG**: datasets, evolution and noise are reproducible from one integer (`setSeed` + injected uniform source);
 - **Operator set**: `add sub mul pdiv relu abs neg sq sqrt cube max min exp sin cos log` — transcendental ops are allowed but priced honestly (≈20 ALU/SFU units vs 1 for `mul`);
 - **Multi-start warm-up**: primitive shapes (rationals, Padé [3/2], exponential decay, inverse powers, rsqrt family) tuned by coordinate descent before evolution starts;
+- **Cultural bootstrapping**: champion ASTs are stored in the ledger and re-injected as warm-up bricks for *other* tasks (variable-renamed, size-capped, never the task's own answer) — each generation of runs starts smarter than the last;
 - **UCB budget allocation** across tasks: exploit what improves, explore what stagnates;
 - **Anti-stagnation**: constant polishing, structural mutations, shape re-injection;
 - **Honest scoring**: selection on train split, reporting on an unseen holdout (KV-cache task);

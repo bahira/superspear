@@ -146,6 +146,31 @@ export function makeNode(
   return { op, value: opts.value ?? 0, name: opts.name ?? "", children, size, depth };
 }
 
+// ------------------------------------------------------- (de)serialization
+export interface SerializedNode {
+  o: NodeOp;
+  v?: number;
+  n?: string;
+  c?: SerializedNode[];
+}
+
+export function serializeNode(node: SpearNode): SerializedNode {
+  return {
+    o: node.op,
+    ...(node.op === "const" ? { v: node.value } : {}),
+    ...(node.op === "var" ? { n: node.name } : {}),
+    ...(node.children.length > 0 ? { c: node.children.map(serializeNode) } : {}),
+  };
+}
+
+export function parseNode(s: SerializedNode): SpearNode {
+  return makeNode(s.o, {
+    value: s.v ?? 0,
+    name: s.n ?? "",
+    children: (s.c ?? []).map(parseNode),
+  });
+}
+
 export function cloneNode(n: SpearNode): SpearNode {
   return makeNode(n.op, {
     value: n.value,

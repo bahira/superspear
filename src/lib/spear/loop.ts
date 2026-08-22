@@ -24,6 +24,7 @@ import {
 } from "./engine";
 import { buildTasks, taskOpProfile, type TaskBaseline, type TaskDef } from "./benchmarks";
 import { toWasmBytes } from "./wasm";
+import { serializeNode, type SerializedNode } from "./engine";
 
 export interface LoopFrontEntry {
   formula: string;
@@ -53,6 +54,8 @@ export interface LoopTaskSnapshot {
   c: string | null;
   /** MISRA-C:2012 strict export of the discovered law */
   c99: string | null;
+  /** serialized AST of the champion — enables cross-task bootstrap seeding */
+  tree: SerializedNode | null;
   /** base64-encoded WebAssembly binary of the discovered law */
   wasm: string | null;
   chart: { x: number; target: number; predicted: number }[] | null;
@@ -299,6 +302,7 @@ function snapshotTask(rt: TaskRuntime, full: boolean): LoopTaskSnapshot {
       ? toMisraC(rt.bestNode, `spear_${t.id.replace(/[^a-z0-9_]/gi, "_")}`, `const float32_t ${t.variables.join(", const float32_t ")}`)
       : null,
     wasm: full && rt.bestNode ? Buffer.from(toWasmBytes(rt.bestNode)).toString("base64") : null,
+    tree: full && rt.bestNode ? serializeNode(rt.bestNode) : null,
     chart: full && rt.bestNode && t.chart ? t.chart(rt.bestNode) : null,
     ops: full && rt.bestNode ? taskOpProfile(rt.bestNode) : null,
     verifyNote: full && rt.bestNode && t.verify ? t.verify(rt.bestNode) : null,
