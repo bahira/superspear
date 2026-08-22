@@ -1,9 +1,9 @@
-// SPEAR → WebAssembly binary encoder.
+// SPEAR â†’ WebAssembly binary encoder.
 // Compiles a SpearNode AST into a real .wasm module (no external toolchain).
-// Function signature: f64 parameters (one per variable) → f64 result.
+// Function signature: f64 parameters (one per variable) â†’ f64 result.
 // Ops emitted natively: add/sub/mul/div/min/max/abs/neg/sqrt (all core WASM f64).
-// relu → f64.max(0, x). sq/cube → repeated multiply.
-// exp → imported from JS `env.exp` (WASM core has no exp instruction).
+// relu â†’ f64.max(0, x). sq/cube â†’ repeated multiply.
+// exp â†’ imported from JS `env.exp` (WASM core has no exp instruction).
 
 import { type SpearNode } from "./engine";
 
@@ -73,9 +73,9 @@ function emitNode(node: SpearNode, vars: string[], importIdx: Record<string, num
     case "sub": return [...emitNode(node.children[0], vars, importIdx), ...emitNode(node.children[1], vars, importIdx), 0xa1];
     case "mul": return [...emitNode(node.children[0], vars, importIdx), ...emitNode(node.children[1], vars, importIdx), 0xa2];
     // protected division, bit-faithful to evaluateNode: denominators are
-    // floored at ±1e-4 (sign preserved via copysign) and results clamped to
-    // ±1e4. Discovered forms DO lean on these rails (gaussian_cdf plateau).
-    // ponytail: child emitted twice to duplicate without locals — pure reads.
+    // floored at Â±1e-4 (sign preserved via copysign) and results clamped to
+    // Â±1e4. Discovered forms DO lean on these rails (gaussian_cdf plateau).
+    // ponytail: child emitted twice to duplicate without locals â€” pure reads.
     case "pdiv":
       return [
         ...emitNode(node.children[0], vars, importIdx),
@@ -99,12 +99,12 @@ function emitNode(node: SpearNode, vars: string[], importIdx: Record<string, num
     case "sqrt": return [...emitNode(node.children[0], vars, importIdx), 0x99, 0x9f]; // f64.abs then f64.sqrt
     case "min": return [...emitNode(node.children[0], vars, importIdx), ...emitNode(node.children[1], vars, importIdx), 0xa4];
     case "max": return [...emitNode(node.children[0], vars, importIdx), ...emitNode(node.children[1], vars, importIdx), 0xa5];
-    // clamp to [-50,50] then call env.exp — matches engine Math.exp(Math.max(-50,Math.min(50,x)))
+    // clamp to [-50,50] then call env.exp â€” matches engine Math.exp(Math.max(-50,Math.min(50,x)))
     case "exp": return [...emitNode(node.children[0], vars, importIdx), 0x44, ...f64Const(-50), 0xa5, 0x44, ...f64Const(50), 0xa4, 0x10, ...u32(importIdx.exp)];
     case "sin": return [...emitNode(node.children[0], vars, importIdx), 0x10, ...u32(importIdx.sin)];
     case "cos": return [...emitNode(node.children[0], vars, importIdx), 0x10, ...u32(importIdx.cos)];
-    // clamp low bound then call env.log — matches engine Math.log(max(x, 1e-300))
-    case "log": return [...emitNode(node.children[0], vars, importIdx), 0x44, ...f64Const(1e-300), 0xa5, 0x10, ...u32(importIdx.log)];
+    // clamp low bound then call env.log â€” matches engine Math.log(max(x, 1e-30))
+    case "log": return [...emitNode(node.children[0], vars, importIdx), 0x44, ...f64Const(1e-30), 0xa5, 0x10, ...u32(importIdx.log)];
     default: return [];
   }
 }
@@ -123,7 +123,7 @@ export function toWasmBytes(node: SpearNode): Uint8Array {
   // Type section: type 0 = (params f64*n) -> (result f64) for the main
   // function; type 1 = (f64) -> (f64) for imported transcendental calls.
   // BUGFIX: imports previously referenced type 0, so multi-var modules with
-  // sin/cos/exp declared imports expecting n params → "not enough arguments".
+  // sin/cos/exp declared imports expecting n params â†’ "not enough arguments".
   const unaryType: number[] = [0x60, ...u32(1), 0x7c, 0x01, 0x7c];
   const mainType: number[] = [0x60, ...u32(nparams), ...Array(nparams).fill(0x7c), 0x01, 0x7c];
   const typePayload: number[] = [0x02, ...mainType, ...unaryType];
@@ -164,7 +164,7 @@ export async function instantiateSpearWasm(
   b64: string,
 ): Promise<(args: number[]) => number> {
   const bytes = wasmBytesFromB64(b64);
-  const importObject = { env: { exp: Math.exp, sin: Math.sin, cos: Math.cos, log: (v: number) => Math.log(v > 1e-300 ? v : 1e-300) } };
+  const importObject = { env: { exp: Math.exp, sin: Math.sin, cos: Math.cos, log: (v: number) => Math.log(v > 1e-30 ? v : 1e-30) } };
   const result = await WebAssembly.instantiate(bytes, importObject);
   // Node returns { module, instance }; browsers return the Instance directly.
   const wrapped = result as unknown as { instance: WebAssembly.Instance };
@@ -172,7 +172,7 @@ export async function instantiateSpearWasm(
   const exports = instance.exports as Record<string, unknown>;
   const fn = exports["spear"] as (...a: number[]) => number;
   if (typeof fn !== "function") throw new Error("export `spear` absent du module WASM");
-  // spread positional f64 params — passing an array would coerce to a single
+  // spread positional f64 params â€” passing an array would coerce to a single
   // (NaN for >1 element) value and silently break every multi-var module
   return (args: number[]) => fn(...args);
 }

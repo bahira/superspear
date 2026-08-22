@@ -245,7 +245,7 @@ export function evaluateNode(
       case "exp": r = Math.exp(Math.max(-50, Math.min(50, av))); break;
       case "sin": r = Math.sin(av); break;
       case "cos": r = Math.cos(av); break;
-      case "log": r = Math.log(av > 1e-300 ? av : 1e-300); break;
+      case "log": r = Math.log(av > 1e-30 ? av : 1e-30); break;
       default: break;
     }
     out[i] = r;
@@ -281,7 +281,7 @@ export function evaluateScalar(node: SpearNode, scope: Record<string, number>): 
     case "exp": return Math.exp(Math.max(-50, Math.min(50, a[0])));
     case "sin": return Math.sin(a[0]);
       case "cos": return Math.cos(a[0]);
-      case "log": return Math.log(a[0] > 1e-300 ? a[0] : 1e-300);
+      case "log": return Math.log(a[0] > 1e-30 ? a[0] : 1e-30);
     default: return 0;
   }
 }
