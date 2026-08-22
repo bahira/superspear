@@ -2,7 +2,7 @@
 // benchmark tasks concurrently (one process per slice). Merges all partials
 // into the hall-of-fame ledger.
 //
-// Usage: npx tsx scripts/run-farm.ts [seed] [budget] [workers]
+// Usage: npx tsx scripts/run-farm.ts [seed] [budget] [workers] [onlyIds]
 import { execFileSync } from "node:child_process";
 import { readFileSync, writeFileSync, existsSync, mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -32,11 +32,12 @@ async function main() {
   const seed = Number(process.argv[2] ?? 4242);
   const budget = Number(process.argv[3] ?? 1000);
   const workers = Number(process.argv[4] ?? 4);
+  const only = process.argv[5] ? new Set(process.argv[5].split(",")) : null;
 
   // list all task ids (env unset here)
   delete process.env.SPEAR_TASKS;
   const { buildTasks } = await import("../src/lib/spear/benchmarks");
-  const ids = buildTasks().map((t) => t.id);
+  const ids = buildTasks().map((t) => t.id).filter((id) => !only || only.has(id));
   const slices: string[][] = Array.from({ length: workers }, () => []);
   ids.forEach((id, i) => slices[i % workers].push(id));
 
@@ -84,7 +85,7 @@ async function main() {
   console.log(`terminé en ${wall.toFixed(1)} s — ${records} nouveaux records sur ${totalBt} résultats`);
   for (const f of Object.values(ledger).sort((a, b) => a.taskId.localeCompare(b.taskId))) {
     const m = f.direction === "min" ? f.metric.toExponential(2) : f.metric.toFixed(1) + "%";
-    const sp = f.speed ? ` ×${f.speed.speedup.toFixed(2)}` : "";
+    const sp = f.speed?.speedup !== undefined ? ` ×${f.speed.speedup.toFixed(2)}` : "";
     console.log(`  [${f.taskId.padEnd(18)}] ${m.padStart(10)}  L${f.level}  seed ${f.seed}${sp}`);
   }
 }

@@ -1,17 +1,103 @@
 {
   "silu": {
     "taskId": "silu",
-    "title": "SiLU / Swish (LLM feed-forward)",
+    "title": "SiLU / Swish (LLaMA · Mistral · Qwen — SwiGLU)",
     "direction": "min",
-    "metric": 0.0008182706992436293,
+    "metric": 0.0007795906249592223,
     "level": 2,
-    "formula": "((0.997306 * (x * (0.501 + (0.589 * (x / (0.83 + sqrt(|(0.962263 + (x)Â²)|))))))) + -0.003423)",
-    "seed": 4242,
-    "iteration": 37,
+    "formula": "((0.997587 * (x * (0.501 + (0.587 * (x / (0.815 + sqrt(|(0.909361 + (x)Â²)|))))))) + -0.005749)",
+    "seed": 910001,
+    "iteration": 199,
     "speed": {
       "formulaCost": 14,
       "exactCost": 34,
       "speedup": 2.4285714285714284
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 0.997587
+            },
+            {
+              "o": "mul",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "x"
+                },
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 0.501
+                    },
+                    {
+                      "o": "mul",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 0.587
+                        },
+                        {
+                          "o": "pdiv",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "x"
+                            },
+                            {
+                              "o": "add",
+                              "c": [
+                                {
+                                  "o": "const",
+                                  "v": 0.815
+                                },
+                                {
+                                  "o": "sqrt",
+                                  "c": [
+                                    {
+                                      "o": "add",
+                                      "c": [
+                                        {
+                                          "o": "const",
+                                          "v": 0.909361
+                                        },
+                                        {
+                                          "o": "sq",
+                                          "c": [
+                                            {
+                                              "o": "var",
+                                              "n": "x"
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": -0.005749
+        }
+      ]
     }
   },
   "gelu": {
@@ -692,6 +778,19 @@
       "formulaCost": 1,
       "exactCost": 1,
       "speedup": 1
+    },
+    "tree": {
+      "o": "sub",
+      "c": [
+        {
+          "o": "var",
+          "n": "b"
+        },
+        {
+          "o": "var",
+          "n": "a"
+        }
+      ]
     }
   },
   "lorentz": {
@@ -859,18 +958,18 @@
     "taskId": "damped_oscillation",
     "title": "Oscillation amortie e^(−t/τ)·cos(ωt)",
     "direction": "min",
-    "metric": 0.009076399197068062,
+    "metric": 0.00030630571172772763,
     "level": 2,
-    "formula": "((0.248097 * ((2.186373 * cos((t * 2.967438))) - (-0.673349 * cos((t * 3.568758))))) + 0.016323)",
-    "seed": 700004,
-    "iteration": 118,
+    "formula": "((0.00696 * ((t - 16.41765) * ((t - 8.280135) * cos((t * 2.996281))))) + -0.000501)",
+    "seed": 910001,
+    "iteration": 200,
     "speed": {
-      "formulaCost": 47,
+      "formulaCost": 27,
       "exactCost": 44,
-      "speedup": 0.9361702127659575,
+      "speedup": 1.6296296296296295,
       "vsIterative": {
         "label": "RKF45 · 300 pas",
-        "speedup": 114.8936170212766
+        "speedup": 200
       }
     },
     "tree": {
@@ -881,35 +980,21 @@
           "c": [
             {
               "o": "const",
-              "v": 0.248097
+              "v": 0.00696
             },
             {
-              "o": "sub",
+              "o": "mul",
               "c": [
                 {
-                  "o": "mul",
+                  "o": "sub",
                   "c": [
                     {
-                      "o": "const",
-                      "v": 2.186373
+                      "o": "var",
+                      "n": "t"
                     },
                     {
-                      "o": "cos",
-                      "c": [
-                        {
-                          "o": "mul",
-                          "c": [
-                            {
-                              "o": "var",
-                              "n": "t"
-                            },
-                            {
-                              "o": "const",
-                              "v": 2.967438
-                            }
-                          ]
-                        }
-                      ]
+                      "o": "const",
+                      "v": 16.41765
                     }
                   ]
                 },
@@ -917,8 +1002,17 @@
                   "o": "mul",
                   "c": [
                     {
-                      "o": "const",
-                      "v": -0.673349
+                      "o": "sub",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "t"
+                        },
+                        {
+                          "o": "const",
+                          "v": 8.280135
+                        }
+                      ]
                     },
                     {
                       "o": "cos",
@@ -932,7 +1026,7 @@
                             },
                             {
                               "o": "const",
-                              "v": 3.568758
+                              "v": 2.996281
                             }
                           ]
                         }
@@ -946,7 +1040,7 @@
         },
         {
           "o": "const",
-          "v": 0.016323
+          "v": -0.000501
         }
       ]
     }
@@ -1251,17 +1345,62 @@
   },
   "pendulum_hybrid": {
     "taskId": "pendulum_hybrid",
-    "title": "Inverted-pendulum hybrid control law",
+    "title": "Contrôle hybride pendule inversé",
     "direction": "min",
-    "metric": 2.1414286945178356,
+    "metric": 2.141428694517835,
     "level": 0,
-    "formula": "((-0.480535 * (cos(th) * d)) + -0.033899)",
-    "seed": 777,
-    "iteration": 112,
+    "formula": "((-0.480535 * (2 + (d * cos(th)))) + 0.927171)",
+    "seed": 900101,
+    "iteration": 82,
     "speed": {
-      "formulaCost": 23,
+      "formulaCost": 24,
       "exactCost": 173,
-      "speedup": 7.521739130434782
+      "speedup": 7.208333333333333
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": -0.480534765875489
+            },
+            {
+              "o": "add",
+              "c": [
+                {
+                  "o": "const",
+                  "v": 2
+                },
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "d"
+                    },
+                    {
+                      "o": "cos",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "th"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.9271709621391359
+        }
+      ]
     }
   }
 }
