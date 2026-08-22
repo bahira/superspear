@@ -364,7 +364,8 @@ export function toC(node: SpearNode, fnName = "spear_fn", varDecl = "const float
       case "log": return `logf(fmaxf(1.0e-30f, ${walk(nd.children[0])}))`;
       case "max": return `fmaxf(${walk(nd.children[0])}, ${walk(nd.children[1])})`;
       case "min": return `fminf(${walk(nd.children[0])}, ${walk(nd.children[1])})`;
-      case "pdiv": return `(${walk(nd.children[0])} / ${walk(nd.children[1])})`;
+      // protected division — matches evaluateNode rails (±1e-4 floor, ±1e4 clamp)
+      case "pdiv": return `fminf(fmaxf((${walk(nd.children[0])} / copysignf(fmaxf(fabsf(${walk(nd.children[1])}), 1.0e-4f), ${walk(nd.children[1])})), -1.0e4f), 1.0e4f)`;
       default: break;
     }
     return `(${walk(nd.children[0])} ${nd.op === "add" ? "+" : nd.op === "sub" ? "-" : "*"} ${walk(nd.children[1])})`;
@@ -401,7 +402,10 @@ export function toMisraC(node: SpearNode, fnName = "spear_fn", params = "const f
       case "log": return `logf(fmaxf(1.0e-30F, ${walk(nd.children[0])}))`;
       case "max": return `fmaxf(${walk(nd.children[0])}, ${walk(nd.children[1])})`;
       case "min": return `fminf(${walk(nd.children[0])}, ${walk(nd.children[1])})`;
-      case "pdiv": return `(${walk(nd.children[0])} / ${walk(nd.children[1])})`;
+      // protected division — bit-faithful to evaluateNode (denominator floored
+      // at ±1e-4, result clamped ±1e4): discovered forms lean on these rails
+      case "pdiv":
+        return `fminf(fmaxf((${walk(nd.children[0])} / copysignf(fmaxf(fabsf(${walk(nd.children[1])}), 1.0e-4F), ${walk(nd.children[1])})), -1.0e4F), 1.0e4F)`;
       default: break;
     }
     const opSym = nd.op === "add" ? "+" : nd.op === "sub" ? "-" : "*";

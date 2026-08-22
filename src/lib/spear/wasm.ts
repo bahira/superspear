@@ -72,10 +72,19 @@ function emitNode(node: SpearNode, vars: string[], importIdx: Record<string, num
     case "add": return [...emitNode(node.children[0], vars, importIdx), ...emitNode(node.children[1], vars, importIdx), 0xa0];
     case "sub": return [...emitNode(node.children[0], vars, importIdx), ...emitNode(node.children[1], vars, importIdx), 0xa1];
     case "mul": return [...emitNode(node.children[0], vars, importIdx), ...emitNode(node.children[1], vars, importIdx), 0xa2];
-    // ponytail: plain f64.div. The JS guard only fires when the denominator
-    // crosses ~1e-4, which never happens on the useful domain of the discovered
-    // forms, so parity holds to 0.00e+0. add the guard if a denom can vanish.
-    case "pdiv": return [...emitNode(node.children[0], vars, importIdx), ...emitNode(node.children[1], vars, importIdx), 0xa3];
+    // protected division, bit-faithful to evaluateNode: denominators are
+    // floored at ±1e-4 (sign preserved via copysign) and results clamped to
+    // ±1e4. Discovered forms DO lean on these rails (gaussian_cdf plateau).
+    // ponytail: child emitted twice to duplicate without locals — pure reads.
+    case "pdiv":
+      return [
+        ...emitNode(node.children[0], vars, importIdx),
+        ...emitNode(node.children[1], vars, importIdx), 0x99, 0x44, ...f64Const(1e-4), 0xa5,
+        ...emitNode(node.children[1], vars, importIdx), 0xa6,
+        0xa3,
+        0x44, ...f64Const(-1e4), 0xa5,
+        0x44, ...f64Const(1e4), 0xa4,
+      ];
     case "relu": return [...emitNode(node.children[0], vars, importIdx), 0x44, ...f64Const(0), 0xa5];
     case "abs": return [...emitNode(node.children[0], vars, importIdx), 0x99];
     case "neg": return [...emitNode(node.children[0], vars, importIdx), 0x9a];
@@ -111,15 +120,20 @@ export function toWasmBytes(node: SpearNode): Uint8Array {
 
   const bytes: number[] = [0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00]; // \0asm v1
 
-  // Type section: (params f64*n) -> (result f64)
-  const typePayload: number[] = [0x01, 0x60, ...u32(nparams), ...Array(nparams).fill(0x7c), 0x01, 0x7c];
+  // Type section: type 0 = (params f64*n) -> (result f64) for the main
+  // function; type 1 = (f64) -> (f64) for imported transcendental calls.
+  // BUGFIX: imports previously referenced type 0, so multi-var modules with
+  // sin/cos/exp declared imports expecting n params → "not enough arguments".
+  const unaryType: number[] = [0x60, ...u32(1), 0x7c, 0x01, 0x7c];
+  const mainType: number[] = [0x60, ...u32(nparams), ...Array(nparams).fill(0x7c), 0x01, 0x7c];
+  const typePayload: number[] = [0x02, ...mainType, ...unaryType];
   bytes.push(0x01, ...u32(typePayload.length), ...typePayload);
 
   // Import section: env.{exp,sin,cos} as needed (func indices 0..k)
   if (imports.length > 0) {
     const importPayload: number[] = [imports.length];
     for (const imp of imports) {
-      importPayload.push(...nameBytes("env"), ...nameBytes(imp.name), 0x00, 0x00);
+      importPayload.push(...nameBytes("env"), ...nameBytes(imp.name), 0x00, 0x01);
     }
     bytes.push(0x02, ...u32(importPayload.length), ...importPayload);
   }

@@ -4,13 +4,13 @@
 //   3. benchmark wall-clock formule vs loi exacte (les deux en WASM)
 // Usage: npx tsx scripts/export-audit.ts [seed] [budget]
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
+import { mkdtempSync, writeFileSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { performance } from "node:perf_hooks";
 import { runGroundedLoop, type LoopTaskSnapshot } from "../src/lib/spear/loop";
-import { lintMisraC } from "../src/lib/spear/engine";
-import { instantiateSpearWasm, toWasmBytes } from "../src/lib/spear/wasm";
+import { lintMisraC, parseNode, toMisraC } from "../src/lib/spear/engine";
+import { instantiateSpearWasm, toWasmBytes, collectWasmVars } from "../src/lib/spear/wasm";
 import { buildTasks } from "../src/lib/spear/benchmarks";
 
 interface Row {
@@ -48,6 +48,23 @@ async function main() {
   console.log(`▶ grounded loop seed=${seed} budget=${budget} (audit d'export)...`);
   const progress = await runGroundedLoop({ seed, budget, deadlineMs: 45_000 });
   const defs = new Map(buildTasks().map((t) => [t.id, t]));
+
+  // Audit the SHIPPED champions: ledger ASTs override the throwaway loop
+  // discoveries (the audit's purpose is verifying what we actually deploy).
+  const ledgerPath = join(import.meta.dirname ?? ".", "..", "spear-hall-of-fame.json");
+  const ledger = JSON.parse(readFileSync(ledgerPath, "utf8")) as Record<string, { tree?: unknown; formula?: string }>;
+  for (const snap of progress.tasks as LoopTaskSnapshot[]) {
+    const entry = ledger[snap.taskId];
+    if (!entry?.tree || !snap.best) continue;
+    try {
+      const node = parseNode(entry.tree as never);
+      const vars = collectWasmVars(node);
+      snap.best.formula = entry.formula ?? snap.best.formula;
+      snap.c99 = toMisraC(node, `spear_${snap.taskId.replace(/[^a-z0-9_]/gi, "_")}`, `const float32_t ${vars.join(", const float32_t ")}`);
+      snap.wasm = Buffer.from(toWasmBytes(node)).toString("base64");
+    } catch { /* keep the loop's own snapshot */ }
+  }
+
   const dir = mkdtempSync(join(tmpdir(), "spear-misra-"));
   const rows: Row[] = [];
 
