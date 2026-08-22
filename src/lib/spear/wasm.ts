@@ -50,12 +50,13 @@ const IMPORTABLE: { op: string; name: string }[] = [
   { op: "exp", name: "exp" },
   { op: "sin", name: "sin" },
   { op: "cos", name: "cos" },
+  { op: "log", name: "log" },
 ];
 
 function neededImports(node: SpearNode): { op: string; name: string }[] {
   const used = new Set<string>();
   const walk = (n: SpearNode) => {
-    if (n.op === "exp" || n.op === "sin" || n.op === "cos") used.add(n.op);
+    if (n.op === "exp" || n.op === "sin" || n.op === "cos" || n.op === "log") used.add(n.op);
     n.children.forEach(walk);
   };
   walk(node);
@@ -93,6 +94,8 @@ function emitNode(node: SpearNode, vars: string[], importIdx: Record<string, num
     case "exp": return [...emitNode(node.children[0], vars, importIdx), 0x44, ...f64Const(-50), 0xa5, 0x44, ...f64Const(50), 0xa4, 0x10, ...u32(importIdx.exp)];
     case "sin": return [...emitNode(node.children[0], vars, importIdx), 0x10, ...u32(importIdx.sin)];
     case "cos": return [...emitNode(node.children[0], vars, importIdx), 0x10, ...u32(importIdx.cos)];
+    // clamp low bound then call env.log — matches engine Math.log(max(x, 1e-300))
+    case "log": return [...emitNode(node.children[0], vars, importIdx), 0x44, ...f64Const(1e-300), 0xa5, 0x10, ...u32(importIdx.log)];
     default: return [];
   }
 }
@@ -147,13 +150,15 @@ export async function instantiateSpearWasm(
   b64: string,
 ): Promise<(args: number[]) => number> {
   const bytes = wasmBytesFromB64(b64);
-  const importObject = { env: { exp: Math.exp, sin: Math.sin, cos: Math.cos } };
+  const importObject = { env: { exp: Math.exp, sin: Math.sin, cos: Math.cos, log: (v: number) => Math.log(v > 1e-300 ? v : 1e-300) } };
   const result = await WebAssembly.instantiate(bytes, importObject);
   // Node returns { module, instance }; browsers return the Instance directly.
   const wrapped = result as unknown as { instance: WebAssembly.Instance };
   const instance = wrapped.instance ?? (result as WebAssembly.Instance);
   const exports = instance.exports as Record<string, unknown>;
-  const fn = exports["spear"] as (args: unknown) => number;
+  const fn = exports["spear"] as (...a: number[]) => number;
   if (typeof fn !== "function") throw new Error("export `spear` absent du module WASM");
-  return (args: number[]) => fn(args) as number;
+  // spread positional f64 params — passing an array would coerce to a single
+  // (NaN for >1 element) value and silently break every multi-var module
+  return (args: number[]) => fn(...args);
 }

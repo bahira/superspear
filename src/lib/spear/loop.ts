@@ -18,6 +18,7 @@ import {
   simplify,
   toC,
   toPython,
+  toMisraC,
   tournamentSelect,
   type SpearNode,
 } from "./engine";
@@ -50,6 +51,8 @@ export interface LoopTaskSnapshot {
   secondary: number | null;
   python: string | null;
   c: string | null;
+  /** MISRA-C:2012 strict export of the discovered law */
+  c99: string | null;
   /** base64-encoded WebAssembly binary of the discovered law */
   wasm: string | null;
   chart: { x: number; target: number; predicted: number }[] | null;
@@ -255,9 +258,8 @@ function rand01(): number {
 }
 
 
-function snapshotTask(rt: TaskRuntime): LoopTaskSnapshot {
+function snapshotTask(rt: TaskRuntime, full: boolean): LoopTaskSnapshot {
   const t = rt.def;
-  const bl = bestBaselineMetric(t);
   const front: LoopFrontEntry[] = rt.frontRaw
     .map((f) => ({ formula: nodeToString(f.node), metric: f.metric, size: f.size, level: levelOf(t, f.metric) }))
     .sort((a, b) => (t.metricDirection === "min" ? a.metric - b.metric : b.metric - a.metric));
@@ -270,7 +272,9 @@ function snapshotTask(rt: TaskRuntime): LoopTaskSnapshot {
       }
     : null;
 
-  const speed = rt.bestNode ? benchmarkSpeed(t, rt.bestNode) : null;
+  // periodic snapshots stay cheap: codegen + wasm compile + the 100k-element
+  // speed bench only run on the final full snapshot
+  const speed = full && rt.bestNode ? benchmarkSpeed(t, rt.bestNode) : null;
 
   return {
     taskId: t.id,
@@ -289,12 +293,15 @@ function snapshotTask(rt: TaskRuntime): LoopTaskSnapshot {
     paretoFront: front.slice(0, 10),
     best,
     secondary: rt.bestSecondary ?? null,
-    python: rt.bestNode ? toPython(rt.bestNode, `spear_${t.id}`) : null,
-    c: rt.bestNode ? toC(rt.bestNode, `spear_${t.id}`, t.codeVarDecl) : null,
-    wasm: rt.bestNode ? Buffer.from(toWasmBytes(rt.bestNode)).toString("base64") : null,
-    chart: rt.bestNode && t.chart ? t.chart(rt.bestNode) : null,
-    ops: rt.bestNode ? taskOpProfile(rt.bestNode) : null,
-    verifyNote: rt.bestNode && t.verify ? t.verify(rt.bestNode) : null,
+    python: full && rt.bestNode ? toPython(rt.bestNode, `spear_${t.id}`) : null,
+    c: full && rt.bestNode ? toC(rt.bestNode, `spear_${t.id}`, t.codeVarDecl) : null,
+    c99: full && rt.bestNode
+      ? toMisraC(rt.bestNode, `spear_${t.id.replace(/[^a-z0-9_]/gi, "_")}`, `const float32_t ${t.variables.join(", const float32_t ")}`)
+      : null,
+    wasm: full && rt.bestNode ? Buffer.from(toWasmBytes(rt.bestNode)).toString("base64") : null,
+    chart: full && rt.bestNode && t.chart ? t.chart(rt.bestNode) : null,
+    ops: full && rt.bestNode ? taskOpProfile(rt.bestNode) : null,
+    verifyNote: full && rt.bestNode && t.verify ? t.verify(rt.bestNode) : null,
     speed,
     baselines: t.baselines.map((b) => {
       const beaten =
@@ -309,13 +316,13 @@ function snapshotTask(rt: TaskRuntime): LoopTaskSnapshot {
           : null;
       return { ...b, beaten, ratio };
     }),
-    bestBaselineName: bl.name,
+    bestBaselineName: bestBaselineMetric(t).name,
     milestonesHit: [...rt.milestonesHit],
   };
 }
 
-function snapshot(rts: TaskRuntime[], progress: LoopProgress): LoopProgress {
-  progress.tasks = rts.map(snapshotTask);
+function snapshot(rts: TaskRuntime[], progress: LoopProgress, full = true): LoopProgress {
+  progress.tasks = rts.map((rt) => snapshotTask(rt, full));
   progress.totals = {
     breakthroughs: progress.breakthroughs.length,
     maxLevel: Math.max(0, ...progress.tasks.map((t) => t.best?.level ?? 0)),
@@ -779,10 +786,10 @@ export async function runGroundedLoop(opts: GroundedLoopOptions = {}): Promise<L
 
     progress.elapsedMs = performance.now() - t0;
 
-    // periodic yield + persistence so the UI can stream progress
+    // periodic yield + persistence so the UI can stream progress (light snapshot)
     if (performance.now() - lastPersist > 500 || progress.iterationsUsed >= budget) {
       lastPersist = performance.now();
-      snapshot(rts, progress);
+      snapshot(rts, progress, false);
       if (opts.onProgress) await opts.onProgress(progress);
       await yieldToEventLoop();
     }
@@ -791,7 +798,7 @@ export async function runGroundedLoop(opts: GroundedLoopOptions = {}): Promise<L
 
   if (progress.status === "running") progress.status = progress.iterationsUsed >= budget ? "stopped_budget" : "completed";
   progress.elapsedMs = performance.now() - t0;
-  snapshot(rts, progress);
+  snapshot(rts, progress, true);
   if (opts.onProgress) await opts.onProgress(progress);
   return progress;
 }

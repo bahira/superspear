@@ -666,6 +666,59 @@ const EXACT_LAWS: Record<string, SpearNode> = {
       makeNode("pdiv", { children: [C(42.66666667), makeNode("cube", { children: [V("b")] })] }),
     ] }),
   ] }),
+  lennard_jones: (() => {
+    const inv = makeNode("pdiv", { children: [C(1), V("r")] });
+    const inv2 = makeNode("sq", { children: [inv] });
+    const inv6 = makeNode("cube", { children: [inv2] });
+    return makeNode("mul", { children: [C(4), makeNode("sub", { children: [makeNode("sq", { children: [inv6] }), inv6] })] });
+  })(),
+  damped_oscillation: makeNode("mul", { children: [
+    makeNode("exp", { children: [makeNode("neg", { children: [makeNode("mul", { children: [C(0.25), V("t")] })] })] }),
+    makeNode("cos", { children: [makeNode("mul", { children: [C(3), V("t")] })] }),
+  ] }),
+  logistic_growth: makeNode("pdiv", { children: [
+    C(1),
+    makeNode("add", { children: [C(1), makeNode("exp", { children: [makeNode("neg", { children: [makeNode("mul", { children: [C(2), makeNode("sub", { children: [V("t"), C(2)] })] })] })] })] }),
+  ] }),
+  softplus: makeNode("log", { children: [makeNode("add", { children: [C(1), makeNode("exp", { children: [V("x")] })] })] }),
+  kdv_soliton: (() => {
+    // η = 2·sech²(x−4t), sech²ξ = 4/(e^ξ + e^−ξ)²
+    const xi = makeNode("sub", { children: [V("x"), makeNode("mul", { children: [C(4), V("t")] })] });
+    const ePos = makeNode("exp", { children: [xi] });
+    const eNeg = makeNode("exp", { children: [makeNode("neg", { children: [xi] })] });
+    const cosh = makeNode("mul", { children: [C(0.5), makeNode("add", { children: [ePos, eNeg] })] });
+    return makeNode("mul", { children: [C(2), makeNode("pdiv", { children: [C(1), makeNode("sq", { children: [cosh] })] })] });
+  })(),
+  kerr_spin: (() => {
+    // (4/b + (4s − 2.70566)/b²) / (1 − 3.62166/b)
+    const num = makeNode("add", { children: [
+      makeNode("pdiv", { children: [C(4), V("b")] }),
+      makeNode("pdiv", { children: [makeNode("sub", { children: [makeNode("mul", { children: [C(4), V("s")] }), C(2.70566)] }), makeNode("sq", { children: [V("b")] })] }),
+    ] });
+    return makeNode("pdiv", { children: [num, makeNode("sub", { children: [C(1), makeNode("pdiv", { children: [C(3.62166), V("b")] })] })] });
+  })(),
+  pendulum_hybrid: (() => {
+    // clamp((1−w)·uswing + w·ucatch, −2, 2) with w = σ(10.1786(cosθ − 0.7))
+    const th = V("th"); const d = V("d");
+    const c = makeNode("cos", { children: [th] });
+    const s = makeNode("sin", { children: [th] });
+    const EErr = makeNode("sub", { children: [
+      makeNode("add", { children: [makeNode("sq", { children: [makeNode("mul", { children: [C(0.5), d] })] }), makeNode("mul", { children: [C(6), makeNode("sub", { children: [C(1), c] })] })] }),
+      C(12),
+    ] });
+    const uSwing = makeNode("mul", { children: [
+      makeNode("mul", { children: [makeNode("mul", { children: [C(-4.3278), d] }), EErr] }),
+      c,
+    ] });
+    const uCatch = makeNode("neg", { children: [makeNode("add", { children: [makeNode("mul", { children: [C(1.7222), s] }), makeNode("mul", { children: [C(8.0402), d] })] })] });
+    const sigArg = makeNode("mul", { children: [C(10.1786), makeNode("sub", { children: [c, C(0.7)] })] });
+    const w = makeNode("pdiv", { children: [C(1), makeNode("add", { children: [C(1), makeNode("exp", { children: [sigArg] })] })] });
+    const blend = makeNode("add", { children: [
+      makeNode("mul", { children: [makeNode("sub", { children: [C(1), w] }), uSwing] }),
+      makeNode("mul", { children: [w, uCatch] }),
+    ] });
+    return makeNode("min", { children: [C(2), makeNode("max", { children: [C(-2), blend] })] });
+  })(),
 };
 
 function buildRegressionTask(cfg: {
@@ -1000,6 +1053,114 @@ function kerrDeflectionData(): { vars: Record<string, Float64Array>; y: Float64A
   return { vars: { b }, y };
 }
 
+// ---------- Lennard-Jones potential V(r) = 4[(1/r)^12 − (1/r)^6] ----------
+function lennardJonesData(): { vars: Record<string, Float64Array>; y: Float64Array } {
+  // The 12-6 molecular interaction potential (ε = σ = 1). Classic double-well:
+  // steep repulsion + shallow attraction. Discoverable with pdiv/sq/cube only.
+  const rows = 250;
+  const r = linspace(0.9, 3, rows);
+  const y = new Float64Array(rows);
+  for (let i = 0; i < rows; i++) {
+    const inv = 1 / r[i];
+    const inv6 = inv ** 6;
+    y[i] = 4 * (inv6 * inv6 - inv6);
+  }
+  return { vars: { r }, y };
+}
+
+// ---------- Damped oscillation e^(−t/4)·cos(3t) ----------
+function dampedOscillationData(): { vars: Record<string, Float64Array>; y: Float64Array } {
+  // Signal-processing staple: exponentially damped carrier. Uses exp + cos.
+  const rows = 250;
+  const t = linspace(0, 6, rows);
+  const y = new Float64Array(rows);
+  for (let i = 0; i < rows; i++) y[i] = Math.exp(-t[i] / 4) * Math.cos(3 * t[i]);
+  return { vars: { t }, y };
+}
+
+// ---------- Logistic growth L/(1 + e^(−k(t−t₀))) ----------
+function logisticGrowthData(): { vars: Record<string, Float64Array>; y: Float64Array } {
+  // Population / adoption / saturation curves: L=1, k=2, t₀=2.
+  const rows = 200;
+  const t = linspace(0, 4, rows);
+  const y = new Float64Array(rows);
+  for (let i = 0; i < rows; i++) y[i] = 1 / (1 + Math.exp(-2 * (t[i] - 2)));
+  return { vars: { t }, y };
+}
+
+// ---------- Softplus ln(1 + eˣ) ----------
+function softplusData(): { vars: Record<string, Float64Array>; y: Float64Array } {
+  // The smooth ReLU used in modern LLMs (output layer of SwiGLU blocks).
+  // Exercises the log operator end-to-end.
+  const rows = 200;
+  const x = linspace(-4, 4, rows);
+  const y = new Float64Array(rows);
+  for (let i = 0; i < rows; i++) y[i] = Math.log(1 + Math.exp(x[i]));
+  return { vars: { x }, y };
+}
+
+// ---------- KdV 1-soliton (BT36): η = 2κ²·sech²(κ(x − 4κ²t − x₀)) ----------
+function kdvSolitonData(): { vars: Record<string, Float64Array>; y: Float64Array } {
+  // Exact travelling-wave solution of the Korteweg–de Vries equation (κ=1, x₀=0).
+  // sech² is composable from exp: sech²ξ = 4/(e^ξ + e^−ξ)².
+  const rows = 400;
+  const xs = linspace(-10, 10, rows);
+  const ts = linspace(0, 2, rows);
+  const x = new Float64Array(rows);
+  const t = new Float64Array(rows);
+  const y = new Float64Array(rows);
+  for (let i = 0; i < rows; i++) {
+    x[i] = xs[i];
+    t[i] = ts[i];
+    const xi = x[i] - 4 * t[i];
+    const c = (Math.exp(xi) + Math.exp(-xi)) / 2; // cosh
+    y[i] = 2 / (c * c);
+  }
+  return { vars: { x, t }, y };
+}
+
+// ---------- Kerr deflection with spin a ≠ 0 (BT35): prograde/retrograde ----------
+function kerrSpinData(): { vars: Record<string, Float64Array>; y: Float64Array } {
+  // Padé [1/2] deflection with Lense-Thirring spin term: sign flips for
+  // prograde (s < 0) vs retrograde orbits. Two-var rational law.
+  const rows = 300;
+  const bs = linspace(8, 50, rows);
+  const ss = linspace(-0.99, 0.99, rows);
+  const b = new Float64Array(rows);
+  const s = new Float64Array(rows);
+  const y = new Float64Array(rows);
+  for (let i = 0; i < rows; i++) {
+    b[i] = bs[i];
+    s[i] = ss[i];
+    const num = 4 / b[i] + (4 * s[i] - 2.70566416) / (b[i] * b[i]);
+    const den = 1 - 3.62165903 / b[i];
+    y[i] = num / den;
+  }
+  return { vars: { b, s }, y };
+}
+
+// ---------- Hybrid inverted-pendulum control law (paper §4, 500-gen anchor) ----------
+function pendulumHybridData(): { vars: Record<string, Float64Array>; y: Float64Array } {
+  // Energy-shaping swing-up blended into a Lyapunov catch via a C∞ sigmoid,
+  // hard-saturated at ±2. The GP must recover the whole hybrid structure.
+  const rows = 500;
+  const th = new Float64Array(rows);
+  const thd = new Float64Array(rows);
+  const y = new Float64Array(rows);
+  for (let i = 0; i < rows; i++) {
+    // deterministic quasi-uniform 2-D coverage via golden-ratio sequence
+    th[i] = -Math.PI + (2 * Math.PI * ((i * 0.6180339887) % 1));
+    thd[i] = -6 + 12 * ((i * 0.7548776662) % 1);
+    const c = Math.cos(th[i]);
+    const EErr = 0.5 * thd[i] * thd[i] + 6 * (1 - c) - 12;
+    const wCatch = 1 / (1 + Math.exp(-Math.max(-20, Math.min(20, 10.1786 * (c - 0.7)))));
+    const uSwing = -4.3278 * thd[i] * EErr * c;
+    const uCatch = -(1.7222 * Math.sin(th[i]) + 8.0402 * thd[i]);
+    y[i] = Math.min(2, Math.max(-2, (1 - wCatch) * uSwing + wCatch * uCatch));
+  }
+  return { vars: { th, d: thd }, y };
+}
+
 // ---------------------------------------------------------------------------
 // Registry
 // ---------------------------------------------------------------------------
@@ -1306,6 +1467,140 @@ export function buildTasks(): TaskDef[] {
         const exact = 0.560477;
         const err = Math.abs(d - exact) / exact;
         return err < 0.05 ? `Δφ(10rs) ≈ ${d.toFixed(4)} rad (exact ${exact})` : null;
+      },
+    }),
+    // 16. Potentiel de Lennard-Jones 12-6 — interactions moléculaires
+    buildRegressionTask({
+      id: "lennard_jones",
+      title: "Potentiel de Lennard-Jones 12-6",
+      subtitle: "V(r) = 4[(1/r)¹² − (1/r)⁶] sur r ∈ [0.9, 3] (ε=σ=1) — rationnel pur",
+      groundTruth: "V(r) = 4[(σ/r)¹² − (σ/r)⁶]",
+      rows: 250,
+      varNames: ["r"],
+      build: lennardJonesData,
+      trueLaw: (v, i) => {
+        const inv6 = (1 / v.r[i]) ** 6;
+        return 4 * (inv6 * inv6 - inv6);
+      },
+      verify: (node) => {
+        const vmin = evaluateScalar(node, { r: Math.pow(2, 1 / 6) });
+        if (!Number.isFinite(vmin)) return null;
+        return Math.abs(vmin + 1) < 0.15 ? `Puits LJ : V(2^(1/6)) ≈ ${vmin.toFixed(3)} (exact −1)` : null;
+      },
+    }),
+    // 17. Oscillation amortie e^(−t/τ)·cos(ωt) — DSP, vibration analysis
+    buildRegressionTask({
+      id: "damped_oscillation",
+      title: "Oscillation amortie e^(−t/τ)·cos(ωt)",
+      subtitle: "Porteuse amortie τ=4, ω=3 rad/s sur t ∈ [0, 6] — exp + cos",
+      groundTruth: "y(t) = e^(−t/4)·cos(3t)",
+      rows: 250,
+      varNames: ["t"],
+      build: dampedOscillationData,
+      trueLaw: (v, i) => Math.exp(-v.t[i] / 4) * Math.cos(3 * v.t[i]),
+      verify: (node) => {
+        const y0 = evaluateScalar(node, { t: 0 });
+        if (!Number.isFinite(y0)) return null;
+        return Math.abs(y0 - 1) < 0.05 ? `y(0) ≈ ${y0.toFixed(3)} (exact 1)` : null;
+      },
+    }),
+    // 18. Croissance logistique — populations, adoption, saturation
+    buildRegressionTask({
+      id: "logistic_growth",
+      title: "Croissance logistique",
+      subtitle: "L/(1+e^(−k(t−t₀))), L=1, k=2, t₀=2 — le modèle de saturation universel",
+      groundTruth: "y(t) = 1/(1 + e^(−2(t−2)))",
+      rows: 200,
+      varNames: ["t"],
+      build: logisticGrowthData,
+      trueLaw: (v, i) => 1 / (1 + Math.exp(-2 * (v.t[i] - 2))),
+      verify: (node) => {
+        const mid = evaluateScalar(node, { t: 2 });
+        if (!Number.isFinite(mid)) return null;
+        return Math.abs(mid - 0.5) < 0.03 ? `y(t₀) ≈ ${mid.toFixed(3)} (exact 0.5)` : null;
+      },
+    }),
+    // 19. Softplus ln(1+eˣ) — le ReLU lisse des LLM modernes
+    buildRegressionTask({
+      id: "softplus",
+      title: "Softplus ln(1+eˣ)",
+      subtitle: "Approximation algébrique du ReLU lisse sur x ∈ [−4, 4] — exerce log()",
+      groundTruth: "sp(x) = ln(1 + eˣ)",
+      rows: 200,
+      varNames: ["x"],
+      build: softplusData,
+      trueLaw: (v, i) => Math.log(1 + Math.exp(v.x[i])),
+      verify: (node) => {
+        const s0 = evaluateScalar(node, { x: 0 });
+        if (!Number.isFinite(s0)) return null;
+        return Math.abs(s0 - Math.LN2) < 0.02 ? `sp(0) ≈ ${s0.toFixed(4)} (exact ln2 = 0.6931)` : null;
+      },
+    }),
+    // 20. Soliton KdV exact (BT36) — onde solitaire de la KdV
+    buildRegressionTask({
+      id: "kdv_soliton",
+      title: "Soliton KdV · sech²",
+      subtitle: "η(x,t) = 2·sech²(x−4t), κ=1 — solution exacte 1-soliton (x ∈ [−10,10], t ∈ [0,2])",
+      groundTruth: "η = 2κ²·sech²(κ(x − 4κ²t − x₀))",
+      rows: 400,
+      varNames: ["x", "t"],
+      build: kdvSolitonData,
+      trueLaw: (v, i) => {
+        const xi = v.x[i] - 4 * v.t[i];
+        const c = (Math.exp(xi) + Math.exp(-xi)) / 2;
+        return 2 / (c * c);
+      },
+      verify: (node) => {
+        const peak = evaluateScalar(node, { x: 4 * 1.5, t: 1.5 });
+        if (!Number.isFinite(peak)) return null;
+        return Math.abs(peak - 2) < 0.15 ? `Pic du soliton ≈ ${peak.toFixed(3)} (exact 2)` : null;
+      },
+    }),
+    // 21. Déflexion Kerr avec spin a ≠ 0 (BT35) — prograde/rétrograde
+    buildRegressionTask({
+      id: "kerr_spin",
+      title: "Déflexion Kerr avec spin (Lense-Thirring)",
+      subtitle: "Padé [1/2] à deux variables : b ∈ [8,50], spin s ∈ [−0.99, 0.99] (s<0 prograde)",
+      groundTruth: "Δφ = (4/b + (4a−2.706)/b²)/(1 − 3.622/b)",
+      rows: 300,
+      varNames: ["b", "s"],
+      build: kerrSpinData,
+      trueLaw: (v, i) => {
+        const num = 4 / v.b[i] + (4 * v.s[i] - 2.70566416) / (v.b[i] * v.b[i]);
+        return num / (1 - 3.62165903 / v.b[i]);
+      },
+      verify: (node) => {
+        const d = evaluateScalar(node, { b: 20, s: 0.5 });
+        if (!Number.isFinite(d)) return null;
+        const exact = 0.236545; // 4/20 + (2-2.70566)/400 over (1-3.62/20)
+        const err = Math.abs(d - exact) / exact;
+        return err < 0.05 ? `Δφ(b=20, s=0.5) ≈ ${d.toFixed(4)} rad` : null;
+      },
+    }),
+    // 22. Loi de contrôle hybride du pendule inversé (§4 du papier, ancrée 500 gén.)
+    buildRegressionTask({
+      id: "pendulum_hybrid",
+      title: "Contrôle hybride pendule inversé",
+      subtitle: "u(θ,θ̇) : energy-shaping → Lyapunov catch via σ C∞, saturé ±2 (θ ∈ [−π,π], θ̇ ∈ [−6,6])",
+      groundTruth: "u* = clamp((1−w)·u_swing + w·u_catch, ±2), w = σ(10.18(cosθ − 0.7))",
+      rows: 500,
+      varNames: ["th", "d"],
+      build: pendulumHybridData,
+      trueLaw: (v, i) => {
+        const c = Math.cos(v.th[i]);
+        const EErr = 0.5 * v.d[i] * v.d[i] + 6 * (1 - c) - 12;
+        const w = 1 / (1 + Math.exp(-Math.max(-20, Math.min(20, 10.1786 * (c - 0.7)))));
+        const uSwing = -4.3278 * v.d[i] * EErr * c;
+        const uCatch = -(1.7222 * Math.sin(v.th[i]) + 8.0402 * v.d[i]);
+        return Math.min(2, Math.max(-2, (1 - w) * uSwing + w * uCatch));
+      },
+      verify: (node) => {
+        const up = evaluateScalar(node, { th: 0.5, d: 1 });
+        if (!Number.isFinite(up)) return null;
+        // saturated zone check: high energy far from equilibrium must clamp
+        const sat = evaluateScalar(node, { th: 3, d: 6 });
+        const okSat = Number.isFinite(sat) && sat >= -2 && sat <= 2;
+        return okSat ? `Loi bornée : u(0.5,1) ≈ ${up.toFixed(3)}, saturation respectée` : null;
       },
     }),
   ];

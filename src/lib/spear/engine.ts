@@ -1,4 +1,4 @@
-// SPEAR — Symbolic Pareto Evolutionary Algorithm for Research
+﻿// SPEAR â€” Symbolic Pareto Evolutionary Algorithm for Research
 // Engine v2: seeded RNG, algebraic simplification, affine wrapping, constant
 // refinement (coordinate descent), full NSGA-II (non-dominated sort +
 // crowding distance), Pareto archive and code generation.
@@ -8,7 +8,7 @@ export type NodeOp =
   | "add" | "sub" | "mul" | "pdiv"
   | "relu" | "abs" | "neg" | "sq" | "sqrt" | "cube"
   | "max" | "min"
-  | "exp" | "sin" | "cos";
+  | "exp" | "sin" | "cos" | "log";
 
 export interface SpearNode {
   op: NodeOp;
@@ -20,10 +20,10 @@ export interface SpearNode {
 }
 
 const BINARY = new Set<NodeOp>(["add", "sub", "mul", "pdiv", "max", "min"]);
-const UNARY = new Set<NodeOp>(["relu", "abs", "neg", "sq", "sqrt", "cube", "exp", "sin", "cos"]);
+const UNARY = new Set<NodeOp>(["relu", "abs", "neg", "sq", "sqrt", "cube", "exp", "sin", "cos", "log"]);
 
 export const ALL_OPS: NodeOp[] = [
-  "add", "sub", "mul", "pdiv", "relu", "abs", "neg", "sq", "sqrt", "cube", "max", "min", "exp", "sin", "cos",
+  "add", "sub", "mul", "pdiv", "relu", "abs", "neg", "sq", "sqrt", "cube", "max", "min", "exp", "sin", "cos", "log",
 ];
 
 /** Ops that a GPU/TPU executes as plain algebra (no transcendental unit). */
@@ -70,7 +70,7 @@ export const OP_COST: Record<NodeOp, number> = {
   var: 0, const: 0,
   add: 1, sub: 1, mul: 1,
   pdiv: 4, relu: 1, abs: 1, neg: 1, sq: 1, cube: 2, sqrt: 2, max: 1, min: 1,
-  exp: 20, sin: 20, cos: 20,
+  exp: 20, sin: 20, cos: 20, log: 20,
 };
 
 export function estimateCost(node: SpearNode): number {
@@ -220,6 +220,7 @@ export function evaluateNode(
       case "exp": r = Math.exp(Math.max(-50, Math.min(50, av))); break;
       case "sin": r = Math.sin(av); break;
       case "cos": r = Math.cos(av); break;
+      case "log": r = Math.log(av > 1e-300 ? av : 1e-300); break;
       default: break;
     }
     out[i] = r;
@@ -254,7 +255,8 @@ export function evaluateScalar(node: SpearNode, scope: Record<string, number>): 
     case "sqrt": return Math.sqrt(Math.abs(a[0]));
     case "exp": return Math.exp(Math.max(-50, Math.min(50, a[0])));
     case "sin": return Math.sin(a[0]);
-    case "cos": return Math.cos(a[0]);
+      case "cos": return Math.cos(a[0]);
+      case "log": return Math.log(a[0] > 1e-300 ? a[0] : 1e-300);
     default: return 0;
   }
 }
@@ -272,12 +274,13 @@ export function nodeToString(node: SpearNode): string {
     case "relu": return `relu(${nodeToString(node.children[0])})`;
     case "abs": return `|${nodeToString(node.children[0])}|`;
     case "neg": return `(-${nodeToString(node.children[0])})`;
-    case "sq": return `(${nodeToString(node.children[0])})²`;
-    case "cube": return `(${nodeToString(node.children[0])})³`;
+    case "sq": return `(${nodeToString(node.children[0])})Â²`;
+    case "cube": return `(${nodeToString(node.children[0])})Â³`;
     case "sqrt": return `sqrt(|${nodeToString(node.children[0])}|)`;
     case "exp": return `exp(${nodeToString(node.children[0])})`;
     case "sin": return `sin(${nodeToString(node.children[0])})`;
     case "cos": return `cos(${nodeToString(node.children[0])})`;
+    case "log": return `log(max(${nodeToString(node.children[0])}, 1e-30))`;
     case "max": return `max(${nodeToString(node.children[0])}, ${nodeToString(node.children[1])})`;
     case "min": return `min(${nodeToString(node.children[0])}, ${nodeToString(node.children[1])})`;
     case "pdiv": return `(${nodeToString(node.children[0])} / ${nodeToString(node.children[1])})`;
@@ -297,6 +300,7 @@ const PY: Record<NodeOp, string> = {
   max: "torch.maximum({a}, {b})", min: "torch.minimum({a}, {b})",
   exp: "torch.exp(torch.clamp({a}, -50.0, 50.0))",
   sin: "torch.sin({a})", cos: "torch.cos({a})",
+  log: "torch.log(torch.clamp({a}, min=1e-30))",
 };
 
 export function toPython(node: SpearNode, fnName = "spear_fn"): string {
@@ -307,7 +311,7 @@ export function toPython(node: SpearNode, fnName = "spear_fn"): string {
     const tpl = PY[nd.op];
     if (!tpl) {
       // eslint-disable-next-line no-console
-      console.error(`[toPython] op inconnu "${String(nd.op)}" — arbre: ${JSON.stringify(node).slice(0, 300)}`);
+      console.error(`[toPython] op inconnu "${String(nd.op)}" â€” arbre: ${JSON.stringify(node).slice(0, 300)}`);
       return "0";
     }
     if (nd.op === "cube") return `(${walk(nd.children[0])} ** 3)`;
@@ -315,7 +319,7 @@ export function toPython(node: SpearNode, fnName = "spear_fn"): string {
     return tpl.replace(/\{a\}/g, walk(nd.children[0])).replace(/\{b\}/g, walk(nd.children[1]));
   };
   const args = [...new Set(collectVarNames(node))].join(", ");
-  return `import torch\n\ndef ${fnName}(${args}):\n    # Evolved by SPEAR — zero transcendental ops (exp/erf/tanh free)\n    return ${walk(node)}`;
+  return `import torch\n\ndef ${fnName}(${args}):\n    # Evolved by SPEAR â€” zero transcendental ops (exp/erf/tanh free)\n    return ${walk(node)}`;
 }
 
 export function toC(node: SpearNode, fnName = "spear_fn", varDecl = "const float x"): string {
@@ -332,6 +336,7 @@ export function toC(node: SpearNode, fnName = "spear_fn", varDecl = "const float
       case "exp": return `expf(fmaxf(-50.0f, fminf(50.0f, ${walk(nd.children[0])})))`;
       case "sin": return `sinf(${walk(nd.children[0])})`;
       case "cos": return `cosf(${walk(nd.children[0])})`;
+      case "log": return `logf(fmaxf(1.0e-30f, ${walk(nd.children[0])}))`;
       case "max": return `fmaxf(${walk(nd.children[0])}, ${walk(nd.children[1])})`;
       case "min": return `fminf(${walk(nd.children[0])}, ${walk(nd.children[1])})`;
       case "pdiv": return `(${walk(nd.children[0])} / ${walk(nd.children[1])})`;
@@ -339,7 +344,75 @@ export function toC(node: SpearNode, fnName = "spear_fn", varDecl = "const float
     }
     return `(${walk(nd.children[0])} ${nd.op === "add" ? "+" : nd.op === "sub" ? "-" : "*"} ${walk(nd.children[1])})`;
   };
-  return `// Evolved by SPEAR — algebraic only, FP16 safe\n__device__ inline float ${fnName}(${varDecl}) {\n    return ${walk(node)};\n}`;
+  return `// Evolved by SPEAR â€” algebraic only, FP16 safe\n__device__ inline float ${fnName}(${varDecl}) {\n    return ${walk(node)};\n}`;
+}
+
+/**
+ * MISRA-C:2012 strict emission. Differences from toC():
+ * - fixed-width stdint types (float32_t), no implicit narrowing
+ * - branchless: relu/max/min/exp/log via fminf/fmaxf only, zero if/for/while/goto
+ * - FMA-friendly Horner shapes: sq/cube emitted as repeated multiplies (no powf)
+ * - zero heap: pure scalar function, no pointers written, no dynamic allocation
+ */
+export function toMisraC(node: SpearNode, fnName = "spear_fn", params = "const float32_t x"): string {
+  const walk = (nd: SpearNode): string => {
+    if (nd.op === "var") return nd.name;
+    if (nd.op === "const") {
+      // integers need a decimal point before the F suffix ("1F" is illegal C)
+      const r = roundConst(nd.value);
+      return `${Number.isInteger(r) ? r.toFixed(1) : r}F`;
+    }
+    switch (nd.op) {
+      case "relu": return `fmaxf(0.0F, ${walk(nd.children[0])})`;
+      case "abs": return `fabsf(${walk(nd.children[0])})`;
+      case "neg": return `(-${walk(nd.children[0])})`;
+      // FMA-friendly: x*x and x*x*x compile to fma chains, unlike powf calls
+      case "sq": return `(${walk(nd.children[0])} * ${walk(nd.children[0])})`;
+      case "cube": return `(${walk(nd.children[0])} * ${walk(nd.children[0])} * ${walk(nd.children[0])})`;
+      case "sqrt": return `sqrtf(fabsf(${walk(nd.children[0])}))`;
+      case "exp": return `expf(fminf(fmaxf(${walk(nd.children[0])}, -50.0F), 50.0F))`;
+      case "sin": return `sinf(${walk(nd.children[0])})`;
+      case "cos": return `cosf(${walk(nd.children[0])})`;
+      case "log": return `logf(fmaxf(1.0e-30F, ${walk(nd.children[0])}))`;
+      case "max": return `fmaxf(${walk(nd.children[0])}, ${walk(nd.children[1])})`;
+      case "min": return `fminf(${walk(nd.children[0])}, ${walk(nd.children[1])})`;
+      case "pdiv": return `(${walk(nd.children[0])} / ${walk(nd.children[1])})`;
+      default: break;
+    }
+    const opSym = nd.op === "add" ? "+" : nd.op === "sub" ? "-" : "*";
+    return `(${walk(nd.children[0])} ${opSym} ${walk(nd.children[1])})`;
+  };
+  return [
+    "/* Generated by SPEAR - strict C99, branchless, FMA-friendly, zero heap */",
+    "#include <stdint.h>",
+    "#include <math.h>",
+    "",
+    "/* Platform fixed-width float type (MISRA-C:2012 dir 4.5 - defined per target) */",
+    "typedef float float32_t;",
+    "",
+    `float32_t ${fnName}(${params})`,
+    "{",
+    `    return ${walk(node)};`,
+    "}",
+  ].join("\n");
+}
+
+/** Static MISRA audit of generated code: returns every violation found. */
+export function lintMisraC(code: string): { ok: boolean; violations: string[] } {
+  const violations: string[] = [];
+  // the platform typedef itself is the one sanctioned bare-float occurrence
+  const body = code.replace(/\/\*[\s\S]*?\*\//g, "").replace(/typedef float float32_t;/g, "");
+  const checks: { token: RegExp; label: string }[] = [
+    { token: /\bmalloc\b|\bcalloc\b|\brealloc\b|\bfree\b|\bnew\b/, label: "allocation dynamique" },
+    { token: /\bfor\s*\(|\bwhile\s*\(|\bdo\b/, label: "boucle" },
+    { token: /\bif\s*\(|\bswitch\s*\(|\bgoto\b|\bcase\b/, label: "branche" },
+    { token: /\bfloat\b(?!32_t)|\bdouble\b/, label: "type flottant non fixe" },
+    { token: /\bpowf\s*\(/, label: "powf (non FMA-friendly)" },
+  ];
+  for (const { token, label } of checks) {
+    if (token.test(body)) violations.push(label);
+  }
+  return { ok: violations.length === 0, violations };
 }
 
 export function collectVarNames(node: SpearNode): string[] {
@@ -470,7 +543,7 @@ export function wrapAffine(node: SpearNode, a: number, b: number): SpearNode {
   );
 }
 
-/** Least-squares fit of a·p + b onto target (Keijzer linear scaling). */
+/** Least-squares fit of aÂ·p + b onto target (Keijzer linear scaling). */
 export function fitLinearScaling(pred: Float64Array, target: Float64Array): { a: number; b: number } {
   const n = pred.length;
   let sp = 0, st = 0, spp = 0, spt = 0;
@@ -636,7 +709,7 @@ export function mutateStructure(p: SpearNode, cfg: GpConfig): SpearNode {
   const nodes = collectNodes(p);
   const target = pick(nodes);
   if (target.op === "const") {
-    // promote constant → tiny expression
+    // promote constant â†’ tiny expression
     const tiny = pick(cfg.variables);
     const rep = rand() < 0.5
       ? makeNode("mul", { children: [makeNode("const", { value: roundConst(target.value) }), makeNode("var", { name: tiny })] })
@@ -645,7 +718,7 @@ export function mutateStructure(p: SpearNode, cfg: GpConfig): SpearNode {
     return m.depth <= cfg.maxDepth ? m : p;
   }
   if (target.op !== "var" && target.children.length > 0 && target.children.every((c) => c.op === "const" || c.op === "var")) {
-    // demote a small subexpression → constant equal to its evaluation at 0
+    // demote a small subexpression â†’ constant equal to its evaluation at 0
     const scope: Record<string, number> = {};
     const folded = evaluateScalar(target, scope);
     if (Number.isFinite(folded)) {
