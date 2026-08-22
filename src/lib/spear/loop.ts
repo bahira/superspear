@@ -8,6 +8,7 @@ import {
   mutateStructure,
   prune,
   crossover,
+  collectVarNames,
   evaluateNode,
   mutate,
   nodeToString,
@@ -223,22 +224,26 @@ async function yieldToEventLoop(): Promise<void> {
  * units, mul/add/fma cost 1), and verify throughput on a vectorised batch.
  */
 function benchmarkSpeed(t: TaskDef, node: SpearNode): LoopTaskSnapshot["speed"] {
-  if (!t.exactCost) return null;
+  const exactCost = t.exactCost ?? (t.exactRefNode ? estimateCost(t.exactRefNode) : undefined);
+  if (!exactCost) return null;
   const profile = taskOpProfile(node);
   const formulaCost = estimateCost(node);
   const n = 100_000;
   const xs = new Float64Array(n);
   // deterministic local sweep: snapshots fire on wall-clock intervals, so this
-  // must never touch the shared seeded stream or runs stop being reproducible
+  // must never touch the shared seeded stream or runs stop being reproducible.
+  // every variable of the formula gets the same sweep — enough for throughput.
   for (let i = 0; i < n; i++) xs[i] = -6 + (12 * i) / (n - 1);
-  const out = evaluateNode(node, { x: xs }, n);
+  const vars: Record<string, Float64Array> = {};
+  for (const name of new Set(collectVarNames(node))) vars[name] = xs;
+  const out = evaluateNode(node, vars, n);
   let acc = 0;
   for (let i = 0; i < n; i++) acc += out[i];
   void acc;
   return {
     formulaCost,
-    exactCost: t.exactCost,
-    estimatedSpeedup: t.exactCost / Math.max(1, formulaCost),
+    exactCost,
+    estimatedSpeedup: exactCost / Math.max(1, formulaCost),
     ops: profile.total,
     transcendental: profile.transcendental,
     elements: n,

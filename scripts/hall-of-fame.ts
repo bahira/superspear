@@ -14,6 +14,8 @@ interface Finding {
   formula: string;
   seed: number;
   iteration: number;
+  /** cost model vs the exact reference kernel (ALU/SFU units) */
+  speed?: { formulaCost: number; exactCost: number; speedup: number };
 }
 type Ledger = Record<string, Finding>;
 
@@ -110,10 +112,24 @@ async function main() {
         formula: t.best.formula,
         seed,
         iteration: t.iterations,
+        speed: t.speed
+          ? { formulaCost: t.speed.formulaCost, exactCost: t.speed.exactCost, speedup: t.speed.estimatedSpeedup }
+          : undefined,
       });
     }
     const n = mergeInto(ledger, finds);
-    console.log(`terminé: ${p.breakthroughs.length} breakthroughs, ${n} nouveaux records au HOF\n`);
+    // backfill speed on records found by earlier runs when this run reproduces
+    // the exact same champion formula (speedup is a pure function of the AST)
+    let backfilled = 0;
+    for (const t of p.tasks) {
+      const entry = ledger[t.taskId] as Finding | undefined;
+      if (!entry || entry.speed || !t.speed) continue;
+      if (entry.formula === t.best?.formula) {
+        entry.speed = { formulaCost: t.speed.formulaCost, exactCost: t.speed.exactCost, speedup: t.speed.estimatedSpeedup };
+        backfilled++;
+      }
+    }
+    console.log(`terminé: ${p.breakthroughs.length} breakthroughs, ${n} nouveaux records, ${backfilled} speeds backfillés\n`);
   } else {
     let runs = 0;
     for (const f of readdirSync(LOG_DIR)) {
@@ -136,8 +152,9 @@ async function main() {
   console.log("╔═══════════════════════ HALL OF FAME SPEAR ═══════════════════════╗");
   for (const r of rows) {
     const metricStr = r.direction === "min" ? r.metric.toExponential(2) : r.metric.toFixed(1) + "%";
+    const speedStr = r.speed ? `  vitesse: ×${r.speed.speedup.toFixed(2)} vs loi exacte (${r.speed.formulaCost}/${r.speed.exactCost} unités)` : "";
     console.log(`\n[${r.taskId}] ${r.title}`);
-    console.log(`  best=${metricStr}  L${r.level}  trouvé: seed ${r.seed}, it ${r.iteration}`);
+    console.log(`  best=${metricStr}  L${r.level}  trouvé: seed ${r.seed}, it ${r.iteration}${speedStr}`);
     console.log(`  ${r.formula}`);
   }
   console.log(`\n${rows.length} tâches · ledger sauvegardé: spear-hall-of-fame.json`);

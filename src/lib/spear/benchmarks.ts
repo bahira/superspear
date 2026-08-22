@@ -61,6 +61,8 @@ export interface TaskDef {
   exactFn?: (x: number) => number;
   /** measured cost of the exact reference kernel, in the same ALU/SFU units */
   exactCost?: number;
+  /** the true law as an AST — exactCost falls back to estimateCost(this) */
+  exactRefNode?: SpearNode;
   /** generic algebraic primitives used to seed the population (no published
    *  baseline formula is ever injected) */
   seedPool?: SpearNode[];
@@ -630,6 +632,42 @@ function buildKvTask(): TaskDef {
 // REGRESSION TASKS — recover closed-form physical laws from noisy data
 // ---------------------------------------------------------------------------
 
+// Reference kernels for the cost model: the true generating law expressed as
+// an AST per task id. estimateCost on these gives the ALU/SFU baseline that a
+// discovered formula is compared against (speedup = exactCost / formulaCost).
+const V = (name: string): SpearNode => makeNode("var", { name });
+const C = (value: number): SpearNode => makeNode("const", { value });
+const EXACT_LAWS: Record<string, SpearNode> = {
+  free_fall: makeNode("mul", { children: [C(4.905), makeNode("sq", { children: [V("t")] })] }),
+  kepler: makeNode("mul", { children: [V("a"), makeNode("sqrt", { children: [V("a")] })] }),
+  european_call: makeNode("add", { children: [
+    makeNode("mul", { children: [C(40), V("sigma")] }),
+    makeNode("mul", { children: [C(16), makeNode("sq", { children: [V("sigma")] })] }),
+  ] }),
+  lambert_w: makeNode("mul", { children: [V("x"), makeNode("exp", { children: [V("x")] })] }),
+  rc_circuit: makeNode("sub", { children: [C(1), makeNode("exp", { children: [makeNode("neg", { children: [V("t")] })] })] }),
+  layernorm_scale: makeNode("pdiv", { children: [C(1), makeNode("sqrt", { children: [V("x")] })] }),
+  gaussian_kernel: makeNode("exp", { children: [makeNode("neg", { children: [makeNode("mul", { children: [C(0.5), makeNode("sq", { children: [V("x")] })] })] })] }),
+  diffusion_beta: (() => {
+    // cost model only cares about structure, not constant values
+    const inner = makeNode("add", { children: [V("t"), C(0.01)] });
+    const scaled = makeNode("mul", { children: [C(1.56), inner] });
+    const wave = makeNode("cos", { children: [scaled] });
+    return makeNode("sub", { children: [C(1), makeNode("sq", { children: [wave] })] });
+  })(),
+  bilinear_interp: makeNode("sub", { children: [C(1), V("u")] }),
+  temporal_grad: makeNode("sub", { children: [V("b"), V("a")] }),
+  lorentz: makeNode("pdiv", { children: [C(1), makeNode("sqrt", { children: [makeNode("sub", { children: [C(1), makeNode("sq", { children: [V("b")] })] })] })] }),
+  hill: makeNode("pdiv", { children: [makeNode("cube", { children: [V("c")] }), makeNode("add", { children: [C(1), makeNode("cube", { children: [V("c")] })] })] }),
+  kerr: makeNode("add", { children: [
+    makeNode("pdiv", { children: [C(4), V("b")] }),
+    makeNode("add", { children: [
+      makeNode("pdiv", { children: [C(11.78097245), makeNode("sq", { children: [V("b")] })] }),
+      makeNode("pdiv", { children: [C(42.66666667), makeNode("cube", { children: [V("b")] })] }),
+    ] }),
+  ] }),
+};
+
 function buildRegressionTask(cfg: {
   id: string;
   title: string;
@@ -641,6 +679,8 @@ function buildRegressionTask(cfg: {
   /** the exact generating law — used ONLY to measure the irreducible noise
    *  floor, never exposed to the search */
   trueLaw: (vars: Record<string, Float64Array>, i: number) => number;
+  /** the generating law as an AST — gives the cost model its reference kernel */
+  exactLaw?: SpearNode;
   verify: (node: SpearNode) => string | null;
 }): TaskDef {
   const { vars, y } = cfg.build();
@@ -753,6 +793,7 @@ function buildRegressionTask(cfg: {
     },
     verify: cfg.verify,
     codeVarDecl: `const float ${varNames.join(", const float ")}`,
+    exactRefNode: cfg.exactLaw ?? EXACT_LAWS[cfg.id],
   };
 }
 
@@ -921,6 +962,42 @@ function temporalGradData(): { vars: Record<string, Float64Array>; y: Float64Arr
     y[i] = b[i] - a[i];
   }
   return { vars: { a, b }, y };
+}
+
+// ---------- Relativistic Lorentz factor γ(β) = 1/√(1−β²) ----------
+function lorentzData(): { vars: Record<string, Float64Array>; y: Float64Array } {
+  // Time-dilation / mass-energy factor used in physics engines and shaders.
+  // Pure rsqrt-family law: discoverable with pdiv + sq + sqrt only.
+  const rows = 200;
+  const b = linspace(0, 0.99, rows);
+  const y = new Float64Array(rows);
+  for (let i = 0; i < rows; i++) y[i] = 1 / Math.sqrt(1 - b[i] * b[i]);
+  return { vars: { b }, y };
+}
+
+// ---------- Hill dose-response (pharmacology): E(c) = c³/(EC50³ + c³) ----------
+function hillData(): { vars: Record<string, Float64Array>; y: Float64Array } {
+  // Standard drug dose-response curve (Emax model), EC50 = 1, Hill n = 3.
+  // The rational shape every pharmacologist fits — here the GP must recover it.
+  const rows = 200;
+  const c = linspace(0.05, 5, rows);
+  const y = new Float64Array(rows);
+  for (let i = 0; i < rows; i++) y[i] = (c[i] * c[i] * c[i]) / (1 + c[i] * c[i] * c[i]);
+  return { vars: { c }, y };
+}
+
+// ---------- Kerr black-hole light deflection (weak field) ----------
+function kerrDeflectionData(): { vars: Record<string, Float64Array>; y: Float64Array } {
+  // Gravitational lensing deflection Δφ(b) in units of rs, impact parameter b:
+  // second-order expansion: 4/b + 11.781/b² + 42.667/b³ (Iyer & Petters 2007).
+  // Pure rational law in 1/b — no transcendental ops needed.
+  const rows = 250;
+  const b = linspace(3, 50, rows);
+  const y = new Float64Array(rows);
+  for (let i = 0; i < rows; i++) {
+    y[i] = 4 / b[i] + 11.78097245 / (b[i] * b[i]) + 42.66666667 / (b[i] * b[i] * b[i]);
+  }
+  return { vars: { b }, y };
 }
 
 // ---------------------------------------------------------------------------
@@ -1174,6 +1251,61 @@ export function buildTasks(): TaskDef[] {
         if (!Number.isFinite(c)) return null;
         const err = Math.abs(c - 0.03) / 0.03;
         return err < 0.2 ? `∂I/∂t ≈ ${c.toFixed(4)} (exact 0.0300)` : null;
+      },
+    }),
+    // 13. Facteur de Lorentz γ(β) = 1/√(1−β²) — physique relativiste, moteurs de jeu
+    buildRegressionTask({
+      id: "lorentz",
+      title: "Facteur de Lorentz γ(β)",
+      subtitle: "Dilatation temporelle 1/√(1−β²) sur β ∈ [0, 0.99] — pur rsqrt-family",
+      groundTruth: "γ = 1/√(1 − β²)",
+      rows: 200,
+      varNames: ["b"],
+      build: lorentzData,
+      trueLaw: (v, i) => 1 / Math.sqrt(1 - v.b[i] * v.b[i]),
+      verify: (node) => {
+        const c = evaluateScalar(node, { b: 0.5 });
+        if (!Number.isFinite(c)) return null;
+        const err = Math.abs(c - 1.1547005) / 1.1547005;
+        return err < 0.01 ? `γ(0.5) ≈ ${c.toFixed(4)} (exact 1.1547)` : null;
+      },
+    }),
+    // 14. Équation de Hill (pharmacologie) — courbe dose-réponse Emax
+    buildRegressionTask({
+      id: "hill",
+      title: "Équation de Hill · dose-réponse",
+      subtitle: "E(c) = c³/(EC50³ + c³), EC50=1, n=3 — le standard pharmacologique",
+      groundTruth: "E = c³/(1 + c³)",
+      rows: 200,
+      varNames: ["c"],
+      build: hillData,
+      trueLaw: (v, i) => {
+        const c3 = v.c[i] * v.c[i] * v.c[i];
+        return c3 / (1 + c3);
+      },
+      verify: (node) => {
+        const e = evaluateScalar(node, { c: 1 });
+        if (!Number.isFinite(e)) return null;
+        const err = Math.abs(e - 0.5);
+        return err < 0.02 ? `E(EC50) ≈ ${e.toFixed(4)} (exact 0.5000)` : null;
+      },
+    }),
+    // 15. Déflexion lumineuse de Kerr (champ faible) — lentille gravitationnelle
+    buildRegressionTask({
+      id: "kerr",
+      title: "Déflexion de Kerr · lentille gravitationnelle",
+      subtitle: "Δφ(b) = 4/b + 11.781/b² + 42.667/b³ (rs) sur b ∈ [3, 50] — rationnel pur",
+      groundTruth: "Δφ(b) = 4/b + 11.781/b² + 42.667/b³ (Iyer & Petters)",
+      rows: 250,
+      varNames: ["b"],
+      build: kerrDeflectionData,
+      trueLaw: (v, i) => 4 / v.b[i] + 11.78097245 / (v.b[i] * v.b[i]) + 42.66666667 / (v.b[i] ** 3),
+      verify: (node) => {
+        const d = evaluateScalar(node, { b: 10 });
+        if (!Number.isFinite(d)) return null;
+        const exact = 0.560477;
+        const err = Math.abs(d - exact) / exact;
+        return err < 0.05 ? `Δφ(10rs) ≈ ${d.toFixed(4)} rad (exact ${exact})` : null;
       },
     }),
   ];

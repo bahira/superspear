@@ -1,13 +1,18 @@
 {
   "silu": {
     "taskId": "silu",
-    "title": "SiLU / Swish (LLaMA ┬À Mistral ┬À Qwen ÔÇö SwiGLU)",
+    "title": "SiLU / Swish (LLaMA · Mistral · Qwen — SwiGLU)",
     "direction": "min",
-    "metric": 0.000827,
+    "metric": 0.0008267579615530246,
     "level": 2,
-    "formula": "((0.997331 * (x * (0.501 + (0.589 * (x / (0.83 + sqrt(|(1 + (x)┬▓)|))))))) + -0.001848)",
-    "seed": 555666,
-    "iteration": 211
+    "formula": "((0.997331 * (x * (0.501 + (0.589 * (x / (0.83 + sqrt(|(1 + (x)²)|))))))) + -0.001848)",
+    "seed": 424242,
+    "iteration": 40,
+    "speed": {
+      "formulaCost": 14,
+      "exactCost": 34,
+      "speedup": 2.4285714285714284
+    }
   },
   "gelu": {
     "taskId": "gelu",
@@ -17,7 +22,12 @@
     "level": 2,
     "formula": "((0.998112 * (x * min(1.002, relu(((0.308372 * x) + 0.501))))) + -0.006084)",
     "seed": 12345,
-    "iteration": 188
+    "iteration": 188,
+    "speed": {
+      "formulaCost": 7,
+      "exactCost": 46,
+      "speedup": 6.571428571428571
+    }
   },
   "sigmoid": {
     "taskId": "sigmoid",
@@ -69,16 +79,6 @@
     "seed": 314159,
     "iteration": 237
   },
-  "Prime d'un call europ├®e": {
-    "taskId": "Prime d'un call europ├®e",
-    "title": "Prime d'un call europ├®en",
-    "direction": "min",
-    "metric": 0.206371,
-    "level": 5,
-    "formula": "((1.425388 * max(-2.468427, ((3.09605 + |sigma|))┬│)) + -42.398873)",
-    "seed": 777888,
-    "iteration": 8
-  },
   "damped_pendulum": {
     "taskId": "damped_pendulum",
     "title": "Pendule amorti ┬À ├®tat terminal",
@@ -93,11 +93,16 @@
     "taskId": "rl_distillation",
     "title": "Distillation d'acteur Deep-RL",
     "direction": "min",
-    "metric": 0.000332,
+    "metric": 0.0002275119729711842,
     "level": 2,
-    "formula": "(1.06624 * ((x + (0.154 * (x)┬│)) / (0.525 + (0.75 * (x)┬▓))))",
-    "seed": 12345,
-    "iteration": 470
+    "formula": "(1.105217 * ((x + (0.145 * (x)³)) / (0.556 + (0.75 * (x)²))))",
+    "seed": 424242,
+    "iteration": 39,
+    "speed": {
+      "formulaCost": 12,
+      "exactCost": 34,
+      "speedup": 2.8333333333333335
+    }
   },
   "lambert_w": {
     "taskId": "lambert_w",
@@ -141,13 +146,18 @@
   },
   "diffusion_beta": {
     "taskId": "diffusion_beta",
-    "title": "Diffusion ┬À schedule de bruit ╬▓(t)",
+    "title": "Diffusion · schedule de bruit β(t)",
     "direction": "min",
-    "metric": 0.000056,
+    "metric": 0.00001820178082161451,
     "level": 2,
-    "formula": "((0.471308 * ((relu((t)┬▓) - 1.296089))┬│) + 1.037878)",
-    "seed": 987654,
-    "iteration": 84
+    "formula": "((-5.61088 * exp(cos((min(-2.227969, t) - (t)²)))) + 3.054108)",
+    "seed": 424242,
+    "iteration": 39,
+    "speed": {
+      "formulaCost": 45,
+      "exactCost": 24,
+      "speedup": 0.5333333333333333
+    }
   },
   "bilinear_interp": {
     "taskId": "bilinear_interp",
@@ -157,16 +167,81 @@
     "level": 1,
     "formula": "((-u) + 1)",
     "seed": 12345,
-    "iteration": 16
+    "iteration": 16,
+    "speed": {
+      "formulaCost": 2,
+      "exactCost": 1,
+      "speedup": 0.5
+    }
   },
-  "Vid├®o ┬À gradient tempo": {
-    "taskId": "Vid├®o ┬À gradient tempo",
-    "title": "Vid├®o ┬À gradient temporel ÔêéI/Ôêét",
+  "european_call": {
+    "taskId": "european_call",
+    "title": "Prime d'un call europ├®en",
+    "direction": "min",
+    "metric": 0.206371,
+    "level": 5,
+    "formula": "((1.425388 * max(-2.468427, ((3.09605 + |sigma|))┬│)) + -42.398873)",
+    "seed": 777888,
+    "iteration": 8
+  },
+  "temporal_grad": {
+    "taskId": "temporal_grad",
+    "title": "Vidéo · gradient temporel ∂I/∂t",
     "direction": "min",
     "metric": 0,
+    "level": 5,
+    "formula": "(b - a)",
+    "seed": 8888,
+    "iteration": 8,
+    "speed": {
+      "formulaCost": 1,
+      "exactCost": 1,
+      "speedup": 1
+    }
+  },
+  "lorentz": {
+    "taskId": "lorentz",
+    "title": "Facteur de Lorentz γ(β)",
+    "direction": "min",
+    "metric": 0.023874582304929858,
     "level": 2,
-    "formula": "(1.001081 * sin((b - a)))",
-    "seed": 12345,
-    "iteration": 156
+    "formula": "((0.301139 * (exp(((b)²)³))³) + 0.817314)",
+    "seed": 424242,
+    "iteration": 39,
+    "speed": {
+      "formulaCost": 27,
+      "exactCost": 8,
+      "speedup": 0.2962962962962963
+    }
+  },
+  "hill": {
+    "taskId": "hill",
+    "title": "Équation de Hill · dose-réponse",
+    "direction": "min",
+    "metric": 0.0009225802066077555,
+    "level": 2,
+    "formula": "((0.531674 * min(c, min((c)², 1.833607))) + -0.016796)",
+    "seed": 424242,
+    "iteration": 40,
+    "speed": {
+      "formulaCost": 5,
+      "exactCost": 9,
+      "speedup": 1.8
+    }
+  },
+  "kerr": {
+    "taskId": "kerr",
+    "title": "Déflexion de Kerr · lentille gravitationnelle",
+    "direction": "min",
+    "metric": 0.0000740553910380091,
+    "level": 2,
+    "formula": "((5.110503 * (sqrt(|(-0.485054 / (b + -1.272747))|) / (sqrt(|b|) + -1.096285))) + -0.006811)",
+    "seed": 424242,
+    "iteration": 39,
+    "speed": {
+      "formulaCost": 16,
+      "exactCost": 17,
+      "speedup": 1.0625
+    }
   }
 }
