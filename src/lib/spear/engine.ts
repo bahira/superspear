@@ -8,7 +8,7 @@ export type NodeOp =
   | "add" | "sub" | "mul" | "pdiv"
   | "relu" | "abs" | "neg" | "sq" | "sqrt" | "cube"
   | "max" | "min"
-  | "exp";
+  | "exp" | "sin" | "cos";
 
 export interface SpearNode {
   op: NodeOp;
@@ -20,10 +20,10 @@ export interface SpearNode {
 }
 
 const BINARY = new Set<NodeOp>(["add", "sub", "mul", "pdiv", "max", "min"]);
-const UNARY = new Set<NodeOp>(["relu", "abs", "neg", "sq", "sqrt", "cube", "exp"]);
+const UNARY = new Set<NodeOp>(["relu", "abs", "neg", "sq", "sqrt", "cube", "exp", "sin", "cos"]);
 
 export const ALL_OPS: NodeOp[] = [
-  "add", "sub", "mul", "pdiv", "relu", "abs", "neg", "sq", "sqrt", "cube", "max", "min", "exp",
+  "add", "sub", "mul", "pdiv", "relu", "abs", "neg", "sq", "sqrt", "cube", "max", "min", "exp", "sin", "cos",
 ];
 
 /** Ops that a GPU/TPU executes as plain algebra (no transcendental unit). */
@@ -70,7 +70,7 @@ export const OP_COST: Record<NodeOp, number> = {
   var: 0, const: 0,
   add: 1, sub: 1, mul: 1,
   pdiv: 4, relu: 1, abs: 1, neg: 1, sq: 1, cube: 2, sqrt: 2, max: 1, min: 1,
-  exp: 20,
+  exp: 20, sin: 20, cos: 20,
 };
 
 export function estimateCost(node: SpearNode): number {
@@ -218,6 +218,8 @@ export function evaluateNode(
       case "cube": r = av * av * av; break;
       case "sqrt": r = Math.sqrt(av < 0 ? -av : av); break;
       case "exp": r = Math.exp(Math.max(-50, Math.min(50, av))); break;
+      case "sin": r = Math.sin(av); break;
+      case "cos": r = Math.cos(av); break;
       default: break;
     }
     out[i] = r;
@@ -251,6 +253,8 @@ export function evaluateScalar(node: SpearNode, scope: Record<string, number>): 
     case "cube": return a[0] * a[0] * a[0];
     case "sqrt": return Math.sqrt(Math.abs(a[0]));
     case "exp": return Math.exp(Math.max(-50, Math.min(50, a[0])));
+    case "sin": return Math.sin(a[0]);
+    case "cos": return Math.cos(a[0]);
     default: return 0;
   }
 }
@@ -272,6 +276,8 @@ export function nodeToString(node: SpearNode): string {
     case "cube": return `(${nodeToString(node.children[0])})³`;
     case "sqrt": return `sqrt(|${nodeToString(node.children[0])}|)`;
     case "exp": return `exp(${nodeToString(node.children[0])})`;
+    case "sin": return `sin(${nodeToString(node.children[0])})`;
+    case "cos": return `cos(${nodeToString(node.children[0])})`;
     case "max": return `max(${nodeToString(node.children[0])}, ${nodeToString(node.children[1])})`;
     case "min": return `min(${nodeToString(node.children[0])}, ${nodeToString(node.children[1])})`;
     case "pdiv": return `(${nodeToString(node.children[0])} / ${nodeToString(node.children[1])})`;
@@ -290,15 +296,23 @@ const PY: Record<NodeOp, string> = {
   sq: "({a} * {a})", cube: "({a} * {a} * {a})", sqrt: "torch.sqrt(torch.abs({a}))",
   max: "torch.maximum({a}, {b})", min: "torch.minimum({a}, {b})",
   exp: "torch.exp(torch.clamp({a}, -50.0, 50.0))",
+  sin: "torch.sin({a})", cos: "torch.cos({a})",
 };
 
 export function toPython(node: SpearNode, fnName = "spear_fn"): string {
   const walk = (nd: SpearNode): string => {
+    if (!nd) return "0";
     if (nd.op === "var") return nd.name;
     if (nd.op === "const") return fmt(nd.value);
+    const tpl = PY[nd.op];
+    if (!tpl) {
+      // eslint-disable-next-line no-console
+      console.error(`[toPython] op inconnu "${String(nd.op)}" — arbre: ${JSON.stringify(node).slice(0, 300)}`);
+      return "0";
+    }
     if (nd.op === "cube") return `(${walk(nd.children[0])} ** 3)`;
-    if (UNARY.has(nd.op)) return PY[nd.op].replace(/\{a\}/g, walk(nd.children[0]));
-    return PY[nd.op].replace(/\{a\}/g, walk(nd.children[0])).replace(/\{b\}/g, walk(nd.children[1]));
+    if (UNARY.has(nd.op)) return tpl.replace(/\{a\}/g, walk(nd.children[0]));
+    return tpl.replace(/\{a\}/g, walk(nd.children[0])).replace(/\{b\}/g, walk(nd.children[1]));
   };
   const args = [...new Set(collectVarNames(node))].join(", ");
   return `import torch\n\ndef ${fnName}(${args}):\n    # Evolved by SPEAR — zero transcendental ops (exp/erf/tanh free)\n    return ${walk(node)}`;
@@ -316,6 +330,8 @@ export function toC(node: SpearNode, fnName = "spear_fn", varDecl = "const float
       case "cube": return `powf(${walk(nd.children[0])}, 3.0f)`;
       case "sqrt": return `sqrtf(fabsf(${walk(nd.children[0])}))`;
       case "exp": return `expf(fmaxf(-50.0f, fminf(50.0f, ${walk(nd.children[0])})))`;
+      case "sin": return `sinf(${walk(nd.children[0])})`;
+      case "cos": return `cosf(${walk(nd.children[0])})`;
       case "max": return `fmaxf(${walk(nd.children[0])}, ${walk(nd.children[1])})`;
       case "min": return `fminf(${walk(nd.children[0])}, ${walk(nd.children[1])})`;
       case "pdiv": return `(${walk(nd.children[0])} / ${walk(nd.children[1])})`;

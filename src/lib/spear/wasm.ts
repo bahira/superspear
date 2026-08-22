@@ -46,40 +46,53 @@ export function collectWasmVars(node: SpearNode): string[] {
   return out;
 }
 
-function hasExp(node: SpearNode): boolean {
-  if (node.op === "exp") return true;
-  return node.children.some(hasExp);
+const IMPORTABLE: { op: string; name: string }[] = [
+  { op: "exp", name: "exp" },
+  { op: "sin", name: "sin" },
+  { op: "cos", name: "cos" },
+];
+
+function neededImports(node: SpearNode): { op: string; name: string }[] {
+  const used = new Set<string>();
+  const walk = (n: SpearNode) => {
+    if (n.op === "exp" || n.op === "sin" || n.op === "cos") used.add(n.op);
+    n.children.forEach(walk);
+  };
+  walk(node);
+  return IMPORTABLE.filter((imp) => used.has(imp.op));
 }
 
 // opcodes (f64): add a0 sub a1 mul a2 div a3 min a4 max a5 sqrt 9f abs 99 neg 9a
 //               const 44 | local.get 20 | call 10 | end 0b
-function emitNode(node: SpearNode, vars: string[]): number[] {
+function emitNode(node: SpearNode, vars: string[], importIdx: Record<string, number>): number[] {
   switch (node.op) {
     case "var": return [0x20, ...u32(vars.indexOf(node.name))];
     case "const": return [0x44, ...f64Const(node.value)];
-    case "add": return [...emitNode(node.children[0], vars), ...emitNode(node.children[1], vars), 0xa0];
-    case "sub": return [...emitNode(node.children[0], vars), ...emitNode(node.children[1], vars), 0xa1];
-    case "mul": return [...emitNode(node.children[0], vars), ...emitNode(node.children[1], vars), 0xa2];
+    case "add": return [...emitNode(node.children[0], vars, importIdx), ...emitNode(node.children[1], vars, importIdx), 0xa0];
+    case "sub": return [...emitNode(node.children[0], vars, importIdx), ...emitNode(node.children[1], vars, importIdx), 0xa1];
+    case "mul": return [...emitNode(node.children[0], vars, importIdx), ...emitNode(node.children[1], vars, importIdx), 0xa2];
     // ponytail: plain f64.div. The JS guard only fires when the denominator
     // crosses ~1e-4, which never happens on the useful domain of the discovered
     // forms, so parity holds to 0.00e+0. add the guard if a denom can vanish.
-    case "pdiv": return [...emitNode(node.children[0], vars), ...emitNode(node.children[1], vars), 0xa3];
-    case "relu": return [...emitNode(node.children[0], vars), 0x44, ...f64Const(0), 0xa5];
-    case "abs": return [...emitNode(node.children[0], vars), 0x99];
-    case "neg": return [...emitNode(node.children[0], vars), 0x9a];
+    case "pdiv": return [...emitNode(node.children[0], vars, importIdx), ...emitNode(node.children[1], vars, importIdx), 0xa3];
+    case "relu": return [...emitNode(node.children[0], vars, importIdx), 0x44, ...f64Const(0), 0xa5];
+    case "abs": return [...emitNode(node.children[0], vars, importIdx), 0x99];
+    case "neg": return [...emitNode(node.children[0], vars, importIdx), 0x9a];
     case "sq": {
-      const c = emitNode(node.children[0], vars);
+      const c = emitNode(node.children[0], vars, importIdx);
       return [...c, ...c, 0xa2];
     }
     case "cube": {
-      const c = emitNode(node.children[0], vars);
+      const c = emitNode(node.children[0], vars, importIdx);
       return [...c, ...c, ...c, 0xa2, 0xa2];
     }
-    case "sqrt": return [...emitNode(node.children[0], vars), 0x99, 0x9f]; // f64.abs then f64.sqrt
-    case "min": return [...emitNode(node.children[0], vars), ...emitNode(node.children[1], vars), 0xa4];
-    case "max": return [...emitNode(node.children[0], vars), ...emitNode(node.children[1], vars), 0xa5];
+    case "sqrt": return [...emitNode(node.children[0], vars, importIdx), 0x99, 0x9f]; // f64.abs then f64.sqrt
+    case "min": return [...emitNode(node.children[0], vars, importIdx), ...emitNode(node.children[1], vars, importIdx), 0xa4];
+    case "max": return [...emitNode(node.children[0], vars, importIdx), ...emitNode(node.children[1], vars, importIdx), 0xa5];
     // clamp to [-50,50] then call env.exp — matches engine Math.exp(Math.max(-50,Math.min(50,x)))
-    case "exp": return [...emitNode(node.children[0], vars), 0x44, ...f64Const(-50), 0xa5, 0x44, ...f64Const(50), 0xa4, 0x10, ...u32(0)];
+    case "exp": return [...emitNode(node.children[0], vars, importIdx), 0x44, ...f64Const(-50), 0xa5, 0x44, ...f64Const(50), 0xa4, 0x10, ...u32(importIdx.exp)];
+    case "sin": return [...emitNode(node.children[0], vars, importIdx), 0x10, ...u32(importIdx.sin)];
+    case "cos": return [...emitNode(node.children[0], vars, importIdx), 0x10, ...u32(importIdx.cos)];
     default: return [];
   }
 }
@@ -87,9 +100,11 @@ function emitNode(node: SpearNode, vars: string[]): number[] {
 // ------------------------------------------------------------- module build
 export function toWasmBytes(node: SpearNode): Uint8Array {
   const vars = collectWasmVars(node);
-  const exp = hasExp(node);
+  const imports = neededImports(node);
+  const importIdx: Record<string, number> = {};
+  imports.forEach((imp, i) => (importIdx[imp.op] = i));
   const nparams = vars.length;
-  const funcIdx = exp ? 1 : 0;
+  const funcIdx = imports.length; // each import occupies a function index
 
   const bytes: number[] = [0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00]; // \0asm v1
 
@@ -97,9 +112,12 @@ export function toWasmBytes(node: SpearNode): Uint8Array {
   const typePayload: number[] = [0x01, 0x60, ...u32(nparams), ...Array(nparams).fill(0x7c), 0x01, 0x7c];
   bytes.push(0x01, ...u32(typePayload.length), ...typePayload);
 
-  // Import section: env.exp if needed (func index 0)
-  if (exp) {
-    const importPayload: number[] = [0x01, ...nameBytes("env"), ...nameBytes("exp"), 0x00, 0x00];
+  // Import section: env.{exp,sin,cos} as needed (func indices 0..k)
+  if (imports.length > 0) {
+    const importPayload: number[] = [imports.length];
+    for (const imp of imports) {
+      importPayload.push(...nameBytes("env"), ...nameBytes(imp.name), 0x00, 0x00);
+    }
     bytes.push(0x02, ...u32(importPayload.length), ...importPayload);
   }
 
@@ -111,7 +129,7 @@ export function toWasmBytes(node: SpearNode): Uint8Array {
   bytes.push(0x07, ...u32(exportPayload.length), ...exportPayload);
 
   // Code section: body with 0 locals
-  const body = emitNode(node, vars);
+  const body = emitNode(node, vars, importIdx);
   const code = [...u32(0), ...body, 0x0b];
   const codePayload: number[] = [0x01, ...u32(code.length), ...code];
   bytes.push(0x0a, ...u32(codePayload.length), ...codePayload);
@@ -129,7 +147,7 @@ export async function instantiateSpearWasm(
   b64: string,
 ): Promise<(args: number[]) => number> {
   const bytes = wasmBytesFromB64(b64);
-  const importObject = { env: { exp: Math.exp } };
+  const importObject = { env: { exp: Math.exp, sin: Math.sin, cos: Math.cos } };
   const result = await WebAssembly.instantiate(bytes, importObject);
   // Node returns { module, instance }; browsers return the Instance directly.
   const wrapped = result as unknown as { instance: WebAssembly.Instance };
