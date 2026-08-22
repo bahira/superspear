@@ -71,7 +71,7 @@ Lesson learned (twice now): discovery quality depends less on budget than on whi
 | **Damped oscillation e^(−t/τ)cos(ωt)** 📡 | **3.1e-4** | ×1.63 | polynomial envelope × carrier: `(t−16.4)(t−8.3)·cos(2.996t)` — amplitude modulation | DSP staple |
 | **Logistic growth** 📈 | **7.9e-5** | ×0.65 | level 2 saturation curve | adoption / population model |
 | **European call premium** 💰 | 1.77e-1 | ×1.00 | `19.22·(1+σ)³ − 19.11` — level 5 | Black-Scholes ATM approx |
-| **Inverted-pendulum hybrid control** 🎛️ | **2.04** | ×7.52 | cheap surrogate of the full 173-unit law — `d·cos(5.05·th/d)` form | textbook Pareto trade-off point |
+| **Inverted-pendulum hybrid control** 🎛️ | **2.04** | ×3.76 | cheap surrogate of the full 173-unit law — `d·cos(5.05·th/d)` form | textbook Pareto trade-off point |
 
 ### From the SPEAR CODEX (3DSPEAR) — new hunting grounds
 
@@ -243,7 +243,7 @@ scripts/          # hall-of-fame ledger, export audit, parallel farm
 - "Oracle" baselines (the exact law, future attention) bound achievable scores: beating the *deployable* baselines is the real signal.
 - Regression milestones are calibrated against the **measured noise floor**, not arbitrary thresholds.
 - Speed multipliers marked "—" predate the cost-model extension; they backfill automatically whenever a run reproduces the champion formula (speedup is a pure function of the AST).
-- A ×7.52 entry with poor accuracy (inverted-pendulum control) is displayed exactly as that: the search surfaced a cheap-but-crude surrogate — a legitimate Pareto point, not hidden behind the headline number.
+- The inverted-pendulum control surrogate (×3.76 vs the 173-unit exact law, moderate accuracy) is displayed exactly as that: the search surfaced a cheap-but-crude controller — a legitimate Pareto point, not hidden behind the headline number.
 
 ## Provenance
 

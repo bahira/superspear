@@ -2128,26 +2128,6 @@
       ]
     }
   },
-  "Prime d'un call europ├®e": {
-    "taskId": "Prime d'un call europ├®e",
-    "title": "Prime d'un call europ├®en",
-    "direction": "min",
-    "metric": 0.206371,
-    "level": 5,
-    "formula": "((1.425388 * max(-2.468427, ((3.09605 + |sigma|))┬│)) + -42.398873)",
-    "seed": 777888,
-    "iteration": 8
-  },
-  "Vid├®o ┬À gradient tempo": {
-    "taskId": "Vid├®o ┬À gradient tempo",
-    "title": "Vid├®o ┬À gradient temporel ÔêéI/Ôêét",
-    "direction": "min",
-    "metric": 0,
-    "level": 2,
-    "formula": "(1.001081 * sin((b - a)))",
-    "seed": 12345,
-    "iteration": 156
-  },
   "eigen3_sym": {
     "taskId": "eigen3_sym",
     "title": "Valeur propre max 3×3 symétrique (BT29)",
