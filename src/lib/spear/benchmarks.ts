@@ -734,6 +734,8 @@ function buildRegressionTask(cfg: {
   trueLaw: (vars: Record<string, Float64Array>, i: number) => number;
   /** the generating law as an AST — gives the cost model its reference kernel */
   exactLaw?: SpearNode;
+  /** task-specific generic shapes appended to the shared seed pool */
+  extraSeeds?: SpearNode[];
   verify: (node: SpearNode) => string | null;
 }): TaskDef {
   const { vars, y } = cfg.build();
@@ -821,6 +823,13 @@ function buildRegressionTask(cfg: {
       // generic exponential decay primitive — the missing building block for
       // first-order relaxation laws (RC, damping). A primitive, not a law.
       makeNode("exp", { children: [makeNode("neg", { children: [makeNode("var", { name: varNames[0] })] })] }),
+      // generic inverse primitives — reciprocal powers appear everywhere in
+      // physics kernels (deflection ~1/b, potentials ~1/r^n)
+      makeNode("pdiv", { children: [makeNode("const", { value: 1 }), makeNode("var", { name: varNames[0] })] }),
+      makeNode("sq", { children: [makeNode("pdiv", { children: [makeNode("const", { value: 1 }), makeNode("var", { name: varNames[0] })] })] }),
+      // rsqrt family: pdiv(c, sqrt(c2 ± d·x²)) covers relativistic/normalisation
+      // denominators; only the SHAPE is seeded, constants stay tunable
+      ...(cfg.extraSeeds ?? []),
     ],
     baselines: [
       { name: "Loi exacte (plancher de bruit)", metric: noiseFloor, note: "MSE de la vraie loi sur les données bruitées — optimum atteignable", kind: "oracle", formula: cfg.groundTruth },
@@ -1166,7 +1175,7 @@ function pendulumHybridData(): { vars: Record<string, Float64Array>; y: Float64A
 // ---------------------------------------------------------------------------
 
 export function buildTasks(): TaskDef[] {
-  return [
+  const all: TaskDef[] = [
     buildActivationTask({
       id: "silu",
       title: "SiLU / Swish (LLaMA · Mistral · Qwen — SwiGLU)",
@@ -1424,6 +1433,13 @@ export function buildTasks(): TaskDef[] {
       varNames: ["b"],
       build: lorentzData,
       trueLaw: (v, i) => 1 / Math.sqrt(1 - v.b[i] * v.b[i]),
+      extraSeeds: [
+        // rsqrt-family shapes (relativistic / normalisation denominators):
+        // pdiv(c, sqrt(c2 ± d·x²)) — both polarities, constants tunable
+        makeNode("pdiv", { children: [makeNode("const", { value: 1 }), makeNode("sqrt", { children: [makeNode("add", { children: [makeNode("const", { value: 1 }), makeNode("neg", { children: [makeNode("sq", { children: [makeNode("var", { name: "b" })] })] })] })] })] }),
+        makeNode("pdiv", { children: [makeNode("const", { value: 1 }), makeNode("sqrt", { children: [makeNode("sub", { children: [makeNode("sq", { children: [makeNode("var", { name: "b" })] }), makeNode("const", { value: 1 })] })] })] }),
+        makeNode("pdiv", { children: [makeNode("const", { value: 1 }), makeNode("add", { children: [makeNode("const", { value: 1 }), makeNode("neg", { children: [makeNode("sq", { children: [makeNode("var", { name: "b" })] })] })] })] }),
+      ],
       verify: (node) => {
         const c = evaluateScalar(node, { b: 0.5 });
         if (!Number.isFinite(c)) return null;
@@ -1604,6 +1620,12 @@ export function buildTasks(): TaskDef[] {
       },
     }),
   ];
+
+  // optional subset filter for parallel farm workers (SPEAR_TASKS="id1,id2")
+  const filter = process.env.SPEAR_TASKS;
+  if (!filter) return all;
+  const keep = new Set(filter.split(","));
+  return all.filter((t) => keep.has(t.id));
 }
 
 export function taskOpProfile(node: SpearNode): { total: number; transcendental: number } {

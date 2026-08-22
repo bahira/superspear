@@ -26,10 +26,10 @@ Best discoveries across all seeds (full ledger: [`spear-hall-of-fame.json`](./sp
 
 | Task | Record | ⚡ Speed | Discovered formula | Seed |
 |---|---|---|---|---|
-| **Kerr light deflection** (weak field) | **5.4e-5** | ×1.13 | rational form in `1/(b+c)` | 9999 |
-| **Kerr deflection with spin a≠0** 🆕 (Lense-Thirring) | **2.9e-5** | ×1.75 | `15.27·(√b/b)/b + 0.053` | 9999 |
-| **Lorentz factor γ(β)** | 2.4e-2 | ×0.30 | exponential domain fit on β ∈ [0, 0.99] | 424242 |
-| **KdV soliton** 🆕 | 9.6e-2 | ×2.04 | travelling-wave approximation of `2·sech²(x−4t)` | 9999 |
+| **Kerr light deflection** (weak field) | **1.4e-7** | ×1.31 | rational form recovered near-exactly | 777 |
+| **Kerr deflection with spin a≠0** (Lense-Thirring) | **1.4e-7** | ×1.50 | two-var rational form | 777 |
+| **Lorentz factor γ(β)** | **0 (exact)** | ×0.89 | `1/√(1 − b²)` — full relativistic law, level 5 | 4242 |
+| **KdV soliton** | **7.4e-3** | ×1.96 | travelling-wave approx of `2·sech²(x−4t)` | 777 |
 
 ### LLM / image kernels replaced by pure algebra
 
@@ -40,8 +40,8 @@ Best discoveries across all seeds (full ledger: [`spear-hall-of-fame.json`](./sp
 | **SiLU/Swish** | 8.3e-4 | **×2.43** | `x·(0.501 + 0.589·x/(0.83 + √(1+x²)))` | HardSwish, ReLU |
 | **GELU** | 5.3e-4 | **×6.57** | `x·min(1.002, relu(0.308x + 0.501))` | GELU-tanh |
 | **Sigmoid** | 0 (exact)* | ×1.26 | `1 − 1/(1 + e⁻ˣ)` | Hard-sigmoid TFLite |
-| **Softplus ln(1+eˣ)** 🆕 | 3.9e-3 | ×1.64 | algebraic rational approximant | smooth ReLU kernels |
-| **Deep-RL actor distillation** | 2.3e-4 | **×2.83** | `(x + 0.145x³)/(0.556 + 0.75x²)` — Padé [3/2] found **spontaneously** | tanh network |
+| **Deep-RL actor distillation** | 1.6e-4 | **×2.83** | `(x + 0.145x³)/(0.556 + 0.75x²)` — Padé [3/2] found **spontaneously** | tanh network |
+| **Softplus ln(1+eˣ)** | 1.4e-3 | ×5.13 | algebraic rational approximant | smooth ReLU kernels |
 
 \* the sigmoid task allows `exp` as a primitive — the point is cost comparison, not algebraic purity.
 
@@ -49,11 +49,11 @@ Best discoveries across all seeds (full ledger: [`spear-hall-of-fame.json`](./sp
 
 | Task | Record | ⚡ Speed | Discovered formula | Note |
 |---|---|---|---|---|
-| **Hill dose-response** 🏥 | 9.2e-4 | **×1.80** | `0.532·min(c, min(c², 1.83)) − 0.017` | cheaper than the EC50 law at equal accuracy |
-| **Lennard-Jones 12-6 potential** 🧪 | 9.0e-2 | **×2.83** | compact rational form of the double-well | repulsive+attractive terms |
+| **Hill dose-response** 🏥 | 7.2e-4 | — | blended rational/saturation form | cheaper than the EC50 law at equal accuracy |
+| **Lennard-Jones 12-6 potential** 🧪 | **4.4e-4** | ×0.55 | inverse-power rational double-well | repulsive+attractive terms |
 | **Damped oscillation e^(−t/τ)cos(ωt)** 📡 | 2.4e-2 | ×1.69 | exp-decay envelope × carrier | DSP staple |
 | **Logistic growth** 📈 | 5.4e-4 | ×1.00 | saturation curve recovered | adoption / population model |
-| **Inverted-pendulum hybrid control** 🎛️ | 3.2 | **×34.60** | trivial cheap surrogate of the full law | textbook Pareto trade-off point |
+| **Inverted-pendulum hybrid control** 🎛️ | 2.1 | ×7.52 | cheap surrogate of the full 173-unit law | textbook Pareto trade-off point |
 
 ### Decision-making (KV-cache)
 
@@ -118,9 +118,14 @@ npx tsx scripts/hall-of-fame.ts
 # MISRA lint + gcc compile + C↔WASM parity + wall-clock benchmarks
 npx tsx scripts/export-audit.ts [seed] [budget]
 
+# Parallel farm: N worker processes on disjoint task slices (uses all cores)
+npx tsx scripts/run-farm.ts [seed] [budget] [workers]
+
 # Op-by-op WASM parity smoke test
 npx tsx wasm-smoke.test.ts
 ```
+
+The farm splits the task registry across worker processes via a `SPEAR_TASKS` filter, runs them concurrently inside the same 45 s window, and merges records into the ledger — a full 27-task sweep at budget 1000 completes in ~30 s wall instead of exceeding the single-process deadline.
 
 ## Reproducibility
 

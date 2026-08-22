@@ -3,11 +3,11 @@
     "taskId": "silu",
     "title": "SiLU / Swish (LLaMA · Mistral · Qwen — SwiGLU)",
     "direction": "min",
-    "metric": 0.0008267579615530246,
+    "metric": 0.0008182706992436293,
     "level": 2,
-    "formula": "((0.997331 * (x * (0.501 + (0.589 * (x / (0.83 + sqrt(|(1 + (x)²)|))))))) + -0.001848)",
-    "seed": 424242,
-    "iteration": 40,
+    "formula": "((0.997306 * (x * (0.501 + (0.589 * (x / (0.83 + sqrt(|(0.962263 + (x)Â²)|))))))) + -0.003423)",
+    "seed": 4242,
+    "iteration": 37,
     "speed": {
       "formulaCost": 14,
       "exactCost": 34,
@@ -81,33 +81,38 @@
   },
   "gaussian_cdf": {
     "taskId": "gaussian_cdf",
-    "title": "R├®partition gaussienne ╬ª(x)",
+    "title": "Répartition gaussienne Φ(x)",
     "direction": "min",
-    "metric": 0.000295,
+    "metric": 0.0002696727132265258,
     "level": 2,
-    "formula": "((0.000049 * ((0.666498 * x) / 0.000034)) + 0.5)",
-    "seed": 314159,
-    "iteration": 237
+    "formula": "((0.941033 * (x / exp(sqrt(|x|)))) + 0.5)",
+    "seed": 777,
+    "iteration": 112,
+    "speed": {
+      "formulaCost": 28,
+      "exactCost": 34,
+      "speedup": 1.2142857142857142
+    }
   },
   "damped_pendulum": {
     "taskId": "damped_pendulum",
     "title": "Pendule amorti · état terminal",
     "direction": "min",
-    "metric": 0.08867660316844267,
-    "level": 0,
-    "formula": "((-1.453241 * (sin(relu(t)) + max(sin((t)Â²), -0.562264))) + 1.535681)",
-    "seed": 9999,
-    "iteration": 32
+    "metric": 0.0700401848625212,
+    "level": 2,
+    "formula": "((-2.5927 * relu(sin(((2.265538 - t))Â²))) + 1.015726)",
+    "seed": 777,
+    "iteration": 112
   },
   "rl_distillation": {
     "taskId": "rl_distillation",
     "title": "Distillation d'acteur Deep-RL",
     "direction": "min",
-    "metric": 0.0002275119729711842,
+    "metric": 0.00015509445364142197,
     "level": 2,
-    "formula": "(1.105217 * ((x + (0.145 * (x)³)) / (0.556 + (0.75 * (x)²))))",
-    "seed": 424242,
-    "iteration": 39,
+    "formula": "(1.143472 * ((x + (0.135 * (x)Â³)) / (0.584 + (0.75 * (x)Â²))))",
+    "seed": 777,
+    "iteration": 106,
     "speed": {
       "formulaCost": 12,
       "exactCost": 34,
@@ -213,71 +218,71 @@
     "taskId": "lorentz",
     "title": "Facteur de Lorentz γ(β)",
     "direction": "min",
-    "metric": 0.023874582304929858,
-    "level": 2,
-    "formula": "((0.301139 * (exp(((b)²)³))³) + 0.817314)",
-    "seed": 424242,
-    "iteration": 39,
+    "metric": 0,
+    "level": 5,
+    "formula": "(1 / sqrt(|(1 + (-(b)Â²))|))",
+    "seed": 4242,
+    "iteration": 28,
     "speed": {
-      "formulaCost": 27,
+      "formulaCost": 9,
       "exactCost": 8,
-      "speedup": 0.2962962962962963
+      "speedup": 0.8888888888888888
     }
   },
   "hill": {
     "taskId": "hill",
     "title": "Équation de Hill · dose-réponse",
     "direction": "min",
-    "metric": 0.0009225802066077555,
+    "metric": 0.0007158477212275259,
     "level": 2,
-    "formula": "((0.531674 * min(c, min((c)², 1.833607))) + -0.016796)",
-    "seed": 424242,
-    "iteration": 40,
+    "formula": "((-1.836064 * sqrt(|exp((-exp(c)))|)) + 0.966739)",
+    "seed": 777,
+    "iteration": 112,
     "speed": {
-      "formulaCost": 5,
+      "formulaCost": 45,
       "exactCost": 9,
-      "speedup": 1.8
+      "speedup": 0.2
     }
   },
   "kerr": {
     "taskId": "kerr",
     "title": "Déflexion de Kerr · lentille gravitationnelle",
     "direction": "min",
-    "metric": 0.000053518710284727524,
+    "metric": 1.39756685796311e-7,
     "level": 2,
-    "formula": "((22.758509 * (((0.203535 - (b / -3.979722)) + 1.518726) / (((2 * b) + -1.502615) * b))) + 0.028891)",
-    "seed": 9999,
-    "iteration": 38,
+    "formula": "((4.044113 * (((2.83748 + (10.692104 / b)) + b) / (b)Â²)) + -0.001252)",
+    "seed": 777,
+    "iteration": 132,
     "speed": {
-      "formulaCost": 15,
+      "formulaCost": 13,
       "exactCost": 17,
-      "speedup": 1.1333333333333333
+      "speedup": 1.3076923076923077
     }
   },
   "lennard_jones": {
     "taskId": "lennard_jones",
     "title": "Potentiel de Lennard-Jones 12-6",
     "direction": "min",
-    "metric": 0.09024945428800926,
-    "level": 0,
-    "formula": "((-39.616884 * min(0.965303, |(-(r)Â²)|)) + 38.029896)",
-    "seed": 9999,
-    "iteration": 27,
+    "metric": 0.0004361391643108304,
+    "level": 2,
+    "formula": "((24.470596 * (-(log(max(r, 1e-30)) / ((r)Â³)Â³))) + -0.025536)",
+    "seed": 777,
+    "iteration": 116,
     "speed": {
-      "formulaCost": 6,
+      "formulaCost": 31,
       "exactCost": 17,
-      "speedup": 2.8333333333333335
+      "speedup": 0.5483870967741935
     }
   },
   "damped_oscillation": {
     "taskId": "damped_oscillation",
     "title": "Oscillation amortie e^(−t/τ)·cos(ωt)",
     "direction": "min",
-    "metric": 0.023777308465030934,
+    "metric": 0.023729880255433135,
     "level": 0,
-    "formula": "((0.538101 * cos((t / 0.334048))) + 0.024182)",
-    "seed": 9999,
-    "iteration": 33,
+    "formula": "((0.52895 * cos((t / 0.333608))) + 0.01099)",
+    "seed": 777,
+    "iteration": 130,
     "speed": {
       "formulaCost": 26,
       "exactCost": 44,
@@ -303,60 +308,60 @@
     "taskId": "softplus",
     "title": "Softplus ln(1+eˣ)",
     "direction": "min",
-    "metric": 0.003904308333650711,
+    "metric": 0.001439977727276241,
     "level": 2,
-    "formula": "((1.916259 * max((exp((0.254153 * x)) + 0.96026), 1.572202)) + -2.954874)",
-    "seed": 9999,
-    "iteration": 35,
+    "formula": "((0.021589 * (max((x + (5.827448 + x)), sqrt(|x|)))Â²) + -0.00224)",
+    "seed": 4242,
+    "iteration": 32,
     "speed": {
-      "formulaCost": 25,
+      "formulaCost": 8,
       "exactCost": 41,
-      "speedup": 1.64
+      "speedup": 5.125
     }
   },
   "kdv_soliton": {
     "taskId": "kdv_soliton",
     "title": "Soliton KdV · sech²",
     "direction": "min",
-    "metric": 0.09632119176583036,
-    "level": 0,
-    "formula": "((-0.000117 * (exp(x) / -0.020085)) + 0.00351)",
-    "seed": 9999,
-    "iteration": 27,
+    "metric": 0.00741453057207225,
+    "level": 2,
+    "formula": "((0.954305 * max(0.796733, (max(0, t) - sin((t)Â³)))) + -0.753688)",
+    "seed": 777,
+    "iteration": 118,
     "speed": {
-      "formulaCost": 26,
+      "formulaCost": 27,
       "exactCost": 53,
-      "speedup": 2.0384615384615383
+      "speedup": 1.962962962962963
     }
   },
   "kerr_spin": {
     "taskId": "kerr_spin",
     "title": "Déflexion Kerr avec spin (Lense-Thirring)",
     "direction": "min",
-    "metric": 0.000028555260952627146,
+    "metric": 1.4122603373783278e-7,
     "level": 2,
-    "formula": "((15.266012 * ((sqrt(|b|) / b) / b)) + 0.05279)",
-    "seed": 9999,
-    "iteration": 27,
+    "formula": "((5.126761 * (((s / b) - (2.672909 - b)) / (s - (2.262276 - b)))) + -4.894208)",
+    "seed": 777,
+    "iteration": 116,
     "speed": {
-      "formulaCost": 12,
+      "formulaCost": 14,
       "exactCost": 21,
-      "speedup": 1.75
+      "speedup": 1.5
     }
   },
   "pendulum_hybrid": {
     "taskId": "pendulum_hybrid",
     "title": "Contrôle hybride pendule inversé",
     "direction": "min",
-    "metric": 3.1679931472132608,
+    "metric": 2.1414286945178356,
     "level": 0,
-    "formula": "((0.138265 * (d * sqrt(|th|))) + -0.023112)",
-    "seed": 9999,
-    "iteration": 27,
+    "formula": "((-0.480535 * (cos(th) * d)) + -0.033899)",
+    "seed": 777,
+    "iteration": 112,
     "speed": {
-      "formulaCost": 5,
+      "formulaCost": 23,
       "exactCost": 173,
-      "speedup": 34.6
+      "speedup": 7.521739130434782
     }
   }
 }
