@@ -73,6 +73,18 @@ Lesson learned (twice now): discovery quality depends less on budget than on whi
 | **European call premium** 💰 | 1.77e-1 | ×1.00 | `19.22·(1+σ)³ − 19.11` — level 5 | Black-Scholes ATM approx |
 | **Inverted-pendulum hybrid control** 🎛️ | **2.04** | ×7.52 | cheap surrogate of the full 173-unit law — `d·cos(5.05·th/d)` form | textbook Pareto trade-off point |
 
+### From the SPEAR CODEX (3DSPEAR) — new hunting grounds
+
+Three Codex entries became reproducible benchmark tasks, with the iterative solvers they replace priced as honest baselines:
+
+| Task | Codex source | Replaces | Record | vs solver |
+|---|---|---|---|---|
+| **eigen3_sym** — λmax of symmetric 3×3 from its invariants | BT29 Cardano trisection | Jacobi/QR sweeps (~200 units) | 3.6e-2, L1, 13 units | **×15 vs Jacobi · 4 balayages** |
+| **ik_reach** — 2-link elbow angle from reach & lengths | BT33 analytic IK | Newton-DLS chains (~320 units) | 2.2e-3, L2, 16 units | **×20 vs Newton-DLS · 8 it.** |
+| **idm_following** — Intelligent-Driver-Model acceleration | city.ts traffic phase B | hand-tuned law only | open challenge (L0) | — |
+
+Both eigen and IK truths require `acos`, a transcendental the engine deliberately does not serve — the GP must rebuild the triple-angle / inverse-cosine shape from algebra alone, exactly the Padé-style discipline the Codex doctrine prescribes.
+
 ### ⚡ vs iterative solvers — the honest big multipliers
 
 For several tasks the *standard* way to compute the answer is not another closed form but an **iterative numerical solver**. Counting the solver's full bill (every iteration, in ALU/SFU units) against our O(1) formula gives large — and legitimate — accelerations:

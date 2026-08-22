@@ -787,6 +787,11 @@ const ITERATIVE_BASELINES: Record<string, { label: string; totalCost: number }> 
   damped_pendulum: { label: "Euler-Cromer · 60 pas", totalCost: 1500 },
   damped_oscillation: { label: "RKF45 · 300 pas", totalCost: 5400 },
   gaussian_cdf: { label: "Monte-Carlo · 1000 tirages", totalCost: 46000 },
+  // SPEAR CODEX additions:
+  //  Jacobi on 3x3: ~4 sweeps x 3 rotations x ~17 u (matrix update + sqrt) = 200
+  eigen3_sym: { label: "Jacobi · 4 balayages", totalCost: 200 },
+  //  Newton-DLS IK: 8 iterations x Jacobian + 2x2 damped solve ~ 40 u = 320
+  ik_reach: { label: "Newton-DLS · 8 itérations", totalCost: 320 },
 };
 
 function buildRegressionTask(cfg: {
@@ -1240,6 +1245,71 @@ function pendulumHybridData(): { vars: Record<string, Float64Array>; y: Float64A
   return { vars: { th, d: thd }, y };
 }
 
+// --- SPEAR CODEX imports (BT29 / BT33 / city.ts IDM) -----------------------
+
+function eigenSymData(): { vars: Record<string, Float64Array>; y: Float64Array } {
+  // BT29: lambda_max of a random symmetric 3x3, featured by its three
+  // principal invariants (tr, I2, det). The closed form needs acos — a
+  // transcendental the engine does NOT serve — so the GP must approximate
+  // the triple-angle shape with algebra alone.
+  const rows = 500;
+  const i1 = new Float64Array(rows), i2 = new Float64Array(rows), i3 = new Float64Array(rows);
+  const y = new Float64Array(rows);
+  for (let i = 0; i < rows; i++) {
+    const r = (k: number) => -2 + 4 * ((i * k) % 1);
+    const a = r(0.319), b = r(0.527), c = r(0.737), dd = r(0.411), ee = r(0.643), ff = r(0.859);
+    i1[i] = a + dd + ff;
+    i2[i] = a * dd + a * ff + dd * ff - b * b - c * c - ee * ee;
+    i3[i] = a * (dd * ff - ee * ee) - b * (b * ff - c * ee) + c * (b * ee - c * dd);
+    // largest root of l^3 - i1 l^2 + i2 l - i3 = 0 (three real roots)
+    const p = i2[i] - (i1[i] * i1[i]) / 3;
+    const q = (i1[i] * i2[i]) / 3 - (2 * i1[i] * i1[i] * i1[i]) / 27 - i3[i];
+    const rr = Math.sqrt(Math.max(0, -p / 3));
+    const arg = Math.max(-1, Math.min(1, (3 * q) / (2 * p) * Math.sqrt(-3 / p)));
+    y[i] = i1[i] / 3 + 2 * rr * Math.cos(Math.acos(arg) / 3);
+  }
+  return { vars: { t: i1, u: i2, w: i3 }, y };
+}
+
+function ikReachData(): { vars: Record<string, Float64Array>; y: Float64Array } {
+  // BT33: elbow angle of a 2-link arm from reach and link lengths. Truth is
+  // acos(clamped law-of-cosines ratio) — again an unserved transcendental.
+  const rows = 500;
+  const dv = new Float64Array(rows), l2v = new Float64Array(rows), l3v = new Float64Array(rows);
+  const y = new Float64Array(rows);
+  for (let i = 0; i < rows; i++) {
+    const l2 = 1 + 2 * ((i * 0.6180339887) % 1);
+    const l3 = 1 + 2 * ((i * 0.7548776662) % 1);
+    const lo = Math.abs(l2 - l3) + 0.25;
+    const hi = l2 + l3 - 0.25;
+    const d = lo + (hi - lo) * ((i * 0.4192388219) % 1);
+    const cosQ = Math.max(-1, Math.min(1, (d * d - l2 * l2 - l3 * l3) / (2 * l2 * l3)));
+    dv[i] = d; l2v[i] = l2; l3v[i] = l3;
+    y[i] = Math.acos(cosQ);
+  }
+  return { vars: { d: dv, l2: l2v, l3: l3v }, y };
+}
+
+function idmFollowingData(): { vars: Record<string, Float64Array>; y: Float64Array } {
+  // city.ts traffic phase B: Intelligent-Driver-Model acceleration law
+  // (v0=33 m/s, T=1.5 s, a=2, b=3, s0=2 m, delta=4). Fully algebraic target.
+  const rows = 500;
+  const vv = new Float64Array(rows), gv = new Float64Array(rows), dvv = new Float64Array(rows);
+  const y = new Float64Array(rows);
+  const V0 = 33, T = 1.5, AMAX = 2, BCOMF = 3, S0 = 2, SQAB = Math.sqrt(AMAX * BCOMF);
+  for (let i = 0; i < rows; i++) {
+    const v = 35 * ((i * 0.6180339887) % 1);
+    const gap = 2.5 + 70 * ((i * 0.7548776662) % 1);
+    const dvRaw = -12 + 24 * ((i * 0.4192388219) % 1);
+    const sStar = S0 + Math.max(0, v * T + (v * dvRaw) / (2 * SQAB));
+    const free = 1 - Math.pow(v / V0, 4);
+    const interact = (sStar / gap) * (sStar / gap);
+    vv[i] = v; gv[i] = gap; dvv[i] = dvRaw;
+    y[i] = Math.max(-9, Math.min(AMAX, AMAX * (free - interact)));
+  }
+  return { vars: { v: vv, s: gv, dv: dvv }, y };
+}
+
 // ---------------------------------------------------------------------------
 // Registry
 // ---------------------------------------------------------------------------
@@ -1687,6 +1757,68 @@ export function buildTasks(): TaskDef[] {
         const sat = evaluateScalar(node, { th: 3, d: 6 });
         const okSat = Number.isFinite(sat) && sat >= -2 && sat <= 2;
         return okSat ? `Loi bornée : u(0.5,1) ≈ ${up.toFixed(3)}, saturation respectée` : null;
+      },
+    }),
+    // 23. SPEAR CODEX BT29 — eigenvalue extraction without Jacobi/QR sweeps
+    buildRegressionTask({
+      id: "eigen3_sym",
+      title: "Valeur propre max 3×3 symétrique (BT29)",
+      subtitle: "λmax(tr, I₂, det) — remplace les balayages de rotations de Jacobi (Cardano a besoin d'acos, non servi)",
+      groundTruth: "λ³−I₁λ²+I₂λ−I₃=0, racine max via trisection trigonométrique",
+      rows: 500,
+      varNames: ["t", "u", "w"],
+      build: eigenSymData,
+      trueLaw: (v, i) => {
+        const p = v.u[i] - (v.t[i] * v.t[i]) / 3;
+        const q = (v.t[i] * v.u[i]) / 3 - (2 * v.t[i] ** 3) / 27 - v.w[i];
+        const rr = Math.sqrt(Math.max(0, -p / 3));
+        const arg = Math.max(-1, Math.min(1, ((3 * q) / (2 * p)) * Math.sqrt(-3 / p)));
+        return v.t[i] / 3 + 2 * rr * Math.cos(Math.acos(arg) / 3);
+      },
+      verify: (node) => {
+        const l = evaluateScalar(node, { t: 3, u: 3, w: 1 });
+        if (!Number.isFinite(l)) return null;
+        return Math.abs(l - 1) < 0.25 ? `λmax(I₃) ≈ ${l.toFixed(3)} vs 1 attendu` : null;
+      },
+    }),
+    // 24. SPEAR CODEX BT33 — analytic IK replacing Newton-DLS chains
+    buildRegressionTask({
+      id: "ik_reach",
+      title: "IK analytique coude 2-link (BT33)",
+      subtitle: "q₂(d,l₂,l₃) = acos(loi des cosinus clampée) — remplace les chaînes Newton-DLS itératives",
+      groundTruth: "cos q₂ = (d²−l₂²−l₃²)/(2·l₂·l₃), q₂ = acos(...) ∈ [0, π]",
+      rows: 500,
+      varNames: ["d", "l2", "l3"],
+      build: ikReachData,
+      trueLaw: (v, i) => {
+        const c = Math.max(-1, Math.min(1, (v.d[i] * v.d[i] - v.l2[i] * v.l2[i] - v.l3[i] * v.l3[i]) / (2 * v.l2[i] * v.l3[i])));
+        return Math.acos(c);
+      },
+      verify: (node) => {
+        const q = evaluateScalar(node, { d: 3, l2: 2, l3: 2 });
+        if (!Number.isFinite(q)) return null;
+        return Math.abs(q - 1.44547) < 0.08 ? `q₂(3,2,2) ≈ ${q.toFixed(4)} rad` : null;
+      },
+    }),
+    // 25. city.ts traffic — IDM acceleration law as pure regression target
+    buildRegressionTask({
+      id: "idm_following",
+      title: "Suivi IDM trafic urbain (city.ts)",
+      subtitle: "a(v, gap, Δv) : loi d'accélération Intelligent-Driver-Model, cible 100% algébrique",
+      groundTruth: "a = a·(1−(v/v₀)⁴ − (s*/s)²), s* = s₀ + max(0, vT + vΔv/(2√ab))",
+      rows: 500,
+      varNames: ["v", "s", "dv"],
+      build: idmFollowingData,
+      trueLaw: (v, i) => {
+        const sStar = 2 + Math.max(0, v.v[i] * 1.5 + (v.v[i] * v.dv[i]) / (2 * Math.sqrt(6)));
+        const free = 1 - Math.pow(v.v[i] / 33, 4);
+        const inter = (sStar / v.s[i]) * (sStar / v.s[i]);
+        return Math.max(-9, Math.min(2, 2 * (free - inter)));
+      },
+      verify: (node) => {
+        const a = evaluateScalar(node, { v: 20, s: 60, dv: 0 });
+        if (!Number.isFinite(a)) return null;
+        return Math.abs(a) < 0.8 ? `a(v=20, gap=60) ≈ ${a.toFixed(3)} m/s²` : null;
       },
     }),
   ];

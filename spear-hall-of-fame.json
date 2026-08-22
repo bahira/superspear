@@ -2147,5 +2147,376 @@
     "formula": "(1.001081 * sin((b - a)))",
     "seed": 12345,
     "iteration": 156
+  },
+  "eigen3_sym": {
+    "taskId": "eigen3_sym",
+    "title": "Valeur propre max 3×3 symétrique (BT29)",
+    "direction": "min",
+    "metric": 0.03599232821572146,
+    "level": 1,
+    "formula": "((0.207148 * max((((t - u) + t) + (t + (0.358639 * w))), (((0.26941 * u) - u) + (t + (0.359213 * w))))) + 1.091446)",
+    "seed": 960202,
+    "iteration": 1600,
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 0.207148
+            },
+            {
+              "o": "max",
+              "c": [
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "add",
+                      "c": [
+                        {
+                          "o": "sub",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "t"
+                            },
+                            {
+                              "o": "var",
+                              "n": "u"
+                            }
+                          ]
+                        },
+                        {
+                          "o": "var",
+                          "n": "t"
+                        }
+                      ]
+                    },
+                    {
+                      "o": "add",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "t"
+                        },
+                        {
+                          "o": "mul",
+                          "c": [
+                            {
+                              "o": "const",
+                              "v": 0.358639
+                            },
+                            {
+                              "o": "var",
+                              "n": "w"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "sub",
+                      "c": [
+                        {
+                          "o": "mul",
+                          "c": [
+                            {
+                              "o": "const",
+                              "v": 0.26941
+                            },
+                            {
+                              "o": "var",
+                              "n": "u"
+                            }
+                          ]
+                        },
+                        {
+                          "o": "var",
+                          "n": "u"
+                        }
+                      ]
+                    },
+                    {
+                      "o": "add",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "t"
+                        },
+                        {
+                          "o": "mul",
+                          "c": [
+                            {
+                              "o": "const",
+                              "v": 0.359213
+                            },
+                            {
+                              "o": "var",
+                              "n": "w"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 1.091446
+        }
+      ]
+    },
+    "speed": {
+      "formulaCost": 13,
+      "vsIterative": {
+        "label": "Jacobi · 4 balayages",
+        "speedup": 15.384615384615385
+      }
+    }
+  },
+  "ik_reach": {
+    "taskId": "ik_reach",
+    "title": "IK analytique coude 2-link (BT33)",
+    "direction": "min",
+    "metric": 0.002245031097953282,
+    "level": 2,
+    "formula": "((-0.160608 * (((4.080818 / l3) * (max(d, l3) - l2)) - ((5.542562 / l2) * (l3 - d)))) + 2.187926)",
+    "seed": 960202,
+    "iteration": 1600,
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": -0.1606079676705464
+            },
+            {
+              "o": "sub",
+              "c": [
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "pdiv",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 4.080818
+                        },
+                        {
+                          "o": "var",
+                          "n": "l3"
+                        }
+                      ]
+                    },
+                    {
+                      "o": "sub",
+                      "c": [
+                        {
+                          "o": "max",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "d"
+                            },
+                            {
+                              "o": "var",
+                              "n": "l3"
+                            }
+                          ]
+                        },
+                        {
+                          "o": "var",
+                          "n": "l2"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "pdiv",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 5.542562
+                        },
+                        {
+                          "o": "var",
+                          "n": "l2"
+                        }
+                      ]
+                    },
+                    {
+                      "o": "sub",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "l3"
+                        },
+                        {
+                          "o": "var",
+                          "n": "d"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 2.18792552115997
+        }
+      ]
+    },
+    "speed": {
+      "formulaCost": 16,
+      "vsIterative": {
+        "label": "Newton-DLS · 8 itérations",
+        "speedup": 20
+      }
+    }
+  },
+  "idm_following": {
+    "taskId": "idm_following",
+    "title": "Suivi IDM trafic urbain (city.ts)",
+    "direction": "min",
+    "metric": 2.1671020030640236,
+    "level": 0,
+    "formula": "((-0.161906 * (max((s - dv), ((dv + v) * 2.215548)) - (max(s, (1.77571 * dv)) - min((1.428046 * dv), v)))) + 1.121845)",
+    "seed": 960202,
+    "iteration": 1600,
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": -0.1619064856026475
+            },
+            {
+              "o": "sub",
+              "c": [
+                {
+                  "o": "max",
+                  "c": [
+                    {
+                      "o": "sub",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "s"
+                        },
+                        {
+                          "o": "var",
+                          "n": "dv"
+                        }
+                      ]
+                    },
+                    {
+                      "o": "mul",
+                      "c": [
+                        {
+                          "o": "add",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "dv"
+                            },
+                            {
+                              "o": "var",
+                              "n": "v"
+                            }
+                          ]
+                        },
+                        {
+                          "o": "const",
+                          "v": 2.215548
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "sub",
+                  "c": [
+                    {
+                      "o": "max",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "s"
+                        },
+                        {
+                          "o": "mul",
+                          "c": [
+                            {
+                              "o": "const",
+                              "v": 1.77571
+                            },
+                            {
+                              "o": "var",
+                              "n": "dv"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "o": "min",
+                      "c": [
+                        {
+                          "o": "mul",
+                          "c": [
+                            {
+                              "o": "const",
+                              "v": 1.428046
+                            },
+                            {
+                              "o": "var",
+                              "n": "dv"
+                            }
+                          ]
+                        },
+                        {
+                          "o": "var",
+                          "n": "v"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 1.1218453566571935
+        }
+      ]
+    }
   }
 }
