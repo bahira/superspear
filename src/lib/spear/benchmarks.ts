@@ -908,6 +908,18 @@ function buildRegressionTask(cfg: {
       makeNode("sq", { children: [makeNode("pdiv", { children: [makeNode("const", { value: 1 }), makeNode("var", { name: varNames[0] })] })] }),
       // rsqrt family: pdiv(c, sqrt(c2 ± d·x²)) covers relativistic/normalisation
       // denominators; only the SHAPE is seeded, constants stay tunable
+      // cross-variable shapes: bilinear interactions & linear combinations —
+      // the glue of GEMV lanes, IDM gaps, IK ratios (shape only, no constants)
+      ...(varNames.length > 1
+        ? [
+            makeNode("mul", { children: [makeNode("var", { name: varNames[0] }), makeNode("var", { name: varNames[1] })] }),
+            makeNode("add", { children: [makeNode("var", { name: varNames[0] }), makeNode("var", { name: varNames[1] })] }),
+            makeNode("sub", { children: [makeNode("var", { name: varNames[0] }), makeNode("var", { name: varNames[1] })] }),
+          ]
+        : []),
+      // trigonometric carriers: RoPE rotations, DSP beats, oscillators
+      makeNode("cos", { children: [makeNode("var", { name: varNames[0] })] }),
+      makeNode("sin", { children: [makeNode("var", { name: varNames[0] })] }),
       ...(cfg.extraSeeds ?? []),
     ],
     baselines: [
