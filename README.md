@@ -33,7 +33,7 @@ Lesson learned (twice now): discovery quality depends less on budget than on whi
 | **Free fall** | **1.9e-4** | ×0.67 | `4.906·t²` → **g = 9.812 m·s⁻²** | 3333 |
 | **Kepler's third law** | 4.7e-2 | — | `1.0009·a·√\|a\|` — the 3/2 exponent, recovered | 555666 |
 | **RC circuit** | **7.3e-5** | — | `-0.998·min(exp(−t), 2) + 0.997` ≈ `1 − e^(−t/τ)` | 777888 |
-| **Damped pendulum** | **1.9e-3** | — | two-tone cosine form on a numerically-simulated target | 700004 |
+| **Damped pendulum** | **6.8e-4** | ×33 vs Euler-Cromer | clamped-carrier beat: `max(cos t, 0.68)·cos(2.787t)` on simulated target | 930101 |
 | **Lambert W₀** | 0 (exact) | — | `x·relu(exp(x))` | 12345 |
 | **Optical-flow gradient** | 0 (exact) | ×1.00 | `b − a` | 8888 |
 | **Bilinear upsampling weight** | 0 (exact) | ×0.50 | `1 − u` | 12345 |
@@ -44,8 +44,8 @@ Lesson learned (twice now): discovery quality depends less on budget than on whi
 | Task | Record | ⚡ Speed | Discovered formula | Seed |
 |---|---|---|---|---|
 | **Kerr light deflection** (weak field) | **1.4e-7** | ×1.31 | rational form recovered near-exactly | 777 |
-| **Kerr deflection with spin a≠0** (Lense-Thirring) | **2.6e-8** | ×2.33 | rational `(b/(b−s)·1/(3.109−b))` — faster AND more accurate | 920404 |
-| **KdV soliton** | 3.9e-3 | ×2.04 | travelling-wave approx of `2·sech²(x−4t)` | 700002 |
+| **Kerr deflection with spin a≠0** (Lense-Thirring) | **1.3e-8** | ×1.40 | rational double-pole in `(b−0.196)` — accuracy-first form | 930202 |
+| **KdV soliton** | **1.7e-3** | ×7.57 | `max(√|6.66−max(3.17,x)|, 0.60)` — cheap piecewise crest | 930202 |
 
 ### LLM / image kernels replaced by pure algebra
 
@@ -80,9 +80,9 @@ For several tasks the *standard* way to compute the answer is not another closed
 | Task | Discovered formula cost | Iterative baseline | Speedup |
 |---|---|---|---|
 | **Gaussian CDF Φ(x)** | 29 units | Monte-Carlo estimation, 1000 Box-Muller draws (46,000) | **×1586** |
-| **Kerr deflection with spin** | 9 units | RK4 geodesic integration, 200 steps (2,400) | **×267** |
+| **Kerr deflection with spin** | 15 units | RK4 geodesic integration, 200 steps (2,400) | **×160** |
 | **Damped oscillation trajectory** | 30 units | RKF45 adaptive solve, 300 steps (5,400) | **×200** |
-| **Damped pendulum terminal state** | 26 units | Euler-Cromer integration, 60 steps (1,500) | **×58** |
+| **Damped pendulum terminal state** | 46 units | Euler-Cromer integration, 60 steps (1,500) | **×33** |
 
 Arithmetic is documented in [`src/lib/spear/benchmarks.ts`](./src/lib/spear/benchmarks.ts) (`ITERATIVE_BASELINES`). These are cost-model units, cross-checked by wall-clock benchmarks in the export audit.
 
