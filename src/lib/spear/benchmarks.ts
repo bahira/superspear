@@ -277,6 +277,18 @@ function buildActivationTask(spec: ActivationSpec, points = 400): TaskDef {
       ] }),
       // min/max-based S-shapes
       makeNode("max", { children: [makeNode("const", { value: 0 }), makeNode("min", { children: [makeNode("var", { name: "x" }), makeNode("const", { value: 1 })] })] }),
+      // Padé [3/2] rational shape (Kolmogorov-minimal S-curve): (x + c·x³)/(1 + d·x²).
+      // Constants are tuned by coordinate descent; only the SHAPE is seeded.
+      makeNode("pdiv", { children: [
+        makeNode("add", { children: [
+          makeNode("var", { name: "x" }),
+          makeNode("mul", { children: [makeNode("const", { value: 0.2 }), makeNode("cube", { children: [makeNode("var", { name: "x" })] })] }),
+        ] }),
+        makeNode("add", { children: [
+          makeNode("const", { value: 1 }),
+          makeNode("mul", { children: [makeNode("const", { value: 0.5 }), makeNode("sq", { children: [makeNode("var", { name: "x" })] })] }),
+        ] }),
+      ] }),
       makeNode("add", { children: [makeNode("const", { value: 0.5 }), makeNode("pdiv", { children: [makeNode("var", { name: "x" }), makeNode("mul", { children: [makeNode("const", { value: 2 }), makeNode("add", { children: [makeNode("const", { value: 1 }), makeNode("abs", { children: [makeNode("var", { name: "x" })] })] })] })] })] }),
       // SiLU/GELU-specific rational forms: these shapes are what make sub-1e-3
       // reachable (sigmoid hit 2.3e-4 with them). The key insight: sigmoid-like
@@ -294,6 +306,21 @@ function buildActivationTask(spec: ActivationSpec, points = 400): TaskDef {
         ] })] }),
       ] : []),
       ...(spec.id === "silu" || spec.id === "gelu" ? [
+        // Padé-composed gate: x·(x + c·x³)/(1 + d·x²) — the KAN-CFSD shape,
+        // Kolmogorov-minimal rational approximant for x·σ(x) / GELU.
+        makeNode("mul", { children: [
+          makeNode("var", { name: "x" }),
+          makeNode("pdiv", { children: [
+            makeNode("add", { children: [
+              makeNode("var", { name: "x" }),
+              makeNode("mul", { children: [makeNode("const", { value: 0.2 }), makeNode("cube", { children: [makeNode("var", { name: "x" })] })] }),
+            ] }),
+            makeNode("add", { children: [
+              makeNode("const", { value: 1 }),
+              makeNode("mul", { children: [makeNode("const", { value: 0.5 }), makeNode("sq", { children: [makeNode("var", { name: "x" })] })] }),
+            ] }),
+          ] }),
+        ] }),
         makeNode("mul", { children: [makeNode("var", { name: "x" }), makeNode("add", { children: [makeNode("const", { value: 0.5 }), makeNode("pdiv", { children: [makeNode("var", { name: "x" }), makeNode("mul", { children: [makeNode("const", { value: 2 }), makeNode("add", { children: [makeNode("const", { value: 1 }), makeNode("abs", { children: [makeNode("var", { name: "x" })] })] })] })] })] })] }),
         // SiLU ≈ x * (0.5 + x / sqrt(1 + x^2)) — direct composition with Padé erf
         makeNode("mul", { children: [makeNode("var", { name: "x" }), makeNode("add", { children: [
@@ -698,6 +725,9 @@ function buildRegressionTask(cfg: {
       makeNode("mul", { children: [makeNode("var", { name: varNames[0] }), makeNode("sqrt", { children: [makeNode("var", { name: varNames[0] })] })] }),
       makeNode("sqrt", { children: [makeNode("cube", { children: [makeNode("var", { name: varNames[0] })] })] }),
       makeNode("cube", { children: [makeNode("var", { name: varNames[0] })] }),
+      // generic exponential decay primitive — the missing building block for
+      // first-order relaxation laws (RC, damping). A primitive, not a law.
+      makeNode("exp", { children: [makeNode("neg", { children: [makeNode("var", { name: varNames[0] })] })] }),
     ],
     baselines: [
       { name: "Loi exacte (plancher de bruit)", metric: noiseFloor, note: "MSE de la vraie loi sur les données bruitées — optimum atteignable", kind: "oracle", formula: cfg.groundTruth },
@@ -766,22 +796,22 @@ function dampedPendulumData(): { vars: Record<string, Float64Array>; y: Float64A
   // On mesure θ(T) après T=3s avec pas d'intégration 0.05s (∼60 steps)
   const rows = 60;
   const dt = 0.05;
+  const t = new Float64Array(rows);
   const theta = new Float64Array(rows);
   const thetaDot = new Float64Array(rows);
   for (let i = 0; i < rows; i++) {
-    let t = i * dt;
+    t[i] = i * dt;
     // intégration Euler-Cromer simplifiée
     let theta_i = Math.PI / 2;
     let thetaDot_i = 0;
-    for (let step = 0; step < Math.round(t / dt); step++) {
-      const tStep = step * dt;
+    for (let step = 0; step < Math.round(t[i] / dt); step++) {
       const thetaDouble = -0.2 * thetaDot_i - 9.81 * Math.sin(theta_i);
       thetaDot_i += thetaDouble * dt;
       theta_i += thetaDot_i * dt;
     }
     theta[i] = theta_i;
   }
-  return { vars: { t: new Float64Array(rows) }, y: theta }; // on réutilise vars t pour l'axe
+  return { vars: { t }, y: theta };
 }
 
 // ---------- Task 5 : Distillation d'acteur Deep-RL ----------

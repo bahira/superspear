@@ -1,0 +1,172 @@
+{
+  "silu": {
+    "taskId": "silu",
+    "title": "SiLU / Swish (LLaMA ┬À Mistral ┬À Qwen ÔÇö SwiGLU)",
+    "direction": "min",
+    "metric": 0.000827,
+    "level": 2,
+    "formula": "((0.997331 * (x * (0.501 + (0.589 * (x / (0.83 + sqrt(|(1 + (x)┬▓)|))))))) + -0.001848)",
+    "seed": 555666,
+    "iteration": 211
+  },
+  "gelu": {
+    "taskId": "gelu",
+    "title": "GELU (GPT ┬À BERT ÔÇö GEGLU)",
+    "direction": "min",
+    "metric": 0.000533,
+    "level": 2,
+    "formula": "((0.998112 * (x * min(1.002, relu(((0.308372 * x) + 0.501))))) + -0.006084)",
+    "seed": 12345,
+    "iteration": 188
+  },
+  "sigmoid": {
+    "taskId": "sigmoid",
+    "title": "Sigmoid (routage MoE ┬À portes d'attention)",
+    "direction": "min",
+    "metric": 0,
+    "level": 5,
+    "formula": "((-(1 / (1 + exp(x)))) + 1)",
+    "seed": 987654,
+    "iteration": 270
+  },
+  "kv_cache": {
+    "taskId": "kv_cache",
+    "title": "R├¿gle d'├®viction du KV-cache",
+    "direction": "max",
+    "metric": 67.040357,
+    "level": 2,
+    "formula": "((4 * S) + (A + (1.5 * R)))",
+    "seed": 555666,
+    "iteration": 4
+  },
+  "free_fall": {
+    "taskId": "free_fall",
+    "title": "Loi de chute libre",
+    "direction": "min",
+    "metric": 0.000287,
+    "level": 5,
+    "formula": "((4.904709 * (t)┬▓) + 0.000656)",
+    "seed": 161803,
+    "iteration": 5
+  },
+  "kepler": {
+    "taskId": "kepler",
+    "title": "3ßÁë loi de Kepler",
+    "direction": "min",
+    "metric": 0.047018,
+    "level": 5,
+    "formula": "((1.000934 * (a * sqrt(|a|))) + -0.023116)",
+    "seed": 555666,
+    "iteration": 6
+  },
+  "gaussian_cdf": {
+    "taskId": "gaussian_cdf",
+    "title": "R├®partition gaussienne ╬ª(x)",
+    "direction": "min",
+    "metric": 0.000295,
+    "level": 2,
+    "formula": "((0.000049 * ((0.666498 * x) / 0.000034)) + 0.5)",
+    "seed": 314159,
+    "iteration": 237
+  },
+  "Prime d'un call europ├®e": {
+    "taskId": "Prime d'un call europ├®e",
+    "title": "Prime d'un call europ├®en",
+    "direction": "min",
+    "metric": 0.206371,
+    "level": 5,
+    "formula": "((1.425388 * max(-2.468427, ((3.09605 + |sigma|))┬│)) + -42.398873)",
+    "seed": 777888,
+    "iteration": 8
+  },
+  "damped_pendulum": {
+    "taskId": "damped_pendulum",
+    "title": "Pendule amorti ┬À ├®tat terminal",
+    "direction": "min",
+    "metric": 0.155062,
+    "level": 0,
+    "formula": "((-9.581633 * (sin((t)┬▓) / ((t * (t)┬│) + (2.716123 / t)))) + 0.692837)",
+    "seed": 12345,
+    "iteration": 403
+  },
+  "rl_distillation": {
+    "taskId": "rl_distillation",
+    "title": "Distillation d'acteur Deep-RL",
+    "direction": "min",
+    "metric": 0.000332,
+    "level": 2,
+    "formula": "(1.06624 * ((x + (0.154 * (x)┬│)) / (0.525 + (0.75 * (x)┬▓))))",
+    "seed": 12345,
+    "iteration": 470
+  },
+  "lambert_w": {
+    "taskId": "lambert_w",
+    "title": "Fonction implicite Lambert WÔéÇ(x)",
+    "direction": "min",
+    "metric": 0,
+    "level": 5,
+    "formula": "(x * relu(exp(x)))",
+    "seed": 12345,
+    "iteration": 28
+  },
+  "rc_circuit": {
+    "taskId": "rc_circuit",
+    "title": "Circuit RC ┬À tension terminale",
+    "direction": "min",
+    "metric": 0.000073,
+    "level": 5,
+    "formula": "((-0.998327 * min(exp((-t)), 2)) + 0.996889)",
+    "seed": 777888,
+    "iteration": 240
+  },
+  "layernorm_scale": {
+    "taskId": "layernorm_scale",
+    "title": "LayerNorm ┬À ├®chelle 1/ÔêÜ(var+╬Á)",
+    "direction": "min",
+    "metric": 0,
+    "level": 2,
+    "formula": "(-0.318426 * ((-((2.584738 / x) * 1.214997)) * sqrt(|x|)))",
+    "seed": 12345,
+    "iteration": 94
+  },
+  "gaussian_kernel": {
+    "taskId": "gaussian_kernel",
+    "title": "Blur gaussien ┬À noyau exp(ÔêÆx┬▓/2¤â┬▓)",
+    "direction": "min",
+    "metric": 0.000092,
+    "level": 2,
+    "formula": "((-0.426639 * (-exp(cos(x)))) + -0.1416)",
+    "seed": 12345,
+    "iteration": 97
+  },
+  "diffusion_beta": {
+    "taskId": "diffusion_beta",
+    "title": "Diffusion ┬À schedule de bruit ╬▓(t)",
+    "direction": "min",
+    "metric": 0.000056,
+    "level": 2,
+    "formula": "((0.471308 * ((relu((t)┬▓) - 1.296089))┬│) + 1.037878)",
+    "seed": 987654,
+    "iteration": 84
+  },
+  "bilinear_interp": {
+    "taskId": "bilinear_interp",
+    "title": "Upsampling ┬À poids bilin├®aire (1ÔêÆu)",
+    "direction": "min",
+    "metric": 0,
+    "level": 1,
+    "formula": "((-u) + 1)",
+    "seed": 12345,
+    "iteration": 16
+  },
+  "Vid├®o ┬À gradient tempo": {
+    "taskId": "Vid├®o ┬À gradient tempo",
+    "title": "Vid├®o ┬À gradient temporel ÔêéI/Ôêét",
+    "direction": "min",
+    "metric": 0,
+    "level": 2,
+    "formula": "(1.001081 * sin((b - a)))",
+    "seed": 12345,
+    "iteration": 156
+  }
+}
