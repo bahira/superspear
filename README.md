@@ -44,7 +44,7 @@ Lesson learned (twice now): discovery quality depends less on budget than on whi
 | Task | Record | ⚡ Speed | Discovered formula | Seed |
 |---|---|---|---|---|
 | **Kerr light deflection** (weak field) | **1.4e-7** | ×1.31 | rational form recovered near-exactly | 777 |
-| **Kerr deflection with spin a≠0** (Lense-Thirring) | **1.3e-8** | ×1.40 | rational double-pole in `(b−0.196)` — accuracy-first form | 930202 |
+| **Kerr deflection with spin a≠0** (Lense-Thirring) | **1.8e-9** | ×1.62 | rational double-pole in `(b−0.196)` — accuracy-first form | 930202 |
 | **KdV soliton** | **1.7e-3** | ×7.57 | `max(√|6.66−max(3.17,x)|, 0.60)` — cheap piecewise crest | 930202 |
 
 ### LLM / image kernels replaced by pure algebra
@@ -56,8 +56,8 @@ Lesson learned (twice now): discovery quality depends less on budget than on whi
 | **SiLU/Swish** | 7.8e-4 | **×2.43** | `x·(0.501 + 0.587·x/(0.815 + √(1+x²)))` | HardSwish, ReLU |
 | **GELU** | 5.3e-4 | **×6.57** | `x·min(1.002, relu(0.308x + 0.501))` | GELU-tanh |
 | **Sigmoid** | 0 (exact)* | ×1.26 | `1 − 1/(1 + e⁻ˣ)` | Hard-sigmoid TFLite |
-| **Gaussian CDF Φ(x)** | **1.4e-4** | ×1.17 | clamped rational `x/max(1.56, 0.34+|x|)` — div→mul strength reduction | HardSwish |
-| **Softplus ln(1+eˣ)** | **2.3e-4** | ×4.56 | piecewise-rational approximant (bootstrap child) | smooth ReLU kernels |
+| **Gaussian CDF Φ(x)** | **1.4e-4** | ×3.78 | clamped rational `x/max(1.56, 0.34+|x|)` — div→mul strength reduction | HardSwish |
+| **Softplus ln(1+eˣ)** | **1.4e-4** | ×3.73 | piecewise-rational approximant (bootstrap child) | smooth ReLU kernels |
 | **Deep-RL actor distillation** | 1.6e-4 | **×2.83** | `(x + 0.145x³)/(0.556 + 0.75x²)` — Padé [3/2] found spontaneously | tanh network |
 
 \* the sigmoid task allows `exp` as a primitive — the point is cost comparison, not algebraic purity.
@@ -69,7 +69,7 @@ Lesson learned (twice now): discovery quality depends less on budget than on whi
 | **Hill dose-response** 🏥 | **1.16e-4** | — | min-cascade saturation on c² | deployable drug-model shape |
 | **Lennard-Jones 12-6 potential** 🧪 | **3.2e-4** | ×0.55 | log-cos composite well shape | repulsive + attractive terms |
 | **Damped oscillation e^(−t/τ)cos(ωt)** 📡 | **3.1e-4** | ×1.63 | polynomial envelope × carrier: `(t−16.4)(t−8.3)·cos(2.996t)` — amplitude modulation | DSP staple |
-| **Logistic growth** 📈 | **7.9e-5** | ×0.65 | level 2 saturation curve | adoption / population model |
+| **Logistic growth** 📈 | **1.1e-5** | ×0.62 | level 2 saturation curve | adoption / population model |
 | **European call premium** 💰 | 1.77e-1 | ×1.00 | `19.22·(1+σ)³ − 19.11` — level 5 | Black-Scholes ATM approx |
 | **Inverted-pendulum hybrid control** 🎛️ | **2.04** | ×3.76 | cheap surrogate of the full 173-unit law — `d·cos(5.05·th/d)` form | textbook Pareto trade-off point |
 
@@ -91,7 +91,7 @@ Short answer explored empirically: **the matmul itself already IS the minimal cl
 
 | Task | What it tests | Record | Status |
 |---|---|---|---|
-| **gemv4** — decode-lane dot product | Can the engine recover the provably-minimal kernel (7 units, MSE → noise floor)? | 4.1e-4, L2, 12 units | open — optimality test, not a speed play |
+| **gemv4** — decode-lane dot product | Can the engine recover the provably-minimal kernel (7 units, MSE → noise floor)? | **9.3e-5**, L2, 13 units — ×4.4 this week | converging on the optimal bilinear form |
 | **rope_rot** — RoPE lane rotation, paid every token of every head | Exact recovery via served sin/cos primitives | **EXACT (MSE=0, L5)**, 44 units, ×1.45 vs CORDIC | solved precisely; algebraic fast variant pending |
 
 Cross-variable and trigonometric carrier seeds (shape-only, no answer constants) unlocked the exact RoPE recovery at depth 6000 — the seed pool now covers bilinear interactions (`x₀·x₁`, `x₀±x₁`) and carriers (`cos x`, `sin x`).
@@ -102,7 +102,7 @@ For several tasks the *standard* way to compute the answer is not another closed
 
 | Task | Discovered formula cost | Iterative baseline | Speedup |
 |---|---|---|---|
-| **Gaussian CDF Φ(x)** | 29 units | Monte-Carlo estimation, 1000 Box-Muller draws (46,000) | **×1586** |
+| **Gaussian CDF Φ(x)** | 9 units | Monte-Carlo estimation, 1000 Box-Muller draws (46,000) | **×5111** |
 | **Kerr deflection with spin** | 15 units | RK4 geodesic integration, 200 steps (2,400) | **×160** |
 | **Damped oscillation trajectory** | 30 units | RKF45 adaptive solve, 300 steps (5,400) | **×200** |
 | **Damped pendulum terminal state** | 46 units | Euler-Cromer integration, 60 steps (1,500) | **×33** |
