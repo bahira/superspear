@@ -792,6 +792,8 @@ const ITERATIVE_BASELINES: Record<string, { label: string; totalCost: number }> 
   eigen3_sym: { label: "Jacobi · 4 balayages", totalCost: 200 },
   //  Newton-DLS IK: 8 iterations x Jacobian + 2x2 damped solve ~ 40 u = 320
   ik_reach: { label: "Newton-DLS · 8 itérations", totalCost: 320 },
+  //  CORDIC rotation: 16 micro-rotations x ~4 u (add/sub/shift, final scale) = 64
+  rope_rot: { label: "CORDIC · 16 micro-rotations", totalCost: 64 },
 };
 
 function buildRegressionTask(cfg: {
@@ -807,6 +809,9 @@ function buildRegressionTask(cfg: {
   trueLaw: (vars: Record<string, Float64Array>, i: number) => number;
   /** the generating law as an AST — gives the cost model its reference kernel */
   exactLaw?: SpearNode;
+  /** explicit reference cost when writing the AST is redundant (documented
+   *  arithmetic instead): benchmarkSpeed prefers this over estimateCost */
+  exactCost?: number;
   /** task-specific generic shapes appended to the shared seed pool */
   extraSeeds?: SpearNode[];
   verify: (node: SpearNode) => string | null;
@@ -930,6 +935,7 @@ function buildRegressionTask(cfg: {
     verify: cfg.verify,
     codeVarDecl: `const float ${varNames.join(", const float ")}`,
     exactRefNode: cfg.exactLaw ?? EXACT_LAWS[cfg.id],
+    exactCost: cfg.exactCost,
     iterativeBaseline: ITERATIVE_BASELINES[cfg.id],
   };
 }
@@ -1288,6 +1294,41 @@ function ikReachData(): { vars: Record<string, Float64Array>; y: Float64Array } 
     y[i] = Math.acos(cosQ);
   }
   return { vars: { d: dv, l2: l2v, l3: l3v }, y };
+}
+
+function gemv4Data(): { vars: Record<string, Float64Array>; y: Float64Array } {
+  // LLM decode bottleneck cell: one output lane of y = W·x with W frozen.
+  // The bilinear dot is ALREADY the minimal closed form (4 mul + 3 add = 7
+  // units — rank argument). This task is the engine's optimality test: can it
+  // recover the provably-minimal kernel, not beat it.
+  const rows = 400;
+  const x0 = new Float64Array(rows), x1 = new Float64Array(rows), x2 = new Float64Array(rows), x3 = new Float64Array(rows);
+  const y = new Float64Array(rows);
+  for (let i = 0; i < rows; i++) {
+    x0[i] = -1 + 2 * ((i * 0.319) % 1);
+    x1[i] = -1 + 2 * ((i * 0.527) % 1);
+    x2[i] = -1 + 2 * ((i * 0.737) % 1);
+    x3[i] = -1 + 2 * ((i * 0.859) % 1);
+    y[i] = 0.837 * x0[i] - 0.482 * x1[i] + 1.117 * x2[i] - 0.296 * x3[i];
+  }
+  return { vars: { x0, x1, x2, x3 }, y };
+}
+
+function ropeRotData(): { vars: Record<string, Float64Array>; y: Float64Array } {
+  // RoPE (rotary position embedding) lane rotation — paid on EVERY token of
+  // EVERY head at inference. Truth needs cos+sin per token; production uses
+  // CORDIC micro-rotations when no SFU is available. Algebraic approximants
+  // (Padé-style) are the speed play.
+  const rows = 500;
+  const xv = new Float64Array(rows), yv = new Float64Array(rows), tv = new Float64Array(rows);
+  const out = new Float64Array(rows);
+  for (let i = 0; i < rows; i++) {
+    xv[i] = -2 + 4 * ((i * 0.6180339887) % 1);
+    yv[i] = -2 + 4 * ((i * 0.7548776662) % 1);
+    tv[i] = -Math.PI + 2 * Math.PI * ((i * 0.4192388219) % 1);
+    out[i] = xv[i] * Math.cos(tv[i]) - yv[i] * Math.sin(tv[i]);
+  }
+  return { vars: { x: xv, y: yv, th: tv }, y: out };
 }
 
 function idmFollowingData(): { vars: Record<string, Float64Array>; y: Float64Array } {
@@ -1798,6 +1839,40 @@ export function buildTasks(): TaskDef[] {
         const q = evaluateScalar(node, { d: 3, l2: 2, l3: 2 });
         if (!Number.isFinite(q)) return null;
         return Math.abs(q - 1.44547) < 0.08 ? `q₂(3,2,2) ≈ ${q.toFixed(4)} rad` : null;
+      },
+    }),
+    // 26. LLM inference — GEMV decode lane, the optimality test
+    buildRegressionTask({
+      id: "gemv4",
+      title: "GEMV décodage LLM — cellule 4-lanes",
+      subtitle: "y = w·x à poids figés : la forme bilinéaire est déjà minimale (rang tensoriel) — test d'optimalité du moteur",
+      groundTruth: "y = 0.837·x₀ − 0.482·x₁ + 1.117·x₂ − 0.296·x₃ (7 unités, prouvé minimal)",
+      rows: 400,
+      varNames: ["x0", "x1", "x2", "x3"],
+      build: gemv4Data,
+      exactCost: 7,
+      trueLaw: (v, i) => 0.837 * v.x0[i] - 0.482 * v.x1[i] + 1.117 * v.x2[i] - 0.296 * v.x3[i],
+      verify: (node) => {
+        const s = evaluateScalar(node, { x0: 1, x1: 1, x2: 1, x3: 1 });
+        if (!Number.isFinite(s)) return null;
+        return Math.abs(s - 1.176) < 0.05 ? `w·(1,1,1,1) ≈ ${s.toFixed(4)} vs 1.176` : null;
+      },
+    }),
+    // 27. LLM inference — RoPE lane rotation vs CORDIC micro-rotations
+    buildRegressionTask({
+      id: "rope_rot",
+      title: "Rotation RoPE par token (attention)",
+      subtitle: "x' = x·cosθ − y·sinθ payée sur chaque token de chaque tête — approximant algébrique vs CORDIC itératif",
+      groundTruth: "x' = x·cosθ − y·sinθ (43 unités avec SFU ; CORDIC 64 sans)",
+      rows: 500,
+      varNames: ["x", "y", "th"],
+      build: ropeRotData,
+      exactCost: 43,
+      trueLaw: (v, i) => v.x[i] * Math.cos(v.th[i]) - v.y[i] * Math.sin(v.th[i]),
+      verify: (node) => {
+        const a = evaluateScalar(node, { x: 1, y: 0, th: 0 });
+        if (!Number.isFinite(a)) return null;
+        return Math.abs(a - 1) < 0.05 ? `rot(θ=0) ≈ ${a.toFixed(4)} vs 1 attendu` : null;
       },
     }),
     // 25. city.ts traffic — IDM acceleration law as pure regression target

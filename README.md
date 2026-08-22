@@ -85,6 +85,17 @@ Three Codex entries became reproducible benchmark tasks, with the iterative solv
 
 Both eigen and IK truths require `acos`, a transcendental the engine deliberately does not serve — the GP must rebuild the triple-angle / inverse-cosine shape from algebra alone, exactly the Padé-style discipline the Codex doctrine prescribes.
 
+### LLM inference kernels: can SR find "a formula for matmul"?
+
+Short answer explored empirically: **the matmul itself already IS the minimal closed form** — a generic dot product has tensor rank n, so `4 mul + 3 add` is provably unbeatable per output lane. No solver beats it because there is nothing iterative to replace. What *can* be attacked is everything glued around the GEMV:
+
+| Task | What it tests | Record | Status |
+|---|---|---|---|
+| **gemv4** — decode-lane dot product | Can the engine recover the provably-minimal kernel (7 units, MSE → noise floor)? | 4.1e-4, L2, 12 units | open — optimality test, not a speed play |
+| **rope_rot** — RoPE lane rotation, paid every token of every head | Algebraic replacement for cos+sin (43 units) vs CORDIC micro-rotations (64) | 6.7e-1, L0, 23 units (`−y·sinθ` term captured) | open — hardest unserved-transcendental task yet |
+
+The real speed story stays where it already lives in this ledger: activation kernels (SiLU/GELU/softplus), softmax-free eviction policy (KV-cache), and quantized fast variants of both.
+
 ### ⚡ vs iterative solvers — the honest big multipliers
 
 For several tasks the *standard* way to compute the answer is not another closed form but an **iterative numerical solver**. Counting the solver's full bill (every iteration, in ALU/SFU units) against our O(1) formula gives large — and legitimate — accelerations:

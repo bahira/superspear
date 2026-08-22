@@ -2518,5 +2518,238 @@
         }
       ]
     }
+  },
+  "gemv4": {
+    "taskId": "gemv4",
+    "title": "GEMV décodage LLM — cellule 4-lanes",
+    "direction": "min",
+    "metric": 0.0004075192281444821,
+    "level": 2,
+    "formula": "((0.319844 * ((((2.48367 * x2) + x0) + (1.562053 * (x0 - x1))) + ((x0 - x3) + (x2 + (2.503554 - x0))))) + -0.801056)",
+    "seed": 970101,
+    "iteration": 800,
+    "speed": {
+      "formulaCost": 12,
+      "exactCost": 7,
+      "speedup": 0.5833333333333334
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 0.3198442670272674
+            },
+            {
+              "o": "add",
+              "c": [
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "add",
+                      "c": [
+                        {
+                          "o": "mul",
+                          "c": [
+                            {
+                              "o": "const",
+                              "v": 2.48367
+                            },
+                            {
+                              "o": "var",
+                              "n": "x2"
+                            }
+                          ]
+                        },
+                        {
+                          "o": "var",
+                          "n": "x0"
+                        }
+                      ]
+                    },
+                    {
+                      "o": "mul",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 1.562053
+                        },
+                        {
+                          "o": "sub",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "x0"
+                            },
+                            {
+                              "o": "var",
+                              "n": "x1"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "sub",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "x0"
+                        },
+                        {
+                          "o": "var",
+                          "n": "x3"
+                        }
+                      ]
+                    },
+                    {
+                      "o": "add",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "x2"
+                        },
+                        {
+                          "o": "sub",
+                          "c": [
+                            {
+                              "o": "const",
+                              "v": 2.503554
+                            },
+                            {
+                              "o": "var",
+                              "n": "x0"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": -0.8010556120397078
+        }
+      ]
+    },
+    "fast": {
+      "formula": "(((0.504778 + x0) - x1) + (1.78888 * x2))",
+      "metric": 0.05198721190346364,
+      "level": 2,
+      "formulaCost": 4,
+      "speed": {
+        "formulaCost": 4,
+        "exactCost": 7,
+        "speedup": 1.75
+      }
+    },
+    "fastTree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "sub",
+          "c": [
+            {
+              "o": "add",
+              "c": [
+                {
+                  "o": "const",
+                  "v": 0.504778
+                },
+                {
+                  "o": "var",
+                  "n": "x0"
+                }
+              ]
+            },
+            {
+              "o": "var",
+              "n": "x1"
+            }
+          ]
+        },
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 1.78888
+            },
+            {
+              "o": "var",
+              "n": "x2"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "rope_rot": {
+    "taskId": "rope_rot",
+    "title": "Rotation RoPE par token (attention)",
+    "direction": "min",
+    "metric": 0.6668722585040873,
+    "level": 0,
+    "formula": "((-1.031789 * (sin(th) * y)) + -0.000129)",
+    "seed": 970101,
+    "iteration": 800,
+    "speed": {
+      "formulaCost": 23,
+      "exactCost": 43,
+      "speedup": 1.8695652173913044,
+      "vsIterative": {
+        "label": "CORDIC · 16 micro-rotations",
+        "speedup": 2.782608695652174
+      }
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": -1.0317893168203707
+            },
+            {
+              "o": "mul",
+              "c": [
+                {
+                  "o": "sin",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "th"
+                    }
+                  ]
+                },
+                {
+                  "o": "var",
+                  "n": "y"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": -0.00012925645731619718
+        }
+      ]
+    }
   }
 }
