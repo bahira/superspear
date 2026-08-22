@@ -109,29 +109,16 @@
   },
   "kv_cache": {
     "taskId": "kv_cache",
-    "title": "KV-cache eviction rule",
+    "title": "Règle d'éviction du KV-cache",
     "direction": "max",
-    "metric": 67.040357,
+    "metric": 67.6292088755419,
     "level": 2,
-    "formula": "((4 * S) + (A + (1.5 * R)))",
-    "seed": 555666,
-    "iteration": 4,
+    "formula": "((A + R) * (1 + (3 * S)))",
+    "seed": 700001,
+    "iteration": 128,
     "tree": {
-      "o": "add",
+      "o": "mul",
       "c": [
-        {
-          "o": "mul",
-          "c": [
-            {
-              "o": "const",
-              "v": 4
-            },
-            {
-              "o": "var",
-              "n": "S"
-            }
-          ]
-        },
         {
           "o": "add",
           "c": [
@@ -140,15 +127,28 @@
               "n": "A"
             },
             {
+              "o": "var",
+              "n": "R"
+            }
+          ]
+        },
+        {
+          "o": "add",
+          "c": [
+            {
+              "o": "const",
+              "v": 1
+            },
+            {
               "o": "mul",
               "c": [
                 {
                   "o": "const",
-                  "v": 1.5
+                  "v": 3
                 },
                 {
                   "o": "var",
-                  "n": "R"
+                  "n": "S"
                 }
               ]
             }
@@ -211,28 +211,154 @@
   },
   "gaussian_cdf": {
     "taskId": "gaussian_cdf",
-    "title": "Gaussian CDF Φ(x)",
+    "title": "Répartition gaussienne Φ(x)",
     "direction": "min",
-    "metric": 0.0002696727132265258,
+    "metric": 0.00021445006544965176,
     "level": 2,
-    "formula": "((0.941033 * (x / exp(sqrt(|x|)))) + 0.5)",
-    "seed": 777,
-    "iteration": 112,
+    "formula": "((0.000047 * ((log(max(x, 1e-30)) / 0.627019) + ((x / 1.548619) / 0.000034))) + 0.525733)",
+    "seed": 700001,
+    "iteration": 113,
     "speed": {
-      "formulaCost": 28,
+      "formulaCost": 35,
       "exactCost": 34,
-      "speedup": 1.2142857142857142
+      "speedup": 0.9714285714285714
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 0.000046768966109487424
+            },
+            {
+              "o": "add",
+              "c": [
+                {
+                  "o": "pdiv",
+                  "c": [
+                    {
+                      "o": "log",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "x"
+                        }
+                      ]
+                    },
+                    {
+                      "o": "const",
+                      "v": 0.627019
+                    }
+                  ]
+                },
+                {
+                  "o": "pdiv",
+                  "c": [
+                    {
+                      "o": "pdiv",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "x"
+                        },
+                        {
+                          "o": "const",
+                          "v": 1.548619
+                        }
+                      ]
+                    },
+                    {
+                      "o": "const",
+                      "v": 0.000034426886760172696
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.5257325770169758
+        }
+      ]
     }
   },
   "damped_pendulum": {
     "taskId": "damped_pendulum",
-    "title": "Damped pendulum terminal state",
+    "title": "Pendule amorti · état terminal",
     "direction": "min",
-    "metric": 0.0700401848625212,
+    "metric": 0.0019020804196978615,
     "level": 2,
-    "formula": "((-2.5927 * relu(sin(((2.265538 - t))Â²))) + 1.015726)",
-    "seed": 777,
-    "iteration": 112
+    "formula": "((1.386443 * (cos((t * 2.756615)) + (-0.030419 * (t * 2.771615)))) + 0.143605)",
+    "seed": 700004,
+    "iteration": 113,
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 1.386443
+            },
+            {
+              "o": "add",
+              "c": [
+                {
+                  "o": "cos",
+                  "c": [
+                    {
+                      "o": "mul",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "t"
+                        },
+                        {
+                          "o": "const",
+                          "v": 2.756615
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": -0.030419
+                    },
+                    {
+                      "o": "mul",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "t"
+                        },
+                        {
+                          "o": "const",
+                          "v": 2.771615
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.143605
+        }
+      ]
+    }
   },
   "rl_distillation": {
     "taskId": "rl_distillation",
@@ -281,23 +407,18 @@
   },
   "gaussian_kernel": {
     "taskId": "gaussian_kernel",
-    "title": "Gaussian blur kernel",
+    "title": "Blur gaussien · noyau exp(−x²/2σ²)",
     "direction": "min",
-    "metric": 0.000092,
+    "metric": 0.000001147723571771859,
     "level": 2,
-    "formula": "((-0.426639 * (-exp(cos(x)))) + -0.1416)",
-    "seed": 12345,
-    "iteration": 97
-  },
-  "diffusion_beta": {
-    "taskId": "diffusion_beta",
-    "title": "Diffusion · schedule de bruit β(t)",
-    "direction": "min",
-    "metric": 0.0000029591523060492325,
-    "level": 2,
-    "formula": "((1.14955 * (sin((1.999 * (t - -3.188829))) * t)) + -0.005069)",
-    "seed": 1111,
-    "iteration": 32,
+    "formula": "((0.999118 * exp(((x * -0.504319) * x))) + 0.002497)",
+    "seed": 700002,
+    "iteration": 118,
+    "speed": {
+      "formulaCost": 24,
+      "exactCost": 23,
+      "speedup": 0.9583333333333334
+    },
     "tree": {
       "o": "add",
       "c": [
@@ -306,41 +427,32 @@
           "c": [
             {
               "o": "const",
-              "v": 1.14955
+              "v": 0.999118
             },
             {
-              "o": "mul",
+              "o": "exp",
               "c": [
                 {
-                  "o": "sin",
+                  "o": "mul",
                   "c": [
                     {
                       "o": "mul",
                       "c": [
                         {
-                          "o": "const",
-                          "v": 1.999
+                          "o": "var",
+                          "n": "x"
                         },
                         {
-                          "o": "sub",
-                          "c": [
-                            {
-                              "o": "var",
-                              "n": "t"
-                            },
-                            {
-                              "o": "const",
-                              "v": -3.188829
-                            }
-                          ]
+                          "o": "const",
+                          "v": -0.504319
                         }
                       ]
+                    },
+                    {
+                      "o": "var",
+                      "n": "x"
                     }
                   ]
-                },
-                {
-                  "o": "var",
-                  "n": "t"
                 }
               ]
             }
@@ -348,14 +460,60 @@
         },
         {
           "o": "const",
-          "v": -0.005069
+          "v": 0.002497
         }
       ]
-    },
+    }
+  },
+  "diffusion_beta": {
+    "taskId": "diffusion_beta",
+    "title": "Diffusion · schedule de bruit β(t)",
+    "direction": "min",
+    "metric": 0.0000018372650878577204,
+    "level": 2,
+    "formula": "((-0.496181 * cos((t * 3.16221))) + 0.500616)",
+    "seed": 700003,
+    "iteration": 117,
     "speed": {
-      "formulaCost": 25,
+      "formulaCost": 23,
       "exactCost": 24,
-      "speedup": 0.96
+      "speedup": 1.0434782608695652
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": -0.496181
+            },
+            {
+              "o": "cos",
+              "c": [
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "t"
+                    },
+                    {
+                      "o": "const",
+                      "v": 3.16221
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.500616
+        }
+      ]
     }
   },
   "bilinear_interp": {
@@ -395,11 +553,16 @@
     "taskId": "european_call",
     "title": "Prime d'un call européen",
     "direction": "min",
-    "metric": 0.2036815702196985,
+    "metric": 0.17682071689836543,
     "level": 5,
-    "formula": "((-93.113636 * cos(sqrt(|exp(sigma)|))) + 50.433289)",
-    "seed": 3333,
-    "iteration": 28,
+    "formula": "((19.224472 * ((1 + sigma))Â²) + -19.114468)",
+    "seed": 700001,
+    "iteration": 128,
+    "speed": {
+      "formulaCost": 4,
+      "exactCost": 4,
+      "speedup": 1
+    },
     "tree": {
       "o": "add",
       "c": [
@@ -408,22 +571,21 @@
           "c": [
             {
               "o": "const",
-              "v": -93.11363606590942
+              "v": 19.224472260676723
             },
             {
-              "o": "cos",
+              "o": "sq",
               "c": [
                 {
-                  "o": "sqrt",
+                  "o": "add",
                   "c": [
                     {
-                      "o": "exp",
-                      "c": [
-                        {
-                          "o": "var",
-                          "n": "sigma"
-                        }
-                      ]
+                      "o": "const",
+                      "v": 1
+                    },
+                    {
+                      "o": "var",
+                      "n": "sigma"
                     }
                   ]
                 }
@@ -433,14 +595,9 @@
         },
         {
           "o": "const",
-          "v": 50.43328922287005
+          "v": -19.1144678187698
         }
       ]
-    },
-    "speed": {
-      "formulaCost": 44,
-      "exactCost": 4,
-      "speedup": 0.09090909090909091
     }
   },
   "temporal_grad": {
@@ -512,17 +669,17 @@
   },
   "hill": {
     "taskId": "hill",
-    "title": "Hill dose-response equation",
+    "title": "Équation de Hill · dose-réponse",
     "direction": "min",
-    "metric": 0.0007158477212275259,
+    "metric": 0.00011848863697942603,
     "level": 2,
-    "formula": "((-1.836064 * sqrt(|exp((-exp(c)))|)) + 0.966739)",
-    "seed": 777,
-    "iteration": 112,
+    "formula": "((-10.938257 * (min(exp((-c)), 0.607672) / (exp(c) + 5.589783))) + 0.992117)",
+    "seed": 700003,
+    "iteration": 113,
     "speed": {
-      "formulaCost": 45,
+      "formulaCost": 49,
       "exactCost": 9,
-      "speedup": 0.2
+      "speedup": 0.1836734693877551
     },
     "tree": {
       "o": "add",
@@ -532,19 +689,19 @@
           "c": [
             {
               "o": "const",
-              "v": -1.8360643321275911
+              "v": -10.938257
             },
             {
-              "o": "sqrt",
+              "o": "pdiv",
               "c": [
                 {
-                  "o": "exp",
+                  "o": "min",
                   "c": [
                     {
-                      "o": "neg",
+                      "o": "exp",
                       "c": [
                         {
-                          "o": "exp",
+                          "o": "neg",
                           "c": [
                             {
                               "o": "var",
@@ -553,6 +710,28 @@
                           ]
                         }
                       ]
+                    },
+                    {
+                      "o": "const",
+                      "v": 0.607672
+                    }
+                  ]
+                },
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "exp",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "c"
+                        }
+                      ]
+                    },
+                    {
+                      "o": "const",
+                      "v": 5.589783
                     }
                   ]
                 }
@@ -562,7 +741,7 @@
         },
         {
           "o": "const",
-          "v": 0.9667389851148556
+          "v": 0.992117
         }
       ]
     }
@@ -599,28 +778,18 @@
   },
   "damped_oscillation": {
     "taskId": "damped_oscillation",
-    "title": "Damped oscillation e^(−t/τ)·cos(ωt)",
+    "title": "Oscillation amortie e^(−t/τ)·cos(ωt)",
     "direction": "min",
-    "metric": 0.023729880255433135,
-    "level": 0,
-    "formula": "((0.52895 * cos((t / 0.333608))) + 0.01099)",
-    "seed": 777,
-    "iteration": 130,
-    "speed": {
-      "formulaCost": 26,
-      "exactCost": 44,
-      "speedup": 1.6923076923076923
-    }
-  },
-  "logistic_growth": {
-    "taskId": "logistic_growth",
-    "title": "Croissance logistique",
-    "direction": "min",
-    "metric": 0.00021261243961274697,
+    "metric": 0.009076399197068062,
     "level": 2,
-    "formula": "((0.170667 * ((t - min(cos(t), |t|)) - min(cos(t), relu((-690.775528 / t))))) + 0.034395)",
-    "seed": 1111,
-    "iteration": 31,
+    "formula": "((0.248097 * ((2.186373 * cos((t * 2.967438))) - (-0.673349 * cos((t * 3.568758))))) + 0.016323)",
+    "seed": 700004,
+    "iteration": 118,
+    "speed": {
+      "formulaCost": 47,
+      "exactCost": 44,
+      "speedup": 0.9361702127659575
+    },
     "tree": {
       "o": "add",
       "c": [
@@ -629,36 +798,31 @@
           "c": [
             {
               "o": "const",
-              "v": 0.17066745031459077
+              "v": 0.248097
             },
             {
               "o": "sub",
               "c": [
                 {
-                  "o": "sub",
+                  "o": "mul",
                   "c": [
                     {
-                      "o": "var",
-                      "n": "t"
+                      "o": "const",
+                      "v": 2.186373
                     },
                     {
-                      "o": "min",
+                      "o": "cos",
                       "c": [
                         {
-                          "o": "cos",
+                          "o": "mul",
                           "c": [
                             {
                               "o": "var",
                               "n": "t"
-                            }
-                          ]
-                        },
-                        {
-                          "o": "abs",
-                          "c": [
+                            },
                             {
-                              "o": "var",
-                              "n": "t"
+                              "o": "const",
+                              "v": 2.967438
                             }
                           ]
                         }
@@ -667,30 +831,25 @@
                   ]
                 },
                 {
-                  "o": "min",
+                  "o": "mul",
                   "c": [
+                    {
+                      "o": "const",
+                      "v": -0.673349
+                    },
                     {
                       "o": "cos",
                       "c": [
                         {
-                          "o": "var",
-                          "n": "t"
-                        }
-                      ]
-                    },
-                    {
-                      "o": "relu",
-                      "c": [
-                        {
-                          "o": "pdiv",
+                          "o": "mul",
                           "c": [
-                            {
-                              "o": "const",
-                              "v": -690.775528
-                            },
                             {
                               "o": "var",
                               "n": "t"
+                            },
+                            {
+                              "o": "const",
+                              "v": 3.568758
                             }
                           ]
                         }
@@ -704,59 +863,317 @@
         },
         {
           "o": "const",
-          "v": 0.034394701514739195
+          "v": 0.016323
         }
       ]
-    },
+    }
+  },
+  "logistic_growth": {
+    "taskId": "logistic_growth",
+    "title": "Croissance logistique",
+    "direction": "min",
+    "metric": 0.00008586337930273591,
+    "level": 2,
+    "formula": "((-0.574676 * sin(cos((t * 0.794044)))) + 0.494164)",
+    "seed": 700003,
+    "iteration": 113,
     "speed": {
-      "formulaCost": 52,
+      "formulaCost": 43,
       "exactCost": 28,
-      "speedup": 0.5384615384615384
+      "speedup": 0.6511627906976745
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": -0.574676
+            },
+            {
+              "o": "sin",
+              "c": [
+                {
+                  "o": "cos",
+                  "c": [
+                    {
+                      "o": "mul",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "t"
+                        },
+                        {
+                          "o": "const",
+                          "v": 0.794044
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.494164
+        }
+      ]
     }
   },
   "softplus": {
     "taskId": "softplus",
     "title": "Softplus ln(1+eˣ)",
     "direction": "min",
-    "metric": 0.001439977727276241,
+    "metric": 0.0002361916103616144,
     "level": 2,
-    "formula": "((0.021589 * (max((x + (5.827448 + x)), sqrt(|x|)))Â²) + -0.00224)",
-    "seed": 4242,
-    "iteration": 32,
+    "formula": "((0.056831 * (((x * (6.687236 + x)) + 7.357432) + relu(((x * 3.235718) + x)))) + 0.238948)",
+    "seed": 700004,
+    "iteration": 125,
     "speed": {
-      "formulaCost": 8,
+      "formulaCost": 9,
       "exactCost": 41,
-      "speedup": 5.125
+      "speedup": 4.555555555555555
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 0.056831413396961364
+            },
+            {
+              "o": "add",
+              "c": [
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "mul",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "x"
+                        },
+                        {
+                          "o": "add",
+                          "c": [
+                            {
+                              "o": "const",
+                              "v": 6.687236
+                            },
+                            {
+                              "o": "var",
+                              "n": "x"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "o": "const",
+                      "v": 7.357432
+                    }
+                  ]
+                },
+                {
+                  "o": "relu",
+                  "c": [
+                    {
+                      "o": "add",
+                      "c": [
+                        {
+                          "o": "mul",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "x"
+                            },
+                            {
+                              "o": "const",
+                              "v": 3.235718
+                            }
+                          ]
+                        },
+                        {
+                          "o": "var",
+                          "n": "x"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.2389483813251533
+        }
+      ]
     }
   },
   "kdv_soliton": {
     "taskId": "kdv_soliton",
-    "title": "KdV soliton sech²",
+    "title": "Soliton KdV · sech²",
     "direction": "min",
-    "metric": 0.00741453057207225,
+    "metric": 0.0038984209457481145,
     "level": 2,
-    "formula": "((0.954305 * max(0.796733, (max(0, t) - sin((t)Â³)))) + -0.753688)",
-    "seed": 777,
-    "iteration": 118,
+    "formula": "((0.083004 * ((relu(x) * t) * (cos(x) + 1.159011))) + -0.01467)",
+    "seed": 700002,
+    "iteration": 120,
     "speed": {
-      "formulaCost": 27,
+      "formulaCost": 26,
       "exactCost": 53,
-      "speedup": 1.962962962962963
+      "speedup": 2.0384615384615383
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 0.08300407756912187
+            },
+            {
+              "o": "mul",
+              "c": [
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "relu",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "x"
+                        }
+                      ]
+                    },
+                    {
+                      "o": "var",
+                      "n": "t"
+                    }
+                  ]
+                },
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "cos",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "x"
+                        }
+                      ]
+                    },
+                    {
+                      "o": "const",
+                      "v": 1.159011
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": -0.014669504941283763
+        }
+      ]
     }
   },
   "kerr_spin": {
     "taskId": "kerr_spin",
-    "title": "Kerr deflection with spin (Lense-Thirring)",
+    "title": "Déflexion Kerr avec spin (Lense-Thirring)",
     "direction": "min",
-    "metric": 1.4122603373783278e-7,
+    "metric": 2.654907917645597e-8,
     "level": 2,
-    "formula": "((5.126761 * (((s / b) - (2.672909 - b)) / (s - (2.262276 - b)))) + -4.894208)",
-    "seed": 777,
-    "iteration": 116,
+    "formula": "((0.580805 * ((3.039123 / (b - 3.793801)) + (4.193569 / (0.997776 * b)))) + -0.000221)",
+    "seed": 700002,
+    "iteration": 114,
     "speed": {
-      "formulaCost": 14,
+      "formulaCost": 13,
       "exactCost": 21,
-      "speedup": 1.5
+      "speedup": 1.6153846153846154
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 0.580805
+            },
+            {
+              "o": "add",
+              "c": [
+                {
+                  "o": "pdiv",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 3.039123
+                    },
+                    {
+                      "o": "sub",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "b"
+                        },
+                        {
+                          "o": "const",
+                          "v": 3.793801
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "pdiv",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 4.193569
+                    },
+                    {
+                      "o": "mul",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 0.997776
+                        },
+                        {
+                          "o": "var",
+                          "n": "b"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": -0.00022055175515729294
+        }
+      ]
     }
   },
   "pendulum_hybrid": {

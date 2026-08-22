@@ -33,7 +33,7 @@ Lesson learned (twice now): discovery quality depends less on budget than on whi
 | **Free fall** | **1.9e-4** | ×0.67 | `4.906·t²` → **g = 9.812 m·s⁻²** | 3333 |
 | **Kepler's third law** | 4.7e-2 | — | `1.0009·a·√\|a\|` — the 3/2 exponent, recovered | 555666 |
 | **RC circuit** | **7.3e-5** | — | `-0.998·min(exp(−t), 2) + 0.997` ≈ `1 − e^(−t/τ)` | 777888 |
-| **Damped pendulum** | 7.0e-2 | — | level 2 reached on a numerically-simulated target | 777 |
+| **Damped pendulum** | **1.9e-3** | — | two-tone cosine form on a numerically-simulated target | 700004 |
 | **Lambert W₀** | 0 (exact) | — | `x·relu(exp(x))` | 12345 |
 | **Optical-flow gradient** | 0 (exact) | ×1.00 | `b − a` | 8888 |
 | **Bilinear upsampling weight** | 0 (exact) | ×0.50 | `1 − u` | 12345 |
@@ -44,20 +44,20 @@ Lesson learned (twice now): discovery quality depends less on budget than on whi
 | Task | Record | ⚡ Speed | Discovered formula | Seed |
 |---|---|---|---|---|
 | **Kerr light deflection** (weak field) | **1.4e-7** | ×1.31 | rational form recovered near-exactly | 777 |
-| **Kerr deflection with spin a≠0** (Lense-Thirring) | **1.4e-7** | ×1.50 | two-var rational form | 777 |
-| **KdV soliton** | 7.4e-3 | ×1.96 | travelling-wave approx of `2·sech²(x−4t)` | 777 |
+| **Kerr deflection with spin a≠0** (Lense-Thirring) | **2.7e-8** | ×1.62 | two-pole rational `(3.04/(b−3.79) + 4.19/b)` | 700002 |
+| **KdV soliton** | 3.9e-3 | ×2.04 | travelling-wave approx of `2·sech²(x−4t)` | 700002 |
 
 ### LLM / image kernels replaced by pure algebra
 
 | Task | Record | ⚡ Speed | Discovered formula | Baseline beaten |
 |---|---|---|---|---|
-| **Diffusion β(t)** | **3.0e-6** | ×0.96 | `-5.61·exp(cos(min(c,t) − t²)) + 3.05` (refined) | cosine schedule |
-| **Gaussian blur kernel** | **9.2e-5** | ×0.53 | `-0.427·(−exp(cos(x))) − 0.14` ⚠️ in-domain | `exp(−x²/2σ²)` |
+| **Diffusion β(t)** | **1.8e-6** | ×1.04 | `−0.496·cos(3.162t) + 0.501` (refined) | cosine schedule |
+| **Gaussian blur kernel** | **1.2e-6** | ×0.96 | `0.999·exp(−0.504x²)` — the true kernel structure | `exp(−x²/2σ²)` |
 | **SiLU/Swish** | 8.2e-4 | **×2.43** | `x·(0.501 + 0.589·x/(0.83 + √(1+x²)))` | HardSwish, ReLU |
 | **GELU** | 5.3e-4 | **×6.57** | `x·min(1.002, relu(0.308x + 0.501))` | GELU-tanh |
 | **Sigmoid** | 0 (exact)* | ×1.26 | `1 − 1/(1 + e⁻ˣ)` | Hard-sigmoid TFLite |
-| **Gaussian CDF Φ(x)** | 2.7e-4 | ×1.21 | rational Padé-family form | HardSwish |
-| **Softplus ln(1+eˣ)** | 1.4e-3 | ×5.12 | algebraic rational approximant | smooth ReLU kernels |
+| **Gaussian CDF Φ(x)** | 2.1e-4 | ×0.97 | refined rational form | HardSwish |
+| **Softplus ln(1+eˣ)** | **2.4e-4** | ×4.56 | piecewise-rational approximant (bootstrap child) | smooth ReLU kernels |
 | **Deep-RL actor distillation** | 1.6e-4 | **×2.83** | `(x + 0.145x³)/(0.556 + 0.75x²)` — Padé [3/2] found spontaneously | tanh network |
 
 \* the sigmoid task allows `exp` as a primitive — the point is cost comparison, not algebraic purity.
@@ -66,18 +66,18 @@ Lesson learned (twice now): discovery quality depends less on budget than on whi
 
 | Task | Record | ⚡ Speed | Discovered formula | Note |
 |---|---|---|---|---|
-| **Hill dose-response** 🏥 | 7.2e-4 | — | blended rational/saturation form | deployable drug-model shape |
+| **Hill dose-response** 🏥 | **1.2e-4** | — | exp-blended saturation ratio | deployable drug-model shape |
 | **Lennard-Jones 12-6 potential** 🧪 | **4.4e-4** | ×0.55 | inverse-power rational double-well | repulsive + attractive terms |
-| **Damped oscillation e^(−t/τ)cos(ωt)** 📡 | 2.4e-2 | ×1.69 | exp-decay envelope × carrier | DSP staple |
-| **Logistic growth** 📈 | **2.1e-4** | ×0.54 | saturation curve recovered, level 2 | adoption / population model |
-| **European call premium** 💰 | 2.0e-1 | ×0.09 | `−93.11·cos(√(exp(σ))) + 50.43` — level 5 | Black-Scholes ATM approx |
+| **Damped oscillation e^(−t/τ)cos(ωt)** 📡 | **9.1e-3** | ×0.94 | two-carrier beat: cos(2.97t) + cos(3.57t) | DSP staple |
+| **Logistic growth** 📈 | **8.6e-5** | ×0.65 | level 2 saturation curve | adoption / population model |
+| **European call premium** 💰 | 1.77e-1 | ×1.00 | `19.22·(1+σ)³ − 19.11` — level 5 | Black-Scholes ATM approx |
 | **Inverted-pendulum hybrid control** 🎛️ | 2.1 | ×7.52 | cheap surrogate of the full 173-unit law | textbook Pareto trade-off point |
 
 ### Decision-making (KV-cache)
 
 | Task | Record | Discovered rule | Baselines beaten |
 |---|---|---|---|
-| **KV-cache eviction** | **67.0 %** future attention mass retained | `4·S + A + 1.5·R` | H2O, StreamingLLM, SnapKV, sliding window, random |
+| **KV-cache eviction** | **67.6 %** future attention mass retained | `(A + R)·(1 + 3S)` — multiplicative triad | H2O, StreamingLLM, SnapKV, sliding window, random |
 
 A tri-dimensional rule (Sinks + accumulated Attention + Recency) discovered by evolution in **4 iterations** — the same triad the literature took years to identify.
 
