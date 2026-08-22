@@ -44,6 +44,14 @@ async function main() {
     }
     if (entry.fastTree) {
       const sf = fill(entry.fastTree);
+      // prune: a "fast" variant that is not actually cheaper than the
+      // champion (e.g. the champion improved since) has no reason to exist
+      const champCost = entry.speed?.formulaCost;
+      if (champCost !== undefined && sf && sf.formulaCost >= champCost) {
+        delete entry.fast;
+        delete entry.fastTree;
+        continue;
+      }
       if (sf) {
         entry.fast = { ...(entry.fast ?? {}), speed: { ...entry.fast?.speed, ...sf } };
         updated++;

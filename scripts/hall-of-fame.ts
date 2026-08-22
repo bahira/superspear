@@ -168,12 +168,21 @@ async function main() {
   for (const r of rows) {
     const metricStr = r.direction === "min" ? r.metric.toExponential(2) : r.metric.toFixed(1) + "%";
     const speedStr = r.speed
-      ? `  vitesse: ×${r.speed.speedup.toFixed(2)} vs loi exacte` +
+      ? `  vitesse:` +
+        (r.speed.speedup !== undefined ? ` ×${r.speed.speedup.toFixed(2)} vs loi exacte` : "") +
         (r.speed.vsIterative ? ` | ×${r.speed.vsIterative.speedup.toFixed(1)} vs ${r.speed.vsIterative.label}` : "")
       : "";
     console.log(`\n[${r.taskId}] ${r.title}`);
     console.log(`  best=${metricStr}  L${r.level}  trouvé: seed ${r.seed}, it ${r.iteration}${speedStr}`);
     console.log(`  ${r.formula}`);
+    const fast = (r as typeof r & { fast?: { formula: string; metric: number; speed?: { formulaCost: number; vsIterative?: { label: string; speedup: number } } } }).fast;
+    if (fast) {
+      const fSpeed = fast.speed
+        ? `  cout ${fast.speed.formulaCost}` + (fast.speed.vsIterative ? `, ×${fast.speed.vsIterative.speedup.toFixed(0)} vs ${fast.speed.vsIterative.label}` : "")
+        : "";
+      console.log(`  [rapide] ${fast.metric.toExponential(2)}${fSpeed}`);
+      console.log(`  ${fast.formula}`);
+    }
   }
   console.log(`\n${rows.length} tâches · ledger sauvegardé: spear-hall-of-fame.json`);
 }

@@ -69,9 +69,9 @@ Lesson learned (twice now): discovery quality depends less on budget than on whi
 | **Hill dose-response** 🏥 | **1.16e-4** | — | min-cascade saturation on c² | deployable drug-model shape |
 | **Lennard-Jones 12-6 potential** 🧪 | **4.4e-4** | ×0.55 | inverse-power rational double-well | repulsive + attractive terms |
 | **Damped oscillation e^(−t/τ)cos(ωt)** 📡 | **3.1e-4** | ×1.63 | polynomial envelope × carrier: `(t−16.4)(t−8.3)·cos(2.996t)` — amplitude modulation | DSP staple |
-| **Logistic growth** 📈 | **8.6e-5** | ×0.65 | level 2 saturation curve | adoption / population model |
+| **Logistic growth** 📈 | **7.9e-5** | ×0.65 | level 2 saturation curve | adoption / population model |
 | **European call premium** 💰 | 1.77e-1 | ×1.00 | `19.22·(1+σ)³ − 19.11` — level 5 | Black-Scholes ATM approx |
-| **Inverted-pendulum hybrid control** 🎛️ | 2.1 | ×7.52 | cheap surrogate of the full 173-unit law | textbook Pareto trade-off point |
+| **Inverted-pendulum hybrid control** 🎛️ | **2.04** | ×7.52 | cheap surrogate of the full 173-unit law — `d·cos(5.05·th/d)` form | textbook Pareto trade-off point |
 
 ### ⚡ vs iterative solvers — the honest big multipliers
 
@@ -88,16 +88,21 @@ Arithmetic is documented in [`src/lib/spear/benchmarks.ts`](./src/lib/spear/benc
 
 ### 🎚️ Two operating points per law: `precise` and `fast`
 
-One formula per task hides the accuracy/latency trade-off that real deployments live by: a rendering loop or an LLM hot path happily accepts 1e-4 relative error if it shaves half the ALU bill; a physics integration does not. So the ledger keeps **two validated forms per task**: the *precise* champion (lowest error ever found) and the *fast* variant (cheapest form that still passes the engine's level-2 validation gate).
+One formula per task hides the accuracy/latency trade-off that real deployments live by: a rendering loop or an LLM hot path happily accepts 1e-4 relative error if it shaves half the ALU bill; a physics integration does not. So the ledger keeps **two validated forms per task**: the *precise* champion (lowest error ever found) and the *fast* variant (cheapest form that still passes the engine's level-2 validation gate). **19 of 27 tasks** have a genuinely cheaper second form; the rest have champions already at minimal cost.
 
-| Task | Precise | Fast | Fast wins |
+Biggest fast-slot wins (cost = precise → fast, in ALU/SFU units):
+
+| Task | Precise | Fast | Cost cut |
 |---|---|---|---|
+| **Lambert W₀** | exact, 22 units | 1.1e-2, 1 unit | **×22** |
+| **Gaussian blur kernel** | exact e^(−x²/2), 24 units | 5.7e-3, 1 unit | **×24** |
+| **Hill dose-response** | 1.16e-4, 9 units | 1.8e-3, 1 unit | **×9** |
+| **Gaussian CDF Φ(x)** | 2.1e-4, 29 units | 7.6e-4, 6 units | ×4.8 |
+| **Softplus** | 2.3e-4, 9 units | 3.2e-3, 2 units | ×4.5 |
+| **Sigmoid** | exact, 27 units | 7.2e-4, 7 units — `x/(1+|x|)` | ×3.9 |
 | **Kerr deflection w/ spin** | 1.32e-8, 15 units (×160 vs RK4) | `10.49/(s+b)`, 3.6e-5, 5 units | **×480 vs RK4** |
-| **Damped pendulum state** | 6.8e-4, 46 units (×33 vs Euler-Cromer) | 1.9e-3, 26 units | **×58 vs Euler-Cromer** |
-| **Hill dose-response** | 1.16e-4 | 9.2e-4, ×1.80 cheaper | latency-critical scoring |
-| **Softplus** | 2.29e-4 | 3.2e-3, 2 units | inner-loop activation |
 
-Displaced champions are never lost: when a more accurate form takes over, the old one is demoted to the fast slot, and [`scripts/backfill-fast.ts`](./scripts/backfill-fast.ts) resurrects historical forms from git archaeology.
+Displaced champions are never lost: when a more accurate form takes over, the old one is demoted to the fast slot, [`scripts/backfill-fast.ts`](./scripts/backfill-fast.ts) resurrects historical forms from git archaeology, and every ledger refresh prunes any "fast" variant that is no longer actually cheaper than its champion.
 
 **Note on protected division:** the engine's `pdiv` clamps denominators below 1e-4 and outputs beyond ±1e4. The Gaussian CDF champion *exploits these rails as free saturation* — its tiny divisor (3.4e-5) turns the division into a hard plateau, exactly the shape of Φ. The algebraic optimizer (`div-by-const → mul-by-reciprocal`, −3 units per site) therefore only rewrites divisors above the protection floor, and every rewrite passes a metric-parity gate before entering the ledger.
 
