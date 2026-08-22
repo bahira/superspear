@@ -193,45 +193,36 @@
       "speedup": 1.2592592592592593
     },
     "fast": {
-      "formula": "(x * (1 / (1 + |x|)))",
-      "metric": 0.0007152203847216082,
+      "formula": "(x / (1 + |x|))",
+      "metric": 0.0007152203847216084,
       "level": 2,
-      "formulaCost": 7,
+      "formulaCost": 6,
       "speed": {
-        "formulaCost": 7,
+        "formulaCost": 6,
         "exactCost": 34,
-        "speedup": 4.857142857142857
+        "speedup": 5.666666666666667
       }
     },
     "fastTree": {
-      "o": "mul",
+      "o": "pdiv",
       "c": [
         {
           "o": "var",
           "n": "x"
         },
         {
-          "o": "pdiv",
+          "o": "add",
           "c": [
             {
               "o": "const",
               "v": 1
             },
             {
-              "o": "add",
+              "o": "abs",
               "c": [
                 {
-                  "o": "const",
-                  "v": 1
-                },
-                {
-                  "o": "abs",
-                  "c": [
-                    {
-                      "o": "var",
-                      "n": "x"
-                    }
-                  ]
+                  "o": "var",
+                  "n": "x"
                 }
               ]
             }
@@ -244,14 +235,27 @@
     "taskId": "kv_cache",
     "title": "Règle d'éviction du KV-cache",
     "direction": "max",
-    "metric": 67.6292088755419,
+    "metric": 69.97633394818372,
     "level": 2,
-    "formula": "((A + R) * (1 + (3 * S)))",
-    "seed": 700001,
-    "iteration": 128,
+    "formula": "((4.5 * S) + (A + R))",
+    "seed": 990303,
+    "iteration": 153,
     "tree": {
-      "o": "mul",
+      "o": "add",
       "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 4.5
+            },
+            {
+              "o": "var",
+              "n": "S"
+            }
+          ]
+        },
         {
           "o": "add",
           "c": [
@@ -264,34 +268,12 @@
               "n": "R"
             }
           ]
-        },
-        {
-          "o": "add",
-          "c": [
-            {
-              "o": "const",
-              "v": 1
-            },
-            {
-              "o": "mul",
-              "c": [
-                {
-                  "o": "const",
-                  "v": 3
-                },
-                {
-                  "o": "var",
-                  "n": "S"
-                }
-              ]
-            }
-          ]
         }
       ]
     },
     "fast": {
       "formula": "A",
-      "metric": 70.93196543852358,
+      "metric": 75.9807062969163,
       "level": 4,
       "formulaCost": 0
     },
@@ -401,18 +383,18 @@
     "taskId": "gaussian_cdf",
     "title": "Répartition gaussienne Φ(x)",
     "direction": "min",
-    "metric": 0.00021445006544965176,
+    "metric": 0.000140774362370438,
     "level": 2,
-    "formula": "((0.000047 * ((log(max(x, 1e-30)) * 1.594848) + ((x * 0.645737) / 0.000034))) + 0.525733)",
-    "seed": 700001,
-    "iteration": 113,
+    "formula": "((0.543518 * (x / max(1.559472, (0.337459 + |x|)))) + 0.5)",
+    "seed": 990303,
+    "iteration": 141,
     "speed": {
-      "formulaCost": 29,
+      "formulaCost": 9,
       "exactCost": 34,
-      "speedup": 1.1724137931034482,
+      "speedup": 3.7777777777777777,
       "vsIterative": {
         "label": "Monte-Carlo · 1000 tirages",
-        "speedup": 1586.2068965517242
+        "speedup": 5111.111111111111
       }
     },
     "tree": {
@@ -423,48 +405,39 @@
           "c": [
             {
               "o": "const",
-              "v": 0.000046768966109487424
+              "v": 0.543518
             },
             {
-              "o": "add",
+              "o": "pdiv",
               "c": [
                 {
-                  "o": "mul",
-                  "c": [
-                    {
-                      "o": "log",
-                      "c": [
-                        {
-                          "o": "var",
-                          "n": "x"
-                        }
-                      ]
-                    },
-                    {
-                      "o": "const",
-                      "v": 1.594848003011073
-                    }
-                  ]
+                  "o": "var",
+                  "n": "x"
                 },
                 {
-                  "o": "pdiv",
+                  "o": "max",
                   "c": [
                     {
-                      "o": "mul",
-                      "c": [
-                        {
-                          "o": "var",
-                          "n": "x"
-                        },
-                        {
-                          "o": "const",
-                          "v": 0.6457366208215191
-                        }
-                      ]
+                      "o": "const",
+                      "v": 1.559472
                     },
                     {
-                      "o": "const",
-                      "v": 0.000034426886760172696
+                      "o": "add",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 0.337459
+                        },
+                        {
+                          "o": "abs",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "x"
+                            }
+                          ]
+                        }
+                      ]
                     }
                   ]
                 }
@@ -474,13 +447,13 @@
         },
         {
           "o": "const",
-          "v": 0.5257325770169758
+          "v": 0.5
         }
       ]
     },
     "fast": {
-      "formula": "(x / (0.731859 + |x|))",
-      "metric": 0.0007565176207959833,
+      "formula": "(x / max(1.531472, |x|))",
+      "metric": 0.00028673847069070037,
       "level": 2,
       "formulaCost": 6,
       "speed": {
@@ -501,11 +474,11 @@
           "n": "x"
         },
         {
-          "o": "add",
+          "o": "max",
           "c": [
             {
               "o": "const",
-              "v": 0.7318592224873993
+              "v": 1.531472
             },
             {
               "o": "abs",
@@ -1030,6 +1003,35 @@
           "v": 0.500616
         }
       ]
+    },
+    "fast": {
+      "formula": "cos((3.205096 * t))",
+      "metric": 0.000015677565025135613,
+      "level": 2,
+      "formulaCost": 21,
+      "speed": {
+        "formulaCost": 21,
+        "exactCost": 24,
+        "speedup": 1.1428571428571428
+      }
+    },
+    "fastTree": {
+      "o": "cos",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 3.205096
+            },
+            {
+              "o": "var",
+              "n": "t"
+            }
+          ]
+        }
+      ]
     }
   },
   "bilinear_interp": {
@@ -1406,55 +1408,121 @@
   },
   "lennard_jones": {
     "taskId": "lennard_jones",
-    "title": "Lennard-Jones 12-6 potential",
+    "title": "Potentiel de Lennard-Jones 12-6",
     "direction": "min",
-    "metric": 0.0004361391643108304,
+    "metric": 0.00003245566387678721,
     "level": 2,
-    "formula": "((24.470596 * (-(log(max(r, 1e-30)) / ((r)Â³)Â³))) + -0.025536)",
-    "seed": 777,
-    "iteration": 116,
+    "formula": "((-23.07526 * ((log(max(r, 1e-30)) / ((r)Â³)Â³) / cos(sqrt(|(r + -1.017418)|)))) + -0.001951)",
+    "seed": 990303,
+    "iteration": 158,
     "speed": {
-      "formulaCost": 31,
+      "formulaCost": 57,
       "exactCost": 17,
-      "speedup": 0.5483870967741935
+      "speedup": 0.2982456140350877
     },
-    "fast": {
-      "formula": "log(max(((r / 0.000002) - (48.244011 * r)), 1e-30))",
-      "metric": 0.04274318477819416,
-      "level": 2,
-      "formulaCost": 26,
-      "speed": {
-        "formulaCost": 26,
-        "exactCost": 17,
-        "speedup": 0.6538461538461539
-      }
-    },
-    "fastTree": {
-      "o": "log",
+    "tree": {
+      "o": "add",
       "c": [
         {
-          "o": "sub",
+          "o": "mul",
           "c": [
+            {
+              "o": "const",
+              "v": -23.07526
+            },
             {
               "o": "pdiv",
               "c": [
                 {
-                  "o": "var",
-                  "n": "r"
+                  "o": "pdiv",
+                  "c": [
+                    {
+                      "o": "log",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "r"
+                        }
+                      ]
+                    },
+                    {
+                      "o": "cube",
+                      "c": [
+                        {
+                          "o": "cube",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "r"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
                 },
                 {
-                  "o": "const",
-                  "v": 0.000002
+                  "o": "cos",
+                  "c": [
+                    {
+                      "o": "sqrt",
+                      "c": [
+                        {
+                          "o": "add",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "r"
+                            },
+                            {
+                              "o": "const",
+                              "v": -1.017418
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
                 }
               ]
-            },
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": -0.001951
+        }
+      ]
+    },
+    "fast": {
+      "formula": "(log(max(r, 1e-30)) / ((r)Â³)Â³)",
+      "metric": 0.0004361391643108304,
+      "level": 2,
+      "formulaCost": 28,
+      "speed": {
+        "formulaCost": 28,
+        "exactCost": 17,
+        "speedup": 0.6071428571428571
+      }
+    },
+    "fastTree": {
+      "o": "pdiv",
+      "c": [
+        {
+          "o": "log",
+          "c": [
             {
-              "o": "mul",
+              "o": "var",
+              "n": "r"
+            }
+          ]
+        },
+        {
+          "o": "cube",
+          "c": [
+            {
+              "o": "cube",
               "c": [
-                {
-                  "o": "const",
-                  "v": 48.244011
-                },
                 {
                   "o": "var",
                   "n": "r"
@@ -1654,56 +1722,47 @@
       ]
     },
     "fast": {
-      "formula": "(max(max(t, 1.113985), max(t, 1.078293)) - cos(t))",
-      "metric": 0.0003027777126235362,
+      "formula": "min(0.832147, cos(max((t * 0.820531), 0.587828)))",
+      "metric": 0.0002714456855714589,
       "level": 2,
-      "formulaCost": 24,
+      "formulaCost": 23,
       "speed": {
-        "formulaCost": 24,
+        "formulaCost": 23,
         "exactCost": 28,
-        "speedup": 1.1666666666666667
+        "speedup": 1.2173913043478262
       }
     },
     "fastTree": {
-      "o": "sub",
+      "o": "min",
       "c": [
         {
-          "o": "max",
-          "c": [
-            {
-              "o": "max",
-              "c": [
-                {
-                  "o": "var",
-                  "n": "t"
-                },
-                {
-                  "o": "const",
-                  "v": 1.113985
-                }
-              ]
-            },
-            {
-              "o": "max",
-              "c": [
-                {
-                  "o": "var",
-                  "n": "t"
-                },
-                {
-                  "o": "const",
-                  "v": 1.078293
-                }
-              ]
-            }
-          ]
+          "o": "const",
+          "v": 0.832147
         },
         {
           "o": "cos",
           "c": [
             {
-              "o": "var",
-              "n": "t"
+              "o": "max",
+              "c": [
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "t"
+                    },
+                    {
+                      "o": "const",
+                      "v": 0.820531
+                    }
+                  ]
+                },
+                {
+                  "o": "const",
+                  "v": 0.587828
+                }
+              ]
             }
           ]
         }
@@ -2016,17 +2075,17 @@
       ]
     },
     "fast": {
-      "formula": "(10.493311 / (s + b))",
-      "metric": 0.000036390411548739514,
+      "formula": "(2.52824 / b)",
+      "metric": 0.0001323874547581257,
       "level": 2,
-      "formulaCost": 5,
+      "formulaCost": 4,
       "speed": {
-        "formulaCost": 5,
+        "formulaCost": 4,
         "exactCost": 21,
-        "speedup": 4.2,
+        "speedup": 5.25,
         "vsIterative": {
           "label": "RK4 géodésique · 200 pas",
-          "speedup": 480
+          "speedup": 600
         }
       }
     },
@@ -2035,20 +2094,11 @@
       "c": [
         {
           "o": "const",
-          "v": 10.493311
+          "v": 2.52824
         },
         {
-          "o": "add",
-          "c": [
-            {
-              "o": "var",
-              "n": "s"
-            },
-            {
-              "o": "var",
-              "n": "b"
-            }
-          ]
+          "o": "var",
+          "n": "b"
         }
       ]
     }
@@ -2443,6 +2493,68 @@
         "label": "Newton-DLS · 8 itérations",
         "speedup": 20
       }
+    },
+    "fast": {
+      "formula": "(d / (((d - l2) - l2) - (2 * l3)))",
+      "metric": 0.006490266452120957,
+      "level": 2,
+      "formulaCost": 8,
+      "speed": {
+        "formulaCost": 8,
+        "vsIterative": {
+          "label": "Newton-DLS · 8 itérations",
+          "speedup": 40
+        }
+      }
+    },
+    "fastTree": {
+      "o": "pdiv",
+      "c": [
+        {
+          "o": "var",
+          "n": "d"
+        },
+        {
+          "o": "sub",
+          "c": [
+            {
+              "o": "sub",
+              "c": [
+                {
+                  "o": "sub",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "d"
+                    },
+                    {
+                      "o": "var",
+                      "n": "l2"
+                    }
+                  ]
+                },
+                {
+                  "o": "var",
+                  "n": "l2"
+                }
+              ]
+            },
+            {
+              "o": "mul",
+              "c": [
+                {
+                  "o": "const",
+                  "v": 2
+                },
+                {
+                  "o": "var",
+                  "n": "l3"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   },
   "idm_following": {

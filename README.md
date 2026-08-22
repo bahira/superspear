@@ -56,7 +56,7 @@ Lesson learned (twice now): discovery quality depends less on budget than on whi
 | **SiLU/Swish** | 7.8e-4 | **×2.43** | `x·(0.501 + 0.587·x/(0.815 + √(1+x²)))` | HardSwish, ReLU |
 | **GELU** | 5.3e-4 | **×6.57** | `x·min(1.002, relu(0.308x + 0.501))` | GELU-tanh |
 | **Sigmoid** | 0 (exact)* | ×1.26 | `1 − 1/(1 + e⁻ˣ)` | Hard-sigmoid TFLite |
-| **Gaussian CDF Φ(x)** | 2.1e-4 | ×1.17 | refined rational form, div→mul strength reduction | HardSwish |
+| **Gaussian CDF Φ(x)** | **1.4e-4** | ×1.17 | clamped rational `x/max(1.56, 0.34+|x|)` — div→mul strength reduction | HardSwish |
 | **Softplus ln(1+eˣ)** | **2.3e-4** | ×4.56 | piecewise-rational approximant (bootstrap child) | smooth ReLU kernels |
 | **Deep-RL actor distillation** | 1.6e-4 | **×2.83** | `(x + 0.145x³)/(0.556 + 0.75x²)` — Padé [3/2] found spontaneously | tanh network |
 
@@ -67,7 +67,7 @@ Lesson learned (twice now): discovery quality depends less on budget than on whi
 | Task | Record | ⚡ Speed | Discovered formula | Note |
 |---|---|---|---|---|
 | **Hill dose-response** 🏥 | **1.16e-4** | — | min-cascade saturation on c² | deployable drug-model shape |
-| **Lennard-Jones 12-6 potential** 🧪 | **4.4e-4** | ×0.55 | inverse-power rational double-well | repulsive + attractive terms |
+| **Lennard-Jones 12-6 potential** 🧪 | **3.2e-4** | ×0.55 | log-cos composite well shape | repulsive + attractive terms |
 | **Damped oscillation e^(−t/τ)cos(ωt)** 📡 | **3.1e-4** | ×1.63 | polynomial envelope × carrier: `(t−16.4)(t−8.3)·cos(2.996t)` — amplitude modulation | DSP staple |
 | **Logistic growth** 📈 | **7.9e-5** | ×0.65 | level 2 saturation curve | adoption / population model |
 | **European call premium** 💰 | 1.77e-1 | ×1.00 | `19.22·(1+σ)³ − 19.11` — level 5 | Black-Scholes ATM approx |
@@ -133,7 +133,7 @@ Displaced champions are never lost: when a more accurate form takes over, the ol
 
 | Task | Record | Discovered rule | Baselines beaten |
 |---|---|---|---|
-| **KV-cache eviction** | **67.6 %** future attention mass retained | `(A + R)·(1 + 3S)` — multiplicative triad | H2O, StreamingLLM, SnapKV, sliding window, random |
+| **KV-cache eviction** | **70.0 %** future attention mass retained | `4.5·S + A + R` — additive triad, sink-dominated | H2O, StreamingLLM, SnapKV, sliding window, random |
 
 A tri-dimensional rule (Sinks + accumulated Attention + Recency) discovered by evolution in **4 iterations** — the same triad the literature took years to identify.
 
