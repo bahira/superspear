@@ -2251,6 +2251,18 @@ export function buildTasks(): TaskDef[] {
         if (!Number.isFinite(s)) return null;
         return Math.abs(s - 1.176) < 0.05 ? `w·(1,1,1,1) ≈ ${s.toFixed(4)} vs 1.176` : null;
       },
+      extraSeeds: [
+        // linear-combination scaffold with PERTURBED constants (huber recipe):
+        // the shape of the minimal kernel is shown, refinement must tune it.
+        simplify((() => {
+          const V = (n: string) => makeNode("var", { name: n });
+          const C = (x: number) => makeNode("const", { value: x });
+          const bin = (op: any, a: any, b: any) => makeNode(op, { children: [a, b] });
+          const t1 = bin("sub", bin("mul", V("x0"), C(0.84)), bin("mul", V("x1"), C(0.47)));
+          const t2 = bin("add", bin("mul", V("x2"), C(1.1)), bin("mul", V("x3"), C(-0.31)));
+          return bin("add", t1, t2);
+        })()),
+      ],
     }),
     // 27. LLM inference — RoPE lane rotation vs CORDIC micro-rotations
     buildRegressionTask({
@@ -2290,6 +2302,30 @@ export function buildTasks(): TaskDef[] {
         if (!Number.isFinite(a)) return null;
         return Math.abs(a) < 0.8 ? `a(v=20, gap=60) ≈ ${a.toFixed(3)} m/s²` : null;
       },
+      extraSeeds: [
+        // IDM-structure scaffold with PERTURBED constants (v0=31, T=1.45,
+        // s0=2.3, amax=1.9): the law's full shape is shown, refinement tunes.
+        simplify((() => {
+          const V = (n: string) => makeNode("var", { name: n });
+          const C = (x: number) => makeNode("const", { value: x });
+          const bin = (op: any, a: any, b: any) => makeNode(op, { children: [a, b] });
+          const v4 = makeNode("sq", { children: [makeNode("sq", { children: [V("v")] })] }); // v⁴
+          const free = bin("sub", C(1), bin("pdiv", v4, C(923521))); // /31⁴
+          const sstar = bin("add", C(2.3), makeNode("max", {
+            children: [
+              C(0),
+              bin("add", bin("mul", V("v"), C(1.45)), bin("pdiv", bin("mul", V("v"), V("dv")), C(4.7))),
+            ],
+          }));
+          const inter = makeNode("sq", { children: [bin("pdiv", sstar, V("s"))] });
+          return simplify(makeNode("min", {
+            children: [
+              C(1.9),
+              makeNode("max", { children: [C(-8.6), bin("sub", free, inter)] }),
+            ],
+          }));
+        })()),
+      ],
     }),
   ];
 

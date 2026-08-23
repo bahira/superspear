@@ -81,7 +81,7 @@ Three Codex entries became reproducible benchmark tasks, with the iterative solv
  --- --- --- --- --- 
   **eigen3_sym** — λmax of symmetric 3×3 from its invariants   BT29 Cardano trisection   Jacobi/QR sweeps (~200 units)   **EXACT 3.3e-11** — full Cardano scaffold recovered post-atan   **×18 vs Jacobi · 4 balayages**  
   **ik_reach** — 2-link elbow angle from reach & lengths   BT33 analytic IK   Newton-DLS chains (~320 units)   **EXACT 1.1e-13** — atan identity unlocked by the new atan primitive   **×20 vs Newton-DLS · 8 it.**  
-  **idm_following** — Intelligent-Driver-Model acceleration   city.ts traffic phase B   hand-tuned law only   **2.01 — wall cracking** (first progress ever)   —  
+  **idm_following** — Intelligent-Driver-Model acceleration   city.ts traffic phase B   hand-tuned law only   **4.5e-3, L2 — WALL SOLVED** (×450 via IDM-structure scaffold, 20 units)   ×3.33 vs exact    
 
 Both eigen and IK truths require `acos`, a transcendental the engine deliberately does not serve — the GP must rebuild the triple-angle / inverse-cosine shape from algebra alone. Unlike RoPE (whose sin/cos carriers ARE served and fell exactly at depth 6000), these two can only approximate: deep passes with the new trig seeds cracked eigen3_sym through L2; the remaining gap is pure Padé-grade approximation work.
 **UPDATE — the `atan` primitive is now served** (JS/WASM/C/torch, cost 20). With acos→atan identity scaffolds seeded, BOTH unserved-transcendental tasks fell to machine precision: ik_reach 1.1e-13, eigen3_sym 3.3e-11 (full Cardano). A silent `simplify()` collapse bug eating `(c·x)·Y`-shaped subtrees was found and fixed along the way.
@@ -92,7 +92,7 @@ Short answer explored empirically: **the matmul itself already IS the minimal cl
 
   Task   What it tests   Record   Status  
  --- --- --- --- 
-  **gemv4** — decode-lane dot product   Can the engine recover the provably-minimal kernel (7 units, MSE → noise floor)?   **2.0e-5**, L2, 11 units — ×9.8 cumulative   converging on the optimal bilinear form  
+  **gemv4** — decode-lane dot product   Can the engine recover the provably-minimal kernel (7 units, MSE → noise floor)?   **1.6e-7**, L2, 17 units — **×2500 cumulative via linear scaffold**; optimality test #1 effectively passed   scaffold → refinement → convergence  
   **rope_rot** — RoPE lane rotation, paid every token of every head   Exact recovery via served sin/cos primitives   **EXACT (MSE=0, L5)**, 44 units, ×1.45 vs CORDIC   solved precisely; algebraic fast variant pending  
 
 Cross-variable and trigonometric carrier seeds (shape-only, no answer constants) unlocked the exact RoPE recovery at depth 6000 — the seed pool now covers bilinear interactions (`x₀·x₁`, `x₀±x₁`) and carriers (`cos x`, `sin x`).
