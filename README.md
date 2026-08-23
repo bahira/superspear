@@ -80,7 +80,7 @@ Three Codex entries became reproducible benchmark tasks, with the iterative solv
   Task   Codex source   Replaces   Record   vs solver  
  --- --- --- --- --- 
   **eigen3_sym** — λmax of symmetric 3×3 from its invariants   BT29 Cardano trisection   Jacobi/QR sweeps (~200 units)   3.2e-2, L2, 13 units   **×15 vs Jacobi · 4 balayages**  
-  **ik_reach** — 2-link elbow angle from reach & lengths   BT33 analytic IK   Newton-DLS chains (~320 units)   2.2e-3, L2, 16 units   **×20 vs Newton-DLS · 8 it.**  
+  **ik_reach** — 2-link elbow angle from reach & lengths   BT33 analytic IK   Newton-DLS chains (~320 units)   **EXACT 1.1e-13** — atan identity unlocked by the new atan primitive   **×20 vs Newton-DLS · 8 it.**  
   **idm_following** — Intelligent-Driver-Model acceleration   city.ts traffic phase B   hand-tuned law only   **2.01 — wall cracking** (first progress ever)   —  
 
 Both eigen and IK truths require `acos`, a transcendental the engine deliberately does not serve — the GP must rebuild the triple-angle / inverse-cosine shape from algebra alone. Unlike RoPE (whose sin/cos carriers ARE served and fell exactly at depth 6000), these two can only approximate: deep passes with the new trig seeds cracked eigen3_sym through L2; the remaining gap is pure Padé-grade approximation work.
