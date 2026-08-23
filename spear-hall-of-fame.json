@@ -1383,17 +1383,70 @@
     "taskId": "hill",
     "title": "Équation de Hill · dose-réponse",
     "direction": "min",
-    "metric": 0.00011566833071383699,
+    "metric": 0.00009836629903323376,
     "level": 2,
-    "formula": "((0.522586 * min(min(min((c)Â², c), 1.892731), sqrt(|(c - -0.871022)|))) + -0.008972)",
-    "seed": 920303,
-    "iteration": 400,
+    "formula": "((0.751181 * atan(atan(atan(log(max(c, 1e-30)))))) + 0.503093)",
+    "seed": 1000001,
+    "iteration": 199,
     "speed": {
-      "formulaCost": 9,
+      "formulaCost": 82,
       "exactCost": 9,
-      "speedup": 1
+      "speedup": 0.10975609756097561
     },
     "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 0.7511812250714746
+            },
+            {
+              "o": "atan",
+              "c": [
+                {
+                  "o": "atan",
+                  "c": [
+                    {
+                      "o": "atan",
+                      "c": [
+                        {
+                          "o": "log",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "c"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.5030927222481489
+        }
+      ]
+    },
+    "fast": {
+      "formula": "((0.522586 * min(min(min((c)Â², c), 1.892731), sqrt(|(c - -0.871022)|))) + -0.008972)",
+      "metric": 0.00011566833071383699,
+      "level": 2,
+      "formulaCost": 9,
+      "speed": {
+        "formulaCost": 9,
+        "exactCost": 9,
+        "speedup": 1
+      }
+    },
+    "fastTree": {
       "o": "add",
       "c": [
         {
@@ -1458,30 +1511,6 @@
         {
           "o": "const",
           "v": -0.008972
-        }
-      ]
-    },
-    "fast": {
-      "formula": "min(c, 1.708438)",
-      "metric": 0.0018064407067997128,
-      "level": 2,
-      "formulaCost": 1,
-      "speed": {
-        "formulaCost": 1,
-        "exactCost": 9,
-        "speedup": 9
-      }
-    },
-    "fastTree": {
-      "o": "min",
-      "c": [
-        {
-          "o": "var",
-          "n": "c"
-        },
-        {
-          "o": "const",
-          "v": 1.708438
         }
       ]
     }
@@ -1954,15 +1983,15 @@
     "taskId": "softplus",
     "title": "Softplus ln(1+eˣ)",
     "direction": "min",
-    "metric": 0.00014209586215202695,
+    "metric": 0.00003576283728044669,
     "level": 2,
-    "formula": "((0.053997 * (((x * 5.482258) + max((x * 6.204554), x)) + ((x * 0.185672) + max((x)Â², 0.709499)))) + 0.62759)",
-    "seed": 990703,
-    "iteration": 400,
+    "formula": "((-0.068874 * (min(-5.998739, (-6.175787 - x)) + (cos(x) + ((-6.721249 - x) * x)))) + 0.332995)",
+    "seed": 1000001,
+    "iteration": 200,
     "speed": {
-      "formulaCost": 11,
+      "formulaCost": 28,
       "exactCost": 41,
-      "speedup": 3.727272727272727
+      "speedup": 1.4642857142857142
     },
     "tree": {
       "o": "add",
@@ -1972,42 +2001,24 @@
           "c": [
             {
               "o": "const",
-              "v": 0.053997
+              "v": -0.068874
             },
             {
               "o": "add",
               "c": [
                 {
-                  "o": "add",
+                  "o": "min",
                   "c": [
                     {
-                      "o": "mul",
-                      "c": [
-                        {
-                          "o": "var",
-                          "n": "x"
-                        },
-                        {
-                          "o": "const",
-                          "v": 5.482258
-                        }
-                      ]
+                      "o": "const",
+                      "v": -5.998739
                     },
                     {
-                      "o": "max",
+                      "o": "sub",
                       "c": [
                         {
-                          "o": "mul",
-                          "c": [
-                            {
-                              "o": "var",
-                              "n": "x"
-                            },
-                            {
-                              "o": "const",
-                              "v": 6.204554
-                            }
-                          ]
+                          "o": "const",
+                          "v": -6.175787
                         },
                         {
                           "o": "var",
@@ -2021,24 +2032,24 @@
                   "o": "add",
                   "c": [
                     {
-                      "o": "mul",
+                      "o": "cos",
                       "c": [
                         {
                           "o": "var",
                           "n": "x"
-                        },
-                        {
-                          "o": "const",
-                          "v": 0.185672
                         }
                       ]
                     },
                     {
-                      "o": "max",
+                      "o": "mul",
                       "c": [
                         {
-                          "o": "sq",
+                          "o": "sub",
                           "c": [
+                            {
+                              "o": "const",
+                              "v": -6.721249
+                            },
                             {
                               "o": "var",
                               "n": "x"
@@ -2046,8 +2057,8 @@
                           ]
                         },
                         {
-                          "o": "const",
-                          "v": 0.709499
+                          "o": "var",
+                          "n": "x"
                         }
                       ]
                     }
@@ -2059,31 +2070,40 @@
         },
         {
           "o": "const",
-          "v": 0.62759
+          "v": 0.332995
         }
       ]
     },
     "fast": {
-      "formula": "max(x, -0.393533)",
-      "metric": 0.014436908021556732,
+      "formula": "((-6.721249 - x) * x)",
+      "metric": 0.00411459123083148,
       "level": 2,
-      "formulaCost": 1,
+      "formulaCost": 2,
       "speed": {
-        "formulaCost": 1,
+        "formulaCost": 2,
         "exactCost": 41,
-        "speedup": 41
+        "speedup": 20.5
       }
     },
     "fastTree": {
-      "o": "max",
+      "o": "mul",
       "c": [
+        {
+          "o": "sub",
+          "c": [
+            {
+              "o": "const",
+              "v": -6.721249
+            },
+            {
+              "o": "var",
+              "n": "x"
+            }
+          ]
+        },
         {
           "o": "var",
           "n": "x"
-        },
-        {
-          "o": "const",
-          "v": -0.393533
         }
       ]
     }
@@ -3358,17 +3378,17 @@
     "taskId": "ik_reach",
     "title": "IK analytique coude 2-link (BT33)",
     "direction": "min",
-    "metric": 1.0679490440776397e-13,
+    "metric": 4.0626336618882106e-32,
     "level": 2,
     "formula": "(1.570796 - atan(((((d)Â² - ((l2)Â² + (l3)Â²)) / (2 * (l2 * l3))) / sqrt(||(1 - ((((d)Â² - ((l2)Â² + (l3)Â²)) / (2 * (l2 * l3))))Â²)||))))",
-    "seed": 999903,
-    "iteration": 1600,
+    "seed": 1000001,
+    "iteration": 199,
     "tree": {
       "o": "sub",
       "c": [
         {
           "o": "const",
-          "v": 1.570796
+          "v": 1.5707963267948966
         },
         {
           "o": "atan",
@@ -4375,81 +4395,22 @@
     "taskId": "atan_unit",
     "title": "Atan unitaire (cœur des atan2)",
     "direction": "min",
-    "metric": 6.6138866532515055e-9,
+    "metric": 0,
     "level": 5,
-    "formula": "(0.999066 * ((x + (0.195031 * (x)Â³)) / (1 + (0.519531 * (x)Â²))))",
-    "seed": 995003,
-    "iteration": 400,
+    "formula": "atan(x)",
+    "seed": 1000001,
+    "iteration": 198,
     "speed": {
-      "formulaCost": 12,
+      "formulaCost": 20,
       "exactCost": 20,
-      "speedup": 1.6666666666666667
+      "speedup": 1
     },
     "tree": {
-      "o": "mul",
+      "o": "atan",
       "c": [
         {
-          "o": "const",
-          "v": 0.9990661739923206
-        },
-        {
-          "o": "pdiv",
-          "c": [
-            {
-              "o": "add",
-              "c": [
-                {
-                  "o": "var",
-                  "n": "x"
-                },
-                {
-                  "o": "mul",
-                  "c": [
-                    {
-                      "o": "const",
-                      "v": 0.195031
-                    },
-                    {
-                      "o": "cube",
-                      "c": [
-                        {
-                          "o": "var",
-                          "n": "x"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "o": "add",
-              "c": [
-                {
-                  "o": "const",
-                  "v": 1
-                },
-                {
-                  "o": "mul",
-                  "c": [
-                    {
-                      "o": "const",
-                      "v": 0.519531
-                    },
-                    {
-                      "o": "sq",
-                      "c": [
-                        {
-                          "o": "var",
-                          "n": "x"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
+          "o": "var",
+          "n": "x"
         }
       ]
     },
@@ -4562,22 +4523,22 @@
     "taskId": "erf_prob",
     "title": "Erf probabiliste (noyaux de probabilité · GELU-exact)",
     "direction": "min",
-    "metric": 0.0008445198597756973,
+    "metric": 0.0002023037156607867,
     "level": 2,
-    "formula": "(0.016856 * ((2.220972 * ((1.579729 * x) + sin(x))) + (0.004931 * (x / 0))))",
-    "seed": 996001,
-    "iteration": 800,
+    "formula": "(0.000062 * ((0.826194 * ((x / 0) * 0.926259)) + (atan(atan(x)) / sqrt(|(x - x)|))))",
+    "seed": 1000001,
+    "iteration": 213,
     "speed": {
-      "formulaCost": 30,
+      "formulaCost": 55,
       "exactCost": 26,
-      "speedup": 0.8666666666666667
+      "speedup": 0.4727272727272727
     },
     "tree": {
       "o": "mul",
       "c": [
         {
           "o": "const",
-          "v": 0.016855747415936755
+          "v": 0.0000615491375380159
         },
         {
           "o": "add",
@@ -4587,58 +4548,106 @@
               "c": [
                 {
                   "o": "const",
-                  "v": 2.220972
+                  "v": 0.826194
                 },
                 {
-                  "o": "add",
+                  "o": "mul",
                   "c": [
                     {
-                      "o": "mul",
+                      "o": "pdiv",
                       "c": [
-                        {
-                          "o": "const",
-                          "v": 1.579729
-                        },
                         {
                           "o": "var",
                           "n": "x"
+                        },
+                        {
+                          "o": "const",
+                          "v": 0
                         }
                       ]
                     },
                     {
-                      "o": "sin",
-                      "c": [
-                        {
-                          "o": "var",
-                          "n": "x"
-                        }
-                      ]
+                      "o": "const",
+                      "v": 0.926259
                     }
                   ]
                 }
               ]
             },
             {
-              "o": "mul",
+              "o": "pdiv",
               "c": [
                 {
-                  "o": "const",
-                  "v": 0.004931
-                },
-                {
-                  "o": "pdiv",
+                  "o": "atan",
                   "c": [
                     {
-                      "o": "var",
-                      "n": "x"
-                    },
+                      "o": "atan",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "x"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "sqrt",
+                  "c": [
                     {
-                      "o": "const",
-                      "v": 0
+                      "o": "sub",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "x"
+                        },
+                        {
+                          "o": "var",
+                          "n": "x"
+                        }
+                      ]
                     }
                   ]
                 }
               ]
+            }
+          ]
+        }
+      ]
+    },
+    "fast": {
+      "formula": "(x + (atan(x) / 0))",
+      "metric": 0.0009921700507465742,
+      "level": 2,
+      "formulaCost": 25,
+      "speed": {
+        "formulaCost": 25,
+        "exactCost": 26,
+        "speedup": 1.04
+      }
+    },
+    "fastTree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "var",
+          "n": "x"
+        },
+        {
+          "o": "pdiv",
+          "c": [
+            {
+              "o": "atan",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "x"
+                }
+              ]
+            },
+            {
+              "o": "const",
+              "v": 0
             }
           ]
         }
