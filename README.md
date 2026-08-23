@@ -109,6 +109,19 @@ Production kernels vs SPEAR forms compiled to WASM, 200k elements on `[-6,6]` (`
 
 FFN block simulation (decode, d=2048, ffn=5632): the full block runs **10.2 % faster** end-to-end with the SPEAR SiLU swapped in, even through naive per-element JS↔WASM invocation. Honest caveats: max errors ~0.07–0.08 are visible-but-bounded activation distortion (perplexity delta unmeasured); the sigmoid fast variant loses on this backend; batched invocation would remove the per-call boundary overhead.
 
+### 🎨 Shader-ready gaussian menu (variable blur / bloom / DoF)
+
+New task `gauss_shader`: algebraic approximants of e^(−x²/2) evaluated per pixel. The Pareto mining (`scripts/tune-gaussian.ts`, `scripts/mine-gaussian.ts`) produced an exp-free menu:
+
+| Kernel | Cost | MSE vs e^(−x²/2) | Formula |
+|---|---|---|---|
+| exact | 24 | 0 | `exp(−x²/2)` |
+| **student-t k3** | **9** | **6.4e-4** | `1.02232/(0.207x²+1)³` |
+| **student-t k2** | **8** | **1.35e-3** | `1.04984/(0.375x²+1)²` |
+| cos window | 20 | 5.2e-3 | `cos(x)` |
+
+Honest bench verdict on THIS machine: WASM per-pixel timing shows the student-t k3 at ×0.89 vs native `Math.exp` — **not faster here**. The menu targets backends where transcendental evaluation is expensive or absent (low-end GLSL profiles, quantized pipelines); measure before shipping.
+
 ### ⚡ vs iterative solvers — the honest big multipliers
 
 For several tasks the *standard* way to compute the answer is not another closed form but an **iterative numerical solver**. Counting the solver's full bill (every iteration, in ALU/SFU units) against our O(1) formula gives large — and legitimate — accelerations:

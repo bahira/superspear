@@ -116,6 +116,7 @@ interface ActivationSpec {
   lo: number;
   hi: number;
   groundTruth: string;
+  exactCost?: number;
 }
 
 function buildActivationTask(spec: ActivationSpec, points = 400): TaskDef {
@@ -378,7 +379,7 @@ function buildActivationTask(spec: ActivationSpec, points = 400): TaskDef {
     },
     codeVarDecl: "const float x",
     exactFn: spec.fn,
-    exactCost: spec.id === "gelu" ? 46 : 34,
+    exactCost: spec.exactCost ?? (spec.id === "gelu" ? 46 : 34),
     iterativeBaseline: ITERATIVE_BASELINES[spec.id],
   };
 }
@@ -1379,6 +1380,18 @@ export function buildTasks(): TaskDef[] {
     }),
     buildActivationTask({ id: "gelu", title: "GELU (GPT · BERT — GEGLU)", fn: (x) => 0.5 * x * (1 + erf(x / Math.SQRT2)), lo: -6, hi: 6, groundTruth: "GELU(x) = 0.5x(1 + erf(x/√2))" }),
     buildActivationTask({ id: "sigmoid", title: "Sigmoid (routage MoE · portes d'attention)", fn: (x) => 1 / (1 + Math.exp(-x)), lo: -8, hi: 8, groundTruth: "σ(x) = 1 / (1 + e⁻ˣ)" }),
+    // Shader-ready algebraic gaussian for variable blur/bloom/DoF: every pixel
+    // evaluates its own kernel weight, so transcendental-per-tap is the enemy.
+    buildActivationTask({
+      id: "gauss_shader",
+      title: "Gaussienne shader-ready (blur variable DoF/bloom)",
+      subtitle: "Approximation algébrique de e^(-x²/2) pour évaluation par pixel — cible coût ≤ 8 unités",
+      fn: (x) => Math.exp(-x * x / 2),
+      lo: -4,
+      hi: 4,
+      groundTruth: "g(x) = e^(-x²/2)",
+      exactCost: 22,
+    }),
     buildKvTask(),
     buildRegressionTask({
       id: "free_fall",

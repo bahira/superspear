@@ -1894,29 +1894,56 @@
       ]
     },
     "fast": {
-      "formula": "sin((2 - t))",
-      "metric": 0.00026781742438451093,
+      "formula": "((min(t, 2.609741))Â² + (0.86783 * max(1.214626, t)))",
+      "metric": 0.0004105827823591433,
       "level": 2,
-      "formulaCost": 21,
+      "formulaCost": 5,
       "speed": {
-        "formulaCost": 21,
+        "formulaCost": 5,
         "exactCost": 28,
-        "speedup": 1.3333333333333333
+        "speedup": 5.6
       }
     },
     "fastTree": {
-      "o": "sin",
+      "o": "add",
       "c": [
         {
-          "o": "sub",
+          "o": "sq",
+          "c": [
+            {
+              "o": "min",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "t"
+                },
+                {
+                  "o": "const",
+                  "v": 2.609741
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "mul",
           "c": [
             {
               "o": "const",
-              "v": 2
+              "v": 0.86783
             },
             {
-              "o": "var",
-              "n": "t"
+              "o": "max",
+              "c": [
+                {
+                  "o": "const",
+                  "v": 1.214626
+                },
+                {
+                  "o": "var",
+                  "n": "t"
+                }
+              ]
             }
           ]
         }
@@ -2237,7 +2264,16 @@
       "formula": "(s / b)",
       "metric": 0.0001323874547581254,
       "level": 2,
-      "formulaCost": 4
+      "formulaCost": 4,
+      "speed": {
+        "formulaCost": 4,
+        "exactCost": 21,
+        "speedup": 5.25,
+        "vsIterative": {
+          "label": "RK4 géodésique · 200 pas",
+          "speedup": 600
+        }
+      }
     },
     "fastTree": {
       "o": "pdiv",
@@ -3045,6 +3081,45 @@
                 {
                   "o": "var",
                   "n": "th"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "gauss_shader": {
+    "taskId": "gauss_shader",
+    "title": "Gaussienne shader-ready (blur variable DoF/bloom)",
+    "direction": "min",
+    "metric": 8.1772509994516e-34,
+    "level": 5,
+    "formula": "sqrt(|exp((-(x)Â²))|)",
+    "seed": 993001,
+    "iteration": 400,
+    "speed": {
+      "formulaCost": 24,
+      "exactCost": 22,
+      "speedup": 0.9166666666666666
+    },
+    "tree": {
+      "o": "sqrt",
+      "c": [
+        {
+          "o": "exp",
+          "c": [
+            {
+              "o": "neg",
+              "c": [
+                {
+                  "o": "sq",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "x"
+                    }
+                  ]
                 }
               ]
             }

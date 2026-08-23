@@ -30,10 +30,11 @@ function ev(node: SpearNode, scope: Record<string, number>): Val {
     case "sq": { const k = kids(); return { f64: k[0].f64 * k[0].f64, f32: fr(k[0].f32 * k[0].f32) }; }
     case "cube": { const k = kids(); const a = k[0]; return { f64: a.f64 * a.f64 * a.f64, f32: fr(fr(fr(a.f32) * fr(a.f32)) * fr(a.f32)) }; }
     case "sqrt": { const k = kids(); const a = Math.abs(k[0].f64); const b = Math.abs(k[0].f32); return { f64: Math.sqrt(a), f32: fr(Math.sqrt(b)) }; }
-    case "exp": { const k = kids(); return { f64: Math.exp(k[0].f64), f32: fr(Math.exp(k[0].f32)) }; }
+    case "relu": { const k = kids(); return { f64: k[0].f64 > 0 ? k[0].f64 : 0, f32: fr(k[0].f32 > 0 ? k[0].f32 : 0) }; }
+    case "exp": { const k = kids(); const c = (x: number) => Math.max(-50, Math.min(50, x)); return { f64: Math.exp(c(k[0].f64)), f32: fr(Math.exp(c(k[0].f32))) }; }
     case "sin": { const k = kids(); return { f64: Math.sin(k[0].f64), f32: fr(Math.sin(k[0].f32)) }; }
     case "cos": { const k = kids(); return { f64: Math.cos(k[0].f64), f32: fr(Math.cos(k[0].f32)) }; }
-    case "log": { const k = kids(); return { f64: Math.log(k[0].f64), f32: fr(Math.log(k[0].f32)) }; }
+    case "log": { const k = kids(); const g = (x: number) => (x > 1e-30 ? x : 1e-30); return { f64: Math.log(g(k[0].f64)), f32: fr(Math.log(g(k[0].f32))) }; }
     case "max": { const k = kids(); return { f64: Math.max(k[0].f64, k[1].f64), f32: fr(Math.max(k[0].f32, k[1].f32)) }; }
     case "min": { const k = kids(); return { f64: Math.min(k[0].f64, k[1].f64), f32: fr(Math.min(k[0].f32, k[1].f32)) }; }
     default: return { f64: NaN, f32: NaN };
@@ -55,6 +56,7 @@ function main() {
   for (const n of names) scope[n] = n === xName ? xVal : 0.7;
 
   console.log("formula:", nodeToString(node));
+  console.log("vars:", JSON.stringify(scope));
   const report = (n: SpearNode, path: string): void => {
     const v = ev(n, scope);
     const rel = Math.abs(v.f64 - v.f32) / (Math.abs(v.f64) + 1e-300);
