@@ -56,7 +56,7 @@ Lesson learned (twice now): discovery quality depends less on budget than on whi
   **SiLU/Swish**   7.8e-4   **×2.43**   `x·(0.501 + 0.587·x/(0.815 + √(1+x²)))`   HardSwish, ReLU  
   **GELU**   5.3e-4   **×6.57**   `x·min(1.002, relu(0.308x + 0.501))`   GELU-tanh  
   **Sigmoid**   0 (exact)*   ×1.26   `1 − 1/(1 + e⁻ˣ)`   Hard-sigmoid TFLite  
-  **Gaussian CDF Φ(x)**   **2.7e-5, L3**   ×1.79   clamped rational `x/max(1.56, 0.34+ x )` — div→mul strength reduction   HardSwish  
+  **Gaussian CDF Φ(x)**   **1.6e-5, L3**   ×1.79   clamped rational `x/max(1.56, 0.34+ x )` — div→mul strength reduction   HardSwish  
   **Softplus ln(1+eˣ)**   **1.9e-5, L2** — ×75 cumulative   ×0.95 (exact-grade form is pricier)   piecewise-rational approximant (bootstrap child)   smooth ReLU kernels  
   **Deep-RL actor distillation**   1.6e-4   **×2.83**   `(x + 0.145x³)/(0.556 + 0.75x²)` — Padé [3/2] found spontaneously   tanh network  
 
@@ -66,7 +66,7 @@ Lesson learned (twice now): discovery quality depends less on budget than on whi
 
   Task   Record   ⚡ Speed   Discovered formula   Note  
  --- --- --- --- --- 
-  **Hill dose-response** 🏥   **1.4e-5, L2** — ×8.6 total   —   min-cascade saturation on c²   deployable drug-model shape  
+  **Hill dose-response** 🏥   **4.5e-6, L2** — ×26 total   —   min-cascade saturation on c²   deployable drug-model shape  
   **Lennard-Jones 12-6 potential** 🧪   **3.2e-4**   ×0.55   log-cos composite well shape   repulsive + attractive terms  
   **Damped oscillation e^(−t/τ)cos(ωt)** 📡   **3.1e-4**   ×1.63   polynomial envelope × carrier: `(t−16.4)(t−8.3)·cos(2.996t)` — amplitude modulation   DSP staple  
   **Logistic growth** 📈   **1.1e-5**   ×0.62   level 2 saturation curve   adoption / population model  

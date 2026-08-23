@@ -465,21 +465,90 @@
     "taskId": "gaussian_cdf",
     "title": "Répartition gaussienne Φ(x)",
     "direction": "min",
-    "metric": 0.00002655101736531925,
+    "metric": 0.000016407954856661242,
     "level": 3,
-    "formula": "((0.000017 * (((0.680392 * x) / 0.000034) + ((min(132.262684, x) / 0.000034) + ((0.426743 * x) / 0.000034)))) + 0.5)",
-    "seed": 1000002,
-    "iteration": 199,
+    "formula": "((0.446257 * atan(min((0.946094 * max(x, -2.183)), 2.045418))) + 0.50123)",
+    "seed": 1001003,
+    "iteration": 1600,
     "speed": {
-      "formulaCost": 19,
+      "formulaCost": 25,
       "exactCost": 34,
-      "speedup": 1.7894736842105263,
+      "speedup": 1.36,
       "vsIterative": {
         "label": "Monte-Carlo · 1000 tirages",
-        "speedup": 2421.0526315789475
+        "speedup": 1840
       }
     },
     "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 0.446257
+            },
+            {
+              "o": "atan",
+              "c": [
+                {
+                  "o": "min",
+                  "c": [
+                    {
+                      "o": "mul",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 0.946094
+                        },
+                        {
+                          "o": "max",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "x"
+                            },
+                            {
+                              "o": "const",
+                              "v": -2.183
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "o": "const",
+                      "v": 2.045418
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.50123
+        }
+      ]
+    },
+    "fast": {
+      "formula": "((0.000017 * (((0.680392 * x) / 0.000034) + ((min(132.262684, x) / 0.000034) + ((0.426743 * x) / 0.000034)))) + 0.5)",
+      "metric": 0.00002655101736531925,
+      "level": 3,
+      "formulaCost": 19,
+      "speed": {
+        "formulaCost": 19,
+        "exactCost": 34,
+        "speedup": 1.7894736842105263,
+        "vsIterative": {
+          "label": "Monte-Carlo · 1000 tirages",
+          "speedup": 2421.0526315789475
+        }
+      }
+    },
+    "fastTree": {
       "o": "add",
       "c": [
         {
@@ -570,61 +639,6 @@
         {
           "o": "const",
           "v": 0.4999999999999995
-        }
-      ]
-    },
-    "fast": {
-      "formula": "(0.568701 + (-464.279049 + ((0.680392 * x) / 0.000034)))",
-      "metric": 0.00029555479009173,
-      "level": 2,
-      "formulaCost": 7,
-      "speed": {
-        "formulaCost": 7,
-        "exactCost": 34,
-        "speedup": 4.857142857142857,
-        "vsIterative": {
-          "label": "Monte-Carlo · 1000 tirages",
-          "speedup": 6571.428571428572
-        }
-      }
-    },
-    "fastTree": {
-      "o": "add",
-      "c": [
-        {
-          "o": "const",
-          "v": 0.568701
-        },
-        {
-          "o": "add",
-          "c": [
-            {
-              "o": "const",
-              "v": -464.279049
-            },
-            {
-              "o": "pdiv",
-              "c": [
-                {
-                  "o": "mul",
-                  "c": [
-                    {
-                      "o": "const",
-                      "v": 0.680392
-                    },
-                    {
-                      "o": "var",
-                      "n": "x"
-                    }
-                  ]
-                },
-                {
-                  "o": "const",
-                  "v": 0.000034
-                }
-              ]
-            }
-          ]
         }
       ]
     }
@@ -1492,15 +1506,15 @@
     "taskId": "hill",
     "title": "Équation de Hill · dose-réponse",
     "direction": "min",
-    "metric": 0.000013549969721192658,
+    "metric": 0.000004468114072258487,
     "level": 2,
-    "formula": "((0.639099 * atan((sqrt(|c|) * (0.984456 * (c)Â²)))) + -0.00022)",
-    "seed": 1000002,
-    "iteration": 206,
+    "formula": "((-0.508815 * cos((atan(c) + atan((c)Â²)))) + 0.500599)",
+    "seed": 1001003,
+    "iteration": 804,
     "speed": {
-      "formulaCost": 27,
+      "formulaCost": 64,
       "exactCost": 9,
-      "speedup": 0.3333333333333333
+      "speedup": 0.140625
     },
     "tree": {
       "o": "add",
@@ -1510,16 +1524,16 @@
           "c": [
             {
               "o": "const",
-              "v": 0.639099
+              "v": -0.5088154625822694
             },
             {
-              "o": "atan",
+              "o": "cos",
               "c": [
                 {
-                  "o": "mul",
+                  "o": "add",
                   "c": [
                     {
-                      "o": "sqrt",
+                      "o": "atan",
                       "c": [
                         {
                           "o": "var",
@@ -1528,12 +1542,8 @@
                       ]
                     },
                     {
-                      "o": "mul",
+                      "o": "atan",
                       "c": [
-                        {
-                          "o": "const",
-                          "v": 0.984456
-                        },
                         {
                           "o": "sq",
                           "c": [
@@ -1553,7 +1563,7 @@
         },
         {
           "o": "const",
-          "v": -0.00022
+          "v": 0.5005994325153399
         }
       ]
     },
@@ -2124,86 +2134,32 @@
       ]
     },
     "fast": {
-      "formula": "((-0.068874 * (min(-5.998739, (-6.175787 - x)) + (cos(x) + ((-6.721249 - x) * x)))) + 0.332995)",
-      "metric": 0.00003576283728044669,
+      "formula": "(((x + 6.630221))Â³ + 239.762951)",
+      "metric": 0.007707567263369909,
       "level": 2,
-      "formulaCost": 28,
+      "formulaCost": 4,
       "speed": {
-        "formulaCost": 28,
+        "formulaCost": 4,
         "exactCost": 41,
-        "speedup": 1.4642857142857142
+        "speedup": 10.25
       }
     },
     "fastTree": {
       "o": "add",
       "c": [
         {
-          "o": "mul",
+          "o": "cube",
           "c": [
-            {
-              "o": "const",
-              "v": -0.068874
-            },
             {
               "o": "add",
               "c": [
                 {
-                  "o": "min",
-                  "c": [
-                    {
-                      "o": "const",
-                      "v": -5.998739
-                    },
-                    {
-                      "o": "sub",
-                      "c": [
-                        {
-                          "o": "const",
-                          "v": -6.175787
-                        },
-                        {
-                          "o": "var",
-                          "n": "x"
-                        }
-                      ]
-                    }
-                  ]
+                  "o": "var",
+                  "n": "x"
                 },
                 {
-                  "o": "add",
-                  "c": [
-                    {
-                      "o": "cos",
-                      "c": [
-                        {
-                          "o": "var",
-                          "n": "x"
-                        }
-                      ]
-                    },
-                    {
-                      "o": "mul",
-                      "c": [
-                        {
-                          "o": "sub",
-                          "c": [
-                            {
-                              "o": "const",
-                              "v": -6.721249
-                            },
-                            {
-                              "o": "var",
-                              "n": "x"
-                            }
-                          ]
-                        },
-                        {
-                          "o": "var",
-                          "n": "x"
-                        }
-                      ]
-                    }
-                  ]
+                  "o": "const",
+                  "v": 6.630221
                 }
               ]
             }
@@ -2211,7 +2167,7 @@
         },
         {
           "o": "const",
-          "v": 0.332995
+          "v": 239.762951
         }
       ]
     }
