@@ -1,0 +1,25 @@
+{
+  "name": "spear-kernels",
+  "version": "1.0.0",
+  "description": "Closed-form kernels discovered by the SPEAR symbolic regression engine, shipped as JS, CUDA C, PyTorch and WebAssembly.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./index.cjs",
+  "module": "./index.js",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.js",
+      "require": "./index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "index.cjs",
+    "index.d.ts",
+    "README.md"
+  ],
+  "sideEffects": false
+}
