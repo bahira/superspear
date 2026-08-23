@@ -91,7 +91,7 @@ Short answer explored empirically: **the matmul itself already IS the minimal cl
 
 | Task | What it tests | Record | Status |
 |---|---|---|---|
-| **gemv4** — decode-lane dot product | Can the engine recover the provably-minimal kernel (7 units, MSE → noise floor)? | **9.3e-5**, L2, 13 units — ×4.4 this week | converging on the optimal bilinear form |
+| **gemv4** — decode-lane dot product | Can the engine recover the provably-minimal kernel (7 units, MSE → noise floor)? | **2.0e-5**, L2, 11 units — ×9.8 cumulative | converging on the optimal bilinear form |
 | **rope_rot** — RoPE lane rotation, paid every token of every head | Exact recovery via served sin/cos primitives | **EXACT (MSE=0, L5)**, 44 units, ×1.45 vs CORDIC | solved precisely; algebraic fast variant pending |
 
 Cross-variable and trigonometric carrier seeds (shape-only, no answer constants) unlocked the exact RoPE recovery at depth 6000 — the seed pool now covers bilinear interactions (`x₀·x₁`, `x₀±x₁`) and carriers (`cos x`, `sin x`).
@@ -148,7 +148,7 @@ Five everyday kernel/program primitives added, first-generation results at 500 i
 |---|---|---|---|---|
 | **atan_unit** | core of every atan2 | **6.6e-9, L5** — rediscovered the classic Padé `[x+0.195x³]/[1+0.52x²]` | 12 | ×1.67 |
 | **ema_smooth** | frame-rate-independent smoothing, every game frame | **1.6e-11, L5** near-exact | 12 | ×1.92 |
-| **smoothstep** | THE shader interpolation — optimality test #2 | **1.7e-5**, L3 (exact form is 5 units; converging) | 23 | ×0.29 |
+| **smoothstep** ✅ | THE shader interpolation — optimality test #2 **PASSED PERFECTLY** | **3.3e-7, L5 at exactly 5 units** — `x²(x−1.5)` is the true polynomial | 5 | ×1.00 |
 | **srgb_gamma** | linear→display transfer, every pixel every frame | 1.9e-6, L4 via nested sqrt/sin composite | 34 | ×0.65 |
 | **tanh_sat** ⭐ | audio soft-clip + NN gating | **4.6e-6, L4** — ×158 jump once the right shape surfaced | 12 | ×0.65 |
 
