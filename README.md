@@ -79,7 +79,7 @@ Three Codex entries became reproducible benchmark tasks, with the iterative solv
 
   Task   Codex source   Replaces   Record   vs solver  
  --- --- --- --- --- 
-  **eigen3_sym** — λmax of symmetric 3×3 from its invariants   BT29 Cardano trisection   Jacobi/QR sweeps (~200 units)   3.2e-2, L2, 13 units   **×15 vs Jacobi · 4 balayages**  
+  **eigen3_sym** — λmax of symmetric 3×3 from its invariants   BT29 Cardano trisection   Jacobi/QR sweeps (~200 units)   **EXACT 3.3e-11** — full Cardano scaffold recovered post-atan   **×18 vs Jacobi · 4 balayages**  
   **ik_reach** — 2-link elbow angle from reach & lengths   BT33 analytic IK   Newton-DLS chains (~320 units)   **EXACT 1.1e-13** — atan identity unlocked by the new atan primitive   **×20 vs Newton-DLS · 8 it.**  
   **idm_following** — Intelligent-Driver-Model acceleration   city.ts traffic phase B   hand-tuned law only   **2.01 — wall cracking** (first progress ever)   —  
 
