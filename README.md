@@ -132,6 +132,16 @@ Five everyday kernel/program primitives added, first-generation results at 500 i
 | **srgb_gamma** | linear→display transfer, every pixel every frame | 1.9e-6, L4 via nested sqrt/sin composite | 34 | ×0.65 |
 | **tanh_sat** | audio soft-clip + NN gating | 1.1e-3, L1 — needs depth | 31 | ×0.65 |
 
+### 🧬 Second wave — special functions & glue (1000-iteration first generation)
+
+| Task | Use | Record | Cost | vs exact |
+|---|---|---|---|---|
+| **cosh_curve** ⭐ | catenaries · audio ring-mod | **2.6e-8, L5** — `sqrt(x²)·cos(x²)` composite | 32 (vs 44) | **×1.38 FASTER** |
+| **srgb_decode** | display→linear, mirror of srgb_gamma | 2.5e-7, **L5** — min/log composite | 26 | ×0.85 |
+| **logit_ml** | probs↔logits classifier glue | 9.4e-4, L2 (cost 66 — needs slimming passes) | 66 | ×0.41 |
+| **erf_prob** | probability kernels · GELU-exact grade | 8.4e-4, L2 — sin+linear hybrid | 30 | ×0.87 |
+| **huber_loss** | robust training loss — optimality test #3 | 2.5e-4, L2 — the 5-unit max-trick not found yet | 11 | ×0.45 |
+| **bessel_j0** | FM sidebands · vibrations · beams | 9.4e-2, L0 — hardest open problem in the registry | 47 | ×0.85 |
 Concurrency fix along the way: `run-farm.ts` now takes a `.farm-lock` single-writer guard — two simultaneous farms were last-writer-wins overwriting each other's records.
 Honest bench verdict on THIS machine: WASM per-pixel timing shows the student-t k3 at ×0.89 vs native `Math.exp` — **not faster here**. The menu targets backends where transcendental evaluation is expensive or absent (low-end GLSL profiles, quantized pipelines); measure before shipping.
 

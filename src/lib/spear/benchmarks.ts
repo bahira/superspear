@@ -1364,6 +1364,24 @@ function idmFollowingData(): { vars: Record<string, Float64Array>; y: Float64Arr
   return { vars: { v: vv, s: gv, dv: dvv }, y };
 }
 
+// --- second-wave reference implementations ---------------------------------
+
+function erfImpl(x: number): number {
+  // Abramowitz & Stegun 7.1.26, max error ~1.5e-7
+  const ax = Math.abs(x);
+  const t = 1 / (1 + 0.3275911 * ax);
+  const poly = ((((1.061405429 * t - 1.453152027) * t + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t;
+  const y = 1 - poly * Math.exp(-ax * ax);
+  return x >= 0 ? y : -y;
+}
+
+function besselJ0(x: number): number {
+  // A&S 9.4.1 / Numerical Recipes polynomial for |x| < 8
+  const h = x / 2;
+  const h2 = h * h;
+  return 1 + h2 * (-2.2499997 + h2 * (1.2656208 + h2 * (-0.3163866 + h2 * (0.0444479 + h2 * (-0.0039444 + h2 * 0.00021)))));
+}
+
 // ---------------------------------------------------------------------------
 // Registry
 // ---------------------------------------------------------------------------
@@ -1448,6 +1466,80 @@ export function buildTasks(): TaskDef[] {
       hi: 1,
       groundTruth: "smoothstep(t) = t²(3−2t)",
       exactCost: 5, // sq + mul + sub + mul... documented arithmetic
+    }),
+    // ---- second wave: special functions & training/graphics glue ----------
+    // sRGB decode: display -> linear, the mirror of srgb_gamma. Every texture
+    // read in a physically-based pipeline walks this curve once.
+    buildActivationTask({
+      id: "srgb_decode",
+      title: "Décode sRGB (affichage → linéaire)",
+      subtitle: "x^2.2 sur [0,1] : puissance fractionnaire inverse, approximant rationnel recherché",
+      fn: (x) => Math.pow(x, 2.2),
+      lo: 0,
+      hi: 1,
+      groundTruth: "decode(x) = x^2.2",
+      exactCost: 22,
+    }),
+    // erf: THE probability kernel (GELU-exact grade). exp is SERVED here, so
+    // the search may mix rationals with exponentials — A&S-style hybrids.
+    buildActivationTask({
+      id: "erf_prob",
+      title: "Erf probabiliste (noyaux de probabilité · GELU-exact)",
+      subtitle: "erf(x) sur [-3,3] — hybrides rationnel+exp permis (style Abramowitz-Stegun)",
+      fn: (x) => erfImpl(x),
+      lo: -3,
+      hi: 3,
+      groundTruth: "erf(x)",
+      exactCost: 26,
+    }),
+    // Huber loss δ=1: the elegant trick is huber(x) = max(x²/2, |x| − 1/2) —
+    // EXACTLY expressible in 5 units. Optimality test #3: does the search find
+    // the max-form trick, or grind through piecewise rubble?
+    buildActivationTask({
+      id: "huber_loss",
+      title: "Perte de Huber δ=1 (entraînement robuste)",
+      subtitle: "max(x²/2, |x|−1/2) : forme max exacte à 5 unités — le GP voit-il l'astuce ?",
+      fn: (x) => (Math.abs(x) <= 1 ? 0.5 * x * x : Math.abs(x) - 0.5),
+      lo: -4,
+      hi: 4,
+      groundTruth: "huber(x) = x²/2 si |x|≤1, sinon |x|−1/2",
+      exactCost: 5,
+    }),
+    // cosh: catenaries, ring-modulation audio, and the sech² inside KdV's own
+    // reference. Two exps are the textbook form — can algebra beat them?
+    buildActivationTask({
+      id: "cosh_curve",
+      title: "Cosh (caténaires · ring-mod audio)",
+      subtitle: "cosh(x) sur [-2,2] — la forme (eˣ+e⁻ˣ)/2 coûte 44 unités, place aux algébriques",
+      fn: (x) => Math.cosh(x),
+      lo: -2,
+      hi: 2,
+      groundTruth: "cosh(x)",
+      exactCost: 44,
+    }),
+    // Bessel J0: FM sidebands, membrane/vibration modes, beam physics. No SFU
+    // serves it — libraries grind series. A discovered closed form would be
+    // genuinely novel engineering.
+    buildActivationTask({
+      id: "bessel_j0",
+      title: "Bessel J₀ (FM · vibrations · poutres)",
+      subtitle: "J₀(x) sur [0,6] — aucune SFU ne la sert ; forme close découverte = vrai nouvel outil",
+      fn: (x) => besselJ0(x),
+      lo: 0,
+      hi: 6,
+      groundTruth: "J₀(x)",
+      exactCost: 40, // series/asymptotic library evaluation
+    }),
+    // logit: probabilities <-> logits glue, present in every classifier head
+    buildActivationTask({
+      id: "logit_ml",
+      title: "Logit (probas ↔ logits, têtes de classification)",
+      subtitle: "ln(x/(1−x)) sur (0.02, 0.98) — colle ML, approximant sans division protégée utile",
+      fn: (x) => Math.log(x / (1 - x)),
+      lo: 0.02,
+      hi: 0.98,
+      groundTruth: "logit(x) = ln(x/(1−x))",
+      exactCost: 27,
     }),
     buildKvTask(),
     buildRegressionTask({
