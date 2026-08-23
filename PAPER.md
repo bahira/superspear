@@ -102,7 +102,12 @@ per-element host↔wasm invocation.
    future attention mass vs 80.20% for H2O and 80.07% for StreamingLLM
    (oracle upper bound: 90.85%). The margin is narrow but positive, achieved
    with 3 features and no attention-score sorting.
-2. Perplexity impact of approximate activations is unmeasured.
+2. MEASURED — honest negative: swapping distilgpt2's fused GELU for the
+   discovered form RAISES perplexity by 0.56 and LOWERS throughput by 9.2%
+   on CPU. Native fused kernels beat multi-op algebraics inside frameworks;
+   the cost-model gains transfer only where transcendentals are truly
+   expensive (raw WASM: ×2.12 measured; MCUs). Frameworks are the wrong
+   battlefield — this is a deployment-boundary result, not a search failure.
 3. Bessel-family tasks (J₀/J₁) resist current depths; series scaffolds
    mutate away before compression.
 4. The cost model counts ALU/SFU units; wall-clock gains on SFU-rich GPUs

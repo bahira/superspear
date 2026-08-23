@@ -1,0 +1,11 @@
+{
+  "model": "distilgpt2",
+  "tokens": 3072,
+  "perplexity_stock": 5.889525758166601,
+  "perplexity_spear": 6.454400763080094,
+  "toks_sec_stock": 362.27378131687306,
+  "toks_sec_spear": 329.09761297932437,
+  "kernel_ms_round_ref": 1490.0437999967835,
+  "kernel_ms_round_spear": 4877.126199997292,
+  "kernel_max_abs_err": 0.07974254339933395
+}
