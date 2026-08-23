@@ -136,7 +136,7 @@ Seeding the *shape of the trick* changed everything on the optimality tests:
 
 | Task | Round 1 | Round 2 | What happened |
 |---|---|---|---|
-| **huber_loss** (max-seeds, 1500) | 3.4e-5, no trick visible | **1.4e-5, L3** — champion now literally contains `max(x²/(|x|+1.29), \|x\|−0.494)` | seeing the scaffold → using the scaffold |
+| **huber_loss** (max-seeds, then hammering) | 3.4e-5, no trick visible | **3.0e-7, L5** — champion now literally contains `max(x²/(|x|+1.29), \|x\|−0.494)` | seeing the scaffold → using the scaffold |
 | **bessel_j0** (series-head seed, 3000) | 9.0e-2 | **2.7e-2** ×3.3 | series head mutated into exp/sin composite |
 | **bessel_j1** (odd-series seed, 3000) | 1.86 | **0.56** ×3.3 | same leap |
 | **aces_fit** (rational seed, **8000**) | 2.4e-5 @53u | 1.2e-5 @13u — still ×0.62 | **Narkowicz keeps the crown**; the hand-fit is genuinely excellent |
@@ -148,7 +148,7 @@ Five everyday kernel/program primitives added, first-generation results at 500 i
 |---|---|---|---|---|
 | **atan_unit** | core of every atan2 | **6.6e-9, L5** — rediscovered the classic Padé `[x+0.195x³]/[1+0.52x²]` | 12 | ×1.67 |
 | **ema_smooth** | frame-rate-independent smoothing, every game frame | **1.6e-11, L5** near-exact | 12 | ×1.92 |
-| **smoothstep** | THE shader interpolation — optimality test #2 | 4.6e-5, L3 (exact form is 5 units; converging) | 9 | ×0.56 |
+| **smoothstep** | THE shader interpolation — optimality test #2 | **1.7e-5**, L3 (exact form is 5 units; converging) | 23 | ×0.29 |
 | **srgb_gamma** | linear→display transfer, every pixel every frame | 1.9e-6, L4 via nested sqrt/sin composite | 34 | ×0.65 |
 | **tanh_sat** ⭐ | audio soft-clip + NN gating | **4.6e-6, L4** — ×158 jump once the right shape surfaced | 12 | ×0.65 |
 
@@ -160,7 +160,7 @@ Five everyday kernel/program primitives added, first-generation results at 500 i
 | **srgb_decode** | display→linear, mirror of srgb_gamma | 2.5e-7, **L5** — min/log composite | 26 | ×0.85 |
 | **logit_ml** | probs↔logits classifier glue | 9.4e-4, L2 (cost 66 — needs slimming passes) | 66 | ×0.41 |
 | **erf_prob** | probability kernels · GELU-exact grade | 8.4e-4, L2 — sin+linear hybrid | 30 | ×0.87 |
-| **huber_loss** | robust training loss — optimality test #3 | 2.5e-4, L2 — the 5-unit max-trick not found yet | 11 | ×0.45 |
+| **huber_loss** ✅ | robust training loss — optimality test #3 **PASSED** | **3.0e-7, L5** via max-scaffold seed | 12 | ×0.42 |
 | **bessel_j0** | FM sidebands · vibrations · beams | 9.4e-2, L0 — hardest open problem in the registry | 47 | ×0.85 |
 Concurrency fix along the way: `run-farm.ts` now takes a `.farm-lock` single-writer guard — two simultaneous farms were last-writer-wins overwriting each other's records.
 Honest bench verdict on THIS machine: WASM per-pixel timing shows the student-t k3 at ×0.89 vs native `Math.exp` — **not faster here**. The menu targets backends where transcendental evaluation is expensive or absent (low-end GLSL profiles, quantized pipelines); measure before shipping.
