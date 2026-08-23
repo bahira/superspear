@@ -120,6 +120,19 @@ New task `gauss_shader`: algebraic approximants of e^(−x²/2) evaluated per pi
 | **student-t k2** | **8** | **1.35e-3** | `1.04984/(0.375x²+1)²` |
 | cos window | 20 | 5.2e-3 | `cos(x)` |
 
+### ⚙️ Ultra-common operations registry (new)
+
+Five everyday kernel/program primitives added, first-generation results at 500 iterations:
+
+| Task | Use | Record | Cost | vs exact |
+|---|---|---|---|---|
+| **atan_unit** | core of every atan2 | **6.6e-9, L5** — rediscovered the classic Padé `[x+0.195x³]/[1+0.52x²]` | 12 | ×1.67 |
+| **ema_smooth** | frame-rate-independent smoothing, every game frame | **1.6e-11, L5** near-exact | 12 | ×1.92 |
+| **smoothstep** | THE shader interpolation — optimality test #2 | 4.6e-5, L3 (exact form is 5 units; converging) | 9 | ×0.56 |
+| **srgb_gamma** | linear→display transfer, every pixel every frame | 1.9e-6, L4 via nested sqrt/sin composite | 34 | ×0.65 |
+| **tanh_sat** | audio soft-clip + NN gating | 1.1e-3, L1 — needs depth | 31 | ×0.65 |
+
+Concurrency fix along the way: `run-farm.ts` now takes a `.farm-lock` single-writer guard — two simultaneous farms were last-writer-wins overwriting each other's records.
 Honest bench verdict on THIS machine: WASM per-pixel timing shows the student-t k3 at ×0.89 vs native `Math.exp` — **not faster here**. The menu targets backends where transcendental evaluation is expensive or absent (low-end GLSL profiles, quantized pipelines); measure before shipping.
 
 ### ⚡ vs iterative solvers — the honest big multipliers

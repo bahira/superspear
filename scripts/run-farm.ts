@@ -37,6 +37,23 @@ async function main() {
   const workers = Number(process.argv[4] ?? 4);
   const only = process.argv[5] ? new Set(process.argv[5].split(",")) : null;
 
+  // single-writer guard: concurrent farms would load the same ledger and
+  // last-writer-wins over each other's records
+  const lockPath = join(import.meta.dirname ?? ".", "..", ".farm-lock");
+  if (existsSync(lockPath)) {
+    console.error("✗ une ferme est déjà en cours (.farm-lock présent) — attends sa fin");
+    process.exit(1);
+  }
+  writeFileSync(lockPath, String(process.pid));
+  try {
+    await farmInner(seed, budget, workers, only);
+  } finally {
+    rmSync(lockPath, { force: true });
+  }
+}
+
+async function farmInner(seed: number, budget: number, workers: number, only: Set<string> | null): Promise<void> {
+
   // list all task ids (env unset here)
   delete process.env.SPEAR_TASKS;
   const { buildTasks } = await import("../src/lib/spear/benchmarks");

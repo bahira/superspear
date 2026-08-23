@@ -1392,6 +1392,63 @@ export function buildTasks(): TaskDef[] {
       groundTruth: "g(x) = e^(-x²/2)",
       exactCost: 22,
     }),
+    // ---- ultra-common program/kernel operations ----------------------------
+    // sRGB transfer curve: applied to every pixel of every rendered frame.
+    // Fractional power x^(1/2.4) is NOT served — rational approximant hunt.
+    buildActivationTask({
+      id: "srgb_gamma",
+      title: "Transfert sRGB (encodage linéaire→affichage)",
+      subtitle: "1.055·x^(1/2.4) − 0.055 sur [0,1] : puissance fractionnaire par pixel, approximant rationnel recherché",
+      fn: (x) => 1.055 * Math.pow(x, 1 / 2.4) - 0.055,
+      lo: 0,
+      hi: 1,
+      groundTruth: "srgb(x) = 1.055·x^(1/2.4) − 0.055",
+      exactCost: 22, // mul + add + powf(SFU ~20)
+    }),
+    // tanh soft-clip: THE audio saturator + NN gating; Padé-style rational hunt
+    buildActivationTask({
+      id: "tanh_sat",
+      title: "Tanh soft-clip (audio · gating)",
+      subtitle: "tanh(x) sur [-3,3] sans transcendante — approximants rationnels type Padé",
+      fn: (x) => Math.tanh(x),
+      lo: -3,
+      hi: 3,
+      groundTruth: "tanh(x)",
+      exactCost: 20, // SFU tanh
+    }),
+    // atan on the unit domain: the core of every atan2 (angles everywhere)
+    buildActivationTask({
+      id: "atan_unit",
+      title: "Atan unitaire (cœur des atan2)",
+      subtitle: "atan(x) sur [-1,1] — Padé [3/2] classique chassé en forme découverte",
+      fn: (x) => Math.atan(x),
+      lo: -1,
+      hi: 1,
+      groundTruth: "atan(x)",
+      exactCost: 20, // SFU atan
+    }),
+    // frame-rate-independent smoothing factor: evaluated EVERY frame in games
+    buildActivationTask({
+      id: "ema_smooth",
+      title: "Facteur EMA indépendant du framerate",
+      subtitle: "1 − e^(-3.2·dt), dt ∈ [0, 0.1] s — lissage caméra/particules à dt variable",
+      fn: (dt) => 1 - Math.exp(-3.2 * dt),
+      lo: 0,
+      hi: 0.1,
+      groundTruth: "f(dt) = 1 − e^(-3.2·dt)",
+      exactCost: 23, // mul + neg + exp(20) + sub-from-1
+    }),
+    // smoothstep: the most iconic shader interpolation — optimality test #2
+    buildActivationTask({
+      id: "smoothstep",
+      title: "Smoothstep (interpolation shader iconique)",
+      subtitle: "t²(3−2t) sur [0,1] : forme polynomiale exacte à 5 unités — le moteur la retrouve-t-il ?",
+      fn: (t) => t * t * (3 - 2 * t),
+      lo: 0,
+      hi: 1,
+      groundTruth: "smoothstep(t) = t²(3−2t)",
+      exactCost: 5, // sq + mul + sub + mul... documented arithmetic
+    }),
     buildKvTask(),
     buildRegressionTask({
       id: "free_fall",
