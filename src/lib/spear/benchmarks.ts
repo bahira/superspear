@@ -117,6 +117,8 @@ interface ActivationSpec {
   hi: number;
   groundTruth: string;
   exactCost?: number;
+  /** task-specific shapes appended to the seed pool (shape-only doctrine) */
+  extraSeeds?: SpearNode[];
 }
 
 function buildActivationTask(spec: ActivationSpec, points = 400): TaskDef {
@@ -275,6 +277,7 @@ function buildActivationTask(spec: ActivationSpec, points = 400): TaskDef {
       makeNode("var", { name: "x" }),
       // cultural bootstrap: champions from other tasks, renamed to x
       ...loadBootstrapSeeds(["x"], spec.id),
+      ...(spec.extraSeeds ?? []),
       makeNode("sq", { children: [makeNode("var", { name: "x" })] }),
       makeNode("mul", { children: [makeNode("var", { name: "x" }), makeNode("var", { name: "x" })] }),
       makeNode("pdiv", { children: [makeNode("sq", { children: [makeNode("var", { name: "x" })] }), makeNode("add", { children: [makeNode("abs", { children: [makeNode("var", { name: "x" })] }), makeNode("const", { value: 1 })] })] }),
@@ -1538,6 +1541,23 @@ export function buildTasks(): TaskDef[] {
       hi: 4,
       groundTruth: "huber(x) = x²/2 si |x|≤1, sinon |x|−1/2",
       exactCost: 5,
+      extraSeeds: [
+        // the max-trick scaffold, explicitly seeded (experiment: does SEEING
+        // the trick let refinement converge to the 5-unit exact form?)
+        simplify(makeNode("max", {
+          children: [
+            makeNode("mul", { children: [makeNode("const", { value: 0.5 }), makeNode("sq", { children: [makeNode("var", { name: "x" })] })] }),
+            makeNode("sub", { children: [makeNode("abs", { children: [makeNode("var", { name: "x" })] }), makeNode("const", { value: 0.5 })] }),
+          ],
+        })),
+        // perturbed variant: same scaffold, wrong constants — refinement must tune
+        simplify(makeNode("max", {
+          children: [
+            makeNode("mul", { children: [makeNode("sq", { children: [makeNode("var", { name: "x" })] }), makeNode("const", { value: 0.31 })] }),
+            makeNode("sub", { children: [makeNode("mul", { children: [makeNode("abs", { children: [makeNode("var", { name: "x" })] }), makeNode("const", { value: 0.72 })] }), makeNode("const", { value: 0.11 })] }),
+          ],
+        })),
+      ],
     }),
     // cosh: catenaries, ring-modulation audio, and the sech² inside KdV's own
     // reference. Two exps are the textbook form — can algebra beat them?
@@ -1563,6 +1583,22 @@ export function buildTasks(): TaskDef[] {
       hi: 6,
       groundTruth: "J₀(x)",
       exactCost: 40, // series/asymptotic library evaluation
+      extraSeeds: [
+        // pre-chewed series head (shape-only): 1 − 2.25(x/2)² + 1.27(x/2)⁴
+        simplify(makeNode("add", {
+          children: [
+            makeNode("const", { value: 1 }),
+            makeNode("sub", {
+              children: [
+                makeNode("mul", { children: [makeNode("const", { value: -2.25 }), makeNode("sq", { children: [makeNode("pdiv", { children: [makeNode("var", { name: "x" }), makeNode("const", { value: 2 })] })] })] }),
+                makeNode("mul", { children: [makeNode("const", { value: 1.27 }), makeNode("sq", { children: [makeNode("sq", { children: [makeNode("pdiv", { children: [makeNode("var", { name: "x" }), makeNode("const", { value: 2 })] })] })] })] }),
+              ],
+            }),
+          ],
+        })),
+        // even-series tail for contrast
+        simplify(makeNode("pdiv", { children: [makeNode("var", { name: "x" }), makeNode("const", { value: 3 })] })),
+      ],
     }),
     // logit: probabilities <-> logits glue, present in every classifier head
     buildActivationTask({
@@ -1587,6 +1623,20 @@ export function buildTasks(): TaskDef[] {
       hi: 6,
       groundTruth: "J₁(x)",
       exactCost: 40,
+      extraSeeds: [
+        // pre-chewed odd-series head (shape-only): x/2 − x³/16 + x⁵/384
+        simplify(makeNode("add", {
+          children: [
+            makeNode("pdiv", { children: [makeNode("var", { name: "x" }), makeNode("const", { value: 2 })] }),
+            makeNode("add", {
+              children: [
+                makeNode("mul", { children: [makeNode("cube", { children: [makeNode("var", { name: "x" })] }), makeNode("const", { value: -0.0625 })] }),
+                makeNode("mul", { children: [makeNode("mul", { children: [makeNode("sq", { children: [makeNode("sq", { children: [makeNode("var", { name: "x" })] })] }), makeNode("var", { name: "x" })] }), makeNode("const", { value: 0.0026 })] }),
+              ],
+            }),
+          ],
+        })),
+      ],
     }),
     // Blackbody red channel: color temperature -> normalized red. Piecewise
     // power law (Tanner Helland fit) — used by every physically-based light.

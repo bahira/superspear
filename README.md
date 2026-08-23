@@ -130,6 +130,16 @@ New task `gauss_shader`: algebraic approximants of e^(−x²/2) evaluated per pi
 | **bessel_j1** | FM · antisymmetric membrane modes | 1.86, L0 — hardest family confirmed | 26 | ×1.54 |
 | **logsumexp2** | differentiable max (RL losses) | 1.0e-2, L2 — max/min scaffolding emerging | — | — |
 | **bessel_j0** (depth) | vibrations · beams | 8.95e-2 — barely moved; official boss fight | 28 | ×1.43 |
+### 🎯 Round 2 — explicit seeds & massive budgets
+
+Seeding the *shape of the trick* changed everything on the optimality tests:
+
+| Task | Round 1 | Round 2 | What happened |
+|---|---|---|---|
+| **huber_loss** (max-seeds, 1500) | 3.4e-5, no trick visible | **1.4e-5, L3** — champion now literally contains `max(x²/(|x|+1.29), \|x\|−0.494)` | seeing the scaffold → using the scaffold |
+| **bessel_j0** (series-head seed, 3000) | 9.0e-2 | **2.7e-2** ×3.3 | series head mutated into exp/sin composite |
+| **bessel_j1** (odd-series seed, 3000) | 1.86 | **0.56** ×3.3 | same leap |
+| **aces_fit** (rational seed, **8000**) | 2.4e-5 @53u | 1.2e-5 @13u — still ×0.62 | **Narkowicz keeps the crown**; the hand-fit is genuinely excellent |
 ### ⚙️ Ultra-common operations registry (new)
 
 Five everyday kernel/program primitives added, first-generation results at 500 iterations:
