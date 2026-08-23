@@ -129,7 +129,7 @@ New task `gauss_shader`: algebraic approximants of e^(−x²/2) evaluated per pi
 | **aces_fit** | tonemap — optimality test #4 | 2.4e-5, L3 | 53 vs Narkowicz's 8 | **human hand-fit wins round 1** |
 | **bessel_j1** | FM · antisymmetric membrane modes | 1.86, L0 — hardest family confirmed | 26 | ×1.54 |
 | **logsumexp2** | differentiable max (RL losses) | 1.0e-2, L2 — max/min scaffolding emerging | — | — |
-| **bessel_j0** (depth) | vibrations · beams | 8.95e-2 — barely moved; official boss fight | 28 | ×1.43 |
+| **bessel_j0** (depth) | vibrations · beams | **1.6e-2** — boss fight ongoing, ×5.6 total | 47 | ×1.43 |
 ### 🎯 Round 2 — explicit seeds & massive budgets
 
 Seeding the *shape of the trick* changed everything on the optimality tests:
@@ -150,7 +150,7 @@ Five everyday kernel/program primitives added, first-generation results at 500 i
 | **ema_smooth** | frame-rate-independent smoothing, every game frame | **1.6e-11, L5** near-exact | 12 | ×1.92 |
 | **smoothstep** | THE shader interpolation — optimality test #2 | 4.6e-5, L3 (exact form is 5 units; converging) | 9 | ×0.56 |
 | **srgb_gamma** | linear→display transfer, every pixel every frame | 1.9e-6, L4 via nested sqrt/sin composite | 34 | ×0.65 |
-| **tanh_sat** | audio soft-clip + NN gating | 1.1e-3, L1 — needs depth | 31 | ×0.65 |
+| **tanh_sat** | audio soft-clip + NN gating | **7.3e-4**, L1→L2 path | 31 | ×0.65 |
 
 ### 🧬 Second wave — special functions & glue (1000-iteration first generation)
 
