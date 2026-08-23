@@ -409,7 +409,25 @@ export function parseFormula(src: string): SpearNode {
     return makeNode("const", { value: Number(eat()) });
   };
 
-  const expr = (): SpearNode => atom();
+  // precedence climbing: term (* /) binds tighter than expr (+ -). Ledger
+  // formulas are fully parenthesized so this only upgrades free-form user
+  // input like "sin(x) * exp(-x / 3)".
+  const term = (): SpearNode => {
+    let left = atom();
+    while (peek() === "*" || peek() === "/") {
+      const op = BIN[eat()];
+      left = makeNode(op, { children: [left, atom()] });
+    }
+    return left;
+  };
+  const expr = (): SpearNode => {
+    let left = term();
+    while (peek() === "+" || peek() === "-") {
+      const op = BIN[eat()];
+      left = makeNode(op, { children: [left, term()] });
+    }
+    return left;
+  };
 
   const out = expr();
   if (p < toks.length) throw new Error(`parseFormula: ${toks.length - p} tokens restants dans ${src}`);
