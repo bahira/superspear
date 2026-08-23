@@ -1382,6 +1382,40 @@ function besselJ0(x: number): number {
   return 1 + h2 * (-2.2499997 + h2 * (1.2656208 + h2 * (-0.3163866 + h2 * (0.0444479 + h2 * (-0.0039444 + h2 * 0.00021)))));
 }
 
+function besselJ1(x: number): number {
+  // Truncated series Σ (-1)^k (x/2)^(2k+1) / (k!(k+1)!) — ~1e-10 accurate on [0,6]
+  let sum = 0;
+  let term = x / 2;
+  let kf = 1; // k!
+  let kf1 = 1; // (k+1)!
+  for (let k = 0; k <= 16; k++) {
+    if (k > 0) {
+      term *= -(x / 2) * (x / 2);
+      kf *= k;
+      kf1 *= k + 1;
+    }
+    void kf1;
+    sum += (k % 2 === 0 ? 1 : -1) * term / (kf * (k + 1));
+  }
+  return sum;
+}
+
+// Tanner Helland blackbody fit — normalized red channel vs color temperature
+function blackbodyRed(tempK: number): number {
+  const t = tempK / 100;
+  let r: number;
+  if (t <= 66) r = 255;
+  else r = 329.698727446 * Math.pow(t - 60, -0.1332047592);
+  return Math.min(255, Math.max(0, r)) / 255;
+}
+
+// Narkowicz ACES approximation — THE production tonemap reference
+function narkowiczAces(x: number): number {
+  const a = x * (2.51 * x + 0.03);
+  const b = x * (2.43 * x + 0.59) + 0.14;
+  return Math.min(1, Math.max(0, a / b));
+}
+
 // ---------------------------------------------------------------------------
 // Registry
 // ---------------------------------------------------------------------------
@@ -1540,6 +1574,74 @@ export function buildTasks(): TaskDef[] {
       hi: 0.98,
       groundTruth: "logit(x) = ln(x/(1−x))",
       exactCost: 27,
+    }),
+    // ---- third wave: wave 3 — companions, tonemap, physics glue ------------
+    // Bessel J1: FM modulation index, vibrating membranes' antisymmetric modes.
+    // Companion to bessel_j0; same "no SFU serves it" story.
+    buildActivationTask({
+      id: "bessel_j1",
+      title: "Bessel J₁ (FM · membranes antisym)",
+      subtitle: "J₁(x) sur [0,6] — série 16 termes en référence ; forme close découverte = nouvel outil",
+      fn: (x) => besselJ1(x),
+      lo: 0,
+      hi: 6,
+      groundTruth: "J₁(x)",
+      exactCost: 40,
+    }),
+    // Blackbody red channel: color temperature -> normalized red. Piecewise
+    // power law (Tanner Helland fit) — used by every physically-based light.
+    buildActivationTask({
+      id: "blackbody_r",
+      title: "Corps noir — canal rouge (éclairage PBR)",
+      subtitle: "canal R normalisé vs température [1500K, 12000K] — loi en puissance par morceaux",
+      fn: (t) => blackbodyRed(t),
+      lo: 1500,
+      hi: 12000,
+      groundTruth: "R(T) — fit Tanner Helland",
+      exactCost: 25,
+    }),
+    // Narkowicz ACES fitted curve as TARGET: production reference is already
+    // an 8-unit rational. Can the GP match it or find anything cheaper?
+    buildActivationTask({
+      id: "aces_fit",
+      title: "Tonemap ACES ajusté (Narkowicz) — optimality test #4",
+      subtitle: "rationnel de production à 8 unités comme cible : égaler ou battre le hand-fit ?",
+      fn: (x) => narkowiczAces(x),
+      lo: 0,
+      hi: 1.5,
+      groundTruth: "aces(x) = clamp(x(2.51x+0.03)/(x(2.43x+0.59)+0.14))",
+      exactCost: 8,
+    }),
+    // logsumexp over two logits: differentiable max, RL/losses everywhere.
+    // Stable form max(a,b)+log(exp(a−m)+exp(b−m)) costs ~60 units served;
+    // smooth rational approximants of soft-max are the hunt
+    buildRegressionTask({
+      id: "logsumexp2",
+      title: "LogSumExp 2-logits (max différentiable)",
+      subtitle: "LSE(a,b) stable sur [-5,5]² — approximants rationnels du soft-max chassés",
+      groundTruth: "m=max(a,b); m+ln(e^(a−m)+e^(b−m))",
+      rows: 500,
+      varNames: ["a", "b"],
+      build: () => {
+        const rows = 500;
+        const a = new Float64Array(rows), b = new Float64Array(rows), y = new Float64Array(rows);
+        for (let i = 0; i < rows; i++) {
+          a[i] = -5 + 10 * ((i * 0.6180339887) % 1);
+          b[i] = -5 + 10 * ((i * 0.7548776662) % 1);
+          const m = Math.max(a[i], b[i]);
+          y[i] = m + Math.log(Math.exp(a[i] - m) + Math.exp(b[i] - m));
+        }
+        return { vars: { a, b }, y };
+      },
+      trueLaw: (v, i) => {
+        const m = Math.max(v.a[i], v.b[i]);
+        return m + Math.log(Math.exp(v.a[i] - m) + Math.exp(v.b[i] - m));
+      },
+      verify: (node) => {
+        const l = evaluateScalar(node, { a: 2, b: 1 });
+        if (!Number.isFinite(l)) return null;
+        return Math.abs(l - 2.126928) < 0.05 ? `LSE(2,1) ≈ ${l.toFixed(4)} vs 2.1269` : null;
+      },
     }),
     buildKvTask(),
     buildRegressionTask({
