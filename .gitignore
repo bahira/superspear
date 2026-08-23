@@ -20,3 +20,7 @@ next-env.d.ts
 npm-debug.log*
 *.tsbuildinfo
 *.zip
+validation/__pycache__/
+*.pyc
+spear-hall-of-fame*.txt
+spear-hall-of-fame*Copie*
