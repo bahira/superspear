@@ -6,6 +6,7 @@ import {
   nodeToString,
   estimateCost,
   toMisraC,
+  toPython,
   collectVarNames,
   type SpearNode,
 } from "@/lib/spear/engine";
@@ -154,7 +155,7 @@ export async function POST(req: NextRequest) {
     exports: {
       misraC: c99,
       wasmBase64,
-      torch: null, // use /api/spear/run custom_regression for torch export today
+      torch: toPython(best, "spear_discovered"),
     },
     history: result.history.slice(-40),
   });
