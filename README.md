@@ -84,7 +84,7 @@ Three Codex entries became reproducible benchmark tasks, with the iterative solv
   **idm_following** — Intelligent-Driver-Model acceleration   city.ts traffic phase B   hand-tuned law only   **2.01 — wall cracking** (first progress ever)   —  
 
 Both eigen and IK truths require `acos`, a transcendental the engine deliberately does not serve — the GP must rebuild the triple-angle / inverse-cosine shape from algebra alone. Unlike RoPE (whose sin/cos carriers ARE served and fell exactly at depth 6000), these two can only approximate: deep passes with the new trig seeds cracked eigen3_sym through L2; the remaining gap is pure Padé-grade approximation work.
-**UPDATE — the `atan` primitive is now served** (JS/WASM/C/torch, cost 20). With the acos→atan identity seeded as a scaffold, ik_reach fell to machine precision. eigen3_sym remains open pending its triple-angle scaffold.
+**UPDATE — the `atan` primitive is now served** (JS/WASM/C/torch, cost 20). With acos→atan identity scaffolds seeded, BOTH unserved-transcendental tasks fell to machine precision: ik_reach 1.1e-13, eigen3_sym 3.3e-11 (full Cardano). A silent `simplify()` collapse bug eating `(c·x)·Y`-shaped subtrees was found and fixed along the way.
 
 ### LLM inference kernels: can SR find "a formula for matmul"?
 
