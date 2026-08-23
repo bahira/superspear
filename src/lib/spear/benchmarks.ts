@@ -1379,26 +1379,30 @@ function erfImpl(x: number): number {
 }
 
 function besselJ0(x: number): number {
-  // A&S 9.4.1 / Numerical Recipes polynomial for |x| < 8
-  const h = x / 2;
-  const h2 = h * h;
-  return 1 + h2 * (-2.2499997 + h2 * (1.2656208 + h2 * (-0.3163866 + h2 * (0.0444479 + h2 * (-0.0039444 + h2 * 0.00021)))));
+  // True Bessel J0 via convergent series: Sum (-1)^k (x^2/4)^k / (k!)^2.
+  // BUGFIX: the previous transcription evaluated a WRONG curve (0.457 at
+  // x=1 vs true 0.765), poisoning the task's entire target dataset.
+  let sum = 1;
+  let term = 1;
+  const halfSq = (x * x) / 4;
+  for (let k = 1; k <= 24; k++) {
+    term *= -halfSq / (k * k);
+    sum += term;
+    if (Math.abs(term) < 1e-15 && k > 3) break;
+  }
+  return sum;
 }
 
 function besselJ1(x: number): number {
-  // Truncated series Σ (-1)^k (x/2)^(2k+1) / (k!(k+1)!) — ~1e-10 accurate on [0,6]
-  let sum = 0;
+  // True Bessel J1 via convergent series: Σ (-1)^k (x/2)^(2k+1) / (k!(k+1)!).
+  // BUGFIX: previous denominator skipped the rising factorial (wrong from k=2).
   let term = x / 2;
-  let kf = 1; // k!
-  let kf1 = 1; // (k+1)!
-  for (let k = 0; k <= 16; k++) {
-    if (k > 0) {
-      term *= -(x / 2) * (x / 2);
-      kf *= k;
-      kf1 *= k + 1;
-    }
-    void kf1;
-    sum += (k % 2 === 0 ? 1 : -1) * term / (kf * (k + 1));
+  let sum = term;
+  const hh = (x / 2) * (x / 2);
+  for (let k = 1; k <= 22; k++) {
+    term *= -hh / (k * (k + 1));
+    sum += term;
+    if (Math.abs(term) < 1e-15 && k > 3) break;
   }
   return sum;
 }

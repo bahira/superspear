@@ -128,9 +128,9 @@ New task `gauss_shader`: algebraic approximants of e^(−x²/2) evaluated per pi
   **blackbody_r** ⭐   PBR light color temperature   **3.6e-6, L4** — clamped rational   14 (vs ~25)   **×1.79 FASTER**  
   **huber_loss** (depth)   robust training loss   **3.4e-5, L3** at 3000 iters — ×7.4 gain, but the exact 5-unit max-trick STILL hidden   13   ×0.38  
   **aces_fit**   tonemap — optimality test #4   2.4e-5, L3   53 vs Narkowicz's 8   **human hand-fit wins round 1**  
-  **bessel_j1**   FM · antisymmetric membrane modes   1.86, L0 — hardest family confirmed   26   ×1.54  
+  **bessel_j1**   FM · antisymmetric membrane modes   **5.2e-6, L4** — ×108,000 once the reference series was fixed   48   ×1.25  
   **logsumexp2**   differentiable max (RL losses)   1.0e-2, L2 — max/min scaffolding emerging   —   —  
-  **bessel_j0** (depth)   vibrations · beams   **1.6e-2** — boss fight ongoing, ×5.6 total   47   ×1.43  
+  **bessel_j0** (depth)   vibrations · beams   **2.6e-4, L2** — was a poisoned-data wall (wrong reference series), ×60 after fix   13   ×1.43  
 ### 🎯 Round 2 — explicit seeds & massive budgets
 
 Seeding the *shape of the trick* changed everything on the optimality tests:
