@@ -1694,6 +1694,7 @@ export function buildTasks(): TaskDef[] {
       title: "LogSumExp 2-logits (max différentiable)",
       subtitle: "LSE(a,b) stable sur [-5,5]² — approximants rationnels du soft-max chassés",
       groundTruth: "m=max(a,b); m+ln(e^(a−m)+e^(b−m))",
+      exactCost: 60, // max + 2sub + 2exp + add + log
       rows: 500,
       varNames: ["a", "b"],
       build: () => {
@@ -1870,6 +1871,7 @@ export function buildTasks(): TaskDef[] {
       title: "LayerNorm · échelle 1/√(var+ε)",
       subtitle: "Approximation algébrique de rsqrt(x) sur x ∈ [0.01, 10]",
       groundTruth: "scale = 1/√x",
+      exactCost: 3, // rsqrt SFU unit price
       rows: 400,
       varNames: ["x"],
       build: layernormScaleData,
@@ -2269,6 +2271,7 @@ export function buildTasks(): TaskDef[] {
       title: "Suivi IDM trafic urbain (city.ts)",
       subtitle: "a(v, gap, Δv) : loi d'accélération Intelligent-Driver-Model, cible 100% algébrique",
       groundTruth: "a = a·(1−(v/v₀)⁴ − (s*/s)²), s* = s₀ + max(0, vT + vΔv/(2√ab))",
+      exactCost: 30, // documented estimate: sq-sq chain + guards
       rows: 500,
       varNames: ["v", "s", "dv"],
       build: idmFollowingData,

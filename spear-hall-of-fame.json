@@ -465,18 +465,18 @@
     "taskId": "gaussian_cdf",
     "title": "Répartition gaussienne Φ(x)",
     "direction": "min",
-    "metric": 0.000140774362370438,
-    "level": 2,
-    "formula": "((0.543518 * (x / max(1.559472, (0.337459 + |x|)))) + 0.5)",
-    "seed": 990303,
-    "iteration": 141,
+    "metric": 0.00002655101736531925,
+    "level": 3,
+    "formula": "((0.000017 * (((0.680392 * x) / 0.000034) + ((min(132.262684, x) / 0.000034) + ((0.426743 * x) / 0.000034)))) + 0.5)",
+    "seed": 1000002,
+    "iteration": 199,
     "speed": {
-      "formulaCost": 9,
+      "formulaCost": 19,
       "exactCost": 34,
-      "speedup": 3.7777777777777777,
+      "speedup": 1.7894736842105263,
       "vsIterative": {
         "label": "Monte-Carlo · 1000 tirages",
-        "speedup": 5111.111111111111
+        "speedup": 2421.0526315789475
       }
     },
     "tree": {
@@ -487,37 +487,77 @@
           "c": [
             {
               "o": "const",
-              "v": 0.543518
+              "v": 0.000016644068119142568
             },
             {
-              "o": "pdiv",
+              "o": "add",
               "c": [
                 {
-                  "o": "var",
-                  "n": "x"
-                },
-                {
-                  "o": "max",
+                  "o": "pdiv",
                   "c": [
                     {
-                      "o": "const",
-                      "v": 1.559472
-                    },
-                    {
-                      "o": "add",
+                      "o": "mul",
                       "c": [
                         {
                           "o": "const",
-                          "v": 0.337459
+                          "v": 0.680392
                         },
                         {
-                          "o": "abs",
+                          "o": "var",
+                          "n": "x"
+                        }
+                      ]
+                    },
+                    {
+                      "o": "const",
+                      "v": 0.000034
+                    }
+                  ]
+                },
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "pdiv",
+                      "c": [
+                        {
+                          "o": "min",
                           "c": [
+                            {
+                              "o": "const",
+                              "v": 132.262684
+                            },
                             {
                               "o": "var",
                               "n": "x"
                             }
                           ]
+                        },
+                        {
+                          "o": "const",
+                          "v": 0.000034
+                        }
+                      ]
+                    },
+                    {
+                      "o": "pdiv",
+                      "c": [
+                        {
+                          "o": "mul",
+                          "c": [
+                            {
+                              "o": "const",
+                              "v": 0.426743
+                            },
+                            {
+                              "o": "var",
+                              "n": "x"
+                            }
+                          ]
+                        },
+                        {
+                          "o": "const",
+                          "v": 0.000034
                         }
                       ]
                     }
@@ -529,45 +569,58 @@
         },
         {
           "o": "const",
-          "v": 0.5
+          "v": 0.4999999999999995
         }
       ]
     },
     "fast": {
-      "formula": "(x / max(1.531472, |x|))",
-      "metric": 0.00028673847069070037,
+      "formula": "(0.568701 + (-464.279049 + ((0.680392 * x) / 0.000034)))",
+      "metric": 0.00029555479009173,
       "level": 2,
-      "formulaCost": 6,
+      "formulaCost": 7,
       "speed": {
-        "formulaCost": 6,
+        "formulaCost": 7,
         "exactCost": 34,
-        "speedup": 5.666666666666667,
+        "speedup": 4.857142857142857,
         "vsIterative": {
           "label": "Monte-Carlo · 1000 tirages",
-          "speedup": 7666.666666666667
+          "speedup": 6571.428571428572
         }
       }
     },
     "fastTree": {
-      "o": "pdiv",
+      "o": "add",
       "c": [
         {
-          "o": "var",
-          "n": "x"
+          "o": "const",
+          "v": 0.568701
         },
         {
-          "o": "max",
+          "o": "add",
           "c": [
             {
               "o": "const",
-              "v": 1.531472
+              "v": -464.279049
             },
             {
-              "o": "abs",
+              "o": "pdiv",
               "c": [
                 {
-                  "o": "var",
-                  "n": "x"
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 0.680392
+                    },
+                    {
+                      "o": "var",
+                      "n": "x"
+                    }
+                  ]
+                },
+                {
+                  "o": "const",
+                  "v": 0.000034
                 }
               ]
             }
@@ -905,39 +958,76 @@
   },
   "rc_circuit": {
     "taskId": "rc_circuit",
-    "title": "RC circuit step response",
+    "title": "Circuit RC · tension terminale",
     "direction": "min",
-    "metric": 0.0001058221329252825,
+    "metric": 0.00007258403509477666,
     "level": 5,
-    "formula": "((-0.998327 * min(exp((-t)), 2)) + 0.996889)",
-    "seed": 777888,
-    "iteration": 240,
-    "fast": {
-      "formula": "exp((-t))",
-      "metric": 0.00013083387424944558,
-      "level": 5,
-      "formulaCost": 21,
-      "speed": {
-        "formulaCost": 21,
-        "exactCost": 22,
-        "speedup": 1.0476190476190477
-      }
+    "formula": "((-1.419873 * (2.239754 - log(max(atan(exp(t)), 1e-30)))) + 3.532699)",
+    "seed": 1000002,
+    "iteration": 202,
+    "speed": {
+      "formulaCost": 63,
+      "exactCost": 22,
+      "speedup": 0.3492063492063492
     },
-    "fastTree": {
-      "o": "exp",
+    "tree": {
+      "o": "add",
       "c": [
         {
-          "o": "neg",
+          "o": "mul",
           "c": [
             {
-              "o": "var",
-              "n": "t"
+              "o": "const",
+              "v": -1.4198725250153843
+            },
+            {
+              "o": "sub",
+              "c": [
+                {
+                  "o": "const",
+                  "v": 2.239754
+                },
+                {
+                  "o": "log",
+                  "c": [
+                    {
+                      "o": "atan",
+                      "c": [
+                        {
+                          "o": "exp",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "t"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
             }
           ]
+        },
+        {
+          "o": "const",
+          "v": 3.5326988727281186
         }
       ]
     },
-    "tree": {
+    "fast": {
+      "formula": "((-0.998327 * min(exp((-t)), 2)) + 0.996889)",
+      "metric": 0.0001058221329252825,
+      "level": 5,
+      "formulaCost": 24,
+      "speed": {
+        "formulaCost": 24,
+        "exactCost": 22,
+        "speedup": 0.9166666666666666
+      }
+    },
+    "fastTree": {
       "o": "add",
       "c": [
         {
@@ -977,11 +1067,6 @@
           "v": 0.996889
         }
       ]
-    },
-    "speed": {
-      "formulaCost": 24,
-      "exactCost": 22,
-      "speedup": 0.9166666666666666
     }
   },
   "layernorm_scale": {
@@ -1000,8 +1085,8 @@
       "formulaCost": 6,
       "speed": {
         "formulaCost": 6,
-        "exactCost": 6,
-        "speedup": 1
+        "exactCost": 3,
+        "speedup": 0.5
       }
     },
     "fastTree": {
@@ -1191,6 +1276,30 @@
         {
           "o": "const",
           "v": 1
+        }
+      ]
+    },
+    "fast": {
+      "formula": "(-168.810432 * u)",
+      "metric": 0,
+      "level": 5,
+      "formulaCost": 1,
+      "speed": {
+        "formulaCost": 1,
+        "exactCost": 1,
+        "speedup": 1
+      }
+    },
+    "fastTree": {
+      "o": "mul",
+      "c": [
+        {
+          "o": "const",
+          "v": -168.810432
+        },
+        {
+          "o": "var",
+          "n": "u"
         }
       ]
     }
@@ -1383,15 +1492,15 @@
     "taskId": "hill",
     "title": "Équation de Hill · dose-réponse",
     "direction": "min",
-    "metric": 0.00009836629903323376,
+    "metric": 0.000013549969721192658,
     "level": 2,
-    "formula": "((0.751181 * atan(atan(atan(log(max(c, 1e-30)))))) + 0.503093)",
-    "seed": 1000001,
-    "iteration": 199,
+    "formula": "((0.639099 * atan((sqrt(|c|) * (0.984456 * (c)Â²)))) + -0.00022)",
+    "seed": 1000002,
+    "iteration": 206,
     "speed": {
-      "formulaCost": 82,
+      "formulaCost": 27,
       "exactCost": 9,
-      "speedup": 0.10975609756097561
+      "speedup": 0.3333333333333333
     },
     "tree": {
       "o": "add",
@@ -1401,70 +1510,30 @@
           "c": [
             {
               "o": "const",
-              "v": 0.7511812250714746
+              "v": 0.639099
             },
             {
               "o": "atan",
               "c": [
                 {
-                  "o": "atan",
+                  "o": "mul",
                   "c": [
                     {
-                      "o": "atan",
+                      "o": "sqrt",
                       "c": [
                         {
-                          "o": "log",
-                          "c": [
-                            {
-                              "o": "var",
-                              "n": "c"
-                            }
-                          ]
+                          "o": "var",
+                          "n": "c"
                         }
                       ]
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "o": "const",
-          "v": 0.5030927222481489
-        }
-      ]
-    },
-    "fast": {
-      "formula": "((0.522586 * min(min(min((c)Â², c), 1.892731), sqrt(|(c - -0.871022)|))) + -0.008972)",
-      "metric": 0.00011566833071383699,
-      "level": 2,
-      "formulaCost": 9,
-      "speed": {
-        "formulaCost": 9,
-        "exactCost": 9,
-        "speedup": 1
-      }
-    },
-    "fastTree": {
-      "o": "add",
-      "c": [
-        {
-          "o": "mul",
-          "c": [
-            {
-              "o": "const",
-              "v": 0.522586
-            },
-            {
-              "o": "min",
-              "c": [
-                {
-                  "o": "min",
-                  "c": [
+                    },
                     {
-                      "o": "min",
+                      "o": "mul",
                       "c": [
+                        {
+                          "o": "const",
+                          "v": 0.984456
+                        },
                         {
                           "o": "sq",
                           "c": [
@@ -1473,32 +1542,6 @@
                               "n": "c"
                             }
                           ]
-                        },
-                        {
-                          "o": "var",
-                          "n": "c"
-                        }
-                      ]
-                    },
-                    {
-                      "o": "const",
-                      "v": 1.892731
-                    }
-                  ]
-                },
-                {
-                  "o": "sqrt",
-                  "c": [
-                    {
-                      "o": "sub",
-                      "c": [
-                        {
-                          "o": "var",
-                          "n": "c"
-                        },
-                        {
-                          "o": "const",
-                          "v": -0.871022
                         }
                       ]
                     }
@@ -1510,7 +1553,32 @@
         },
         {
           "o": "const",
-          "v": -0.008972
+          "v": -0.00022
+        }
+      ]
+    },
+    "fast": {
+      "formula": "atan((c)Â²)",
+      "metric": 0.0001984746423735581,
+      "level": 2,
+      "formulaCost": 21,
+      "speed": {
+        "formulaCost": 21,
+        "exactCost": 9,
+        "speedup": 0.42857142857142855
+      }
+    },
+    "fastTree": {
+      "o": "atan",
+      "c": [
+        {
+          "o": "sq",
+          "c": [
+            {
+              "o": "var",
+              "n": "c"
+            }
+          ]
         }
       ]
     }
@@ -1719,22 +1787,26 @@
       ]
     },
     "fast": {
-      "formula": "(log(max(r, 1e-30)) / ((r)Â³)Â³)",
-      "metric": 0.0004361391643108304,
+      "formula": "(min(1, r) / (min((r - 0.970147), 0.939027) - -69.077553))",
+      "metric": 0.020446232630864744,
       "level": 2,
-      "formulaCost": 28,
+      "formulaCost": 8,
       "speed": {
-        "formulaCost": 28,
+        "formulaCost": 8,
         "exactCost": 17,
-        "speedup": 0.6071428571428571
+        "speedup": 2.125
       }
     },
     "fastTree": {
       "o": "pdiv",
       "c": [
         {
-          "o": "log",
+          "o": "min",
           "c": [
+            {
+              "o": "const",
+              "v": 1
+            },
             {
               "o": "var",
               "n": "r"
@@ -1742,16 +1814,33 @@
           ]
         },
         {
-          "o": "cube",
+          "o": "sub",
           "c": [
             {
-              "o": "cube",
+              "o": "min",
               "c": [
                 {
-                  "o": "var",
-                  "n": "r"
+                  "o": "sub",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "r"
+                    },
+                    {
+                      "o": "const",
+                      "v": 0.970147
+                    }
+                  ]
+                },
+                {
+                  "o": "const",
+                  "v": 0.939027
                 }
               ]
+            },
+            {
+              "o": "const",
+              "v": -69.077553
             }
           ]
         }
@@ -1983,17 +2072,69 @@
     "taskId": "softplus",
     "title": "Softplus ln(1+eˣ)",
     "direction": "min",
-    "metric": 0.00003576283728044669,
+    "metric": 0.0000018948345099656158,
     "level": 2,
-    "formula": "((-0.068874 * (min(-5.998739, (-6.175787 - x)) + (cos(x) + ((-6.721249 - x) * x)))) + 0.332995)",
-    "seed": 1000001,
-    "iteration": 200,
+    "formula": "((1.002747 * log(max((1.010159 + exp(x)), 1e-30))) + -0.008384)",
+    "seed": 1000002,
+    "iteration": 201,
     "speed": {
-      "formulaCost": 28,
+      "formulaCost": 43,
       "exactCost": 41,
-      "speedup": 1.4642857142857142
+      "speedup": 0.9534883720930233
     },
     "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 1.002747
+            },
+            {
+              "o": "log",
+              "c": [
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 1.010159
+                    },
+                    {
+                      "o": "exp",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "x"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": -0.008384
+        }
+      ]
+    },
+    "fast": {
+      "formula": "((-0.068874 * (min(-5.998739, (-6.175787 - x)) + (cos(x) + ((-6.721249 - x) * x)))) + 0.332995)",
+      "metric": 0.00003576283728044669,
+      "level": 2,
+      "formulaCost": 28,
+      "speed": {
+        "formulaCost": 28,
+        "exactCost": 41,
+        "speedup": 1.4642857142857142
+      }
+    },
+    "fastTree": {
       "o": "add",
       "c": [
         {
@@ -2071,39 +2212,6 @@
         {
           "o": "const",
           "v": 0.332995
-        }
-      ]
-    },
-    "fast": {
-      "formula": "((-6.721249 - x) * x)",
-      "metric": 0.00411459123083148,
-      "level": 2,
-      "formulaCost": 2,
-      "speed": {
-        "formulaCost": 2,
-        "exactCost": 41,
-        "speedup": 20.5
-      }
-    },
-    "fastTree": {
-      "o": "mul",
-      "c": [
-        {
-          "o": "sub",
-          "c": [
-            {
-              "o": "const",
-              "v": -6.721249
-            },
-            {
-              "o": "var",
-              "n": "x"
-            }
-          ]
-        },
-        {
-          "o": "var",
-          "n": "x"
         }
       ]
     }
@@ -3655,6 +3763,11 @@
           "v": 0.07557019699678813
         }
       ]
+    },
+    "speed": {
+      "formulaCost": 9,
+      "exactCost": 30,
+      "speedup": 3.3333333333333335
     }
   },
   "gemv4": {
@@ -4883,43 +4996,34 @@
       ]
     },
     "fast": {
-      "formula": "(1.056848 + (((x)Â² + 11.494621))Â³)",
-      "metric": 2.5092709668068736e-7,
-      "level": 5,
-      "formulaCost": 5,
+      "formula": "(((x)Â² + 5.05555))Â²",
+      "metric": 0.000005967909320814225,
+      "level": 4,
+      "formulaCost": 3,
       "speed": {
-        "formulaCost": 5,
+        "formulaCost": 3,
         "exactCost": 44,
-        "speedup": 8.8
+        "speedup": 14.666666666666666
       }
     },
     "fastTree": {
-      "o": "add",
+      "o": "sq",
       "c": [
         {
-          "o": "const",
-          "v": 1.056848
-        },
-        {
-          "o": "cube",
+          "o": "add",
           "c": [
             {
-              "o": "add",
+              "o": "sq",
               "c": [
                 {
-                  "o": "sq",
-                  "c": [
-                    {
-                      "o": "var",
-                      "n": "x"
-                    }
-                  ]
-                },
-                {
-                  "o": "const",
-                  "v": 11.494621
+                  "o": "var",
+                  "n": "x"
                 }
               ]
+            },
+            {
+              "o": "const",
+              "v": 5.05555
             }
           ]
         }
@@ -5511,7 +5615,12 @@
       "formula": "max(a, b)",
       "metric": 0.030249371156328322,
       "level": 2,
-      "formulaCost": 1
+      "formulaCost": 1,
+      "speed": {
+        "formulaCost": 1,
+        "exactCost": 60,
+        "speedup": 60
+      }
     },
     "fastTree": {
       "o": "max",
@@ -5525,6 +5634,11 @@
           "n": "b"
         }
       ]
+    },
+    "speed": {
+      "formulaCost": 7,
+      "exactCost": 60,
+      "speedup": 8.571428571428571
     }
   }
 }
