@@ -1,5 +1,5 @@
 // Mine the gauss_shader Pareto front: menu of shader-ready gaussian approximations.
-async function main() {
+async function mainMine() {
   process.env.SPEAR_TASKS = "gauss_shader";
   const { runGroundedLoop } = await import("../src/lib/spear/loop");
   const { parseFormula, estimateCost } = await import("../src/lib/spear/engine");
@@ -23,7 +23,7 @@ async function main() {
   );
   const table = ["cost  |        MSE | lv | formula", ...rows].join("\n");
 
-  const ready = front.filter((e) => e.cost <= 9 && e.metric <= 5e-3);
+  const ready = front.filter((e) => (e.cost ?? 99) <= 9 && e.metric <= 5e-3);
   const readyLines = ready.length
     ? ready.map((e) => `SHADER-READY: ${e.formula} (cost=${e.cost}, MSE=${e.metric.toExponential(3)})`).join("\n")
     : "SHADER-READY: none";
@@ -36,7 +36,7 @@ async function main() {
   );
 }
 
-main().catch((e) => {
+mainMine().catch((e) => {
   console.error(e);
   process.exit(1);
 });

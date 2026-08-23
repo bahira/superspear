@@ -4,7 +4,7 @@
 // Run: npx tsx scripts/tune-gaussian.ts
 process.env.SPEAR_TASKS = "gauss_shader";
 
-async function main() {
+async function mainTune() {
   const { buildTasks } = await import("../src/lib/spear/benchmarks");
   const { makeNode, parseFormula, estimateCost, nodeToString, refineConstants } = await import("../src/lib/spear/engine");
   const def = buildTasks().find((t) => t.id === "gauss_shader")!;
@@ -54,4 +54,4 @@ async function main() {
   }
 }
 
-main().catch((e) => { console.error(e); process.exit(1); });
+mainTune().catch((e) => { console.error(e); process.exit(1); });
