@@ -14,85 +14,86 @@ Best discoveries across all seeds (full ledger: [`spear-hall-of-fame.json`](./sp
 
 Adding two humble building blocks to the seed pools — reciprocal powers (`1/x`, `1/x²`) and the rsqrt family (`c/√(c₂ ± d·x²)`) — plus a parallel farm runner produced the largest single-run jump of the project:
 
-| Task | Before | After | Gain |
-|---|---|---|---|
-| **Kerr light deflection** (weak field) | 5.4e-5 | **1.4e-7** | ~380× |
-| **Kerr deflection with spin a≠0** | 2.9e-5 | **1.4e-7** | ~200× |
-| **Lennard-Jones potential** | 9.0e-2 | **4.4e-4** | ~200× |
-| **KdV soliton** | 9.6e-1 | **7.4e-3** | ~130× |
-| **Deep-RL actor distillation** | 2.3e-4 | **1.6e-4** | +32 % |
-| **Damped pendulum** | level 0, 8.9e-2 | **level 2, 7.0e-2** | first real milestone |
+  Task   Before   After   Gain  
+ --- --- --- --- 
+  **Kerr light deflection** (weak field)   5.4e-5   **1.4e-7**   ~380×  
+  **Kerr deflection with spin a≠0**   2.9e-5   **1.4e-7**   ~200×  
+  **Lennard-Jones potential**   9.0e-2   **4.4e-4**   ~200×  
+  **KdV soliton**   9.6e-1   **7.4e-3**   ~130×  
+  **Deep-RL actor distillation**   2.3e-4   **1.6e-4**   +32 %  
+  **Damped pendulum**   level 0, 8.9e-2   **level 2, 7.0e-2**   first real milestone  
 
 Lesson learned (twice now): discovery quality depends less on budget than on which algebraic bricks are available at warm-up.
 
 ### Physical laws recovered exactly
 
-| Task | Record (MSE) | ⚡ Speed | Discovered formula | Seed |
-|---|---|---|---|---|
-| **Lorentz factor γ(β)** | **0 (exact)** | ×0.89 | `1/√(1 − b²)` — full relativistic law | 4242 |
-| **Free fall** | **1.9e-4** | ×0.67 | `4.906·t²` → **g = 9.812 m·s⁻²** | 3333 |
-| **Kepler's third law** | 4.7e-2 | — | `1.0009·a·√\|a\|` — the 3/2 exponent, recovered | 555666 |
-| **RC circuit** | **7.3e-5** | — | `-0.998·min(exp(−t), 2) + 0.997` ≈ `1 − e^(−t/τ)` | 777888 |
-| **Damped pendulum** | **6.8e-4** | ×33 vs Euler-Cromer | clamped-carrier beat: `max(cos t, 0.68)·cos(2.787t)` on simulated target | 930101 |
-| **Lambert W₀** | 0 (exact) | — | `x·relu(exp(x))` | 12345 |
-| **Optical-flow gradient** | 0 (exact) | ×1.00 | `b − a` | 8888 |
-| **Bilinear upsampling weight** | 0 (exact) | ×0.50 | `1 − u` | 12345 |
-| **LayerNorm rsqrt** | 0 (exact) | — | `x/√\|x³\|` = `1/√x` | 12345 |
+  Task   Record (MSE)   ⚡ Speed   Discovered formula   Seed  
+ --- --- --- --- --- 
+  **Lorentz factor γ(β)**   **0 (exact)**   ×0.89   `1/√(1 − b²)` — full relativistic law   4242  
+  **Free fall**   **1.9e-4**   ×0.67   `4.906·t²` → **g = 9.812 m·s⁻²**   3333  
+  **Kepler's third law**   4.7e-2   —   `1.0009·a·√\ a\ ` — the 3/2 exponent, recovered   555666  
+  **RC circuit**   **7.3e-5**   —   `-0.998·min(exp(−t), 2) + 0.997` ≈ `1 − e^(−t/τ)`   777888  
+  **Damped pendulum**   **6.8e-4**   ×33 vs Euler-Cromer   clamped-carrier beat: `max(cos t, 0.68)·cos(2.787t)` on simulated target   930101  
+  **Lambert W₀**   0 (exact)   —   `x·relu(exp(x))`   12345  
+  **Optical-flow gradient**   0 (exact)   ×1.00   `b − a`   8888  
+  **Bilinear upsampling weight**   0 (exact)   ×0.50   `1 − u`   12345  
+  **LayerNorm rsqrt**   0 (exact)   —   `x/√\ x³\ ` = `1/√x`   12345  
 
 ### Astrophysics & relativistic physics
 
-| Task | Record | ⚡ Speed | Discovered formula | Seed |
-|---|---|---|---|---|
-| **Kerr light deflection** (weak field) | **1.4e-7** | ×1.31 | rational form recovered near-exactly | 777 |
-| **Kerr deflection with spin a≠0** (Lense-Thirring) | **7.5e-10** | ×1.17 | rational double-pole in `(b−0.196)` — accuracy-first form | 930202 |
-| **KdV soliton** | **1.7e-3** | ×7.57 | `max(√|6.66−max(3.17,x)|, 0.60)` — cheap piecewise crest | 930202 |
+  Task   Record   ⚡ Speed   Discovered formula   Seed  
+ --- --- --- --- --- 
+  **Kerr light deflection** (weak field)   **1.4e-7**   ×1.31   rational form recovered near-exactly   777  
+  **Kerr deflection with spin a≠0** (Lense-Thirring)   **7.5e-10**   ×1.17   rational double-pole in `(b−0.196)` — accuracy-first form   930202  
+  **KdV soliton**   **1.7e-3**   ×7.57   `max(√ 6.66−max(3.17,x) , 0.60)` — cheap piecewise crest   930202  
 
 ### LLM / image kernels replaced by pure algebra
 
-| Task | Record | ⚡ Speed | Discovered formula | Baseline beaten |
-|---|---|---|---|---|
-| **Diffusion β(t)** | **1.8e-6** | ×1.04 | `−0.496·cos(3.162t) + 0.501` (refined) | cosine schedule |
-| **Gaussian blur kernel** | **5.4e-34 — EXACT** | — | `√|exp(−x²)|` = e^(−x²/2): the law recovered to machine precision | `exp(−x²/2σ²)` |
-| **SiLU/Swish** | 7.8e-4 | **×2.43** | `x·(0.501 + 0.587·x/(0.815 + √(1+x²)))` | HardSwish, ReLU |
-| **GELU** | 5.3e-4 | **×6.57** | `x·min(1.002, relu(0.308x + 0.501))` | GELU-tanh |
-| **Sigmoid** | 0 (exact)* | ×1.26 | `1 − 1/(1 + e⁻ˣ)` | Hard-sigmoid TFLite |
-| **Gaussian CDF Φ(x)** | **1.4e-4** | ×3.78 | clamped rational `x/max(1.56, 0.34+|x|)` — div→mul strength reduction | HardSwish |
-| **Softplus ln(1+eˣ)** | **1.4e-4** | ×3.73 | piecewise-rational approximant (bootstrap child) | smooth ReLU kernels |
-| **Deep-RL actor distillation** | 1.6e-4 | **×2.83** | `(x + 0.145x³)/(0.556 + 0.75x²)` — Padé [3/2] found spontaneously | tanh network |
+  Task   Record   ⚡ Speed   Discovered formula   Baseline beaten  
+ --- --- --- --- --- 
+  **Diffusion β(t)**   **1.8e-6**   ×1.04   `−0.496·cos(3.162t) + 0.501` (refined)   cosine schedule  
+  **Gaussian blur kernel**   **5.4e-34 — EXACT**   —   `√ exp(−x²) ` = e^(−x²/2): the law recovered to machine precision   `exp(−x²/2σ²)`  
+  **SiLU/Swish**   7.8e-4   **×2.43**   `x·(0.501 + 0.587·x/(0.815 + √(1+x²)))`   HardSwish, ReLU  
+  **GELU**   5.3e-4   **×6.57**   `x·min(1.002, relu(0.308x + 0.501))`   GELU-tanh  
+  **Sigmoid**   0 (exact)*   ×1.26   `1 − 1/(1 + e⁻ˣ)`   Hard-sigmoid TFLite  
+  **Gaussian CDF Φ(x)**   **1.4e-4**   ×3.78   clamped rational `x/max(1.56, 0.34+ x )` — div→mul strength reduction   HardSwish  
+  **Softplus ln(1+eˣ)**   **1.4e-4**   ×3.73   piecewise-rational approximant (bootstrap child)   smooth ReLU kernels  
+  **Deep-RL actor distillation**   1.6e-4   **×2.83**   `(x + 0.145x³)/(0.556 + 0.75x²)` — Padé [3/2] found spontaneously   tanh network  
 
 \* the sigmoid task allows `exp` as a primitive — the point is cost comparison, not algebraic purity.
 
 ### Molecular physics, pharmacology & control
 
-| Task | Record | ⚡ Speed | Discovered formula | Note |
-|---|---|---|---|---|
-| **Hill dose-response** 🏥 | **1.16e-4** | — | min-cascade saturation on c² | deployable drug-model shape |
-| **Lennard-Jones 12-6 potential** 🧪 | **3.2e-4** | ×0.55 | log-cos composite well shape | repulsive + attractive terms |
-| **Damped oscillation e^(−t/τ)cos(ωt)** 📡 | **3.1e-4** | ×1.63 | polynomial envelope × carrier: `(t−16.4)(t−8.3)·cos(2.996t)` — amplitude modulation | DSP staple |
-| **Logistic growth** 📈 | **1.1e-5** | ×0.62 | level 2 saturation curve | adoption / population model |
-| **European call premium** 💰 | 1.77e-1 | ×1.00 | `19.22·(1+σ)³ − 19.11` — level 5 | Black-Scholes ATM approx |
-| **Inverted-pendulum hybrid control** 🎛️ | **2.04** | ×3.76 | cheap surrogate of the full 173-unit law — `d·cos(5.05·th/d)` form | textbook Pareto trade-off point |
+  Task   Record   ⚡ Speed   Discovered formula   Note  
+ --- --- --- --- --- 
+  **Hill dose-response** 🏥   **1.16e-4**   —   min-cascade saturation on c²   deployable drug-model shape  
+  **Lennard-Jones 12-6 potential** 🧪   **3.2e-4**   ×0.55   log-cos composite well shape   repulsive + attractive terms  
+  **Damped oscillation e^(−t/τ)cos(ωt)** 📡   **3.1e-4**   ×1.63   polynomial envelope × carrier: `(t−16.4)(t−8.3)·cos(2.996t)` — amplitude modulation   DSP staple  
+  **Logistic growth** 📈   **1.1e-5**   ×0.62   level 2 saturation curve   adoption / population model  
+  **European call premium** 💰   1.77e-1   ×1.00   `19.22·(1+σ)³ − 19.11` — level 5   Black-Scholes ATM approx  
+  **Inverted-pendulum hybrid control** 🎛️   **2.04**   ×3.76   cheap surrogate of the full 173-unit law — `d·cos(5.05·th/d)` form   textbook Pareto trade-off point  
 
 ### From the SPEAR CODEX (3DSPEAR) — new hunting grounds
 
 Three Codex entries became reproducible benchmark tasks, with the iterative solvers they replace priced as honest baselines:
 
-| Task | Codex source | Replaces | Record | vs solver |
-|---|---|---|---|---|
-| **eigen3_sym** — λmax of symmetric 3×3 from its invariants | BT29 Cardano trisection | Jacobi/QR sweeps (~200 units) | 3.2e-2, L2, 13 units | **×15 vs Jacobi · 4 balayages** |
-| **ik_reach** — 2-link elbow angle from reach & lengths | BT33 analytic IK | Newton-DLS chains (~320 units) | 2.2e-3, L2, 16 units | **×20 vs Newton-DLS · 8 it.** |
-| **idm_following** — Intelligent-Driver-Model acceleration | city.ts traffic phase B | hand-tuned law only | **2.01 — wall cracking** (first progress ever) | — |
+  Task   Codex source   Replaces   Record   vs solver  
+ --- --- --- --- --- 
+  **eigen3_sym** — λmax of symmetric 3×3 from its invariants   BT29 Cardano trisection   Jacobi/QR sweeps (~200 units)   3.2e-2, L2, 13 units   **×15 vs Jacobi · 4 balayages**  
+  **ik_reach** — 2-link elbow angle from reach & lengths   BT33 analytic IK   Newton-DLS chains (~320 units)   2.2e-3, L2, 16 units   **×20 vs Newton-DLS · 8 it.**  
+  **idm_following** — Intelligent-Driver-Model acceleration   city.ts traffic phase B   hand-tuned law only   **2.01 — wall cracking** (first progress ever)   —  
 
 Both eigen and IK truths require `acos`, a transcendental the engine deliberately does not serve — the GP must rebuild the triple-angle / inverse-cosine shape from algebra alone. Unlike RoPE (whose sin/cos carriers ARE served and fell exactly at depth 6000), these two can only approximate: deep passes with the new trig seeds cracked eigen3_sym through L2; the remaining gap is pure Padé-grade approximation work.
+**UPDATE — the `atan` primitive is now served** (JS/WASM/C/torch, cost 20). With the acos→atan identity seeded as a scaffold, ik_reach fell to machine precision. eigen3_sym remains open pending its triple-angle scaffold.
 
 ### LLM inference kernels: can SR find "a formula for matmul"?
 
 Short answer explored empirically: **the matmul itself already IS the minimal closed form** — a generic dot product has tensor rank n, so `4 mul + 3 add` is provably unbeatable per output lane. No solver beats it because there is nothing iterative to replace. What *can* be attacked is everything glued around the GEMV:
 
-| Task | What it tests | Record | Status |
-|---|---|---|---|
-| **gemv4** — decode-lane dot product | Can the engine recover the provably-minimal kernel (7 units, MSE → noise floor)? | **2.0e-5**, L2, 11 units — ×9.8 cumulative | converging on the optimal bilinear form |
-| **rope_rot** — RoPE lane rotation, paid every token of every head | Exact recovery via served sin/cos primitives | **EXACT (MSE=0, L5)**, 44 units, ×1.45 vs CORDIC | solved precisely; algebraic fast variant pending |
+  Task   What it tests   Record   Status  
+ --- --- --- --- 
+  **gemv4** — decode-lane dot product   Can the engine recover the provably-minimal kernel (7 units, MSE → noise floor)?   **2.0e-5**, L2, 11 units — ×9.8 cumulative   converging on the optimal bilinear form  
+  **rope_rot** — RoPE lane rotation, paid every token of every head   Exact recovery via served sin/cos primitives   **EXACT (MSE=0, L5)**, 44 units, ×1.45 vs CORDIC   solved precisely; algebraic fast variant pending  
 
 Cross-variable and trigonometric carrier seeds (shape-only, no answer constants) unlocked the exact RoPE recovery at depth 6000 — the seed pool now covers bilinear interactions (`x₀·x₁`, `x₀±x₁`) and carriers (`cos x`, `sin x`).
 
@@ -100,12 +101,12 @@ Cross-variable and trigonometric carrier seeds (shape-only, no answer constants)
 
 Production kernels vs SPEAR forms compiled to WASM, 200k elements on `[-6,6]` (`npx tsx scripts/bench-edge.ts`):
 
-| Kernel | Reference | SPEAR | Gain | Max abs err |
-|---|---|---|---|---|
-| **SiLU** (SwiGLU) | exp-based, 864 ns/el | algebraic, 409 ns/el | **×2.12** | 7.0e-2 |
-| **GELU** | tanh-approx (industry), 757 ns/el | algebraic, 326 ns/el | **×2.32** | 8.0e-2 |
-| Softplus | exp-based, 1403 ns/el | algebraic, 1113 ns/el | ×1.26 | 4.2e-1 |
-| Sigmoid fast-slot | exp-based, 1075 ns/el | `x/(1+\|x\|)`, 1307 ns/el | ×0.82 — slower, reported as measured | 8.6e-1 |
+  Kernel   Reference   SPEAR   Gain   Max abs err  
+ --- --- --- --- --- 
+  **SiLU** (SwiGLU)   exp-based, 864 ns/el   algebraic, 409 ns/el   **×2.12**   7.0e-2  
+  **GELU**   tanh-approx (industry), 757 ns/el   algebraic, 326 ns/el   **×2.32**   8.0e-2  
+  Softplus   exp-based, 1403 ns/el   algebraic, 1113 ns/el   ×1.26   4.2e-1  
+  Sigmoid fast-slot   exp-based, 1075 ns/el   `x/(1+\ x\ )`, 1307 ns/el   ×0.82 — slower, reported as measured   8.6e-1  
 
 FFN block simulation (decode, d=2048, ffn=5632): the full block runs **10.2 % faster** end-to-end with the SPEAR SiLU swapped in, even through naive per-element JS↔WASM invocation. Honest caveats: max errors ~0.07–0.08 are visible-but-bounded activation distortion (perplexity delta unmeasured); the sigmoid fast variant loses on this backend; batched invocation would remove the per-call boundary overhead.
 
@@ -113,55 +114,55 @@ FFN block simulation (decode, d=2048, ffn=5632): the full block runs **10.2 % fa
 
 New task `gauss_shader`: algebraic approximants of e^(−x²/2) evaluated per pixel. The Pareto mining (`scripts/tune-gaussian.ts`, `scripts/mine-gaussian.ts`) produced an exp-free menu:
 
-| Kernel | Cost | MSE vs e^(−x²/2) | Formula |
-|---|---|---|---|
-| exact | 24 | 0 | `exp(−x²/2)` |
-| **student-t k3** | **9** | **6.4e-4** | `1.02232/(0.207x²+1)³` |
-| **student-t k2** | **8** | **1.35e-3** | `1.04984/(0.375x²+1)²` |
-| cos window | 20 | 5.2e-3 | `cos(x)` |
+  Kernel   Cost   MSE vs e^(−x²/2)   Formula  
+ --- --- --- --- 
+  exact   24   0   `exp(−x²/2)`  
+  **student-t k3**   **9**   **6.4e-4**   `1.02232/(0.207x²+1)³`  
+  **student-t k2**   **8**   **1.35e-3**   `1.04984/(0.375x²+1)²`  
+  cos window   20   5.2e-3   `cos(x)`  
 
 ### 🌊 Third wave — companions, tonemap & physics glue (1000-iter gen-1 + 3000-iter depth)
 
-| Task | Use | Record | Cost | vs exact |
-|---|---|---|---|---|
-| **blackbody_r** ⭐ | PBR light color temperature | **3.6e-6, L4** — clamped rational | 14 (vs ~25) | **×1.79 FASTER** |
-| **huber_loss** (depth) | robust training loss | **3.4e-5, L3** at 3000 iters — ×7.4 gain, but the exact 5-unit max-trick STILL hidden | 13 | ×0.38 |
-| **aces_fit** | tonemap — optimality test #4 | 2.4e-5, L3 | 53 vs Narkowicz's 8 | **human hand-fit wins round 1** |
-| **bessel_j1** | FM · antisymmetric membrane modes | 1.86, L0 — hardest family confirmed | 26 | ×1.54 |
-| **logsumexp2** | differentiable max (RL losses) | 1.0e-2, L2 — max/min scaffolding emerging | — | — |
-| **bessel_j0** (depth) | vibrations · beams | **1.6e-2** — boss fight ongoing, ×5.6 total | 47 | ×1.43 |
+  Task   Use   Record   Cost   vs exact  
+ --- --- --- --- --- 
+  **blackbody_r** ⭐   PBR light color temperature   **3.6e-6, L4** — clamped rational   14 (vs ~25)   **×1.79 FASTER**  
+  **huber_loss** (depth)   robust training loss   **3.4e-5, L3** at 3000 iters — ×7.4 gain, but the exact 5-unit max-trick STILL hidden   13   ×0.38  
+  **aces_fit**   tonemap — optimality test #4   2.4e-5, L3   53 vs Narkowicz's 8   **human hand-fit wins round 1**  
+  **bessel_j1**   FM · antisymmetric membrane modes   1.86, L0 — hardest family confirmed   26   ×1.54  
+  **logsumexp2**   differentiable max (RL losses)   1.0e-2, L2 — max/min scaffolding emerging   —   —  
+  **bessel_j0** (depth)   vibrations · beams   **1.6e-2** — boss fight ongoing, ×5.6 total   47   ×1.43  
 ### 🎯 Round 2 — explicit seeds & massive budgets
 
 Seeding the *shape of the trick* changed everything on the optimality tests:
 
-| Task | Round 1 | Round 2 | What happened |
-|---|---|---|---|
-| **huber_loss** (max-seeds, then hammering) | 3.4e-5, no trick visible | **3.0e-7, L5** — champion now literally contains `max(x²/(|x|+1.29), \|x\|−0.494)` | seeing the scaffold → using the scaffold |
-| **bessel_j0** (series-head seed, 3000) | 9.0e-2 | **2.7e-2** ×3.3 | series head mutated into exp/sin composite |
-| **bessel_j1** (odd-series seed, 3000) | 1.86 | **0.56** ×3.3 | same leap |
-| **aces_fit** (rational seed, **8000**) | 2.4e-5 @53u | 1.2e-5 @13u — still ×0.62 | **Narkowicz keeps the crown**; the hand-fit is genuinely excellent |
+  Task   Round 1   Round 2   What happened  
+ --- --- --- --- 
+  **huber_loss** (max-seeds, then hammering)   3.4e-5, no trick visible   **3.0e-7, L5** — champion now literally contains `max(x²/( x +1.29), \ x\ −0.494)`   seeing the scaffold → using the scaffold  
+  **bessel_j0** (series-head seed, 3000)   9.0e-2   **2.7e-2** ×3.3   series head mutated into exp/sin composite  
+  **bessel_j1** (odd-series seed, 3000)   1.86   **0.56** ×3.3   same leap  
+  **aces_fit** (rational seed, **8000**)   2.4e-5 @53u   1.2e-5 @13u — still ×0.62   **Narkowicz keeps the crown**; the hand-fit is genuinely excellent  
 ### ⚙️ Ultra-common operations registry (new)
 
 Five everyday kernel/program primitives added, first-generation results at 500 iterations:
 
-| Task | Use | Record | Cost | vs exact |
-|---|---|---|---|---|
-| **atan_unit** | core of every atan2 | **6.6e-9, L5** — rediscovered the classic Padé `[x+0.195x³]/[1+0.52x²]` | 12 | ×1.67 |
-| **ema_smooth** | frame-rate-independent smoothing, every game frame | **1.6e-11, L5** near-exact | 12 | ×1.92 |
-| **smoothstep** ✅ | THE shader interpolation — optimality test #2 **PASSED PERFECTLY** | **3.3e-7, L5 at exactly 5 units** — `x²(x−1.5)` is the true polynomial | 5 | ×1.00 |
-| **srgb_gamma** | linear→display transfer, every pixel every frame | 1.9e-6, L4 via nested sqrt/sin composite | 34 | ×0.65 |
-| **tanh_sat** ⭐ | audio soft-clip + NN gating | **4.6e-6, L4** — ×158 jump once the right shape surfaced | 12 | ×0.65 |
+  Task   Use   Record   Cost   vs exact  
+ --- --- --- --- --- 
+  **atan_unit**   core of every atan2   **6.6e-9, L5** — rediscovered the classic Padé `[x+0.195x³]/[1+0.52x²]`   12   ×1.67  
+  **ema_smooth**   frame-rate-independent smoothing, every game frame   **1.6e-11, L5** near-exact   12   ×1.92  
+  **smoothstep** ✅   THE shader interpolation — optimality test #2 **PASSED PERFECTLY**   **3.3e-7, L5 at exactly 5 units** — `x²(x−1.5)` is the true polynomial   5   ×1.00  
+  **srgb_gamma**   linear→display transfer, every pixel every frame   1.9e-6, L4 via nested sqrt/sin composite   34   ×0.65  
+  **tanh_sat** ⭐   audio soft-clip + NN gating   **4.6e-6, L4** — ×158 jump once the right shape surfaced   12   ×0.65  
 
 ### 🧬 Second wave — special functions & glue (1000-iteration first generation)
 
-| Task | Use | Record | Cost | vs exact |
-|---|---|---|---|---|
-| **cosh_curve** ⭐ | catenaries · audio ring-mod | **2.6e-8, L5** — `sqrt(x²)·cos(x²)` composite | 32 (vs 44) | **×1.38 FASTER** |
-| **srgb_decode** | display→linear, mirror of srgb_gamma | 2.5e-7, **L5** — min/log composite | 26 | ×0.85 |
-| **logit_ml** | probs↔logits classifier glue | 9.4e-4, L2 (cost 66 — needs slimming passes) | 66 | ×0.41 |
-| **erf_prob** | probability kernels · GELU-exact grade | 8.4e-4, L2 — sin+linear hybrid | 30 | ×0.87 |
-| **huber_loss** ✅ | robust training loss — optimality test #3 **PASSED** | **3.0e-7, L5** via max-scaffold seed | 12 | ×0.42 |
-| **bessel_j0** | FM sidebands · vibrations · beams | 9.4e-2, L0 — hardest open problem in the registry | 47 | ×0.85 |
+  Task   Use   Record   Cost   vs exact  
+ --- --- --- --- --- 
+  **cosh_curve** ⭐   catenaries · audio ring-mod   **2.6e-8, L5** — `sqrt(x²)·cos(x²)` composite   32 (vs 44)   **×1.38 FASTER**  
+  **srgb_decode**   display→linear, mirror of srgb_gamma   2.5e-7, **L5** — min/log composite   26   ×0.85  
+  **logit_ml**   probs↔logits classifier glue   9.4e-4, L2 (cost 66 — needs slimming passes)   66   ×0.41  
+  **erf_prob**   probability kernels · GELU-exact grade   8.4e-4, L2 — sin+linear hybrid   30   ×0.87  
+  **huber_loss** ✅   robust training loss — optimality test #3 **PASSED**   **3.0e-7, L5** via max-scaffold seed   12   ×0.42  
+  **bessel_j0**   FM sidebands · vibrations · beams   9.4e-2, L0 — hardest open problem in the registry   47   ×0.85  
 Concurrency fix along the way: `run-farm.ts` now takes a `.farm-lock` single-writer guard — two simultaneous farms were last-writer-wins overwriting each other's records.
 Honest bench verdict on THIS machine: WASM per-pixel timing shows the student-t k3 at ×0.89 vs native `Math.exp` — **not faster here**. The menu targets backends where transcendental evaluation is expensive or absent (low-end GLSL profiles, quantized pipelines); measure before shipping.
 
@@ -169,12 +170,12 @@ Honest bench verdict on THIS machine: WASM per-pixel timing shows the student-t 
 
 For several tasks the *standard* way to compute the answer is not another closed form but an **iterative numerical solver**. Counting the solver's full bill (every iteration, in ALU/SFU units) against our O(1) formula gives large — and legitimate — accelerations:
 
-| Task | Discovered formula cost | Iterative baseline | Speedup |
-|---|---|---|---|
-| **Gaussian CDF Φ(x)** | 9 units | Monte-Carlo estimation, 1000 Box-Muller draws (46,000) | **×5111** |
-| **Kerr deflection with spin** | 15 units | RK4 geodesic integration, 200 steps (2,400) | **×160** |
-| **Damped oscillation trajectory** | 30 units | RKF45 adaptive solve, 300 steps (5,400) | **×200** |
-| **Damped pendulum terminal state** | 46 units | Euler-Cromer integration, 60 steps (1,500) | **×33** |
+  Task   Discovered formula cost   Iterative baseline   Speedup  
+ --- --- --- --- 
+  **Gaussian CDF Φ(x)**   9 units   Monte-Carlo estimation, 1000 Box-Muller draws (46,000)   **×5111**  
+  **Kerr deflection with spin**   15 units   RK4 geodesic integration, 200 steps (2,400)   **×160**  
+  **Damped oscillation trajectory**   30 units   RKF45 adaptive solve, 300 steps (5,400)   **×200**  
+  **Damped pendulum terminal state**   46 units   Euler-Cromer integration, 60 steps (1,500)   **×33**  
 
 Arithmetic is documented in [`src/lib/spear/benchmarks.ts`](./src/lib/spear/benchmarks.ts) (`ITERATIVE_BASELINES`). These are cost-model units, cross-checked by wall-clock benchmarks in the export audit.
 
@@ -184,15 +185,15 @@ One formula per task hides the accuracy/latency trade-off that real deployments 
 
 Biggest fast-slot wins (cost = precise → fast, in ALU/SFU units):
 
-| Task | Precise | Fast | Cost cut |
-|---|---|---|---|
-| **Lambert W₀** | exact, 22 units | 1.1e-2, 1 unit | **×22** |
-| **Gaussian blur kernel** | exact e^(−x²/2), 24 units | 5.7e-3, 1 unit | **×24** |
-| **Hill dose-response** | 1.16e-4, 9 units | 1.8e-3, 1 unit | **×9** |
-| **Gaussian CDF Φ(x)** | 2.1e-4, 29 units | 7.6e-4, 6 units | ×4.8 |
-| **Softplus** | 2.3e-4, 9 units | 3.2e-3, 2 units | ×4.5 |
-| **Sigmoid** | exact, 27 units | 7.2e-4, 7 units — `x/(1+|x|)` | ×3.9 |
-| **Kerr deflection w/ spin** | 7.5e-10, 18 units (×133 vs RK4) | `10.49/(s+b)`, 3.6e-5, 5 units | **×480 vs RK4** |
+  Task   Precise   Fast   Cost cut  
+ --- --- --- --- 
+  **Lambert W₀**   exact, 22 units   1.1e-2, 1 unit   **×22**  
+  **Gaussian blur kernel**   exact e^(−x²/2), 24 units   5.7e-3, 1 unit   **×24**  
+  **Hill dose-response**   1.16e-4, 9 units   1.8e-3, 1 unit   **×9**  
+  **Gaussian CDF Φ(x)**   2.1e-4, 29 units   7.6e-4, 6 units   ×4.8  
+  **Softplus**   2.3e-4, 9 units   3.2e-3, 2 units   ×4.5  
+  **Sigmoid**   exact, 27 units   7.2e-4, 7 units — `x/(1+ x )`   ×3.9  
+  **Kerr deflection w/ spin**   7.5e-10, 18 units (×133 vs RK4)   `10.49/(s+b)`, 3.6e-5, 5 units   **×480 vs RK4**  
 
 Displaced champions are never lost: when a more accurate form takes over, the old one is demoted to the fast slot, [`scripts/backfill-fast.ts`](./scripts/backfill-fast.ts) resurrects historical forms from git archaeology, and every ledger refresh prunes any "fast" variant that is no longer actually cheaper than its champion.
 
@@ -200,9 +201,9 @@ Displaced champions are never lost: when a more accurate form takes over, the ol
 
 ### Decision-making (KV-cache)
 
-| Task | Record | Discovered rule | Baselines beaten |
-|---|---|---|---|
-| **KV-cache eviction** | **70.0 %** future attention mass retained | `4.5·S + A + R` — additive triad, sink-dominated | H2O, StreamingLLM, SnapKV, sliding window, random |
+  Task   Record   Discovered rule   Baselines beaten  
+ --- --- --- --- 
+  **KV-cache eviction**   **70.0 %** future attention mass retained   `4.5·S + A + R` — additive triad, sink-dominated   H2O, StreamingLLM, SnapKV, sliding window, random  
 
 A tri-dimensional rule (Sinks + accumulated Attention + Recency) discovered by evolution in **4 iterations** — the same triad the literature took years to identify.
 

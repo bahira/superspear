@@ -2166,8 +2166,29 @@ export function buildTasks(): TaskDef[] {
         if (!Number.isFinite(q)) return null;
         return Math.abs(q - 1.44547) < 0.08 ? `q₂(3,2,2) ≈ ${q.toFixed(4)} rad` : null;
       },
+      extraSeeds: [
+        // atan-identity scaffold (shape shown, like huber's max-trick):
+        // q₂ = acos(z) = atan(sqrt(1−z²)/z), z = cosine ratio — now legal
+        // since atan is a served primitive.
+        (() => {
+          const V = (n: string) => makeNode("var", { name: n });
+          const C = (x: number) => makeNode("const", { value: x });
+          const bin = (op: "add" | "sub" | "mul" | "pdiv", a: any, b: any) => makeNode(op, { children: [a, b] });
+          const num = bin("sub", makeNode("sq", { children: [V("d") ] }), bin("add", makeNode("sq", { children: [V("l2")] }), makeNode("sq", { children: [V("l3")] })));
+          const den = makeNode("mul", { children: [C(2), makeNode("mul", { children: [V("l2"), V("l3")] })] });
+          const z = bin("pdiv", num, den);
+          // acos(z) = PI/2 - atan(z / sqrt(1-z^2)) — valid on the whole [-1,1]
+          return simplify(makeNode("sub", {
+            children: [
+              C(Math.PI / 2),
+              makeNode("atan", {
+                children: [bin("pdiv", z, makeNode("sqrt", { children: [makeNode("abs", { children: [bin("sub", C(1), makeNode("sq", { children: [z] }))] })] }))],
+              }),
+            ],
+          }));
+        })(),
+      ],
     }),
-    // 26. LLM inference — GEMV decode lane, the optimality test
     buildRegressionTask({
       id: "gemv4",
       title: "GEMV décodage LLM — cellule 4-lanes",

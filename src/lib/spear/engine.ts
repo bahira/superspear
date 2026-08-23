@@ -1,4 +1,4 @@
-﻿// SPEAR â€” Symbolic Pareto Evolutionary Algorithm for Research
+// SPEAR â€” Symbolic Pareto Evolutionary Algorithm for Research
 // Engine v2: seeded RNG, algebraic simplification, affine wrapping, constant
 // refinement (coordinate descent), full NSGA-II (non-dominated sort +
 // crowding distance), Pareto archive and code generation.
@@ -8,7 +8,7 @@ export type NodeOp =
   | "add" | "sub" | "mul" | "pdiv"
   | "relu" | "abs" | "neg" | "sq" | "sqrt" | "cube"
   | "max" | "min"
-  | "exp" | "sin" | "cos" | "log";
+  | "exp" | "sin" | "cos" | "log" | "atan";
 
 export interface SpearNode {
   op: NodeOp;
@@ -20,10 +20,10 @@ export interface SpearNode {
 }
 
 const BINARY = new Set<NodeOp>(["add", "sub", "mul", "pdiv", "max", "min"]);
-const UNARY = new Set<NodeOp>(["relu", "abs", "neg", "sq", "sqrt", "cube", "exp", "sin", "cos", "log"]);
+const UNARY = new Set<NodeOp>(["relu", "abs", "neg", "sq", "sqrt", "cube", "exp", "atan", "sin", "cos", "log"]);
 
 export const ALL_OPS: NodeOp[] = [
-  "add", "sub", "mul", "pdiv", "relu", "abs", "neg", "sq", "sqrt", "cube", "max", "min", "exp", "sin", "cos", "log",
+  "add", "sub", "mul", "pdiv", "relu", "abs", "neg", "sq", "sqrt", "cube", "max", "atan", "min", "exp", "sin", "cos", "log",
 ];
 
 /** Ops that a GPU/TPU executes as plain algebra (no transcendental unit). */
@@ -70,7 +70,7 @@ export const OP_COST: Record<NodeOp, number> = {
   var: 0, const: 0,
   add: 1, sub: 1, mul: 1,
   pdiv: 4, relu: 1, abs: 1, neg: 1, sq: 1, cube: 2, sqrt: 2, max: 1, min: 1,
-  exp: 20, sin: 20, cos: 20, log: 20,
+  exp: 20, sin: 20, cos: 20, atan: 20, log: 20,
 };
 
 export function estimateCost(node: SpearNode): number {
@@ -245,6 +245,7 @@ export function evaluateNode(
       case "exp": r = Math.exp(Math.max(-50, Math.min(50, av))); break;
       case "sin": r = Math.sin(av); break;
       case "cos": r = Math.cos(av); break;
+        case "atan": r = Math.atan(av); break;
       case "log": r = Math.log(av > 1e-30 ? av : 1e-30); break;
       default: break;
     }
@@ -281,6 +282,7 @@ export function evaluateScalar(node: SpearNode, scope: Record<string, number>): 
     case "exp": return Math.exp(Math.max(-50, Math.min(50, a[0])));
     case "sin": return Math.sin(a[0]);
       case "cos": return Math.cos(a[0]);
+      case "atan": return Math.atan(a[0]);
       case "log": return Math.log(a[0] > 1e-30 ? a[0] : 1e-30);
     default: return 0;
   }
@@ -305,6 +307,7 @@ export function nodeToString(node: SpearNode): string {
     case "exp": return `exp(${nodeToString(node.children[0])})`;
     case "sin": return `sin(${nodeToString(node.children[0])})`;
     case "cos": return `cos(${nodeToString(node.children[0])})`;
+    case "atan": return `atan(${nodeToString(node.children[0])})`;
     case "log": return `log(max(${nodeToString(node.children[0])}, 1e-30))`;
     case "max": return `max(${nodeToString(node.children[0])}, ${nodeToString(node.children[1])})`;
     case "min": return `min(${nodeToString(node.children[0])}, ${nodeToString(node.children[1])})`;
@@ -359,7 +362,7 @@ export function parseFormula(src: string): SpearNode {
   };
 
   const BIN: Record<string, NodeOp> = { "+": "add", "-": "sub", "*": "mul", "/": "pdiv" };
-  const FUNCS = new Set(["relu", "sqrt", "exp", "sin", "cos", "log", "max", "min"]);
+  const FUNCS = new Set(["relu", "sqrt", "exp", "sin", "cos", "log", "atan", "max", "min"]);
 
   const atom = (): SpearNode => {
     const t = peek();
@@ -423,6 +426,7 @@ const PY: Record<NodeOp, string> = {
   exp: "torch.exp(torch.clamp({a}, -50.0, 50.0))",
   sin: "torch.sin({a})", cos: "torch.cos({a})",
   log: "torch.log(torch.clamp({a}, min=1e-30))",
+    atan: "torch.atan({a})",
 };
 
 export function toPython(node: SpearNode, fnName = "spear_fn"): string {
@@ -458,6 +462,7 @@ export function toC(node: SpearNode, fnName = "spear_fn", varDecl = "const float
       case "exp": return `expf(fmaxf(-50.0f, fminf(50.0f, ${walk(nd.children[0])})))`;
       case "sin": return `sinf(${walk(nd.children[0])})`;
       case "cos": return `cosf(${walk(nd.children[0])})`;
+      case "atan": return `atanf(${walk(nd.children[0])})`;
       case "log": return `logf(fmaxf(1.0e-30f, ${walk(nd.children[0])}))`;
       case "max": return `fmaxf(${walk(nd.children[0])}, ${walk(nd.children[1])})`;
       case "min": return `fminf(${walk(nd.children[0])}, ${walk(nd.children[1])})`;
@@ -496,6 +501,7 @@ export function toMisraC(node: SpearNode, fnName = "spear_fn", params = "const f
       case "exp": return `expf(fminf(fmaxf(${walk(nd.children[0])}, -50.0F), 50.0F))`;
       case "sin": return `sinf(${walk(nd.children[0])})`;
       case "cos": return `cosf(${walk(nd.children[0])})`;
+      case "atan": return `atanf(${walk(nd.children[0])})`;
       case "log": return `logf(fmaxf(1.0e-30F, ${walk(nd.children[0])}))`;
       case "max": return `fmaxf(${walk(nd.children[0])}, ${walk(nd.children[1])})`;
       case "min": return `fminf(${walk(nd.children[0])}, ${walk(nd.children[1])})`;

@@ -50,13 +50,14 @@ const IMPORTABLE: { op: string; name: string }[] = [
   { op: "exp", name: "exp" },
   { op: "sin", name: "sin" },
   { op: "cos", name: "cos" },
+  { op: "atan", name: "atan" },
   { op: "log", name: "log" },
 ];
 
 function neededImports(node: SpearNode): { op: string; name: string }[] {
   const used = new Set<string>();
   const walk = (n: SpearNode) => {
-    if (n.op === "exp" || n.op === "sin" || n.op === "cos" || n.op === "log") used.add(n.op);
+    if (n.op === "exp" || n.op === "sin" || n.op === "cos" || n.op === "log" || n.op === "atan") used.add(n.op);
     n.children.forEach(walk);
   };
   walk(node);
@@ -102,6 +103,7 @@ function emitNode(node: SpearNode, vars: string[], importIdx: Record<string, num
     // clamp to [-50,50] then call env.exp â€” matches engine Math.exp(Math.max(-50,Math.min(50,x)))
     case "exp": return [...emitNode(node.children[0], vars, importIdx), 0x44, ...f64Const(-50), 0xa5, 0x44, ...f64Const(50), 0xa4, 0x10, ...u32(importIdx.exp)];
     case "sin": return [...emitNode(node.children[0], vars, importIdx), 0x10, ...u32(importIdx.sin)];
+    case "atan": return [...emitNode(node.children[0], vars, importIdx), 0x10, ...u32(importIdx.atan)];
     case "cos": return [...emitNode(node.children[0], vars, importIdx), 0x10, ...u32(importIdx.cos)];
     // clamp low bound then call env.log â€” matches engine Math.log(max(x, 1e-30))
     case "log": return [...emitNode(node.children[0], vars, importIdx), 0x44, ...f64Const(1e-30), 0xa5, 0x10, ...u32(importIdx.log)];
@@ -164,7 +166,7 @@ export async function instantiateSpearWasm(
   b64: string,
 ): Promise<(args: number[]) => number> {
   const bytes = wasmBytesFromB64(b64);
-  const importObject = { env: { exp: Math.exp, sin: Math.sin, cos: Math.cos, log: (v: number) => Math.log(v > 1e-30 ? v : 1e-30) } };
+  const importObject = { env: { exp: Math.exp, sin: Math.sin, cos: Math.cos, atan: Math.atan, log: (v: number) => Math.log(v > 1e-30 ? v : 1e-30) } };
   const result = await WebAssembly.instantiate(bytes, importObject);
   // Node returns { module, instance }; browsers return the Instance directly.
   const wrapped = result as unknown as { instance: WebAssembly.Instance };
