@@ -1596,6 +1596,30 @@ export function buildTasks(): TaskDef[] {
             }),
           ],
         })),
+        // LONG series (4 terms, A&S coefficients): the compression target
+        simplify((() => {
+          const H = () => makeNode("pdiv", { children: [makeNode("var", { name: "x" }), makeNode("const", { value: 2 })] });
+          const h2 = makeNode("sq", { children: [H()] });
+          const h4 = makeNode("sq", { children: [h2] });
+          const h6 = makeNode("mul", { children: [h4, h2] });
+          return makeNode("add", {
+            children: [
+              makeNode("sub", {
+                children: [
+                  makeNode("add", {
+                    children: [
+                      makeNode("sub", { children: [C(1), makeNode("mul", { children: [C(2.25), h2] })] }),
+                      makeNode("mul", { children: [C(1.2656208), h4] }),
+                    ],
+                  }),
+                  makeNode("mul", { children: [C(0.3163866), h6] }),
+                ],
+              }),
+              // + 0.0444479·h⁸ − ... folded via sq chain
+              makeNode("mul", { children: [C(0.0444479), makeNode("sq", { children: [h4] })] }),
+            ],
+          });
+        })()),
         // even-series tail for contrast
         simplify(makeNode("pdiv", { children: [makeNode("var", { name: "x" }), makeNode("const", { value: 3 })] })),
       ],
@@ -2147,6 +2171,23 @@ export function buildTasks(): TaskDef[] {
         if (!Number.isFinite(l)) return null;
         return Math.abs(l - 1) < 0.25 ? `λmax(I₃) ≈ ${l.toFixed(3)} vs 1 attendu` : null;
       },
+      extraSeeds: [
+        // triple-angle scaffold via the atan identity (acos(y)=π/2−atan(y/√(1−y²))):
+        // λmax = t/3 + 2√(−p/3)·cos(acos(arg)/3), p=u−t²/3, q=tu/3−2t³/27−w,
+        // arg=(3q)/(2p)·√(−3/p). The full Cardano shape, now atan-legal.
+        (() => {
+          const V = (n: string) => makeNode("var", { name: n });
+          const C = (x: number) => makeNode("const", { value: x });
+          const bin = (op: "add" | "sub" | "mul" | "pdiv", a: any, b: any) => makeNode(op, { children: [a, b] });
+          const p = bin("sub", V("u"), bin("mul", makeNode("sq", { children: [V("t")] }), C(1 / 3)));
+          const q = bin("sub", bin("mul", bin("mul", V("t"), V("u")), C(1 / 3)), bin("add", bin("mul", makeNode("cube", { children: [V("t")] }), C(2 / 27)), V("w")));
+          const rr = makeNode("sqrt", { children: [bin("pdiv", makeNode("neg", { children: [p] }), C(3))] });
+          const argRaw = bin("mul", bin("pdiv", bin("mul", C(3), q), bin("mul", C(2), p)), makeNode("sqrt", { children: [bin("pdiv", C(-3), p)] }));
+          const arg = makeNode("min", { children: [C(1), makeNode("max", { children: [C(-1), argRaw] })] });
+          const acosArg = bin("sub", C(Math.PI / 2), makeNode("atan", { children: [bin("pdiv", arg, makeNode("sqrt", { children: [makeNode("abs", { children: [bin("sub", C(1), makeNode("sq", { children: [arg] }))] })] }))] }));
+          return simplify(bin("add", bin("mul", V("t"), C(1 / 3)), bin("mul", bin("mul", C(2), rr), makeNode("cos", { children: [bin("pdiv", acosArg, C(3))] }))));
+        })(),
+      ],
     }),
     // 24. SPEAR CODEX BT33 — analytic IK replacing Newton-DLS chains
     buildRegressionTask({

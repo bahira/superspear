@@ -623,11 +623,14 @@ export function simplify(node: SpearNode): SpearNode {
       if (isConst(kids[1], -1)) return simplify(makeNode("neg", { children: [kids[0]] }));
       if (kids[0].op === "sq" && kids[0].children[0] === kids[1]) return makeNode("cube", { children: [kids[1]] });
       // collapse nested constants: c1 * (c2 * x) -> (c1*c2) * x, kills degenerate
-      // large-coefficient forms like 563.38 * (0.0018 * u) that evaluate to ~1*u
-      if (kids[0].op === "mul" && kids[0].children[0].op === "const") {
+      // large-coefficient forms like 563.38 * (0.0018 * u) that evaluate to ~1*u.
+      // BUGFIX: both rules previously fired on shapes like (c*x)*Y with a
+      // NON-const sibling, reading .value === undefined -> NaN -> whole
+      // subtrees silently collapsed to garbage. Const guards are mandatory.
+      if (kids[0].op === "mul" && kids[0].children[0].op === "const" && kids[1].op === "const") {
         return simplify(makeNode("mul", { children: [makeNode("const", { value: roundConst(kids[0].children[0].value * kids[1].value) }), kids[0].children[1]] }));
       }
-      if (kids[1].op === "mul" && kids[1].children[0].op === "const") {
+      if (kids[1].op === "mul" && kids[1].children[0].op === "const" && kids[0].op === "const") {
         return simplify(makeNode("mul", { children: [makeNode("const", { value: roundConst(kids[0].value * kids[1].children[0].value) }), kids[1].children[1]] }));
       }
       break;
