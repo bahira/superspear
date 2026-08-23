@@ -1,0 +1,5909 @@
+{
+  "silu": {
+    "taskId": "silu",
+    "title": "SiLU / Swish (LLaMA · Mistral · Qwen — SwiGLU)",
+    "direction": "min",
+    "metric": 0.0007795906249592223,
+    "level": 2,
+    "formula": "((0.997587 * (x * (0.501 + (0.587 * (x / (0.815 + sqrt(|(0.909361 + (x)Â²)|))))))) + -0.005749)",
+    "seed": 910001,
+    "iteration": 199,
+    "speed": {
+      "formulaCost": 14,
+      "exactCost": 34,
+      "speedup": 2.4285714285714284
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 0.997587
+            },
+            {
+              "o": "mul",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "x"
+                },
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 0.501
+                    },
+                    {
+                      "o": "mul",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 0.587
+                        },
+                        {
+                          "o": "pdiv",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "x"
+                            },
+                            {
+                              "o": "add",
+                              "c": [
+                                {
+                                  "o": "const",
+                                  "v": 0.815
+                                },
+                                {
+                                  "o": "sqrt",
+                                  "c": [
+                                    {
+                                      "o": "add",
+                                      "c": [
+                                        {
+                                          "o": "const",
+                                          "v": 0.909361
+                                        },
+                                        {
+                                          "o": "sq",
+                                          "c": [
+                                            {
+                                              "o": "var",
+                                              "n": "x"
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": -0.005749
+        }
+      ]
+    }
+  },
+  "gelu": {
+    "taskId": "gelu",
+    "title": "GELU (GPT · BERT — GEGLU)",
+    "direction": "min",
+    "metric": 0.0005322566020140329,
+    "level": 2,
+    "formula": "((0.997729 * (x * min(1.002, relu(((0.306923 * x) + 0.501))))) + -0.004004)",
+    "seed": 950303,
+    "iteration": 400,
+    "speed": {
+      "formulaCost": 7,
+      "exactCost": 46,
+      "speedup": 6.571428571428571
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 0.997729
+            },
+            {
+              "o": "mul",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "x"
+                },
+                {
+                  "o": "min",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 1.002
+                    },
+                    {
+                      "o": "relu",
+                      "c": [
+                        {
+                          "o": "add",
+                          "c": [
+                            {
+                              "o": "mul",
+                              "c": [
+                                {
+                                  "o": "const",
+                                  "v": 0.306923
+                                },
+                                {
+                                  "o": "var",
+                                  "n": "x"
+                                }
+                              ]
+                            },
+                            {
+                              "o": "const",
+                              "v": 0.501
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": -0.004004
+        }
+      ]
+    }
+  },
+  "sigmoid": {
+    "taskId": "sigmoid",
+    "title": "Sigmoid",
+    "direction": "min",
+    "metric": 4.790511494175498e-33,
+    "level": 5,
+    "formula": "((-(1 / (1 + exp(x)))) + 1)",
+    "seed": 987654,
+    "iteration": 270,
+    "speed": {
+      "formulaCost": 27,
+      "exactCost": 34,
+      "speedup": 1.2592592592592593
+    },
+    "fast": {
+      "formula": "(x / (1 + |x|))",
+      "metric": 0.0007152203847216084,
+      "level": 2,
+      "formulaCost": 6,
+      "speed": {
+        "formulaCost": 6,
+        "exactCost": 34,
+        "speedup": 5.666666666666667
+      }
+    },
+    "fastTree": {
+      "o": "pdiv",
+      "c": [
+        {
+          "o": "var",
+          "n": "x"
+        },
+        {
+          "o": "add",
+          "c": [
+            {
+              "o": "const",
+              "v": 1
+            },
+            {
+              "o": "abs",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "x"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "neg",
+          "c": [
+            {
+              "o": "pdiv",
+              "c": [
+                {
+                  "o": "const",
+                  "v": 1
+                },
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 1
+                    },
+                    {
+                      "o": "exp",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "x"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 1
+        }
+      ]
+    }
+  },
+  "kv_cache": {
+    "taskId": "kv_cache",
+    "title": "Règle d'éviction du KV-cache",
+    "direction": "max",
+    "metric": 69.97633394818372,
+    "level": 2,
+    "formula": "((4.5 * S) + (A + R))",
+    "seed": 990303,
+    "iteration": 153,
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 4.5
+            },
+            {
+              "o": "var",
+              "n": "S"
+            }
+          ]
+        },
+        {
+          "o": "add",
+          "c": [
+            {
+              "o": "var",
+              "n": "A"
+            },
+            {
+              "o": "var",
+              "n": "R"
+            }
+          ]
+        }
+      ]
+    },
+    "fast": {
+      "formula": "A",
+      "metric": 75.9807062969163,
+      "level": 4,
+      "formulaCost": 0
+    },
+    "fastTree": {
+      "o": "var",
+      "n": "A"
+    }
+  },
+  "free_fall": {
+    "taskId": "free_fall",
+    "title": "Loi de chute libre",
+    "direction": "min",
+    "metric": 0.00018985148816310314,
+    "level": 5,
+    "formula": "((4.905917 * (t)Â²) + -0.001081)",
+    "seed": 3333,
+    "iteration": 28,
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 4.905917
+            },
+            {
+              "o": "sq",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "t"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": -0.001081
+        }
+      ]
+    },
+    "speed": {
+      "formulaCost": 3,
+      "exactCost": 2,
+      "speedup": 0.6666666666666666
+    },
+    "fast": {
+      "formula": "(t)Â²",
+      "metric": 0.0005030952469190765,
+      "level": 5,
+      "formulaCost": 1,
+      "speed": {
+        "formulaCost": 1,
+        "exactCost": 2,
+        "speedup": 2
+      }
+    },
+    "fastTree": {
+      "o": "sq",
+      "c": [
+        {
+          "o": "var",
+          "n": "t"
+        }
+      ]
+    }
+  },
+  "kepler": {
+    "taskId": "kepler",
+    "title": "Kepler's third law",
+    "direction": "min",
+    "metric": 0.047018,
+    "level": 5,
+    "formula": "((1.000934 * (a * sqrt(|a|))) + -0.023116)",
+    "seed": 555666,
+    "iteration": 6,
+    "fast": {
+      "formula": "sqrt(|(a)Â³|)",
+      "metric": 0.04833668157942985,
+      "level": 5,
+      "formulaCost": 4,
+      "speed": {
+        "formulaCost": 4,
+        "exactCost": 3,
+        "speedup": 0.75
+      }
+    },
+    "fastTree": {
+      "o": "sqrt",
+      "c": [
+        {
+          "o": "cube",
+          "c": [
+            {
+              "o": "var",
+              "n": "a"
+            }
+          ]
+        }
+      ]
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 1.000934
+            },
+            {
+              "o": "mul",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "a"
+                },
+                {
+                  "o": "sqrt",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "a"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": -0.023116
+        }
+      ]
+    },
+    "speed": {
+      "formulaCost": 5,
+      "exactCost": 3,
+      "speedup": 0.6
+    }
+  },
+  "gaussian_cdf": {
+    "taskId": "gaussian_cdf",
+    "title": "Répartition gaussienne Φ(x)",
+    "direction": "min",
+    "metric": 0.000016407954856661242,
+    "level": 3,
+    "formula": "((0.446257 * atan(min((0.946094 * max(x, -2.183)), 2.045418))) + 0.50123)",
+    "seed": 1001003,
+    "iteration": 1600,
+    "speed": {
+      "formulaCost": 25,
+      "exactCost": 34,
+      "speedup": 1.36,
+      "vsIterative": {
+        "label": "Monte-Carlo · 1000 tirages",
+        "speedup": 1840
+      }
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 0.446257
+            },
+            {
+              "o": "atan",
+              "c": [
+                {
+                  "o": "min",
+                  "c": [
+                    {
+                      "o": "mul",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 0.946094
+                        },
+                        {
+                          "o": "max",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "x"
+                            },
+                            {
+                              "o": "const",
+                              "v": -2.183
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "o": "const",
+                      "v": 2.045418
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.50123
+        }
+      ]
+    },
+    "fast": {
+      "formula": "((0.000017 * (((0.680392 * x) / 0.000034) + ((min(132.262684, x) / 0.000034) + ((0.426743 * x) / 0.000034)))) + 0.5)",
+      "metric": 0.00002655101736531925,
+      "level": 3,
+      "formulaCost": 19,
+      "speed": {
+        "formulaCost": 19,
+        "exactCost": 34,
+        "speedup": 1.7894736842105263,
+        "vsIterative": {
+          "label": "Monte-Carlo · 1000 tirages",
+          "speedup": 2421.0526315789475
+        }
+      }
+    },
+    "fastTree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 0.000016644068119142568
+            },
+            {
+              "o": "add",
+              "c": [
+                {
+                  "o": "pdiv",
+                  "c": [
+                    {
+                      "o": "mul",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 0.680392
+                        },
+                        {
+                          "o": "var",
+                          "n": "x"
+                        }
+                      ]
+                    },
+                    {
+                      "o": "const",
+                      "v": 0.000034
+                    }
+                  ]
+                },
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "pdiv",
+                      "c": [
+                        {
+                          "o": "min",
+                          "c": [
+                            {
+                              "o": "const",
+                              "v": 132.262684
+                            },
+                            {
+                              "o": "var",
+                              "n": "x"
+                            }
+                          ]
+                        },
+                        {
+                          "o": "const",
+                          "v": 0.000034
+                        }
+                      ]
+                    },
+                    {
+                      "o": "pdiv",
+                      "c": [
+                        {
+                          "o": "mul",
+                          "c": [
+                            {
+                              "o": "const",
+                              "v": 0.426743
+                            },
+                            {
+                              "o": "var",
+                              "n": "x"
+                            }
+                          ]
+                        },
+                        {
+                          "o": "const",
+                          "v": 0.000034
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.4999999999999995
+        }
+      ]
+    }
+  },
+  "damped_pendulum": {
+    "taskId": "damped_pendulum",
+    "title": "Pendule amorti · état terminal",
+    "direction": "min",
+    "metric": 0.0006756423002196924,
+    "level": 2,
+    "formula": "((-1.310633 * ((max(cos(t), 0.682826) * -0.71535) - cos((2.787312 * t)))) + -0.707513)",
+    "seed": 930101,
+    "iteration": 400,
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": -1.3106328406309695
+            },
+            {
+              "o": "sub",
+              "c": [
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "max",
+                      "c": [
+                        {
+                          "o": "cos",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "t"
+                            }
+                          ]
+                        },
+                        {
+                          "o": "const",
+                          "v": 0.682826
+                        }
+                      ]
+                    },
+                    {
+                      "o": "const",
+                      "v": -0.71535
+                    }
+                  ]
+                },
+                {
+                  "o": "cos",
+                  "c": [
+                    {
+                      "o": "mul",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 2.787312
+                        },
+                        {
+                          "o": "var",
+                          "n": "t"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": -0.7075131452525627
+        }
+      ]
+    },
+    "speed": {
+      "formulaCost": 46,
+      "vsIterative": {
+        "label": "Euler-Cromer · 60 pas",
+        "speedup": 32.608695652173914
+      }
+    },
+    "fast": {
+      "formula": "cos((2.733044 * t))",
+      "metric": 0.01460094082613519,
+      "level": 2,
+      "formulaCost": 21,
+      "speed": {
+        "formulaCost": 21,
+        "vsIterative": {
+          "label": "Euler-Cromer · 60 pas",
+          "speedup": 71.42857142857143
+        }
+      }
+    },
+    "fastTree": {
+      "o": "cos",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 2.733044
+            },
+            {
+              "o": "var",
+              "n": "t"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "rl_distillation": {
+    "taskId": "rl_distillation",
+    "title": "Deep-RL actor distillation",
+    "direction": "min",
+    "metric": 0.00015509445364142197,
+    "level": 2,
+    "formula": "(1.143472 * ((x + (0.135 * (x)Â³)) / (0.584 + (0.75 * (x)Â²))))",
+    "seed": 777,
+    "iteration": 106,
+    "speed": {
+      "formulaCost": 12,
+      "exactCost": 34,
+      "speedup": 2.8333333333333335
+    },
+    "tree": {
+      "o": "mul",
+      "c": [
+        {
+          "o": "const",
+          "v": 1.143472
+        },
+        {
+          "o": "pdiv",
+          "c": [
+            {
+              "o": "add",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "x"
+                },
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 0.135
+                    },
+                    {
+                      "o": "cube",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "x"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "o": "add",
+              "c": [
+                {
+                  "o": "const",
+                  "v": 0.584
+                },
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 0.75
+                    },
+                    {
+                      "o": "sq",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "x"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "fast": {
+      "formula": "((x + (0.169 * (x)Â³)) / (0.5 + (0.75 * (x)Â²)))",
+      "metric": 0.0005281406564176935,
+      "level": 2,
+      "formulaCost": 11,
+      "speed": {
+        "formulaCost": 11,
+        "exactCost": 34,
+        "speedup": 3.090909090909091
+      }
+    },
+    "fastTree": {
+      "o": "pdiv",
+      "c": [
+        {
+          "o": "add",
+          "c": [
+            {
+              "o": "var",
+              "n": "x"
+            },
+            {
+              "o": "mul",
+              "c": [
+                {
+                  "o": "const",
+                  "v": 0.169
+                },
+                {
+                  "o": "cube",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "x"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "add",
+          "c": [
+            {
+              "o": "const",
+              "v": 0.5
+            },
+            {
+              "o": "mul",
+              "c": [
+                {
+                  "o": "const",
+                  "v": 0.75
+                },
+                {
+                  "o": "sq",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "x"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "lambert_w": {
+    "taskId": "lambert_w",
+    "title": "Lambert W₀ function",
+    "direction": "min",
+    "metric": 0,
+    "level": 5,
+    "formula": "(x * relu(exp(x)))",
+    "seed": 12345,
+    "iteration": 28,
+    "speed": {
+      "formulaCost": 22,
+      "exactCost": 21,
+      "speedup": 0.9545454545454546
+    },
+    "tree": {
+      "o": "mul",
+      "c": [
+        {
+          "o": "var",
+          "n": "x"
+        },
+        {
+          "o": "relu",
+          "c": [
+            {
+              "o": "exp",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "x"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "fast": {
+      "formula": "(x)Â²",
+      "metric": 0.011194370036126207,
+      "level": 2,
+      "formulaCost": 1,
+      "speed": {
+        "formulaCost": 1,
+        "exactCost": 21,
+        "speedup": 21
+      }
+    },
+    "fastTree": {
+      "o": "sq",
+      "c": [
+        {
+          "o": "var",
+          "n": "x"
+        }
+      ]
+    }
+  },
+  "rc_circuit": {
+    "taskId": "rc_circuit",
+    "title": "Circuit RC · tension terminale",
+    "direction": "min",
+    "metric": 0.00007258403509477666,
+    "level": 5,
+    "formula": "((-1.419873 * (2.239754 - log(max(atan(exp(t)), 1e-30)))) + 3.532699)",
+    "seed": 1000002,
+    "iteration": 202,
+    "speed": {
+      "formulaCost": 63,
+      "exactCost": 22,
+      "speedup": 0.3492063492063492
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": -1.4198725250153843
+            },
+            {
+              "o": "sub",
+              "c": [
+                {
+                  "o": "const",
+                  "v": 2.239754
+                },
+                {
+                  "o": "log",
+                  "c": [
+                    {
+                      "o": "atan",
+                      "c": [
+                        {
+                          "o": "exp",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "t"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 3.5326988727281186
+        }
+      ]
+    },
+    "fast": {
+      "formula": "((-0.998327 * min(exp((-t)), 2)) + 0.996889)",
+      "metric": 0.0001058221329252825,
+      "level": 5,
+      "formulaCost": 24,
+      "speed": {
+        "formulaCost": 24,
+        "exactCost": 22,
+        "speedup": 0.9166666666666666
+      }
+    },
+    "fastTree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": -0.998327
+            },
+            {
+              "o": "min",
+              "c": [
+                {
+                  "o": "exp",
+                  "c": [
+                    {
+                      "o": "neg",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "t"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "const",
+                  "v": 2
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.996889
+        }
+      ]
+    }
+  },
+  "layernorm_scale": {
+    "taskId": "layernorm_scale",
+    "title": "LayerNorm rsqrt scale",
+    "direction": "min",
+    "metric": 0,
+    "level": 2,
+    "formula": "(-0.318426 * ((-((2.584738 / x) * 1.214997)) * sqrt(|x|)))",
+    "seed": 12345,
+    "iteration": 94,
+    "fast": {
+      "formula": "(0.524071 / sqrt(|x|))",
+      "metric": 4.975817196879307e-30,
+      "level": 2,
+      "formulaCost": 6,
+      "speed": {
+        "formulaCost": 6,
+        "exactCost": 3,
+        "speedup": 0.5
+      }
+    },
+    "fastTree": {
+      "o": "pdiv",
+      "c": [
+        {
+          "o": "const",
+          "v": 0.524071
+        },
+        {
+          "o": "sqrt",
+          "c": [
+            {
+              "o": "var",
+              "n": "x"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "gaussian_kernel": {
+    "taskId": "gaussian_kernel",
+    "title": "Blur gaussien · noyau exp(−x²/2σ²)",
+    "direction": "min",
+    "metric": 5.356342194550095e-34,
+    "level": 2,
+    "formula": "sqrt(|exp((-(x)Â²))|)",
+    "seed": 920101,
+    "iteration": 400,
+    "speed": {
+      "formulaCost": 24,
+      "exactCost": 23,
+      "speedup": 0.9583333333333334
+    },
+    "tree": {
+      "o": "sqrt",
+      "c": [
+        {
+          "o": "exp",
+          "c": [
+            {
+              "o": "neg",
+              "c": [
+                {
+                  "o": "sq",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "x"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "fast": {
+      "formula": "|x|",
+      "metric": 0.005657377567763322,
+      "level": 2,
+      "formulaCost": 1,
+      "speed": {
+        "formulaCost": 1,
+        "exactCost": 23,
+        "speedup": 23
+      }
+    },
+    "fastTree": {
+      "o": "abs",
+      "c": [
+        {
+          "o": "var",
+          "n": "x"
+        }
+      ]
+    }
+  },
+  "diffusion_beta": {
+    "taskId": "diffusion_beta",
+    "title": "Diffusion · schedule de bruit β(t)",
+    "direction": "min",
+    "metric": 0.0000018372650878577204,
+    "level": 2,
+    "formula": "((-0.496181 * cos((t * 3.16221))) + 0.500616)",
+    "seed": 700003,
+    "iteration": 117,
+    "speed": {
+      "formulaCost": 23,
+      "exactCost": 24,
+      "speedup": 1.0434782608695652
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": -0.496181
+            },
+            {
+              "o": "cos",
+              "c": [
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "t"
+                    },
+                    {
+                      "o": "const",
+                      "v": 3.16221
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.500616
+        }
+      ]
+    },
+    "fast": {
+      "formula": "cos((3.205096 * t))",
+      "metric": 0.000015677565025135613,
+      "level": 2,
+      "formulaCost": 21,
+      "speed": {
+        "formulaCost": 21,
+        "exactCost": 24,
+        "speedup": 1.1428571428571428
+      }
+    },
+    "fastTree": {
+      "o": "cos",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 3.205096
+            },
+            {
+              "o": "var",
+              "n": "t"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "bilinear_interp": {
+    "taskId": "bilinear_interp",
+    "title": "Bilinear upsampling weight",
+    "direction": "min",
+    "metric": 0,
+    "level": 1,
+    "formula": "((-u) + 1)",
+    "seed": 12345,
+    "iteration": 16,
+    "speed": {
+      "formulaCost": 2,
+      "exactCost": 1,
+      "speedup": 0.5
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "neg",
+          "c": [
+            {
+              "o": "var",
+              "n": "u"
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 1
+        }
+      ]
+    },
+    "fast": {
+      "formula": "(-168.810432 * u)",
+      "metric": 0,
+      "level": 5,
+      "formulaCost": 1,
+      "speed": {
+        "formulaCost": 1,
+        "exactCost": 1,
+        "speedup": 1
+      }
+    },
+    "fastTree": {
+      "o": "mul",
+      "c": [
+        {
+          "o": "const",
+          "v": -168.810432
+        },
+        {
+          "o": "var",
+          "n": "u"
+        }
+      ]
+    }
+  },
+  "european_call": {
+    "taskId": "european_call",
+    "title": "Prime d'un call européen",
+    "direction": "min",
+    "metric": 0.17682071689836543,
+    "level": 5,
+    "formula": "((19.224472 * ((1 + sigma))Â²) + -19.114468)",
+    "seed": 700001,
+    "iteration": 128,
+    "speed": {
+      "formulaCost": 4,
+      "exactCost": 4,
+      "speedup": 1
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 19.224472260676723
+            },
+            {
+              "o": "sq",
+              "c": [
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 1
+                    },
+                    {
+                      "o": "var",
+                      "n": "sigma"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": -19.1144678187698
+        }
+      ]
+    },
+    "fast": {
+      "formula": "sigma",
+      "metric": 0.3419711249861829,
+      "level": 4,
+      "formulaCost": 0
+    },
+    "fastTree": {
+      "o": "var",
+      "n": "sigma"
+    }
+  },
+  "temporal_grad": {
+    "taskId": "temporal_grad",
+    "title": "Video temporal gradient ∂I/∂t",
+    "direction": "min",
+    "metric": 0,
+    "level": 5,
+    "formula": "(b - a)",
+    "seed": 8888,
+    "iteration": 8,
+    "speed": {
+      "formulaCost": 1,
+      "exactCost": 1,
+      "speedup": 1
+    },
+    "tree": {
+      "o": "sub",
+      "c": [
+        {
+          "o": "var",
+          "n": "b"
+        },
+        {
+          "o": "var",
+          "n": "a"
+        }
+      ]
+    }
+  },
+  "lorentz": {
+    "taskId": "lorentz",
+    "title": "Lorentz factor γ(β)",
+    "direction": "min",
+    "metric": 0,
+    "level": 5,
+    "formula": "(1 / sqrt(|(1 + (-(b)Â²))|))",
+    "seed": 4242,
+    "iteration": 28,
+    "speed": {
+      "formulaCost": 9,
+      "exactCost": 8,
+      "speedup": 0.8888888888888888
+    },
+    "tree": {
+      "o": "pdiv",
+      "c": [
+        {
+          "o": "const",
+          "v": 1
+        },
+        {
+          "o": "sqrt",
+          "c": [
+            {
+              "o": "add",
+              "c": [
+                {
+                  "o": "const",
+                  "v": 1
+                },
+                {
+                  "o": "neg",
+                  "c": [
+                    {
+                      "o": "sq",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "b"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "fast": {
+      "formula": "(1 / sqrt(|(1 + (-b))|))",
+      "metric": 0.0024186729363423684,
+      "level": 2,
+      "formulaCost": 8,
+      "speed": {
+        "formulaCost": 8,
+        "exactCost": 8,
+        "speedup": 1
+      }
+    },
+    "fastTree": {
+      "o": "pdiv",
+      "c": [
+        {
+          "o": "const",
+          "v": 1
+        },
+        {
+          "o": "sqrt",
+          "c": [
+            {
+              "o": "add",
+              "c": [
+                {
+                  "o": "const",
+                  "v": 1
+                },
+                {
+                  "o": "neg",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "b"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "hill": {
+    "taskId": "hill",
+    "title": "Équation de Hill · dose-réponse",
+    "direction": "min",
+    "metric": 0.000004468114072258487,
+    "level": 2,
+    "formula": "((-0.508815 * cos((atan(c) + atan((c)Â²)))) + 0.500599)",
+    "seed": 1001003,
+    "iteration": 804,
+    "speed": {
+      "formulaCost": 64,
+      "exactCost": 9,
+      "speedup": 0.140625
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": -0.5088154625822694
+            },
+            {
+              "o": "cos",
+              "c": [
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "atan",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "c"
+                        }
+                      ]
+                    },
+                    {
+                      "o": "atan",
+                      "c": [
+                        {
+                          "o": "sq",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "c"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.5005994325153399
+        }
+      ]
+    },
+    "fast": {
+      "formula": "atan((c)Â²)",
+      "metric": 0.0001984746423735581,
+      "level": 2,
+      "formulaCost": 21,
+      "speed": {
+        "formulaCost": 21,
+        "exactCost": 9,
+        "speedup": 0.42857142857142855
+      }
+    },
+    "fastTree": {
+      "o": "atan",
+      "c": [
+        {
+          "o": "sq",
+          "c": [
+            {
+              "o": "var",
+              "n": "c"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "kerr": {
+    "taskId": "kerr",
+    "title": "Kerr light deflection (weak field)",
+    "direction": "min",
+    "metric": 1.39756685796311e-7,
+    "level": 2,
+    "formula": "((4.044113 * (((2.83748 + (10.692104 / b)) + b) / (b)Â²)) + -0.001252)",
+    "seed": 777,
+    "iteration": 132,
+    "speed": {
+      "formulaCost": 13,
+      "exactCost": 17,
+      "speedup": 1.3076923076923077,
+      "vsIterative": {
+        "label": "RK4 géodésique · 200 pas",
+        "speedup": 184.6153846153846
+      }
+    },
+    "fast": {
+      "formula": "((0.630738 / b))Â²",
+      "metric": 0.0014679448665524788,
+      "level": 2,
+      "formulaCost": 5,
+      "speed": {
+        "formulaCost": 5,
+        "exactCost": 17,
+        "speedup": 3.4,
+        "vsIterative": {
+          "label": "RK4 géodésique · 200 pas",
+          "speedup": 480
+        }
+      }
+    },
+    "fastTree": {
+      "o": "sq",
+      "c": [
+        {
+          "o": "pdiv",
+          "c": [
+            {
+              "o": "const",
+              "v": 0.630738
+            },
+            {
+              "o": "var",
+              "n": "b"
+            }
+          ]
+        }
+      ]
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 4.044113
+            },
+            {
+              "o": "pdiv",
+              "c": [
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "add",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 2.83748
+                        },
+                        {
+                          "o": "pdiv",
+                          "c": [
+                            {
+                              "o": "const",
+                              "v": 10.692104
+                            },
+                            {
+                              "o": "var",
+                              "n": "b"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "o": "var",
+                      "n": "b"
+                    }
+                  ]
+                },
+                {
+                  "o": "sq",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "b"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": -0.001252
+        }
+      ]
+    }
+  },
+  "lennard_jones": {
+    "taskId": "lennard_jones",
+    "title": "Potentiel de Lennard-Jones 12-6",
+    "direction": "min",
+    "metric": 0.00003245566387678721,
+    "level": 2,
+    "formula": "((-23.07526 * ((log(max(r, 1e-30)) / ((r)Â³)Â³) / cos(sqrt(|(r + -1.017418)|)))) + -0.001951)",
+    "seed": 990303,
+    "iteration": 158,
+    "speed": {
+      "formulaCost": 57,
+      "exactCost": 17,
+      "speedup": 0.2982456140350877
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": -23.07526
+            },
+            {
+              "o": "pdiv",
+              "c": [
+                {
+                  "o": "pdiv",
+                  "c": [
+                    {
+                      "o": "log",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "r"
+                        }
+                      ]
+                    },
+                    {
+                      "o": "cube",
+                      "c": [
+                        {
+                          "o": "cube",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "r"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "cos",
+                  "c": [
+                    {
+                      "o": "sqrt",
+                      "c": [
+                        {
+                          "o": "add",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "r"
+                            },
+                            {
+                              "o": "const",
+                              "v": -1.017418
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": -0.001951
+        }
+      ]
+    },
+    "fast": {
+      "formula": "(min(1, r) / (min((r - 0.970147), 0.939027) - -69.077553))",
+      "metric": 0.020446232630864744,
+      "level": 2,
+      "formulaCost": 8,
+      "speed": {
+        "formulaCost": 8,
+        "exactCost": 17,
+        "speedup": 2.125
+      }
+    },
+    "fastTree": {
+      "o": "pdiv",
+      "c": [
+        {
+          "o": "min",
+          "c": [
+            {
+              "o": "const",
+              "v": 1
+            },
+            {
+              "o": "var",
+              "n": "r"
+            }
+          ]
+        },
+        {
+          "o": "sub",
+          "c": [
+            {
+              "o": "min",
+              "c": [
+                {
+                  "o": "sub",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "r"
+                    },
+                    {
+                      "o": "const",
+                      "v": 0.970147
+                    }
+                  ]
+                },
+                {
+                  "o": "const",
+                  "v": 0.939027
+                }
+              ]
+            },
+            {
+              "o": "const",
+              "v": -69.077553
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "damped_oscillation": {
+    "taskId": "damped_oscillation",
+    "title": "Oscillation amortie e^(−t/τ)·cos(ωt)",
+    "direction": "min",
+    "metric": 0.00030630571172772763,
+    "level": 2,
+    "formula": "((0.00696 * ((t - 16.41765) * ((t - 8.280135) * cos((t * 2.996281))))) + -0.000501)",
+    "seed": 910001,
+    "iteration": 200,
+    "speed": {
+      "formulaCost": 27,
+      "exactCost": 44,
+      "speedup": 1.6296296296296295,
+      "vsIterative": {
+        "label": "RKF45 · 300 pas",
+        "speedup": 200
+      }
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 0.00696
+            },
+            {
+              "o": "mul",
+              "c": [
+                {
+                  "o": "sub",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "t"
+                    },
+                    {
+                      "o": "const",
+                      "v": 16.41765
+                    }
+                  ]
+                },
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "sub",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "t"
+                        },
+                        {
+                          "o": "const",
+                          "v": 8.280135
+                        }
+                      ]
+                    },
+                    {
+                      "o": "cos",
+                      "c": [
+                        {
+                          "o": "mul",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "t"
+                            },
+                            {
+                              "o": "const",
+                              "v": 2.996281
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": -0.000501
+        }
+      ]
+    }
+  },
+  "logistic_growth": {
+    "taskId": "logistic_growth",
+    "title": "Croissance logistique",
+    "direction": "min",
+    "metric": 0.000011045057513989082,
+    "level": 2,
+    "formula": "((-0.416375 * (sin(sin((8.28632 - t))) - (t * 0.170954))) + 0.358312)",
+    "seed": 990703,
+    "iteration": 400,
+    "speed": {
+      "formulaCost": 45,
+      "exactCost": 28,
+      "speedup": 0.6222222222222222
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": -0.416375
+            },
+            {
+              "o": "sub",
+              "c": [
+                {
+                  "o": "sin",
+                  "c": [
+                    {
+                      "o": "sin",
+                      "c": [
+                        {
+                          "o": "sub",
+                          "c": [
+                            {
+                              "o": "const",
+                              "v": 8.28632
+                            },
+                            {
+                              "o": "var",
+                              "n": "t"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "t"
+                    },
+                    {
+                      "o": "const",
+                      "v": 0.170954
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.358312
+        }
+      ]
+    },
+    "fast": {
+      "formula": "((min(t, 2.609741))Â² + (0.86783 * max(1.214626, t)))",
+      "metric": 0.0004105827823591433,
+      "level": 2,
+      "formulaCost": 5,
+      "speed": {
+        "formulaCost": 5,
+        "exactCost": 28,
+        "speedup": 5.6
+      }
+    },
+    "fastTree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "sq",
+          "c": [
+            {
+              "o": "min",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "t"
+                },
+                {
+                  "o": "const",
+                  "v": 2.609741
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 0.86783
+            },
+            {
+              "o": "max",
+              "c": [
+                {
+                  "o": "const",
+                  "v": 1.214626
+                },
+                {
+                  "o": "var",
+                  "n": "t"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "softplus": {
+    "taskId": "softplus",
+    "title": "Softplus ln(1+eˣ)",
+    "direction": "min",
+    "metric": 0.0000018948345099656158,
+    "level": 2,
+    "formula": "((1.002747 * log(max((1.010159 + exp(x)), 1e-30))) + -0.008384)",
+    "seed": 1000002,
+    "iteration": 201,
+    "speed": {
+      "formulaCost": 43,
+      "exactCost": 41,
+      "speedup": 0.9534883720930233
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 1.002747
+            },
+            {
+              "o": "log",
+              "c": [
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 1.010159
+                    },
+                    {
+                      "o": "exp",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "x"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": -0.008384
+        }
+      ]
+    },
+    "fast": {
+      "formula": "(((x + 6.630221))Â³ + 239.762951)",
+      "metric": 0.007707567263369909,
+      "level": 2,
+      "formulaCost": 4,
+      "speed": {
+        "formulaCost": 4,
+        "exactCost": 41,
+        "speedup": 10.25
+      }
+    },
+    "fastTree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "cube",
+          "c": [
+            {
+              "o": "add",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "x"
+                },
+                {
+                  "o": "const",
+                  "v": 6.630221
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 239.762951
+        }
+      ]
+    }
+  },
+  "kdv_soliton": {
+    "taskId": "kdv_soliton",
+    "title": "Soliton KdV · sech²",
+    "direction": "min",
+    "metric": 0.0017117911533114868,
+    "level": 2,
+    "formula": "((-1.553578 * max(sqrt(|(6.660595 - max(3.1671, x))|), 0.603662)) + 2.906087)",
+    "seed": 930202,
+    "iteration": 400,
+    "speed": {
+      "formulaCost": 7,
+      "exactCost": 53,
+      "speedup": 7.571428571428571
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": -1.553578
+            },
+            {
+              "o": "max",
+              "c": [
+                {
+                  "o": "sqrt",
+                  "c": [
+                    {
+                      "o": "sub",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 6.660595
+                        },
+                        {
+                          "o": "max",
+                          "c": [
+                            {
+                              "o": "const",
+                              "v": 3.1671
+                            },
+                            {
+                              "o": "var",
+                              "n": "x"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "const",
+                  "v": 0.603662
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 2.906087
+        }
+      ]
+    }
+  },
+  "kerr_spin": {
+    "taskId": "kerr_spin",
+    "title": "Déflexion Kerr avec spin (Lense-Thirring)",
+    "direction": "min",
+    "metric": 7.518473348732604e-10,
+    "level": 2,
+    "formula": "((0.399181 * (((4.851947 / b) + (5.364206 / (-3.480154 + b))) + (0.368529 / (11.340686 + b)))) + -0.00039)",
+    "seed": 991203,
+    "iteration": 502,
+    "speed": {
+      "formulaCost": 18,
+      "exactCost": 21,
+      "speedup": 1.1666666666666667,
+      "vsIterative": {
+        "label": "RK4 géodésique · 200 pas",
+        "speedup": 133.33333333333334
+      }
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 0.3991806798322823
+            },
+            {
+              "o": "add",
+              "c": [
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "pdiv",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 4.851947
+                        },
+                        {
+                          "o": "var",
+                          "n": "b"
+                        }
+                      ]
+                    },
+                    {
+                      "o": "pdiv",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 5.364206
+                        },
+                        {
+                          "o": "add",
+                          "c": [
+                            {
+                              "o": "const",
+                              "v": -3.480154
+                            },
+                            {
+                              "o": "var",
+                              "n": "b"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "pdiv",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 0.368529
+                    },
+                    {
+                      "o": "add",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 11.340686
+                        },
+                        {
+                          "o": "var",
+                          "n": "b"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": -0.00039034216985437336
+        }
+      ]
+    },
+    "fast": {
+      "formula": "(s / b)",
+      "metric": 0.0001323874547581254,
+      "level": 2,
+      "formulaCost": 4,
+      "speed": {
+        "formulaCost": 4,
+        "exactCost": 21,
+        "speedup": 5.25,
+        "vsIterative": {
+          "label": "RK4 géodésique · 200 pas",
+          "speedup": 600
+        }
+      }
+    },
+    "fastTree": {
+      "o": "pdiv",
+      "c": [
+        {
+          "o": "var",
+          "n": "s"
+        },
+        {
+          "o": "var",
+          "n": "b"
+        }
+      ]
+    }
+  },
+  "pendulum_hybrid": {
+    "taskId": "pendulum_hybrid",
+    "title": "Contrôle hybride pendule inversé",
+    "direction": "min",
+    "metric": 2.0391289425393437,
+    "level": 0,
+    "formula": "((-0.479114 * ((d * cos(th)) + cos((-relu(d))))) + 0.193589)",
+    "seed": 950303,
+    "iteration": 400,
+    "speed": {
+      "formulaCost": 46,
+      "exactCost": 173,
+      "speedup": 3.760869565217391
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": -0.4791144877035046
+            },
+            {
+              "o": "add",
+              "c": [
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "d"
+                    },
+                    {
+                      "o": "cos",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "th"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "cos",
+                  "c": [
+                    {
+                      "o": "neg",
+                      "c": [
+                        {
+                          "o": "relu",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "d"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.19358895313254176
+        }
+      ]
+    }
+  },
+  "eigen3_sym": {
+    "taskId": "eigen3_sym",
+    "title": "Valeur propre max 3×3 symétrique (BT29)",
+    "direction": "min",
+    "metric": 3.325277645075658e-11,
+    "level": 2,
+    "formula": "((1.000001 * ((t * 0.333333) + ((2 * sqrt(|((-(u - ((t)Â² * 0.333333))) * 0.333333)|)) * cos(((1.570796 - atan((min(1, max(-1, (((3 * (((t * u) * 0.333333) - (((t)Â³ * 0.074074) + w))) / (2 * (u - ((t)Â² * 0.333333)))) * sqrt(|(-3 / (u - ((t)Â² * 0.333333)))|)))) / sqrt(||(1 - (min(1, max(-1, (((3 * (((t * u) * 0.333333) - (((t)Â³ * 0.074074) + w))) / (2 * (u - ((t)Â² * 0.333333)))) * sqrt(|(-3 / (u - ((t)Â² * 0.333333)))|)))))Â²)||)))) * 0.333333))))) + -0.000002)",
+    "seed": 999907,
+    "iteration": 806,
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 1.000001
+            },
+            {
+              "o": "add",
+              "c": [
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "t"
+                    },
+                    {
+                      "o": "const",
+                      "v": 0.333333
+                    }
+                  ]
+                },
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "mul",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 2
+                        },
+                        {
+                          "o": "sqrt",
+                          "c": [
+                            {
+                              "o": "mul",
+                              "c": [
+                                {
+                                  "o": "neg",
+                                  "c": [
+                                    {
+                                      "o": "sub",
+                                      "c": [
+                                        {
+                                          "o": "var",
+                                          "n": "u"
+                                        },
+                                        {
+                                          "o": "mul",
+                                          "c": [
+                                            {
+                                              "o": "sq",
+                                              "c": [
+                                                {
+                                                  "o": "var",
+                                                  "n": "t"
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "o": "const",
+                                              "v": 0.333333
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "o": "const",
+                                  "v": 0.3333333333333333
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "o": "cos",
+                      "c": [
+                        {
+                          "o": "mul",
+                          "c": [
+                            {
+                              "o": "sub",
+                              "c": [
+                                {
+                                  "o": "const",
+                                  "v": 1.5707963267948966
+                                },
+                                {
+                                  "o": "atan",
+                                  "c": [
+                                    {
+                                      "o": "pdiv",
+                                      "c": [
+                                        {
+                                          "o": "min",
+                                          "c": [
+                                            {
+                                              "o": "const",
+                                              "v": 1
+                                            },
+                                            {
+                                              "o": "max",
+                                              "c": [
+                                                {
+                                                  "o": "const",
+                                                  "v": -1
+                                                },
+                                                {
+                                                  "o": "mul",
+                                                  "c": [
+                                                    {
+                                                      "o": "pdiv",
+                                                      "c": [
+                                                        {
+                                                          "o": "mul",
+                                                          "c": [
+                                                            {
+                                                              "o": "const",
+                                                              "v": 3
+                                                            },
+                                                            {
+                                                              "o": "sub",
+                                                              "c": [
+                                                                {
+                                                                  "o": "mul",
+                                                                  "c": [
+                                                                    {
+                                                                      "o": "mul",
+                                                                      "c": [
+                                                                        {
+                                                                          "o": "var",
+                                                                          "n": "t"
+                                                                        },
+                                                                        {
+                                                                          "o": "var",
+                                                                          "n": "u"
+                                                                        }
+                                                                      ]
+                                                                    },
+                                                                    {
+                                                                      "o": "const",
+                                                                      "v": 0.3333333333333333
+                                                                    }
+                                                                  ]
+                                                                },
+                                                                {
+                                                                  "o": "add",
+                                                                  "c": [
+                                                                    {
+                                                                      "o": "mul",
+                                                                      "c": [
+                                                                        {
+                                                                          "o": "cube",
+                                                                          "c": [
+                                                                            {
+                                                                              "o": "var",
+                                                                              "n": "t"
+                                                                            }
+                                                                          ]
+                                                                        },
+                                                                        {
+                                                                          "o": "const",
+                                                                          "v": 0.07407407407407407
+                                                                        }
+                                                                      ]
+                                                                    },
+                                                                    {
+                                                                      "o": "var",
+                                                                      "n": "w"
+                                                                    }
+                                                                  ]
+                                                                }
+                                                              ]
+                                                            }
+                                                          ]
+                                                        },
+                                                        {
+                                                          "o": "mul",
+                                                          "c": [
+                                                            {
+                                                              "o": "const",
+                                                              "v": 2
+                                                            },
+                                                            {
+                                                              "o": "sub",
+                                                              "c": [
+                                                                {
+                                                                  "o": "var",
+                                                                  "n": "u"
+                                                                },
+                                                                {
+                                                                  "o": "mul",
+                                                                  "c": [
+                                                                    {
+                                                                      "o": "sq",
+                                                                      "c": [
+                                                                        {
+                                                                          "o": "var",
+                                                                          "n": "t"
+                                                                        }
+                                                                      ]
+                                                                    },
+                                                                    {
+                                                                      "o": "const",
+                                                                      "v": 0.3333333333333333
+                                                                    }
+                                                                  ]
+                                                                }
+                                                              ]
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    },
+                                                    {
+                                                      "o": "sqrt",
+                                                      "c": [
+                                                        {
+                                                          "o": "pdiv",
+                                                          "c": [
+                                                            {
+                                                              "o": "const",
+                                                              "v": -3
+                                                            },
+                                                            {
+                                                              "o": "sub",
+                                                              "c": [
+                                                                {
+                                                                  "o": "var",
+                                                                  "n": "u"
+                                                                },
+                                                                {
+                                                                  "o": "mul",
+                                                                  "c": [
+                                                                    {
+                                                                      "o": "sq",
+                                                                      "c": [
+                                                                        {
+                                                                          "o": "var",
+                                                                          "n": "t"
+                                                                        }
+                                                                      ]
+                                                                    },
+                                                                    {
+                                                                      "o": "const",
+                                                                      "v": 0.3333333333333333
+                                                                    }
+                                                                  ]
+                                                                }
+                                                              ]
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "o": "sqrt",
+                                          "c": [
+                                            {
+                                              "o": "abs",
+                                              "c": [
+                                                {
+                                                  "o": "sub",
+                                                  "c": [
+                                                    {
+                                                      "o": "const",
+                                                      "v": 1
+                                                    },
+                                                    {
+                                                      "o": "sq",
+                                                      "c": [
+                                                        {
+                                                          "o": "min",
+                                                          "c": [
+                                                            {
+                                                              "o": "const",
+                                                              "v": 1
+                                                            },
+                                                            {
+                                                              "o": "max",
+                                                              "c": [
+                                                                {
+                                                                  "o": "const",
+                                                                  "v": -1
+                                                                },
+                                                                {
+                                                                  "o": "mul",
+                                                                  "c": [
+                                                                    {
+                                                                      "o": "pdiv",
+                                                                      "c": [
+                                                                        {
+                                                                          "o": "mul",
+                                                                          "c": [
+                                                                            {
+                                                                              "o": "const",
+                                                                              "v": 3
+                                                                            },
+                                                                            {
+                                                                              "o": "sub",
+                                                                              "c": [
+                                                                                {
+                                                                                  "o": "mul",
+                                                                                  "c": [
+                                                                                    {
+                                                                                      "o": "mul",
+                                                                                      "c": [
+                                                                                        {
+                                                                                          "o": "var",
+                                                                                          "n": "t"
+                                                                                        },
+                                                                                        {
+                                                                                          "o": "var",
+                                                                                          "n": "u"
+                                                                                        }
+                                                                                      ]
+                                                                                    },
+                                                                                    {
+                                                                                      "o": "const",
+                                                                                      "v": 0.3333333333333333
+                                                                                    }
+                                                                                  ]
+                                                                                },
+                                                                                {
+                                                                                  "o": "add",
+                                                                                  "c": [
+                                                                                    {
+                                                                                      "o": "mul",
+                                                                                      "c": [
+                                                                                        {
+                                                                                          "o": "cube",
+                                                                                          "c": [
+                                                                                            {
+                                                                                              "o": "var",
+                                                                                              "n": "t"
+                                                                                            }
+                                                                                          ]
+                                                                                        },
+                                                                                        {
+                                                                                          "o": "const",
+                                                                                          "v": 0.07407407407407407
+                                                                                        }
+                                                                                      ]
+                                                                                    },
+                                                                                    {
+                                                                                      "o": "var",
+                                                                                      "n": "w"
+                                                                                    }
+                                                                                  ]
+                                                                                }
+                                                                              ]
+                                                                            }
+                                                                          ]
+                                                                        },
+                                                                        {
+                                                                          "o": "mul",
+                                                                          "c": [
+                                                                            {
+                                                                              "o": "const",
+                                                                              "v": 2
+                                                                            },
+                                                                            {
+                                                                              "o": "sub",
+                                                                              "c": [
+                                                                                {
+                                                                                  "o": "var",
+                                                                                  "n": "u"
+                                                                                },
+                                                                                {
+                                                                                  "o": "mul",
+                                                                                  "c": [
+                                                                                    {
+                                                                                      "o": "sq",
+                                                                                      "c": [
+                                                                                        {
+                                                                                          "o": "var",
+                                                                                          "n": "t"
+                                                                                        }
+                                                                                      ]
+                                                                                    },
+                                                                                    {
+                                                                                      "o": "const",
+                                                                                      "v": 0.3333333333333333
+                                                                                    }
+                                                                                  ]
+                                                                                }
+                                                                              ]
+                                                                            }
+                                                                          ]
+                                                                        }
+                                                                      ]
+                                                                    },
+                                                                    {
+                                                                      "o": "sqrt",
+                                                                      "c": [
+                                                                        {
+                                                                          "o": "pdiv",
+                                                                          "c": [
+                                                                            {
+                                                                              "o": "const",
+                                                                              "v": -3
+                                                                            },
+                                                                            {
+                                                                              "o": "sub",
+                                                                              "c": [
+                                                                                {
+                                                                                  "o": "var",
+                                                                                  "n": "u"
+                                                                                },
+                                                                                {
+                                                                                  "o": "mul",
+                                                                                  "c": [
+                                                                                    {
+                                                                                      "o": "sq",
+                                                                                      "c": [
+                                                                                        {
+                                                                                          "o": "var",
+                                                                                          "n": "t"
+                                                                                        }
+                                                                                      ]
+                                                                                    },
+                                                                                    {
+                                                                                      "o": "const",
+                                                                                      "v": 0.3333333333333333
+                                                                                    }
+                                                                                  ]
+                                                                                }
+                                                                              ]
+                                                                            }
+                                                                          ]
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  ]
+                                                                }
+                                                              ]
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "o": "const",
+                              "v": 0.3333333333333333
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": -0.0000019009293118870118
+        }
+      ]
+    },
+    "fast": {
+      "formula": "((t * 0.333333) + ((2 * sqrt(|((-(u - ((t)Â² * 0.333333))) * 0.333333)|)) * cos(((1.570796 - atan((min(1, max(-1, (((3 * (((t * u) * 0.333333) - (((t)Â³ * 0.074074) + w))) / (2 * (u - ((t)Â² * 0.333333)))) * sqrt(|(-3 / (u - ((t)Â² * 0.333333)))|)))) / sqrt(||(1 - (min(1, max(-1, (((3 * (((t * u) * 0.333333) - (((t)Â³ * 0.074074) + w))) / (2 * (u - ((t)Â² * 0.333333)))) * sqrt(|(-3 / (u - ((t)Â² * 0.333333)))|)))))Â²)||)))) * 0.333333))))",
+      "metric": 3.3141511098464744e-11,
+      "level": 2,
+      "formulaCost": 118,
+      "speed": {
+        "formulaCost": 118,
+        "vsIterative": {
+          "label": "Jacobi · 4 balayages",
+          "speedup": 1.694915254237288
+        }
+      }
+    },
+    "fastTree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "var",
+              "n": "t"
+            },
+            {
+              "o": "const",
+              "v": 0.3333333333333333
+            }
+          ]
+        },
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "mul",
+              "c": [
+                {
+                  "o": "const",
+                  "v": 2
+                },
+                {
+                  "o": "sqrt",
+                  "c": [
+                    {
+                      "o": "mul",
+                      "c": [
+                        {
+                          "o": "neg",
+                          "c": [
+                            {
+                              "o": "sub",
+                              "c": [
+                                {
+                                  "o": "var",
+                                  "n": "u"
+                                },
+                                {
+                                  "o": "mul",
+                                  "c": [
+                                    {
+                                      "o": "sq",
+                                      "c": [
+                                        {
+                                          "o": "var",
+                                          "n": "t"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "o": "const",
+                                      "v": 0.3333333333333333
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "o": "const",
+                          "v": 0.3333333333333333
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "o": "cos",
+              "c": [
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "sub",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 1.5707963267948966
+                        },
+                        {
+                          "o": "atan",
+                          "c": [
+                            {
+                              "o": "pdiv",
+                              "c": [
+                                {
+                                  "o": "min",
+                                  "c": [
+                                    {
+                                      "o": "const",
+                                      "v": 1
+                                    },
+                                    {
+                                      "o": "max",
+                                      "c": [
+                                        {
+                                          "o": "const",
+                                          "v": -1
+                                        },
+                                        {
+                                          "o": "mul",
+                                          "c": [
+                                            {
+                                              "o": "pdiv",
+                                              "c": [
+                                                {
+                                                  "o": "mul",
+                                                  "c": [
+                                                    {
+                                                      "o": "const",
+                                                      "v": 3
+                                                    },
+                                                    {
+                                                      "o": "sub",
+                                                      "c": [
+                                                        {
+                                                          "o": "mul",
+                                                          "c": [
+                                                            {
+                                                              "o": "mul",
+                                                              "c": [
+                                                                {
+                                                                  "o": "var",
+                                                                  "n": "t"
+                                                                },
+                                                                {
+                                                                  "o": "var",
+                                                                  "n": "u"
+                                                                }
+                                                              ]
+                                                            },
+                                                            {
+                                                              "o": "const",
+                                                              "v": 0.3333333333333333
+                                                            }
+                                                          ]
+                                                        },
+                                                        {
+                                                          "o": "add",
+                                                          "c": [
+                                                            {
+                                                              "o": "mul",
+                                                              "c": [
+                                                                {
+                                                                  "o": "cube",
+                                                                  "c": [
+                                                                    {
+                                                                      "o": "var",
+                                                                      "n": "t"
+                                                                    }
+                                                                  ]
+                                                                },
+                                                                {
+                                                                  "o": "const",
+                                                                  "v": 0.07407407407407407
+                                                                }
+                                                              ]
+                                                            },
+                                                            {
+                                                              "o": "var",
+                                                              "n": "w"
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "o": "mul",
+                                                  "c": [
+                                                    {
+                                                      "o": "const",
+                                                      "v": 2
+                                                    },
+                                                    {
+                                                      "o": "sub",
+                                                      "c": [
+                                                        {
+                                                          "o": "var",
+                                                          "n": "u"
+                                                        },
+                                                        {
+                                                          "o": "mul",
+                                                          "c": [
+                                                            {
+                                                              "o": "sq",
+                                                              "c": [
+                                                                {
+                                                                  "o": "var",
+                                                                  "n": "t"
+                                                                }
+                                                              ]
+                                                            },
+                                                            {
+                                                              "o": "const",
+                                                              "v": 0.3333333333333333
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "o": "sqrt",
+                                              "c": [
+                                                {
+                                                  "o": "pdiv",
+                                                  "c": [
+                                                    {
+                                                      "o": "const",
+                                                      "v": -3
+                                                    },
+                                                    {
+                                                      "o": "sub",
+                                                      "c": [
+                                                        {
+                                                          "o": "var",
+                                                          "n": "u"
+                                                        },
+                                                        {
+                                                          "o": "mul",
+                                                          "c": [
+                                                            {
+                                                              "o": "sq",
+                                                              "c": [
+                                                                {
+                                                                  "o": "var",
+                                                                  "n": "t"
+                                                                }
+                                                              ]
+                                                            },
+                                                            {
+                                                              "o": "const",
+                                                              "v": 0.3333333333333333
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "o": "sqrt",
+                                  "c": [
+                                    {
+                                      "o": "abs",
+                                      "c": [
+                                        {
+                                          "o": "sub",
+                                          "c": [
+                                            {
+                                              "o": "const",
+                                              "v": 1
+                                            },
+                                            {
+                                              "o": "sq",
+                                              "c": [
+                                                {
+                                                  "o": "min",
+                                                  "c": [
+                                                    {
+                                                      "o": "const",
+                                                      "v": 1
+                                                    },
+                                                    {
+                                                      "o": "max",
+                                                      "c": [
+                                                        {
+                                                          "o": "const",
+                                                          "v": -1
+                                                        },
+                                                        {
+                                                          "o": "mul",
+                                                          "c": [
+                                                            {
+                                                              "o": "pdiv",
+                                                              "c": [
+                                                                {
+                                                                  "o": "mul",
+                                                                  "c": [
+                                                                    {
+                                                                      "o": "const",
+                                                                      "v": 3
+                                                                    },
+                                                                    {
+                                                                      "o": "sub",
+                                                                      "c": [
+                                                                        {
+                                                                          "o": "mul",
+                                                                          "c": [
+                                                                            {
+                                                                              "o": "mul",
+                                                                              "c": [
+                                                                                {
+                                                                                  "o": "var",
+                                                                                  "n": "t"
+                                                                                },
+                                                                                {
+                                                                                  "o": "var",
+                                                                                  "n": "u"
+                                                                                }
+                                                                              ]
+                                                                            },
+                                                                            {
+                                                                              "o": "const",
+                                                                              "v": 0.3333333333333333
+                                                                            }
+                                                                          ]
+                                                                        },
+                                                                        {
+                                                                          "o": "add",
+                                                                          "c": [
+                                                                            {
+                                                                              "o": "mul",
+                                                                              "c": [
+                                                                                {
+                                                                                  "o": "cube",
+                                                                                  "c": [
+                                                                                    {
+                                                                                      "o": "var",
+                                                                                      "n": "t"
+                                                                                    }
+                                                                                  ]
+                                                                                },
+                                                                                {
+                                                                                  "o": "const",
+                                                                                  "v": 0.07407407407407407
+                                                                                }
+                                                                              ]
+                                                                            },
+                                                                            {
+                                                                              "o": "var",
+                                                                              "n": "w"
+                                                                            }
+                                                                          ]
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  ]
+                                                                },
+                                                                {
+                                                                  "o": "mul",
+                                                                  "c": [
+                                                                    {
+                                                                      "o": "const",
+                                                                      "v": 2
+                                                                    },
+                                                                    {
+                                                                      "o": "sub",
+                                                                      "c": [
+                                                                        {
+                                                                          "o": "var",
+                                                                          "n": "u"
+                                                                        },
+                                                                        {
+                                                                          "o": "mul",
+                                                                          "c": [
+                                                                            {
+                                                                              "o": "sq",
+                                                                              "c": [
+                                                                                {
+                                                                                  "o": "var",
+                                                                                  "n": "t"
+                                                                                }
+                                                                              ]
+                                                                            },
+                                                                            {
+                                                                              "o": "const",
+                                                                              "v": 0.3333333333333333
+                                                                            }
+                                                                          ]
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  ]
+                                                                }
+                                                              ]
+                                                            },
+                                                            {
+                                                              "o": "sqrt",
+                                                              "c": [
+                                                                {
+                                                                  "o": "pdiv",
+                                                                  "c": [
+                                                                    {
+                                                                      "o": "const",
+                                                                      "v": -3
+                                                                    },
+                                                                    {
+                                                                      "o": "sub",
+                                                                      "c": [
+                                                                        {
+                                                                          "o": "var",
+                                                                          "n": "u"
+                                                                        },
+                                                                        {
+                                                                          "o": "mul",
+                                                                          "c": [
+                                                                            {
+                                                                              "o": "sq",
+                                                                              "c": [
+                                                                                {
+                                                                                  "o": "var",
+                                                                                  "n": "t"
+                                                                                }
+                                                                              ]
+                                                                            },
+                                                                            {
+                                                                              "o": "const",
+                                                                              "v": 0.3333333333333333
+                                                                            }
+                                                                          ]
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  ]
+                                                                }
+                                                              ]
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "o": "const",
+                      "v": 0.3333333333333333
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "speed": {
+      "formulaCost": 120,
+      "vsIterative": {
+        "label": "Jacobi · 4 balayages",
+        "speedup": 1.6666666666666667
+      }
+    }
+  },
+  "ik_reach": {
+    "taskId": "ik_reach",
+    "title": "IK analytique coude 2-link (BT33)",
+    "direction": "min",
+    "metric": 4.0626336618882106e-32,
+    "level": 2,
+    "formula": "(1.570796 - atan(((((d)Â² - ((l2)Â² + (l3)Â²)) / (2 * (l2 * l3))) / sqrt(||(1 - ((((d)Â² - ((l2)Â² + (l3)Â²)) / (2 * (l2 * l3))))Â²)||))))",
+    "seed": 1000001,
+    "iteration": 199,
+    "tree": {
+      "o": "sub",
+      "c": [
+        {
+          "o": "const",
+          "v": 1.5707963267948966
+        },
+        {
+          "o": "atan",
+          "c": [
+            {
+              "o": "pdiv",
+              "c": [
+                {
+                  "o": "pdiv",
+                  "c": [
+                    {
+                      "o": "sub",
+                      "c": [
+                        {
+                          "o": "sq",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "d"
+                            }
+                          ]
+                        },
+                        {
+                          "o": "add",
+                          "c": [
+                            {
+                              "o": "sq",
+                              "c": [
+                                {
+                                  "o": "var",
+                                  "n": "l2"
+                                }
+                              ]
+                            },
+                            {
+                              "o": "sq",
+                              "c": [
+                                {
+                                  "o": "var",
+                                  "n": "l3"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "o": "mul",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 2
+                        },
+                        {
+                          "o": "mul",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "l2"
+                            },
+                            {
+                              "o": "var",
+                              "n": "l3"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "sqrt",
+                  "c": [
+                    {
+                      "o": "abs",
+                      "c": [
+                        {
+                          "o": "sub",
+                          "c": [
+                            {
+                              "o": "const",
+                              "v": 1
+                            },
+                            {
+                              "o": "sq",
+                              "c": [
+                                {
+                                  "o": "pdiv",
+                                  "c": [
+                                    {
+                                      "o": "sub",
+                                      "c": [
+                                        {
+                                          "o": "sq",
+                                          "c": [
+                                            {
+                                              "o": "var",
+                                              "n": "d"
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "o": "add",
+                                          "c": [
+                                            {
+                                              "o": "sq",
+                                              "c": [
+                                                {
+                                                  "o": "var",
+                                                  "n": "l2"
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "o": "sq",
+                                              "c": [
+                                                {
+                                                  "o": "var",
+                                                  "n": "l3"
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "o": "mul",
+                                      "c": [
+                                        {
+                                          "o": "const",
+                                          "v": 2
+                                        },
+                                        {
+                                          "o": "mul",
+                                          "c": [
+                                            {
+                                              "o": "var",
+                                              "n": "l2"
+                                            },
+                                            {
+                                              "o": "var",
+                                              "n": "l3"
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "speed": {
+      "formulaCost": 52,
+      "vsIterative": {
+        "label": "Newton-DLS · 8 itérations",
+        "speedup": 6.153846153846154
+      }
+    }
+  },
+  "idm_following": {
+    "taskId": "idm_following",
+    "title": "Suivi IDM trafic urbain (city.ts)",
+    "direction": "min",
+    "metric": 0.004462086832640868,
+    "level": 2,
+    "formula": "((1.817293 * min(0.9724, max(-5.078809, ((1 - (((v)Â²)Â² * 0.000001)) - (((2.643464 + max(-0.582903, ((v * 1.536227) + ((v * dv) * 0.212766)))) / s))Â²)))) + 0.215108)",
+    "seed": 999911,
+    "iteration": 1600,
+    "speed": {
+      "formulaCost": 20,
+      "exactCost": 30,
+      "speedup": 1.5
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 1.817293
+            },
+            {
+              "o": "min",
+              "c": [
+                {
+                  "o": "const",
+                  "v": 0.9724
+                },
+                {
+                  "o": "max",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": -5.078809
+                    },
+                    {
+                      "o": "sub",
+                      "c": [
+                        {
+                          "o": "sub",
+                          "c": [
+                            {
+                              "o": "const",
+                              "v": 1
+                            },
+                            {
+                              "o": "mul",
+                              "c": [
+                                {
+                                  "o": "sq",
+                                  "c": [
+                                    {
+                                      "o": "sq",
+                                      "c": [
+                                        {
+                                          "o": "var",
+                                          "n": "v"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "o": "const",
+                                  "v": 0.000001
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "o": "sq",
+                          "c": [
+                            {
+                              "o": "pdiv",
+                              "c": [
+                                {
+                                  "o": "add",
+                                  "c": [
+                                    {
+                                      "o": "const",
+                                      "v": 2.643464
+                                    },
+                                    {
+                                      "o": "max",
+                                      "c": [
+                                        {
+                                          "o": "const",
+                                          "v": -0.582903
+                                        },
+                                        {
+                                          "o": "add",
+                                          "c": [
+                                            {
+                                              "o": "mul",
+                                              "c": [
+                                                {
+                                                  "o": "var",
+                                                  "n": "v"
+                                                },
+                                                {
+                                                  "o": "const",
+                                                  "v": 1.536227
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "o": "mul",
+                                              "c": [
+                                                {
+                                                  "o": "mul",
+                                                  "c": [
+                                                    {
+                                                      "o": "var",
+                                                      "n": "v"
+                                                    },
+                                                    {
+                                                      "o": "var",
+                                                      "n": "dv"
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "o": "const",
+                                                  "v": 0.212766
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "o": "var",
+                                  "n": "s"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.215108
+        }
+      ]
+    }
+  },
+  "gemv4": {
+    "taskId": "gemv4",
+    "title": "GEMV décodage LLM — cellule 4-lanes",
+    "direction": "min",
+    "metric": 1.6074532951505583e-7,
+    "level": 2,
+    "formula": "((0.50938 * ((((x0 * 0.823) - (x1 * 0.476)) + ((x2 * 1.1) + (x3 * -0.299373))) + (((x0 * 0.82) - (x1 * 0.47)) + ((x2 * 1.093449) + (x3 * -0.28054))))) + 0.000005)",
+    "seed": 999911,
+    "iteration": 1600,
+    "speed": {
+      "formulaCost": 17,
+      "exactCost": 7,
+      "speedup": 0.4117647058823529
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 0.50938
+            },
+            {
+              "o": "add",
+              "c": [
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "sub",
+                      "c": [
+                        {
+                          "o": "mul",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "x0"
+                            },
+                            {
+                              "o": "const",
+                              "v": 0.823
+                            }
+                          ]
+                        },
+                        {
+                          "o": "mul",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "x1"
+                            },
+                            {
+                              "o": "const",
+                              "v": 0.476
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "o": "add",
+                      "c": [
+                        {
+                          "o": "mul",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "x2"
+                            },
+                            {
+                              "o": "const",
+                              "v": 1.1
+                            }
+                          ]
+                        },
+                        {
+                          "o": "mul",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "x3"
+                            },
+                            {
+                              "o": "const",
+                              "v": -0.299373
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "sub",
+                      "c": [
+                        {
+                          "o": "mul",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "x0"
+                            },
+                            {
+                              "o": "const",
+                              "v": 0.82
+                            }
+                          ]
+                        },
+                        {
+                          "o": "mul",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "x1"
+                            },
+                            {
+                              "o": "const",
+                              "v": 0.47
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "o": "add",
+                      "c": [
+                        {
+                          "o": "mul",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "x2"
+                            },
+                            {
+                              "o": "const",
+                              "v": 1.093449
+                            }
+                          ]
+                        },
+                        {
+                          "o": "mul",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "x3"
+                            },
+                            {
+                              "o": "const",
+                              "v": -0.28054
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.000005039899341391374
+        }
+      ]
+    },
+    "fast": {
+      "formula": "((((x0 * 0.82) - (x1 * 0.47)) + ((x2 * 1.1) + (x3 * -0.299373))) + -0.000029)",
+      "metric": 0.00003192978590532715,
+      "level": 2,
+      "formulaCost": 8,
+      "speed": {
+        "formulaCost": 8,
+        "exactCost": 7,
+        "speedup": 0.875
+      }
+    },
+    "fastTree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "add",
+          "c": [
+            {
+              "o": "sub",
+              "c": [
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "x0"
+                    },
+                    {
+                      "o": "const",
+                      "v": 0.82
+                    }
+                  ]
+                },
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "x1"
+                    },
+                    {
+                      "o": "const",
+                      "v": 0.47
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "o": "add",
+              "c": [
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "x2"
+                    },
+                    {
+                      "o": "const",
+                      "v": 1.1
+                    }
+                  ]
+                },
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "x3"
+                    },
+                    {
+                      "o": "const",
+                      "v": -0.299373
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": -0.000029
+        }
+      ]
+    }
+  },
+  "rope_rot": {
+    "taskId": "rope_rot",
+    "title": "Rotation RoPE par token (attention)",
+    "direction": "min",
+    "metric": 0,
+    "level": 5,
+    "formula": "((-(sin(th) * y)) + (x * cos(th)))",
+    "seed": 980101,
+    "iteration": 1600,
+    "speed": {
+      "formulaCost": 44,
+      "exactCost": 43,
+      "speedup": 0.9772727272727273,
+      "vsIterative": {
+        "label": "CORDIC · 16 micro-rotations",
+        "speedup": 1.4545454545454546
+      }
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "neg",
+          "c": [
+            {
+              "o": "mul",
+              "c": [
+                {
+                  "o": "sin",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "th"
+                    }
+                  ]
+                },
+                {
+                  "o": "var",
+                  "n": "y"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "var",
+              "n": "x"
+            },
+            {
+              "o": "cos",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "th"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "gauss_shader": {
+    "taskId": "gauss_shader",
+    "title": "Gaussienne shader-ready (blur variable DoF/bloom)",
+    "direction": "min",
+    "metric": 8.1772509994516e-34,
+    "level": 5,
+    "formula": "sqrt(|exp((-(x)Â²))|)",
+    "seed": 993001,
+    "iteration": 400,
+    "speed": {
+      "formulaCost": 24,
+      "exactCost": 22,
+      "speedup": 0.9166666666666666
+    },
+    "tree": {
+      "o": "sqrt",
+      "c": [
+        {
+          "o": "exp",
+          "c": [
+            {
+              "o": "neg",
+              "c": [
+                {
+                  "o": "sq",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "x"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "ema_smooth": {
+    "taskId": "ema_smooth",
+    "title": "Facteur EMA indépendant du framerate",
+    "direction": "min",
+    "metric": 1.6354908540365558e-11,
+    "level": 5,
+    "formula": "((1.192774 * ((2 * (x / (x + 0.745653))) - ((x)Â² * max(x, 0.692832)))) + 0.000009)",
+    "seed": 995002,
+    "iteration": 400,
+    "speed": {
+      "formulaCost": 12,
+      "exactCost": 23,
+      "speedup": 1.9166666666666667
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 1.1927736194522371
+            },
+            {
+              "o": "sub",
+              "c": [
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 2
+                    },
+                    {
+                      "o": "pdiv",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "x"
+                        },
+                        {
+                          "o": "add",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "x"
+                            },
+                            {
+                              "o": "const",
+                              "v": 0.745653
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "sq",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "x"
+                        }
+                      ]
+                    },
+                    {
+                      "o": "max",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "x"
+                        },
+                        {
+                          "o": "const",
+                          "v": 0.692832
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.000008971056841264869
+        }
+      ]
+    },
+    "fast": {
+      "formula": "x",
+      "metric": 0.0000107285951384828,
+      "level": 3,
+      "formulaCost": 0
+    },
+    "fastTree": {
+      "o": "var",
+      "n": "x"
+    }
+  },
+  "smoothstep": {
+    "taskId": "smoothstep",
+    "title": "Smoothstep (interpolation shader iconique)",
+    "direction": "min",
+    "metric": 3.283596399606784e-7,
+    "level": 5,
+    "formula": "((-1.988372 * ((x)Â² * (x + -1.503545))) + 0.000554)",
+    "seed": 999801,
+    "iteration": 1600,
+    "speed": {
+      "formulaCost": 5,
+      "exactCost": 5,
+      "speedup": 1
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": -1.9883720211312108
+            },
+            {
+              "o": "mul",
+              "c": [
+                {
+                  "o": "sq",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "x"
+                    }
+                  ]
+                },
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "x"
+                    },
+                    {
+                      "o": "const",
+                      "v": -1.503545
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.0005544574268407132
+        }
+      ]
+    },
+    "fast": {
+      "formula": "((x)Â² * (x + -1.503545))",
+      "metric": 3.283596399606784e-7,
+      "level": 5,
+      "formulaCost": 3,
+      "speed": {
+        "formulaCost": 3,
+        "exactCost": 5,
+        "speedup": 1.6666666666666667
+      }
+    },
+    "fastTree": {
+      "o": "mul",
+      "c": [
+        {
+          "o": "sq",
+          "c": [
+            {
+              "o": "var",
+              "n": "x"
+            }
+          ]
+        },
+        {
+          "o": "add",
+          "c": [
+            {
+              "o": "var",
+              "n": "x"
+            },
+            {
+              "o": "const",
+              "v": -1.503545
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "srgb_gamma": {
+    "taskId": "srgb_gamma",
+    "title": "Transfert sRGB (encodage linéaire→affichage)",
+    "direction": "min",
+    "metric": 0.0000019009578309001974,
+    "level": 4,
+    "formula": "((0.330799 * (sqrt(|sqrt(|sin(x)|)|) + ((1.41372 * sqrt(|x|)) + (0.881576 * sqrt(|x|))))) + -0.07679)",
+    "seed": 995003,
+    "iteration": 400,
+    "speed": {
+      "formulaCost": 34,
+      "exactCost": 22,
+      "speedup": 0.6470588235294118
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 0.3307987373817299
+            },
+            {
+              "o": "add",
+              "c": [
+                {
+                  "o": "sqrt",
+                  "c": [
+                    {
+                      "o": "sqrt",
+                      "c": [
+                        {
+                          "o": "sin",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "x"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "mul",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 1.41372
+                        },
+                        {
+                          "o": "sqrt",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "x"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "o": "mul",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 0.881576
+                        },
+                        {
+                          "o": "sqrt",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "x"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": -0.07678952774168579
+        }
+      ]
+    },
+    "fast": {
+      "formula": "sqrt(|x|)",
+      "metric": 0.00011551060259047266,
+      "level": 2,
+      "formulaCost": 2,
+      "speed": {
+        "formulaCost": 2,
+        "exactCost": 22,
+        "speedup": 11
+      }
+    },
+    "fastTree": {
+      "o": "sqrt",
+      "c": [
+        {
+          "o": "var",
+          "n": "x"
+        }
+      ]
+    }
+  },
+  "tanh_sat": {
+    "taskId": "tanh_sat",
+    "title": "Tanh soft-clip (audio · gating)",
+    "direction": "min",
+    "metric": 0.0000046412770528300585,
+    "level": 4,
+    "formula": "(0.900021 * ((x + (0.053639 * (x)Â³)) / (0.90122 + (0.343141 * (x)Â²))))",
+    "seed": 999101,
+    "iteration": 200,
+    "speed": {
+      "formulaCost": 12,
+      "exactCost": 20,
+      "speedup": 1.6666666666666667
+    },
+    "tree": {
+      "o": "mul",
+      "c": [
+        {
+          "o": "const",
+          "v": 0.900021
+        },
+        {
+          "o": "pdiv",
+          "c": [
+            {
+              "o": "add",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "x"
+                },
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 0.053639
+                    },
+                    {
+                      "o": "cube",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "x"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "o": "add",
+              "c": [
+                {
+                  "o": "const",
+                  "v": 0.90122
+                },
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 0.343141
+                    },
+                    {
+                      "o": "sq",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "x"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "fast": {
+      "formula": "(x / (2.598194 * (4.397731 + (x)Â²)))",
+      "metric": 0.0005936593577891905,
+      "level": 2,
+      "formulaCost": 7,
+      "speed": {
+        "formulaCost": 7,
+        "exactCost": 20,
+        "speedup": 2.857142857142857
+      }
+    },
+    "fastTree": {
+      "o": "pdiv",
+      "c": [
+        {
+          "o": "var",
+          "n": "x"
+        },
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 2.598194
+            },
+            {
+              "o": "add",
+              "c": [
+                {
+                  "o": "const",
+                  "v": 4.397731
+                },
+                {
+                  "o": "sq",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "x"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "atan_unit": {
+    "taskId": "atan_unit",
+    "title": "Atan unitaire (cœur des atan2)",
+    "direction": "min",
+    "metric": 0,
+    "level": 5,
+    "formula": "atan(x)",
+    "seed": 1000001,
+    "iteration": 198,
+    "speed": {
+      "formulaCost": 20,
+      "exactCost": 20,
+      "speedup": 1
+    },
+    "tree": {
+      "o": "atan",
+      "c": [
+        {
+          "o": "var",
+          "n": "x"
+        }
+      ]
+    },
+    "fast": {
+      "formula": "x",
+      "metric": 0.0009350974646082436,
+      "level": 2,
+      "formulaCost": 0
+    },
+    "fastTree": {
+      "o": "var",
+      "n": "x"
+    }
+  },
+  "srgb_decode": {
+    "taskId": "srgb_decode",
+    "title": "Décode sRGB (affichage → linéaire)",
+    "direction": "min",
+    "metric": 2.5435325790046406e-7,
+    "level": 5,
+    "formula": "((-0.194813 * min(x, ((x)Â² * (-5.123166 - log(max(x, 1e-30)))))) + 0.001458)",
+    "seed": 996001,
+    "iteration": 800,
+    "speed": {
+      "formulaCost": 26,
+      "exactCost": 22,
+      "speedup": 0.8461538461538461
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": -0.19481295478887214
+            },
+            {
+              "o": "min",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "x"
+                },
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "sq",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "x"
+                        }
+                      ]
+                    },
+                    {
+                      "o": "sub",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": -5.123166
+                        },
+                        {
+                          "o": "log",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "x"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.0014582970819922636
+        }
+      ]
+    },
+    "fast": {
+      "formula": "(x)Â²",
+      "metric": 0.0001304377643047933,
+      "level": 2,
+      "formulaCost": 1,
+      "speed": {
+        "formulaCost": 1,
+        "exactCost": 22,
+        "speedup": 22
+      }
+    },
+    "fastTree": {
+      "o": "sq",
+      "c": [
+        {
+          "o": "var",
+          "n": "x"
+        }
+      ]
+    }
+  },
+  "erf_prob": {
+    "taskId": "erf_prob",
+    "title": "Erf probabiliste (noyaux de probabilité · GELU-exact)",
+    "direction": "min",
+    "metric": 0.0002023037156607867,
+    "level": 2,
+    "formula": "(0.000062 * ((0.826194 * ((x / 0) * 0.926259)) + (atan(atan(x)) / sqrt(|(x - x)|))))",
+    "seed": 1000001,
+    "iteration": 213,
+    "speed": {
+      "formulaCost": 55,
+      "exactCost": 26,
+      "speedup": 0.4727272727272727
+    },
+    "tree": {
+      "o": "mul",
+      "c": [
+        {
+          "o": "const",
+          "v": 0.0000615491375380159
+        },
+        {
+          "o": "add",
+          "c": [
+            {
+              "o": "mul",
+              "c": [
+                {
+                  "o": "const",
+                  "v": 0.826194
+                },
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "pdiv",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "x"
+                        },
+                        {
+                          "o": "const",
+                          "v": 0
+                        }
+                      ]
+                    },
+                    {
+                      "o": "const",
+                      "v": 0.926259
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "o": "pdiv",
+              "c": [
+                {
+                  "o": "atan",
+                  "c": [
+                    {
+                      "o": "atan",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "x"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "sqrt",
+                  "c": [
+                    {
+                      "o": "sub",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "x"
+                        },
+                        {
+                          "o": "var",
+                          "n": "x"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "fast": {
+      "formula": "(x + (atan(x) / 0))",
+      "metric": 0.0009921700507465742,
+      "level": 2,
+      "formulaCost": 25,
+      "speed": {
+        "formulaCost": 25,
+        "exactCost": 26,
+        "speedup": 1.04
+      }
+    },
+    "fastTree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "var",
+          "n": "x"
+        },
+        {
+          "o": "pdiv",
+          "c": [
+            {
+              "o": "atan",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "x"
+                }
+              ]
+            },
+            {
+              "o": "const",
+              "v": 0
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "huber_loss": {
+    "taskId": "huber_loss",
+    "title": "Perte de Huber δ=1 (entraînement robuste)",
+    "direction": "min",
+    "metric": 2.992203818088443e-7,
+    "level": 5,
+    "formula": "((-1.00272 * ((1.127009 - ((x)Â² - -0.157558)) / (max(1.000633, |x|) + 0.998628))) + 0.485943)",
+    "seed": 999401,
+    "iteration": 400,
+    "speed": {
+      "formulaCost": 12,
+      "exactCost": 5,
+      "speedup": 0.4166666666666667
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": -1.0027201115421236
+            },
+            {
+              "o": "pdiv",
+              "c": [
+                {
+                  "o": "sub",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 1.127009
+                    },
+                    {
+                      "o": "sub",
+                      "c": [
+                        {
+                          "o": "sq",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "x"
+                            }
+                          ]
+                        },
+                        {
+                          "o": "const",
+                          "v": -0.157558
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "max",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 1.00063274867547
+                        },
+                        {
+                          "o": "abs",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "x"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "o": "const",
+                      "v": 0.998628
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.4859425929345538
+        }
+      ]
+    },
+    "fast": {
+      "formula": "((x)Â² / (|x| + 0.989))",
+      "metric": 0.0008124159207928629,
+      "level": 2,
+      "formulaCost": 7,
+      "speed": {
+        "formulaCost": 7,
+        "exactCost": 5,
+        "speedup": 0.7142857142857143
+      }
+    },
+    "fastTree": {
+      "o": "pdiv",
+      "c": [
+        {
+          "o": "sq",
+          "c": [
+            {
+              "o": "var",
+              "n": "x"
+            }
+          ]
+        },
+        {
+          "o": "add",
+          "c": [
+            {
+              "o": "abs",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "x"
+                }
+              ]
+            },
+            {
+              "o": "const",
+              "v": 0.989
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "cosh_curve": {
+    "taskId": "cosh_curve",
+    "title": "Cosh (caténaires · ring-mod audio)",
+    "direction": "min",
+    "metric": 2.6331998691285042e-8,
+    "level": 5,
+    "formula": "((0.001256 * ((sqrt(|(x)Â²|) * cos((x)Â²)) + (((x)Â² + 11.494621))Â³)) + -0.907039)",
+    "seed": 996002,
+    "iteration": 800,
+    "speed": {
+      "formulaCost": 32,
+      "exactCost": 44,
+      "speedup": 1.375
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 0.0012556691840234057
+            },
+            {
+              "o": "add",
+              "c": [
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "sqrt",
+                      "c": [
+                        {
+                          "o": "sq",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "x"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "o": "cos",
+                      "c": [
+                        {
+                          "o": "sq",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "x"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "cube",
+                  "c": [
+                    {
+                      "o": "add",
+                      "c": [
+                        {
+                          "o": "sq",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "x"
+                            }
+                          ]
+                        },
+                        {
+                          "o": "const",
+                          "v": 11.494621
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": -0.9070393177602898
+        }
+      ]
+    },
+    "fast": {
+      "formula": "(((x)Â² + 5.05555))Â²",
+      "metric": 0.000005967909320814225,
+      "level": 4,
+      "formulaCost": 3,
+      "speed": {
+        "formulaCost": 3,
+        "exactCost": 44,
+        "speedup": 14.666666666666666
+      }
+    },
+    "fastTree": {
+      "o": "sq",
+      "c": [
+        {
+          "o": "add",
+          "c": [
+            {
+              "o": "sq",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "x"
+                }
+              ]
+            },
+            {
+              "o": "const",
+              "v": 5.05555
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "bessel_j0": {
+    "taskId": "bessel_j0",
+    "title": "Bessel J₀ (FM · vibrations · poutres)",
+    "direction": "min",
+    "metric": 0.00026389864276618125,
+    "level": 2,
+    "formula": "((-0.616201 * (((3.154708 + min(3.154708, x)) + (min(3.396868, x) * min(2.050039, x))) / max(4.359564, x))) + 1.486538)",
+    "seed": 999909,
+    "iteration": 490,
+    "speed": {
+      "formulaCost": 13,
+      "exactCost": 40,
+      "speedup": 3.076923076923077
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": -0.6162005993906633
+            },
+            {
+              "o": "pdiv",
+              "c": [
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "add",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 3.154708
+                        },
+                        {
+                          "o": "min",
+                          "c": [
+                            {
+                              "o": "const",
+                              "v": 3.154708
+                            },
+                            {
+                              "o": "var",
+                              "n": "x"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "o": "mul",
+                      "c": [
+                        {
+                          "o": "min",
+                          "c": [
+                            {
+                              "o": "const",
+                              "v": 3.396868
+                            },
+                            {
+                              "o": "var",
+                              "n": "x"
+                            }
+                          ]
+                        },
+                        {
+                          "o": "min",
+                          "c": [
+                            {
+                              "o": "const",
+                              "v": 2.050039
+                            },
+                            {
+                              "o": "var",
+                              "n": "x"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "max",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 4.359564
+                    },
+                    {
+                      "o": "var",
+                      "n": "x"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 1.48653822658716
+        }
+      ]
+    },
+    "fast": {
+      "formula": "(((2.899151 + min(3.154708, x)) + (min(3.396868, x) * min(2.061274, x))) / max(4.359564, x))",
+      "metric": 0.0002544410084939293,
+      "level": 2,
+      "formulaCost": 11,
+      "speed": {
+        "formulaCost": 11,
+        "exactCost": 40,
+        "speedup": 3.6363636363636362
+      }
+    },
+    "fastTree": {
+      "o": "pdiv",
+      "c": [
+        {
+          "o": "add",
+          "c": [
+            {
+              "o": "add",
+              "c": [
+                {
+                  "o": "const",
+                  "v": 2.899151
+                },
+                {
+                  "o": "min",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 3.154708
+                    },
+                    {
+                      "o": "var",
+                      "n": "x"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "o": "mul",
+              "c": [
+                {
+                  "o": "min",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 3.396868
+                    },
+                    {
+                      "o": "var",
+                      "n": "x"
+                    }
+                  ]
+                },
+                {
+                  "o": "min",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 2.061274
+                    },
+                    {
+                      "o": "var",
+                      "n": "x"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "max",
+          "c": [
+            {
+              "o": "const",
+              "v": 4.359564
+            },
+            {
+              "o": "var",
+              "n": "x"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "logit_ml": {
+    "taskId": "logit_ml",
+    "title": "Logit (probas ↔ logits, têtes de classification)",
+    "direction": "min",
+    "metric": 0.0008206231598785846,
+    "level": 2,
+    "formula": "((2.126622 * (((x)Â² + log(max(sqrt(|x|), 1e-30))) + (((x)Â³)Â²)Â³)) + 0.224449)",
+    "seed": 999801,
+    "iteration": 1600,
+    "speed": {
+      "formulaCost": 32,
+      "exactCost": 27,
+      "speedup": 0.84375
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 2.1266220342385473
+            },
+            {
+              "o": "add",
+              "c": [
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "sq",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "x"
+                        }
+                      ]
+                    },
+                    {
+                      "o": "log",
+                      "c": [
+                        {
+                          "o": "sqrt",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "x"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "cube",
+                  "c": [
+                    {
+                      "o": "sq",
+                      "c": [
+                        {
+                          "o": "cube",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "x"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.2244487406420216
+        }
+      ]
+    }
+  },
+  "bessel_j1": {
+    "taskId": "bessel_j1",
+    "title": "Bessel J₁ (FM · membranes antisym)",
+    "direction": "min",
+    "metric": 0.000005197986685271395,
+    "level": 4,
+    "formula": "((0.467801 * min(min((x + -0.251268), sin((x * 0.889558))), sin(((x * 0.90724) + -0.170621)))) + 0.123708)",
+    "seed": 999909,
+    "iteration": 840,
+    "speed": {
+      "formulaCost": 48,
+      "exactCost": 40,
+      "speedup": 0.8333333333333334
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 0.467801
+            },
+            {
+              "o": "min",
+              "c": [
+                {
+                  "o": "min",
+                  "c": [
+                    {
+                      "o": "add",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "x"
+                        },
+                        {
+                          "o": "const",
+                          "v": -0.251268
+                        }
+                      ]
+                    },
+                    {
+                      "o": "sin",
+                      "c": [
+                        {
+                          "o": "mul",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "x"
+                            },
+                            {
+                              "o": "const",
+                              "v": 0.889558
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "sin",
+                  "c": [
+                    {
+                      "o": "add",
+                      "c": [
+                        {
+                          "o": "mul",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "x"
+                            },
+                            {
+                              "o": "const",
+                              "v": 0.90724
+                            }
+                          ]
+                        },
+                        {
+                          "o": "const",
+                          "v": -0.170621
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.123708
+        }
+      ]
+    },
+    "fast": {
+      "formula": "min(min(2.051452, (x + -0.339138)), min(0.889558, sin((x * 0.889558))))",
+      "metric": 0.0002900666672221887,
+      "level": 2,
+      "formulaCost": 25,
+      "speed": {
+        "formulaCost": 25,
+        "exactCost": 40,
+        "speedup": 1.6
+      }
+    },
+    "fastTree": {
+      "o": "min",
+      "c": [
+        {
+          "o": "min",
+          "c": [
+            {
+              "o": "const",
+              "v": 2.051452
+            },
+            {
+              "o": "add",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "x"
+                },
+                {
+                  "o": "const",
+                  "v": -0.339138
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "min",
+          "c": [
+            {
+              "o": "const",
+              "v": 0.889558
+            },
+            {
+              "o": "sin",
+              "c": [
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "x"
+                    },
+                    {
+                      "o": "const",
+                      "v": 0.889558
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "blackbody_r": {
+    "taskId": "blackbody_r",
+    "title": "Corps noir — canal rouge (éclairage PBR)",
+    "direction": "min",
+    "metric": 0.0000036433250399925394,
+    "level": 4,
+    "formula": "((12961264.054148 * ((6608.647704 / max(x, 6608.647704)) / (max(max(x, 6608.647704), 6449.745424))Â²)) + 0.703081)",
+    "seed": 997001,
+    "iteration": 800,
+    "speed": {
+      "formulaCost": 14,
+      "exactCost": 25,
+      "speedup": 1.7857142857142858
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 12961264.054148097
+            },
+            {
+              "o": "pdiv",
+              "c": [
+                {
+                  "o": "pdiv",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 6608.647704
+                    },
+                    {
+                      "o": "max",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "x"
+                        },
+                        {
+                          "o": "const",
+                          "v": 6608.647704
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "sq",
+                  "c": [
+                    {
+                      "o": "max",
+                      "c": [
+                        {
+                          "o": "max",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "x"
+                            },
+                            {
+                              "o": "const",
+                              "v": 6608.647704
+                            }
+                          ]
+                        },
+                        {
+                          "o": "const",
+                          "v": 6449.745424
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.7030813139014296
+        }
+      ]
+    },
+    "fast": {
+      "formula": "max(x, 5157.260551)",
+      "metric": 0.00034741754943065336,
+      "level": 2,
+      "formulaCost": 1,
+      "speed": {
+        "formulaCost": 1,
+        "exactCost": 25,
+        "speedup": 25
+      }
+    },
+    "fastTree": {
+      "o": "max",
+      "c": [
+        {
+          "o": "var",
+          "n": "x"
+        },
+        {
+          "o": "const",
+          "v": 5157.260551
+        }
+      ]
+    }
+  },
+  "aces_fit": {
+    "taskId": "aces_fit",
+    "title": "Tonemap ACES ajusté (Narkowicz) — optimality test #4",
+    "direction": "min",
+    "metric": 0.000012114994026428819,
+    "level": 3,
+    "formula": "((0.448455 * ((-1.053345 / (0.540086 + x)) / (max(0.123065, x) + 0.74133))) + 0.980331)",
+    "seed": 998003,
+    "iteration": 1600,
+    "speed": {
+      "formulaCost": 13,
+      "exactCost": 8,
+      "speedup": 0.6153846153846154
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 0.448455
+            },
+            {
+              "o": "pdiv",
+              "c": [
+                {
+                  "o": "pdiv",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": -1.053345
+                    },
+                    {
+                      "o": "add",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 0.540086
+                        },
+                        {
+                          "o": "var",
+                          "n": "x"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "max",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 0.123065
+                        },
+                        {
+                          "o": "var",
+                          "n": "x"
+                        }
+                      ]
+                    },
+                    {
+                      "o": "const",
+                      "v": 0.74133
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.980331
+        }
+      ]
+    },
+    "fast": {
+      "formula": "(4.095859 / (x + 0.40901))",
+      "metric": 0.00027575018038861454,
+      "level": 2,
+      "formulaCost": 5,
+      "speed": {
+        "formulaCost": 5,
+        "exactCost": 8,
+        "speedup": 1.6
+      }
+    },
+    "fastTree": {
+      "o": "pdiv",
+      "c": [
+        {
+          "o": "const",
+          "v": 4.095859
+        },
+        {
+          "o": "add",
+          "c": [
+            {
+              "o": "var",
+              "n": "x"
+            },
+            {
+              "o": "const",
+              "v": 0.40901
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "logsumexp2": {
+    "taskId": "logsumexp2",
+    "title": "LogSumExp 2-logits (max différentiable)",
+    "direction": "min",
+    "metric": 0.01044425969530025,
+    "level": 2,
+    "formula": "((0.988445 * max(min(b, a), (max(b, max(a, b)) + -0.863454))) + 0.946364)",
+    "seed": 997001,
+    "iteration": 800,
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 0.9884453418513615
+            },
+            {
+              "o": "max",
+              "c": [
+                {
+                  "o": "min",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "b"
+                    },
+                    {
+                      "o": "var",
+                      "n": "a"
+                    }
+                  ]
+                },
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "max",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "b"
+                        },
+                        {
+                          "o": "max",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "a"
+                            },
+                            {
+                              "o": "var",
+                              "n": "b"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "o": "const",
+                      "v": -0.863454
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.9463635441197152
+        }
+      ]
+    },
+    "fast": {
+      "formula": "max(a, b)",
+      "metric": 0.030249371156328322,
+      "level": 2,
+      "formulaCost": 1,
+      "speed": {
+        "formulaCost": 1,
+        "exactCost": 60,
+        "speedup": 60
+      }
+    },
+    "fastTree": {
+      "o": "max",
+      "c": [
+        {
+          "o": "var",
+          "n": "a"
+        },
+        {
+          "o": "var",
+          "n": "b"
+        }
+      ]
+    },
+    "speed": {
+      "formulaCost": 7,
+      "exactCost": 60,
+      "speedup": 8.571428571428571
+    }
+  }
+}
