@@ -1506,8 +1506,45 @@ function impliedVol(c: number, s: number, k: number, t: number): number {
   return Math.max(0.01, Math.min(3, vol));
 }
 
+// --- wave 9: high-frontier numerical functions ------------------------------
+
+// Scaled modified Bessel I0(x)·e^(-x) via convergent series (exact to ~1e-14)
+function besselI0e(x: number): number {
+  let sum = 1, term = 1;
+  const hs = x * x / 4;
+  for (let k = 1; k <= 40; k++) {
+    term *= hs / (k * k);
+    sum += term;
+    if (term < 1e-15) break;
+  }
+  return sum * Math.exp(-Math.abs(x));
+}
+
+// Complete elliptic integral K(m) via AGM (exact to ~1e-12)
+function ellipticK(m: number): number {
+  let a = 1, b = Math.sqrt(1 - m);
+  for (let i = 0; i < 20; i++) {
+    const aNext = (a + b) / 2;
+    b = Math.sqrt(a * b);
+    a = aNext;
+    if (Math.abs(a - b) < 1e-14) break;
+  }
+  return Math.PI / (2 * a);
+}
+
+// Solve Kepler's equation M = E − e·sin(E) by Newton-Raphson
+function solveKepler(M: number, e: number): number {
+  let E = M + e * Math.sin(M);
+  for (let i = 0; i < 30; i++) {
+    const f = E - e * Math.sin(E) - M;
+    const fp = 1 - e * Math.cos(E);
+    E -= f / fp;
+    if (Math.abs(f) < 1e-13) break;
+  }
+  return E;
+}
+
 // Probit reference via bisection on the A&S forward erf (exact to 1e-12+).
-// The hand-transcribed Acklam was structurally wrong — bisection is infallible.
 function acklamProbit(p: number): number {
   const target = 2 * p - 1;
   let lo = -8, hi = 8;
@@ -1735,6 +1772,123 @@ export function buildTasks(): TaskDef[] {
       hi: 0.999,
       groundTruth: "logit(x) = ln(x/(1−x))",
       exactCost: 27,
+    }),
+    // ---- WAVE 8b: quantum special functions for SR discovery ---------------
+    // Legendre P₂(x): THE quantum angular eigenfunction. Exact polynomial.
+    buildActivationTask({
+      id: "legendre_p2",
+      title: "Legendre P₂ (harmonique sphérique · moments quantiques)",
+      subtitle: "P₂(x) = (3x²−1)/2 sur [-1,1] : exact en 5 unités — optimality test #6",
+      fn: (x) => 0.5 * (3 * x * x - 1),
+      lo: -1,
+      hi: 1,
+      groundTruth: "P₂(x) = (3x²−1)/2",
+      exactCost: 5,
+    }),
+    // Laguerre L₂(x): hydrogen radial wavefunction basis, quantum oscillator.
+    buildActivationTask({
+      id: "laguerre_l2",
+      title: "Laguerre L₂ (radiale hydrogène · oscillateur)",
+      subtitle: "L₂(x) = 1 − 2x + x²/2 sur [0,10] : exact polynomiale — optimality test #7",
+      fn: (x) => 1 - 2 * x + 0.5 * x * x,
+      lo: 0,
+      hi: 10,
+      groundTruth: "L₂(x) = 1 − 2x + x²/2",
+      exactCost: 5,
+    }),
+    // asin on the unit domain: the missing inverse-trig primitive.
+    // Hard mode — no scaffold possible without adding atan/asin to ops.
+    buildActivationTask({
+      id: "asin_hard",
+      title: "Arcsinus unitaire (quantique · rotations)",
+      subtitle: "asin(x) sur [-0.95,0.95] — l'inverse trigonométrique sans forme close servie",
+      fn: (x) => Math.asin(Math.max(-0.95, Math.min(0.95, x))),
+      lo: -0.95,
+      hi: 0.95,
+      groundTruth: "asin(x)",
+      exactCost: 28,
+    }),
+    // ---- WAVE 9: high-frontier numerical functions --------------------------
+    // Scaled modified Bessel I0(x)·e^(-x): KBD windows, diffusion models.
+    // Dual structure (algebraic near 0, exponential decay at ∞).
+    buildRegressionTask({
+      id: "bessel_i0e",
+      title: "Bessel I₀e modifiée (fenêtres KBD · diffusion)",
+      subtitle: "I₀(x)·e^(−x) sur [0,50] — décroissance exponentielle × série de Bessel",
+      groundTruth: "e^(−x)·Σ(x²/4)^k/(k!)²",
+      rows: 500,
+      varNames: ["x"],
+      exactCost: 24,
+      build: () => {
+        const rows = 500;
+        const xv = new Float64Array(rows), y = new Float64Array(rows);
+        for (let i = 0; i < rows; i++) {
+          const x = 50 * ((i * 0.6180339887) % 1);
+          xv[i] = x;
+          y[i] = besselI0e(x);
+        }
+        return { vars: { x: xv }, y };
+      },
+      trueLaw: (v, i) => besselI0e(v.x[i]),
+      verify: () => null,
+    }),
+    // Complete elliptic integral K(m): pendulum period, geodesics. The log
+    // singularity at m→1 makes this a genuinely hard approximation target.
+    buildRegressionTask({
+      id: "elliptic_k",
+      title: "Intégrale elliptique K(m) (pendule · géodésiques)",
+      subtitle: "K(m) sur [0, 0.999] — singularité logarithmique en m=1 : le défi ultime",
+      groundTruth: "K(m) via AGM",
+      rows: 500,
+      varNames: ["m"],
+      exactCost: 16,
+      build: () => {
+        const rows = 500;
+        const mv = new Float64Array(rows), y = new Float64Array(rows);
+        for (let i = 0; i < rows; i++) {
+          const mm = Math.min(0.999, i / (rows - 1));
+          mv[i] = mm;
+          y[i] = ellipticK(mm);
+        }
+        return { vars: { m: mv }, y };
+      },
+      trueLaw: (v, i) => ellipticK(v.m[i]),
+      verify: () => null,
+    }),
+    // Kepler equation solver: THE orbital mechanics bottleneck. An inverse
+    // problem with no closed form even with all primitives served.
+    buildRegressionTask({
+      id: "kepler_solver",
+      title: "Solveur de Kepler O(1) (mécanique orbitale)",
+      subtitle: "E(M,e) résoluant M = E − e·sin(E) : remplace Newton-Raphson itératif",
+      groundTruth: "E résout E − e·sin(E) = M",
+      rows: 500,
+      varNames: ["M", "e"],
+      exactCost: 32,
+      build: () => {
+        const rows = 500;
+        const Mv = new Float64Array(rows), ev = new Float64Array(rows), y = new Float64Array(rows);
+        for (let i = 0; i < rows; i++) {
+          const M = Math.PI * ((i * 0.6180339887) % 1);
+          const ecc = 0.95 * ((i * 0.7548776662) % 1);
+          Mv[i] = M; ev[i] = ecc;
+          y[i] = solveKepler(M, ecc);
+        }
+        return { vars: { M: Mv, e: ev }, y };
+      },
+      trueLaw: (v, i) => solveKepler(v.M[i], v.e[i]),
+      verify: () => null,
+    }),
+    // Fast exp without transcendental ops: pure ALU approximation of e^x on
+    // [-16, 0]. The engine must discover what took DSP engineers decades.
+    buildActivationTask({
+      id: "fast_exp_alu",
+      title: "Exp algébrique pure (sans exp/log/sin/cos)",
+      subtitle: "e^x sur [-16, 0] en ALU pur — remplace l'appel SFU dans les kernels edge",
+      fn: (x) => Math.exp(Math.max(-16, Math.min(0, x))),
+      lo: -16,
+      hi: 0,
+      groundTruth: "e^x sur [-16, 0]",
     }),
     // ---- WAVE 7: exact-representable everyday-science kernels -------------
     // Michaelis-Menten: enzyme/drug velocity — biochemistry staple, exact

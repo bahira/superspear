@@ -7513,5 +7513,309 @@
         }
       ]
     }
+  },
+  "legendre_p2": {
+    "taskId": "legendre_p2",
+    "title": "Legendre P₂ (harmonique sphérique · moments quantiques)",
+    "direction": "min",
+    "metric": 3.250969746125654e-33,
+    "level": 5,
+    "formula": "((1.5 * (x)Â²) + -0.5)",
+    "seed": 1000140,
+    "iteration": 400,
+    "speed": {
+      "formulaCost": 3,
+      "exactCost": 5,
+      "speedup": 1.6666666666666667
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 1.5
+            },
+            {
+              "o": "sq",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "x"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": -0.5
+        }
+      ]
+    },
+    "fast": {
+      "formula": "(-0.774693 * (x)Â²)",
+      "metric": 3.250969746125654e-33,
+      "level": 5,
+      "formulaCost": 2,
+      "speed": {
+        "formulaCost": 2,
+        "exactCost": 5,
+        "speedup": 2.5
+      }
+    },
+    "fastTree": {
+      "o": "mul",
+      "c": [
+        {
+          "o": "const",
+          "v": -0.774693
+        },
+        {
+          "o": "sq",
+          "c": [
+            {
+              "o": "var",
+              "n": "x"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "laguerre_l2": {
+    "taskId": "laguerre_l2",
+    "title": "Laguerre L₂ (radiale hydrogène · oscillateur)",
+    "direction": "min",
+    "metric": 8.257087129644967e-7,
+    "level": 5,
+    "formula": "((0.250056 * ((-0.01236 + ((x + -1.996089))Â²) + ((x + -2.005496))Â²)) + -0.996478)",
+    "seed": 1000140,
+    "iteration": 400,
+    "speed": {
+      "formulaCost": 8,
+      "exactCost": 5,
+      "speedup": 0.625
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 0.25005568930581107
+            },
+            {
+              "o": "add",
+              "c": [
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": -0.01236
+                    },
+                    {
+                      "o": "sq",
+                      "c": [
+                        {
+                          "o": "add",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "x"
+                            },
+                            {
+                              "o": "const",
+                              "v": -1.996089
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "sq",
+                  "c": [
+                    {
+                      "o": "add",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "x"
+                        },
+                        {
+                          "o": "const",
+                          "v": -2.005496
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": -0.996477875101051
+        }
+      ]
+    },
+    "fast": {
+      "formula": "(((x + -1.996089))Â² + -0.262804)",
+      "metric": 0.000020056550508695337,
+      "level": 3,
+      "formulaCost": 3,
+      "speed": {
+        "formulaCost": 3,
+        "exactCost": 5,
+        "speedup": 1.6666666666666667
+      }
+    },
+    "fastTree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "sq",
+          "c": [
+            {
+              "o": "add",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "x"
+                },
+                {
+                  "o": "const",
+                  "v": -1.996089
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": -0.262804
+        }
+      ]
+    }
+  },
+  "asin_hard": {
+    "taskId": "asin_hard",
+    "title": "Arcsinus unitaire (quantique · rotations)",
+    "direction": "min",
+    "metric": 0.000010180605716772432,
+    "level": 3,
+    "formula": "(0.529961 * ((1.930182 * x) + ((0.645691 * (x)Â²) * (x)Â³)))",
+    "seed": 1000140,
+    "iteration": 400,
+    "speed": {
+      "formulaCost": 8,
+      "exactCost": 28,
+      "speedup": 3.5
+    },
+    "tree": {
+      "o": "mul",
+      "c": [
+        {
+          "o": "const",
+          "v": 0.529961
+        },
+        {
+          "o": "add",
+          "c": [
+            {
+              "o": "mul",
+              "c": [
+                {
+                  "o": "const",
+                  "v": 1.930182
+                },
+                {
+                  "o": "var",
+                  "n": "x"
+                }
+              ]
+            },
+            {
+              "o": "mul",
+              "c": [
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 0.645691
+                    },
+                    {
+                      "o": "sq",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "x"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "cube",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "x"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "fast": {
+      "formula": "(x + (0.5175 * (x)Â³))",
+      "metric": 0.0003251710369703949,
+      "level": 2,
+      "formulaCost": 4,
+      "speed": {
+        "formulaCost": 4,
+        "exactCost": 28,
+        "speedup": 7
+      }
+    },
+    "fastTree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "var",
+          "n": "x"
+        },
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 0.5175
+            },
+            {
+              "o": "cube",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "x"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
   }
 }
