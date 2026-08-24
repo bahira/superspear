@@ -108,8 +108,14 @@ per-element host↔wasm invocation.
    the cost-model gains transfer only where transcendentals are truly
    expensive (raw WASM: ×2.12 measured; MCUs). Frameworks are the wrong
    battlefield — this is a deployment-boundary result, not a search failure.
-3. Bessel-family tasks (J₀/J₁) resist current depths; series scaffolds
-   mutate away before compression.
+3. MEASURED — ONNX Runtime completes the three-backend deployment map:
+   graph surgery replaced all six distilgpt2 Gelu nodes with the discovered
+   chain (perplexity delta +0.39, deterministic), but the isolated kernel
+   bench shows ORT's fused erf-GELU at 10.2 ns/elem vs 20.3 ns/elem for the
+   algebraic chain (×0.50). End-to-end throughput is noise-dominated on the
+   test hardware. Three backends measured: speedups materialize ONLY where
+   no fast native transcendental exists (raw WASM ×2.12; not in frameworks).
+4. Bessel-family tasks (J₀/J₁) resist current depths; series scaffolds
 4. The cost model counts ALU/SFU units; wall-clock gains on SFU-rich GPUs
    will be smaller than modeled.
 5. One expert hand-fit resisted all budgets tried; we claim complementarity
