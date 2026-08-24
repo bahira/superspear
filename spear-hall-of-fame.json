@@ -6557,5 +6557,266 @@
         }
       ]
     }
+  },
+  "kelly_criterion": {
+    "taskId": "kelly_criterion",
+    "title": "Kelly criterion — position sizing",
+    "direction": "min",
+    "metric": 9.839944734124527e-9,
+    "level": 2,
+    "formula": "((1.000326 * max(0.0003, (p - ((1.000014 - p) / b)))) + -0.000194)",
+    "seed": 1000060,
+    "iteration": 1072,
+    "speed": {
+      "formulaCost": 9,
+      "exactCost": 6,
+      "speedup": 0.6666666666666666
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 1.000326
+            },
+            {
+              "o": "max",
+              "c": [
+                {
+                  "o": "const",
+                  "v": 0.0003
+                },
+                {
+                  "o": "sub",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "p"
+                    },
+                    {
+                      "o": "pdiv",
+                      "c": [
+                        {
+                          "o": "sub",
+                          "c": [
+                            {
+                              "o": "const",
+                              "v": 1.000014
+                            },
+                            {
+                              "o": "var",
+                              "n": "p"
+                            }
+                          ]
+                        },
+                        {
+                          "o": "var",
+                          "n": "b"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": -0.000194
+        }
+      ]
+    },
+    "fast": {
+      "formula": "max(0.001, ((p * 1.05) - ((1.018793 - p) / b)))",
+      "metric": 0.000009448441470558611,
+      "level": 2,
+      "formulaCost": 8,
+      "speed": {
+        "formulaCost": 8,
+        "exactCost": 6,
+        "speedup": 0.75
+      }
+    },
+    "fastTree": {
+      "o": "max",
+      "c": [
+        {
+          "o": "const",
+          "v": 0.001
+        },
+        {
+          "o": "sub",
+          "c": [
+            {
+              "o": "mul",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "p"
+                },
+                {
+                  "o": "const",
+                  "v": 1.05
+                }
+              ]
+            },
+            {
+              "o": "pdiv",
+              "c": [
+                {
+                  "o": "sub",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 1.018793
+                    },
+                    {
+                      "o": "var",
+                      "n": "p"
+                    }
+                  ]
+                },
+                {
+                  "o": "var",
+                  "n": "b"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "rsi_momentum": {
+    "taskId": "rsi_momentum",
+    "title": "RSI depuis moyennes lissées (TradingView)",
+    "direction": "min",
+    "metric": 1.836172557108052e-29,
+    "level": 2,
+    "formula": "(100 * (g / (g + l)))",
+    "seed": 1000050,
+    "iteration": 1200,
+    "speed": {
+      "formulaCost": 6,
+      "exactCost": 4,
+      "speedup": 0.6666666666666666
+    },
+    "tree": {
+      "o": "mul",
+      "c": [
+        {
+          "o": "const",
+          "v": 100
+        },
+        {
+          "o": "pdiv",
+          "c": [
+            {
+              "o": "var",
+              "n": "g"
+            },
+            {
+              "o": "add",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "g"
+                },
+                {
+                  "o": "var",
+                  "n": "l"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "implied_vol": {
+    "taskId": "implied_vol",
+    "title": "Volatilité implicite (inversion Black-Scholes)",
+    "direction": "min",
+    "metric": 0.9827107320402105,
+    "level": 0,
+    "formula": "((0.009261 * ((k * t) + ((s * 7.58799) - (k * sqrt(|c|))))) + -3.01317)",
+    "seed": 1000050,
+    "iteration": 1200,
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 0.00926116583719156
+            },
+            {
+              "o": "add",
+              "c": [
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "k"
+                    },
+                    {
+                      "o": "var",
+                      "n": "t"
+                    }
+                  ]
+                },
+                {
+                  "o": "sub",
+                  "c": [
+                    {
+                      "o": "mul",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "s"
+                        },
+                        {
+                          "o": "const",
+                          "v": 7.58799
+                        }
+                      ]
+                    },
+                    {
+                      "o": "mul",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "k"
+                        },
+                        {
+                          "o": "sqrt",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "c"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": -3.0131695155378804
+        }
+      ]
+    }
   }
 }

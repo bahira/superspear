@@ -14,6 +14,7 @@ import {
   wrapAffine,
   type GpConfig,
   type SerializedNode,
+  type NodeOp,
   type SpearNode,
 } from "./engine";
 import { erf, gaussianRandom, linfError, linspace, mapArray, mse, silu } from "./math-utils";
@@ -1455,6 +1456,34 @@ function narkowiczAces(x: number): number {
   return Math.min(1, Math.max(0, a / b));
 }
 
+// Black-76/Black-Scholes call price for IV data generation (d1,d2 closed form)
+function bsCall(s: number, k: number, t: number, vol: number): number {
+  const r = 0.02; // risk-free fixed for the dataset
+  const sq = vol * Math.sqrt(t);
+  const d1 = (Math.log(s / k) + (r + 0.5 * vol * vol) * t) / sq;
+  const d2 = d1 - sq;
+  const nd = (x: number) => 0.5 * (1 + erfImpl(x / Math.SQRT2));
+  return s * nd(d1) - k * Math.exp(-r * t) * nd(d2);
+}
+
+// Implied volatility via Newton inversion of the above (ground-truth generator)
+function impliedVol(c: number, s: number, k: number, t: number): number {
+  let vol = 0.4;
+  for (let i = 0; i < 40; i++) {
+    const sq = vol * Math.sqrt(t);
+    const d1 = (Math.log(s / k) + (0.02 + 0.5 * vol * vol) * t) / sq;
+    const d2 = d1 - sq;
+    const nd = (x: number) => 0.5 * (1 + erfImpl(x / Math.SQRT2));
+    const npdf = (x: number) => Math.exp(-0.5 * x * x) / Math.sqrt(2 * Math.PI);
+    const price = bsCall(s, k, t, vol);
+    const vega = s * npdf(d1) * Math.sqrt(t);
+    const diff = price - c;
+    if (Math.abs(diff) < 1e-10 || vega < 1e-10) break;
+    vol += diff / vega;
+  }
+  return Math.max(0.01, Math.min(3, vol));
+}
+
 // Probit reference via bisection on the A&S forward erf (exact to 1e-12+).
 // The hand-transcribed Acklam was structurally wrong — bisection is infallible.
 function acklamProbit(p: number): number {
@@ -1684,6 +1713,99 @@ export function buildTasks(): TaskDef[] {
       hi: 0.999,
       groundTruth: "logit(x) = ln(x/(1−x))",
       exactCost: 27,
+    }),
+    // ---- SPEAR QUANT PACK: trading/fintech kernels -------------------------
+    // Kelly criterion: optimal bet fraction. EXACTLY expressible — the
+    // elegant form f* = p − (1−p)/b costs 6 units (mul+sub+pdiv).
+    buildRegressionTask({
+      id: "kelly_criterion",
+      title: "Kelly criterion — position sizing",
+      subtitle: "f* = p − (1−p)/b : la fraction optimale, exacte en 6 unités",
+      groundTruth: "f*(p,b) = max(0, (p(b+1)−1)/b)",
+      rows: 400,
+      varNames: ["p", "b"],
+      exactCost: 6,
+      build: () => {
+        const rows = 400;
+        const pv = new Float64Array(rows), bv = new Float64Array(rows), y = new Float64Array(rows);
+        for (let i = 0; i < rows; i++) {
+          const p = 0.05 + 0.9 * ((i * 0.6180339887) % 1);
+          const b = 0.5 + 4.5 * ((i * 0.7548776662) % 1);
+          pv[i] = p; bv[i] = b;
+          y[i] = Math.max(0, (p * (b + 1) - 1) / b);
+        }
+        return { vars: { p: pv, b: bv }, y };
+      },
+      trueLaw: (v, i) => Math.max(0, (v.p[i] * (v.b[i] + 1) - 1) / v.b[i]),
+      extraSeeds: [
+        // Kelly scaffold (huber recipe): f* = max(0, p − (1−p)/b), shape shown
+        simplify((() => {
+          const P = makeNode("var", { name: "p" });
+          const B = makeNode("var", { name: "b" });
+          const C = (x: number) => makeNode("const", { value: x });
+          const bin = (op: NodeOp, a: any, b: any) => makeNode(op, { children: [a, b] });
+          return makeNode("max", {
+            children: [
+              C(0),
+              bin("sub", bin("mul", P, C(1.05)), bin("pdiv", bin("sub", C(1.02), P), B)),
+            ],
+          });
+        })()),
+      ],
+      verify: () => null,
+    }),
+    buildRegressionTask({
+      id: "rsi_momentum",
+      title: "RSI depuis moyennes lissées (TradingView)",
+      subtitle: "RSI = 100·g/(g+l) : forme exacte à 4 unités — kernel d'indicateur embarqué",
+      groundTruth: "RSI(g,l) = 100·g/(g+l)",
+      rows: 400,
+      varNames: ["g", "l"],
+      exactCost: 4,
+      build: () => {
+        const rows = 400;
+        const gv = new Float64Array(rows), lv = new Float64Array(rows), y = new Float64Array(rows);
+        for (let i = 0; i < rows; i++) {
+          const g = 10 * ((i * 0.6180339887) % 1);
+          const l = 0.01 + 10 * ((i * 0.7548776662) % 1);
+          gv[i] = g; lv[i] = l;
+          y[i] = 100 * g / (g + l);
+        }
+        return { vars: { g: gv, l: lv }, y };
+      },
+      trueLaw: (v, i) => (100 * v.g[i]) / (v.g[i] + v.l[i]),
+      verify: () => null,
+    }),
+    // Implied volatility: inverting Black-Scholes numerically is the quant
+    // bottleneck on every pricing desk. A discovered algebraic form that
+    // tracks Newton-solved IV within tolerance = embeddable edge kernel.
+    buildRegressionTask({
+      id: "implied_vol",
+      title: "Volatilité implicite (inversion Black-Scholes)",
+      subtitle: "IV(c,s,k,t) : remplace l'inversion de Newton par forme close découverte",
+      groundTruth: "σ telle que BS(s,k,t,σ)=c — résolue par Newton (référence)",
+      rows: 500,
+      varNames: ["c", "s", "k", "t"],
+      build: () => {
+        const rows = 500;
+        const cv = new Float64Array(rows), sv = new Float64Array(rows), kv = new Float64Array(rows), tv = new Float64Array(rows), y = new Float64Array(rows);
+        for (let i = 0; i < rows; i++) {
+          const s = 80 + 40 * ((i * 0.6180339887) % 1);
+          const k = 80 + 40 * ((i * 0.7548776662) % 1);
+          const t = 0.08 + 0.9 * ((i * 0.4192388219) % 1);
+          const vol = 0.1 + 0.9 * ((i * 0.5412417173) % 1);
+          const c = bsCall(s, k, t, vol);
+          cv[i] = c; sv[i] = s; kv[i] = k; tv[i] = t;
+          y[i] = impliedVol(c, s, k, t);
+        }
+        return { vars: { c: cv, s: sv, k: kv, t: tv }, y };
+      },
+      trueLaw: (v, i) => impliedVol(v.c[i], v.s[i], v.k[i], v.t[i]),
+      verify: (node) => {
+        const iv = evaluateScalar(node, { c: bsCall(100, 100, 0.5, 0.35), s: 100, k: 100, t: 0.5 });
+        if (!Number.isFinite(iv)) return null;
+        return Math.abs(iv - 0.35) < 0.12 ? `IV at-the-money ≈ ${iv.toFixed(3)} vs 0.35` : null;
+      },
     }),
     // ---- wave 4: never-before-benchmarked operations -----------------------
     // Probit = inverse normal CDF: THE quantile kernel of finance/risk/stats
