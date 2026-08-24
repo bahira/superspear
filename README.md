@@ -1,5 +1,11 @@
 # SPEAR Lab — Symbolic Pareto Evolutionary Algorithm for Research
 
+[![npm](https://img.shields.io/npm/v/spear-kernels)](https://www.npmjs.com/package/spear-kernels) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+
+```bash
+npm install spear-kernels
+```
+
 A **symbolic regression** engine (multi-objective genetic programming) that discovers **closed-form mathematical laws** from data — then compiles them to **verified WebAssembly** and **MISRA-C:2012 C99**, with machine-checked parity.
 
 No neural networks, no black boxes: what comes out is a formula you can read, audit, and deploy on a microcontroller.
