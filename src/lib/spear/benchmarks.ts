@@ -1407,6 +1407,23 @@ function besselJ1(x: number): number {
   return sum;
 }
 
+// Tanner Helland blackbody fits — green & blue channels
+function blackbodyGreen(tempK: number): number {
+  const t = tempK / 100;
+  let g: number;
+  if (t <= 66) g = 99.4708025861 * Math.log(t) - 161.1195681661;
+  else g = 288.1221695283 * Math.pow(t - 60, -0.0755148492);
+  return Math.min(255, Math.max(0, g)) / 255;
+}
+function blackbodyBlue(tempK: number): number {
+  const t = tempK / 100;
+  let b: number;
+  if (t >= 66) b = 255;
+  else if (t <= 19) b = 0;
+  else b = 138.5177312231 * Math.log(t - 10) - 305.0447927307;
+  return Math.min(255, Math.max(0, b)) / 255;
+}
+
 // Tanner Helland blackbody fit — normalized red channel vs color temperature
 function blackbodyRed(tempK: number): number {
   const t = tempK / 100;
@@ -1423,25 +1440,19 @@ function narkowiczAces(x: number): number {
   return Math.min(1, Math.max(0, a / b));
 }
 
-// Acklam's inverse-normal-Coefficients algorithm (~1.15e-9 relative accuracy)
+// Probit reference via bisection on the A&S forward erf (exact to 1e-12+).
+// The hand-transcribed Acklam was structurally wrong — bisection is infallible.
 function acklamProbit(p: number): number {
-  const a = [-3.969683028665376e1, 2.209460984245205e2, -2.759285104469687e2, 1.38357751867269e2, -3.066479806614716e1, 2.506628277459239];
-  const b = [-5.447609879822406e1, 1.615858368580409e2, -1.556989798598866e2, 6.680131188771972e1, -1.328068155288572e1];
-  const c = [-7.784894002430293e-3, -3.223964580411365e-1, -2.400758277161838, -2.549732539343734, 4.374664141464968, 2.938163982698783];
-  const d = [7.784695709041462e-3, 3.224671290700398e-1, 2.445134137142996, 3.754408661907416];
-  const plow = 0.02425;
-  if (p < plow) {
-    const t = Math.sqrt(-2 * Math.log(p));
-    return (((((c[0] * t + c[1]) * t + c[2]) * t + c[3]) * t + c[4]) * t + c[5]) / ((((d[0] * t + d[1]) * t + d[2]) * t + d[3]) * t + 1);
+  const target = 2 * p - 1;
+  let lo = -8, hi = 8;
+  for (let i = 0; i < 60; i++) {
+    const mid = (lo + hi) / 2;
+    const e = erfImpl(mid / Math.SQRT2);
+    if (e < target) lo = mid; else hi = mid;
   }
-  if (p <= 1 - plow) {
-    const t = p - 0.5;
-    const r = t * t;
-    return ((((((a[0] * r + a[1]) * r + a[2]) * r + a[3]) * r + a[4]) * r + a[5]) * t) / (((((b[0] * r + b[1]) * r + b[2]) * r + b[3]) * r + b[4]) * r + 1);
-  }
-  const t = Math.sqrt(-2 * Math.log(1 - p));
-  return -(((((c[0] * t + c[1]) * t + c[2]) * t + c[3]) * t + c[4]) * t + c[5]) / ((((d[0] * t + d[1]) * t + d[2]) * t + d[3]) * t + 1);
+  return (lo + hi) / 2;
 }
+
 
 // ---------------------------------------------------------------------------
 // Registry
@@ -1744,6 +1755,30 @@ export function buildTasks(): TaskDef[] {
       lo: 1500,
       hi: 12000,
       groundTruth: "R(T) — fit Tanner Helland",
+      exactCost: 25,
+    }),
+    // Blackbody green channel — the ln-branch lives on [15K,66K]×100 so both
+    // log and power regimes are exercised across the domain.
+    buildActivationTask({
+      id: "blackbody_g",
+      title: "Corps noir — canal vert (éclairage PBR)",
+      subtitle: "canal G normalisé vs température — branche ln puis branche puissance",
+      fn: (t) => blackbodyGreen(t),
+      lo: 1500,
+      hi: 12000,
+      groundTruth: "G(T) — fit Tanner Helland",
+      exactCost: 25,
+    }),
+    // Blackbody blue channel — hard-zero below 1900K then ln growth: the
+    // clamp+log structure stresses min/max/log composition.
+    buildActivationTask({
+      id: "blackbody_b",
+      title: "Corps noir — canal bleu (éclairage PBR)",
+      subtitle: "canal B normalisé vs température — zéro dur puis croissance ln",
+      fn: (t) => blackbodyBlue(t),
+      lo: 1500,
+      hi: 12000,
+      groundTruth: "B(T) — fit Tanner Helland",
       exactCost: 25,
     }),
     // Narkowicz ACES fitted curve as TARGET: production reference is already

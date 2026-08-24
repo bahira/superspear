@@ -150,6 +150,14 @@ Seeding the *shape of the trick* changed everything on the optimality tests:
 | logsumexp2 (SPEAR² self-hunt) | beating our own ×8.57 record | record held — the 7-unit form resists its own engine | 7 | ×8.57 |
 
 The pmt discovery is the kind of surprise that justifies the whole method: nobody writes loan-payment kernels with arctangent, yet evolution found one that is cheaper than the textbook exponential form and exact-grade accurate.
+### 🌈 Wave 5 — PBR trio completed & hardened references
+
+| Task | Use | Record | Cost |
+|---|---|---|---|
+| **blackbody_g** | green channel vs temperature | **1.3e-4, L2** — ln/power dual-regime composite | 74 |
+| **blackbody_b** | blue channel — hard-zero then ln growth | **2.3e-4, L2** — clean log form | 65 |
+
+With `blackbody_r` (L4), the full PBR color-temperature trio is discovered and registry-complete. Methodology note: the probit reference was rebuilt on bisection over our own A&S erf after a hand-transcribed Acklam proved unreliable — poisoned-reference bugs are caught by refusing to accept walls.
 ### ⚙️ Ultra-common operations registry (new)
 
 Five everyday kernel/program primitives added, first-generation results at 500 iterations:
