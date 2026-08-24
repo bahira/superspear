@@ -340,6 +340,36 @@ npx tsx wasm-smoke.test.ts
 
 The farm splits the task registry across worker processes via a `SPEAR_TASKS` filter and merges records into the ledger — a full sweep completes well inside the single-process deadline while using every core.
 
+## 🔌 MCP Server — use SPEAR from Claude, Cursor & any LLM agent
+
+SPEAR ships with a [Model Context Protocol](https://modelcontextprotocol.io) server exposing the engine as 5 tools that any LLM agent can call natively:
+
+| Tool | What it does |
+|---|---|
+| `discover` | Evolve a kernel for a target formula → returns optimized form + WASM/C/PyTorch exports |
+| `list_kernels` | Browse all registry entries with records, speedups, exact-solve status |
+| `get_kernel` | Full details: precise/fast formulas, MISRA-C export, Python export, cost breakdown |
+| `evaluate_kernel` | Evaluate a kernel at specific input values (precise or fast slot) |
+| `run_benchmark` | Launch discovery passes on selected tasks |
+
+### Setup (Claude Desktop / Cursor / Windsurf)
+
+```json
+{
+  "mcpServers": {
+    "spear-kernels": {
+      "command": "npx",
+      "args": ["tsx", "/path/to/superspear/src/mcp/server.ts"]
+    }
+  }
+}
+```
+
+Once connected, just ask your agent:
+> *"Discover a fast approximation of sin(x)·exp(-x/3) on [-2,8]"*
+
+→ The agent calls `discover`, SPEAR evolves a kernel in seconds, and returns the verified formula with parity-checked WASM/C exports.
+
 ## Reproducibility
 
 Every Hall of Fame record is replayable:
