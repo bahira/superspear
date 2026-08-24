@@ -164,6 +164,15 @@ The pmt discovery is the kind of surprise that justifies the whole method: nobod
 | **blackbody_b** | blue channel — hard-zero then ln growth | **2.3e-4, L2** — clean log form | 65 |
 
 With `blackbody_r` (L4), the full PBR color-temperature trio is discovered and registry-complete. Methodology note: the probit reference was rebuilt on bisection over our own A&S erf after a hand-transcribed Acklam proved unreliable — poisoned-reference bugs are caught by refusing to accept walls.
+### 🌊 Wave 7 — everyday-science kernels (all records gen-1)
+
+| Task | Domain | Record | Cost |
+|---|---|---|---|
+| **stefan_boltzmann** | thermal radiation PBR | **2.1e-26 EXACT** @ 5u (optimal 3u) — optimality test #5 | 5 |
+| **mm1_queue_wait** | systems/SRE queueing | **6.1e-33 EXACT** — true form `−((l/m)/(l−m))` found | 10 (optimal 6) |
+| **michaelis_menten** | biochemistry/pharma | 6.9e-10, near-exact rational | 15 |
+| **temperature_softmax** ⭐ | LLM sampling temperature | 4.2e-4 via NOVEL `atan(e^(Δ/T))` Gudermannian shape | 46 |
+| **doppler_effect** | audio/radar sirens | **9.3e-10 EXACT** via perturbed scaffold | 9 |
 ### ⚙️ Ultra-common operations registry (new)
 
 Five everyday kernel/program primitives added, first-generation results at 500 iterations:

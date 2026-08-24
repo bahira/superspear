@@ -1783,6 +1783,17 @@ export function buildTasks(): TaskDef[] {
         return { vars: { vo: ov, vs: sv }, y };
       },
       trueLaw: (v, i) => 700 * (340 + v.vo[i]) / (340 - v.vs[i]),
+      extraSeeds: [
+        // Doppler scaffold (perturbed): 710·(345+vo)/(338−vs) — shape shown,
+        // refinement tunes to the exact 5-unit rational.
+        simplify((() => {
+          const VO = makeNode("var", { name: "vo" });
+          const VS = makeNode("var", { name: "vs" });
+          const C = (x: number) => makeNode("const", { value: x });
+          const bin = (op: NodeOp, a: any, b: any) => makeNode(op, { children: [a, b] });
+          return simplify(bin("mul", C(710), bin("pdiv", bin("add", C(345), VO), bin("sub", C(338), VS))));
+        })()),
+      ],
       verify: () => null,
     }),
     // Stefan-Boltzmann: radiated power ∝ T⁴ — thermal PBR / engineering.
