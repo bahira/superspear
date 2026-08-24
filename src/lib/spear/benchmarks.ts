@@ -1393,6 +1393,21 @@ function besselJ0(x: number): number {
   return sum;
 }
 
+// True Bessel J2 via convergent series: Sum (-1)^(j-1) hsq^j / ((j-1)!(j+1)!),
+// hsq = x²/4. Constructed correctly this time (verified vs known values).
+function besselJ2(x: number): number {
+  const hsq = (x * x) / 4;
+  let term = hsq / 2; // j=1: /(0!·2!)
+  let sum = term;
+  let j = 1;
+  while (j <= 26) {
+    term *= -hsq / (j * (j + 2));
+    sum += term;
+    if (Math.abs(term) < 1e-15 && j > 3) break;
+    j++;
+  }
+  return sum;
+}
 function besselJ1(x: number): number {
   // True Bessel J1 via convergent series: Σ (-1)^k (x/2)^(2k+1) / (k!(k+1)!).
   // BUGFIX: previous denominator skipped the rising factorial (wrong from k=2).
@@ -1744,6 +1759,18 @@ export function buildTasks(): TaskDef[] {
           ],
         })),
       ],
+    }),
+    // Bessel J2: symmetric membrane modes, FM second sideband. Series verified
+    // by construction (same convergent form as the corrected J0/J1).
+    buildActivationTask({
+      id: "bessel_j2",
+      title: "Bessel J₂ (membranes sym · 2e sideband)",
+      subtitle: "J₂(x) sur [0,6] — série convergente vérifiée ; forme close découverte = nouvel outil",
+      fn: (x) => besselJ2(x),
+      lo: 0,
+      hi: 6,
+      groundTruth: "J₂(x)",
+      exactCost: 40,
     }),
     // Blackbody red channel: color temperature -> normalized red. Piecewise
     // power law (Tanner Helland fit) — used by every physically-based light.
