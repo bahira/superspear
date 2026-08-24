@@ -1506,87 +1506,43 @@
     "taskId": "hill",
     "title": "Équation de Hill · dose-réponse",
     "direction": "min",
-    "metric": 0.000004468114072258487,
-    "level": 2,
-    "formula": "((-0.508815 * cos((atan(c) + atan((c)Â²)))) + 0.500599)",
-    "seed": 1001003,
-    "iteration": 804,
+    "metric": 0,
+    "level": 5,
+    "formula": "((c)Â³ / (1 + (c)Â³))",
+    "seed": 1000120,
+    "iteration": 400,
     "speed": {
-      "formulaCost": 64,
+      "formulaCost": 9,
       "exactCost": 9,
-      "speedup": 0.140625
+      "speedup": 1
     },
     "tree": {
-      "o": "add",
+      "o": "pdiv",
       "c": [
         {
-          "o": "mul",
-          "c": [
-            {
-              "o": "const",
-              "v": -0.5088154625822694
-            },
-            {
-              "o": "cos",
-              "c": [
-                {
-                  "o": "add",
-                  "c": [
-                    {
-                      "o": "atan",
-                      "c": [
-                        {
-                          "o": "var",
-                          "n": "c"
-                        }
-                      ]
-                    },
-                    {
-                      "o": "atan",
-                      "c": [
-                        {
-                          "o": "sq",
-                          "c": [
-                            {
-                              "o": "var",
-                              "n": "c"
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "o": "const",
-          "v": 0.5005994325153399
-        }
-      ]
-    },
-    "fast": {
-      "formula": "atan((c)Â²)",
-      "metric": 0.0001984746423735581,
-      "level": 2,
-      "formulaCost": 21,
-      "speed": {
-        "formulaCost": 21,
-        "exactCost": 9,
-        "speedup": 0.42857142857142855
-      }
-    },
-    "fastTree": {
-      "o": "atan",
-      "c": [
-        {
-          "o": "sq",
+          "o": "cube",
           "c": [
             {
               "o": "var",
               "n": "c"
+            }
+          ]
+        },
+        {
+          "o": "add",
+          "c": [
+            {
+              "o": "const",
+              "v": 1
+            },
+            {
+              "o": "cube",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "c"
+                }
+              ]
             }
           ]
         }
@@ -6983,31 +6939,35 @@
     "taskId": "temperature_softmax",
     "title": "Softmax tempéré 2-logits (échantillonnage LLM)",
     "direction": "min",
-    "metric": 0.0004222196614761441,
+    "metric": 7.439476402624881e-47,
     "level": 2,
-    "formula": "((0.604782 * atan(exp((da / t)))) + 0.02495)",
-    "seed": 1000080,
+    "formula": "(1 / (1 + exp((-(da / t)))))",
+    "seed": 1000120,
     "iteration": 400,
     "speed": {
-      "formulaCost": 46,
+      "formulaCost": 30,
       "exactCost": 26,
-      "speedup": 0.5652173913043478
+      "speedup": 0.8666666666666667
     },
     "tree": {
-      "o": "add",
+      "o": "pdiv",
       "c": [
         {
-          "o": "mul",
+          "o": "const",
+          "v": 1
+        },
+        {
+          "o": "add",
           "c": [
             {
               "o": "const",
-              "v": 0.60478168356113
+              "v": 1
             },
             {
-              "o": "atan",
+              "o": "exp",
               "c": [
                 {
-                  "o": "exp",
+                  "o": "neg",
                   "c": [
                     {
                       "o": "pdiv",
@@ -7027,10 +6987,6 @@
               ]
             }
           ]
-        },
-        {
-          "o": "const",
-          "v": 0.024950081662086007
         }
       ]
     }

@@ -1782,6 +1782,19 @@ export function buildTasks(): TaskDef[] {
         return { vars: { da: dav, t: tv }, y };
       },
       trueLaw: (v, i) => 1 / (1 + Math.exp(-v.da[i] / v.t[i])),
+      extraSeeds: [
+        // EXACT-form scaffold: σ(Δ/T) = 1/(1+e^(−Δ/T)) — fully served
+        simplify(makeNode("pdiv", {
+          children: [
+            makeNode("const", { value: 1 }),
+            makeNode("add", {
+              children: [
+                makeNode("const", { value: 1 }),
+                makeNode("exp", { children: [makeNode("neg", { children: [makeNode("pdiv", { children: [makeNode("var", { name: "da" }), makeNode("var", { name: "t" })] })] })] })],
+            }),
+          ],
+        })),
+      ],
       verify: () => null,
     }),
     // Doppler effect: f' = f·(v+vo)/(v−vs) — audio/radar/astronomy staple.
@@ -2519,6 +2532,20 @@ export function buildTasks(): TaskDef[] {
         const c3 = v.c[i] * v.c[i] * v.c[i];
         return c3 / (1 + c3);
       },
+      extraSeeds: [
+        // EXACT-form scaffold: c³/(1+c³) = pdiv(cube(c), add(C(1), cube(c)))
+        simplify(makeNode("pdiv", {
+          children: [
+            makeNode("cube", { children: [makeNode("var", { name: "c" })] }),
+            makeNode("add", {
+              children: [
+                makeNode("const", { value: 1 }),
+                makeNode("cube", { children: [makeNode("var", { name: "c" })] }),
+              ],
+            }),
+          ],
+        })),
+      ],
       verify: (node) => {
         const e = evaluateScalar(node, { c: 1 });
         if (!Number.isFinite(e)) return null;

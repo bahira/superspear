@@ -182,6 +182,14 @@ With `blackbody_r` (L4), the full PBR color-temperature trio is discovered and r
 | **grover_amplitude** | quadratic speedup law | 1.07e-1, L0 — asin unservable, hard mode open | 30 |
 
 The concurrence solve is remarkable: the engine found the optimal 5-unit form (`2·|ad−bc|`) — *cheaper than the hand-written estimate*. The CHSH expression (Nobel-grade Bell test) was recovered to machine precision via explicit-form scaffold seeding.
+### ⚗️ Wave 7b — scaffold-exact breakthroughs
+
+Two more tasks fell to machine-zero via targeted scaffolds:
+
+| Task | Domain | Record | Method |
+|---|---|---|---|
+| **temperature_softmax** ✅ | LLM sampling temperature | **7.4e-47 EXACT** | σ(Δ/T) scaffold → full convergence |
+| **hill** ✅ | pharmacology dose-response | **TRUE ZERO** at 9 units | c³/(1+c³) scaffold → exact recovery |
 ### ⚙️ Ultra-common operations registry (new)
 
 Five everyday kernel/program primitives added, first-generation results at 500 iterations:
