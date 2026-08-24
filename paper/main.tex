@@ -1,0 +1,218 @@
+% SPEAR: Evolution-Discovered Math Kernels with Triple-Backend Parity Audits
+%
+% arXiv submission note: the default category is cs.AI, but the recommended
+% PRIMARY category is cs.NE (Neural and Evolutionary Computation), with cs.AI
+% or cs.LG as cross-lists. Categories are selected on the arXiv submission
+% form; no package trick is needed.
+%
+% All numbers are taken verbatim from PAPER.md, README.md,
+% spear-hall-of-fame.json, kv-real-results.json and gelu-swap-results.json.
+\documentclass[11pt]{article}
+
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage[margin=1in]{geometry}
+\usepackage[hidelinks]{hyperref}
+
+\title{SPEAR: Evolution-Discovered Math Kernels\\ with Triple-Backend Parity Audits}
+\author{Romain Abdel-Aal\\ Independent Researcher, France\\ \texttt{romainabdelaal@gmail.com}}
+\date{August 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We present SPEAR, a symbolic regression engine that discovers closed-form mathematical laws from data via multi-objective genetic programming, then compiles every discovery to three execution backends---JavaScript/WebAssembly, strict MISRA-C:2012 C99, and PyTorch---under machine-checked numeric-parity audits. Across a 48+-task registry spanning neural-network activations, shader primitives, special functions, physics laws, and control policies, SPEAR produced nine exact solutions at machine precision, eighteen kernels cheaper than their exact references in an ALU/SFU cost model, and seven replacements of iterative numerical solvers, with speedups up to $\times1840$. We contribute a taxonomy of four difficulty regimes for symbolic search, a scaffold-seeding methodology validated on adversarial optimality tests, dual precise/fast operating points per law, and honest failure cases: an expert hand-fit (Narkowicz ACES) resists evolution at any tested depth, and a discovered GELU that is $\times2.32$ faster as raw WebAssembly loses accuracy and throughput inside PyTorch.
+\end{abstract}
+
+\section{Introduction}
+Production software re-implements the same small mathematical kernels millions of times per second: activation functions, interpolation curves, color transfers, wave evaluators, normalization factors. When these kernels rely on transcendental functions ($\exp$, $\mathrm{erf}$, $\arccos$), their cost explodes on \emph{transcendental-poor} hardware---microcontrollers without SFUs, low-end GLSL profiles, quantized pipelines where $\exp$ is many times the price of a multiply. Hand-derived algebraic replacements exist for a lucky few (fast inverse square root~\cite{lomont2003invsqrt}, Pad\'e approximants, the handbook fits of Abramowitz and Stegun~\cite{abramowitz1964handbook}, the Acklam normal quantile~\cite{acklam2003invnorm}); deriving new ones is slow expert work.
+
+SPEAR automates both halves of this problem. First, the \emph{derivation}: a multi-objective genetic program searches for closed-form expressions that trade accuracy against ALU/SFU cost, so cheapness is an objective rather than an afterthought. Second, the \emph{verification burden} that normally blocks adoption: every discovered formula ships with bit-faithful JavaScript/WebAssembly and MISRA-C:2012 C99 implementations proven numerically equivalent to the evaluator's semantics, plus a PyTorch emission.
+
+A clarifying negative result frames scope early: for LLM inference we probed whether symbolic regression can find ``a formula for matmul.'' It cannot, because none is needed---a generic dot product has tensor rank $n$, so $4m+3a$ units is provably unbeatable per output lane, and there is nothing iterative to replace. What \emph{can} be attacked is everything glued around the GEMV, and everything else programs recompute forever.
+
+\section{Related Work}
+\textbf{Symbolic regression engines.} Evolutionary symbolic regression is mature; NSGA-II~\cite{deb2002nsga2} supplies the multi-objective backbone used here. PySR~\cite{cranmer2020pysr,cranmer2023pysr} is the reference high-performance engine; SymbolicGPT~\cite{valipour2021symbolicgpt} explores transformer-based SR. These systems target discovery quality; none ships, as its core artifact, a parity-audited deployment pipeline across JS/WASM/C backends. We do not claim search superiority over PySR-class engines.
+
+\textbf{Hand-crafted fast kernels.} The fast inverse square root~\cite{lomont2003invsqrt}, the Acklam inverse-normal rational fit~\cite{acklam2003invnorm}, handbook approximations~\cite{abramowitz1964handbook}, blackbody RGB fits~\cite{helland2012blackbody}, and the Narkowicz ACES tonemap fit~\cite{narkowicz2015aces} are expert one-offs. Our results are complementary: evolution rediscovers several such forms (e.g.\ the atan Pad\'e $[3/2]$) and honestly loses to others (\S\ref{sec:regimes}).
+
+\textbf{Efficient attention.} KV-cache eviction policies such as H2O~\cite{zhang2023h2o}, StreamingLLM~\cite{xiao2024streamingllm}, and SnapKV~\cite{li2024snapkv} motivate our decision-rule tasks; transformer attention~\cite{vaswani2017attention} and the Distil recipe~\cite{sanh2019distilbert} underpin the real-model validation of \S\ref{sec:realmodels}.
+
+The claimed novelty is therefore not ``evolution finds formulas,'' but the combination of: (i) a \emph{parity-audited deployment pipeline} (MISRA lint, real gcc compile, C/WASM/JS numeric parity, permanent CI replay); (ii) \emph{dual operating points} per law (precise/fast); (iii) an \emph{ALU/SFU cost model inside the search loop}; (iv) a \emph{four-regime difficulty taxonomy}; and (v) a \emph{scaffold-seeding methodology} validated on adversarial optimality tests.
+
+\section{Methods}
+\subsection{Search}
+Multi-objective NSGA-II~\cite{deb2002nsga2} evolves expression trees; objectives are accuracy (MSE on a train split) and formula cost. Operators are $\texttt{add}, \texttt{sub}, \texttt{mul}, \texttt{pdiv}, \texttt{relu}, \texttt{abs}, \texttt{neg}, \texttt{sq}, \texttt{sqrt}, \texttt{cube}, \texttt{max}, \texttt{min}, \texttt{exp}, \texttt{sin}, \texttt{cos}, \texttt{log}, \texttt{atan}$. Transcendentals are allowed but priced honestly, so the Pareto front itself encodes the accuracy/cost trade-off. Regression milestones are calibrated against the measured noise floor of each dataset rather than absolute thresholds; budget is allocated across tasks by UCB (exploit what improves, explore what stagnates); end-to-end seeded RNG makes every record replayable from one integer.
+
+\subsection{Cost model}
+Cost is counted in GPU-style ALU/SFU units: $\texttt{mul}/\texttt{add}=1$, $\texttt{div}=4$, $\texttt{sqrt}=2$, transcendental ($\exp/\sin/\cos/\log$) ${\approx}\,20$. Iterative baselines are billed the same way---every solver iteration counts---which is what legitimizes the large speedups of \S\ref{sec:iterative}. The model is cross-checked by wall-clock benchmarks on WASM-compiled pairs (formula vs.\ exact law).
+
+\subsection{Protected division rails}
+The engine's protected division (\texttt{pdiv}) clamps denominators below $10^{-4}$ and outputs beyond $\pm 10^{4}$. Codegen reproduces these rails bit-faithfully on all three backends, so parity holds even near saturation. Notably, the Gaussian-CDF champion \emph{exploits the rails as free saturation}: its tiny divisor turns the division into a hard plateau, exactly the shape of $\Phi(x)$; the algebraic strength-reduction (division by constant $\to$ multiplication by reciprocal, $-3$ units per site) therefore only rewrites divisors above the protection floor, and each rewrite passes a metric-parity gate before entering the ledger.
+
+\subsection{Verification pipeline}
+Every champion passes four gates: (a) static MISRA-C:2012 lint (zero dynamic allocation, branchless saturations via \texttt{fminf}/\texttt{fmaxf}, fixed-width types, no loops, no \texttt{powf}); (b) real compilation with \texttt{gcc -std=c99 -Wall -Wextra -pedantic -O2}; (c) numeric parity C\,$\leftrightarrow$\,WASM\,$\leftrightarrow$\,JS within $10^{-4}$ relative (latest full audit: ${\leq}\,10^{-6}$), enforced by the rail-faithful codegen above; (d) wall-clock benchmark against the exact reference law, both compiled to WebAssembly over 200k evaluations. A permanent CI job replays the parity sweep across all ledger champions on every push. The audit has already caught a latent bug (multi-variable WASM modules silently returning NaN from a wrapper ABI mismatch).
+
+\subsection{Deployment shape: dual slots}
+Each task stores two validated forms: the \emph{precise} champion (lowest error ever found) and a \emph{fast} variant (cheapest form passing level-2 validation). Nineteen of twenty-seven ledger tasks have a genuinely cheaper second form; displaced champions are demoted, never lost, and any fast variant no longer actually cheaper than its champion is pruned. Largest fast-slot cost cuts: Lambert W$_0$ $22{\to}1$ units ($\times22$), Gaussian kernel $24{\to}1$ ($\times24$), Hill dose--response $\times9$, Gaussian CDF $29{\to}6$ ($\times4.8$), Softplus $\times4.5$, Sigmoid $27{\to}7$ ($\times3.9$); the Kerr-with-spin fast slot reaches $\times480$ vs.\ RK4.
+
+\subsection{Scaffold seeding}
+Discovery quality depends less on budget than on which algebraic bricks are available at warm-up. Warm-up pools provide primitive shapes (rationals, Pad\'e $[3/2]$, exponential decay, reciprocal powers, the rsqrt family $c/\sqrt{c_2 \pm d x^2}$); champion ASTs are re-injected as warm-up bricks for \emph{other} tasks (variable-renamed, size-capped, never the task's own answer). Adding reciprocal powers plus rsqrt seeds produced the largest single-run jump of the project: Kerr weak-field MSE $5.4\times10^{-5} \to 1.4\times10^{-7}$ ($\sim$380$\times$). Seeding the \emph{shape} of Huber's max-trick (without constants) converted a stuck candidate into a solution; acos$\to$atan identity scaffolds cracked two tasks whose truths require an unserved transcendental.
+
+\section{The Four Difficulty Regimes}
+\label{sec:regimes}
+Empirically, registry tasks separate into regimes with distinct attack strategies:
+
+\begin{table}[h]
+\centering
+\caption{Four difficulty regimes for symbolic search.}
+\label{tab:regimes}
+\begin{tabular}{@{}llll@{}}
+\toprule
+Regime & Definition & Example & Outcome \\
+\midrule
+R1 --- served law & exact form expressible with served primitives & RoPE rotation, EMA factor & exact recovery \\
+R2 --- classic approximant & a known human form exists & atan $\to$ Pad\'e $[3/2]$ & rediscovery at 500 iterations \\
+R3 --- unintuitive substitution & cheaper algebra exists, non-obvious & cosh $\to$ $\sqrt{x^2}\cos(x^2)$; blackbody rational & $\times1.4$--$1.8$ faster \\
+R4 --- hidden human trick & optimal form relies on an insight & Huber $\max(x^2/2,\,|x|-\tfrac12)$; smoothstep polynomial & passes only after scaffold seeding \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent\textbf{Case study (R3$\to$R4 bridge).} Seeding Huber's max-trick shape converted a stuck level-2 candidate into a level-5 solution (MSE $3.0\times10^{-7}$) within two subsequent 500-iteration runs. \textbf{Counter-case.} Narkowicz's ACES hand-fit survived 8{,}000 iterations against a seeded rational scaffold (best evolved: $1.2\times10^{-5}$ at 13 units vs.\ Narkowicz $2.4\times10^{-5}$ at 8 units): expert hand-fits remain defensible.
+
+\section{Results}
+All numbers below come from the hall-of-fame ledger and its measurement scripts; every record carries seed, iteration count, serialized AST, cost breakdown, and both operating points.
+
+\subsection{Exact solutions}
+\begin{table}[h]
+\centering
+\caption{Exact and near-exact recoveries (train MSE) from the ledger. Seeds reproduce data, evolution, and noise end-to-end.}
+\label{tab:exact}
+\small
+\begin{tabular}{@{}llrl@{}}
+\toprule
+Task & Recovered law & Train MSE & Seed \\
+\midrule
+RoPE lane rotation & served $\sin/\cos$ carrier & $0$ & 980101 \\
+Lorentz factor $\gamma(\beta)$ & $1/\sqrt{1-b^2}$ & $0$ & 4242 \\
+Lambert W$_0$ & $x\cdot\mathrm{relu}(e^x)$ & $0$ & 12345 \\
+LayerNorm rsqrt & $1/\sqrt{x}$ & $0$ & 12345 \\
+Bilinear upsample weight & $1-u$ & $0$ & 12345 \\
+Optical-flow gradient & $b-a$ & $0$ & 8888 \\
+atan, unit domain & Pad\'e $[3/2]$ rediscovered$^{\dagger}$ & $0$ & 1000001 \\
+2-link IK elbow & acos rebuilt as $\pi/2-\arctan(\cdot)$ & $4.1\times10^{-32}$ & 1000001 \\
+Sigmoid & $1 - 1/(1+e^{-x})$$^{\ddagger}$ & $4.8\times10^{-33}$ & 987654 \\
+Gaussian kernel & $e^{-x^2/2}$ & $5.4\times10^{-34}$ & 920101 \\
+Shader gaussian & $e^{-x^2/2}$ (per-pixel resample) & $8.2\times10^{-34}$ & 993001 \\
+Symmetric $3{\times}3$ $\lambda_{\max}$ & full Cardano trisection via atan identity & $3.3\times10^{-11}$ & 999907 \\
+EMA smoothing factor & frame-rate-independent form & $1.6\times10^{-11}$ & 995002 \\
+Smoothstep & true minimal polynomial, exactly 5 units$^{\S}$ & $3.3\times10^{-7}$ & 999801 \\
+\bottomrule
+\end{tabular}
+\par\smallskip
+\raggedright\footnotesize
+$^{\dagger}$Pad\'e record: $6.6\times10^{-9}$ at 12 units ($\times1.67$ vs.\ the served atan at 20); after atan became a served primitive the ledger champion is the served form. \
+$^{\ddagger}$The sigmoid task allows $\exp$ as a primitive; the point is cost comparison, not algebraic purity. \
+$^{\S}$Optimality test passed perfectly: $x^2(-1.5x+1)$ recovered at minimal cost.
+\end{table}
+
+\subsection{Faster than the reference}
+In the ALU/SFU cost model, eighteen discovered kernels are cheaper than their exact references. Selected speedups (cost of exact reference / cost of discovered formula):
+
+\begin{table}[h]
+\centering
+\caption{Selected kernels faster than their exact reference (ALU/SFU cost model).}
+\label{tab:faster}
+\begin{tabular}{@{}lrl@{}}
+\toprule
+Task & Speedup & Note \\
+\midrule
+logsumexp2 & $\times8.57$ & 7-unit min/max form; resists its own engine \\
+KdV soliton & $\times7.57$ & piecewise crest; $\times1.96$ measured on WASM wall-clock \\
+GELU & $\times6.57$ & beats GELU-tanh in cost model \\
+Inverted-pendulum hybrid control & $\times3.76$ & cheap surrogate of a 173-unit exact law \\
+IDM car-following & $\times3.33$ & IDM-structure scaffold, 20 units \\
+SiLU/Swish & $\times2.43$ & beats HardSwish and ReLU \\
+Blackbody red channel & $\times1.79$ & clamped rational, 14 units vs.\ ${\sim}25$ \\
+cosh curve & $\times1.38$ & $\sqrt{x^2}\cdot\cos(x^2)$ substitution, 32 vs.\ 44 units \\
+Loan payment (PMT) & $\times1.38$ & $\arctan(n)$ hybrid replaces $e^{n\ln(1+r)}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The PMT discovery is the kind of surprise that justifies the method: nobody writes loan-payment kernels with arctangent, yet evolution found one cheaper than the textbook exponential form at exact-grade accuracy ($4.4\times10^{-7}$).
+
+\subsection{Iterative solver replacement}
+\label{sec:iterative}
+For several tasks the standard way to compute the answer is not another closed form but an iterative numerical solver. Counting the solver's full bill (every iteration, in the same units) against the O(1) formula gives large --- and legitimate --- accelerations:
+
+\begin{table}[h]
+\centering
+\caption{O(1) formulas replacing iterative solvers.}
+\label{tab:solvers}
+\begin{tabular}{@{}llr@{}}
+\toprule
+Task & Baseline replaced & Speedup \\
+\midrule
+Gaussian CDF $\Phi(x)$ (9 units) & Monte-Carlo estimation & $\times1840$ \\
+Damped oscillation trajectory (30 units) & RKF45 adaptive solve & $\times200$ \\
+Kerr light deflection & RK4 geodesic integration & $\times185$--$133$ \\
+Damped pendulum terminal state (46 units) & Euler-Cromer integration & $\times33$ \\
+2-link IK & Newton-DLS chains & $\times20$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Seven iterative solvers were replaced overall, with speedups from $\times6$ to $\times1840$; arithmetic is documented in the repository (\texttt{ITERATIVE\_BASELINES}) and cross-checked by wall-clock export-audit benchmarks.
+
+\subsection{Edge CPU measurements}
+On this CPU-only machine, WASM-compiled discovered forms replace production activation kernels (200k elements on $[-6,6]$):
+
+\begin{table}[h]
+\centering
+\caption{Edge measurements: production kernels vs.\ SPEAR forms compiled to WASM.}
+\label{tab:edge}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+Kernel & Reference (ns/el) & SPEAR (ns/el) & Gain & Max abs err \\
+\midrule
+SiLU (SwiGLU) & 864 & 409 & $\times2.12$ & $7.0\times10^{-2}$ \\
+GELU (tanh approx.) & 757 & 326 & $\times2.32$ & $8.0\times10^{-2}$ \\
+Softplus & 1403 & 1113 & $\times1.26$ & $4.2\times10^{-1}$ \\
+Sigmoid fast slot & 1075 & 1307 & $\times0.82$ --- slower, reported as measured & $8.6\times10^{-1}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+A full FFN block simulation (decode, $d=2048$, $\mathrm{ffn}=5632$) runs \textbf{10.2\% faster} end-to-end with the SPEAR SiLU swapped in --- despite naive per-element host$\leftrightarrow$WASM invocation. Two honest negatives on this backend: the exp-free student-$t$ gaussian menu runs at $\times0.89$ vs.\ native \texttt{Math.exp} (it targets transcendentally-poor backends, not fast host $\exp$), and the sigmoid fast variant simply loses.
+
+\subsection{Real-model validation on distilgpt2}
+\label{sec:realmodels}
+Simulated benchmarks were resolved against a real model before claiming anything.
+
+\textbf{KV-cache eviction (positive, narrow).} On real distilgpt2 attention traces (72 layer-prompt samples, keep 40), the evolved 5-unit policy $4.5\,S + A + R$ (Sinks + accumulated Attention + Recency, discovered in 4 iterations on simulated data) retains \textbf{80.31\%} of future attention mass on average, vs.\ \textbf{80.20\%} for H2O~\cite{zhang2023h2o}, \textbf{80.07\%} for StreamingLLM~\cite{xiao2024streamingllm} (SnapKV~\cite{li2024snapkv} family policies occupy the same design space; random eviction: 73.82\%; oracle upper bound: \textbf{90.85\%}). The margin is narrow but positive, achieved with 3 features and no attention-score sorting.
+
+\textbf{GELU swap (negative, kept).} Swapping distilgpt2's fused GELU for the discovered algebraic form (the $\times6.57$/$\times2.32$ winner above) \textbf{raises perplexity by 0.56} (5.89 $\to$ 6.45) and \textbf{lowers throughput by 9.2\%} (362 $\to$ 329 tok/s) on CPU. Native fused kernels beat multi-op algebraics inside frameworks; the cost-model gains transfer only where transcendentals are truly expensive (raw WASM: $\times2.12$ measured; MCUs). Frameworks are the wrong battlefield --- this is a deployment-boundary result, not a search failure.
+
+\section{Limitations}
+\begin{enumerate}
+\item \textbf{Bessel depth.} Bessel-family tasks ($J_0/J_1$) resist current depths: series scaffolds mutate away before compression. One earlier wall was a poisoned reference (wrong series); after fixing the reference, $J_0$ improved $\times60$.
+\item \textbf{Simulated-vs-real nuance, now resolved.} Early KV-cache numbers were simulated; validation on real distilgpt2 traces (\S\ref{sec:realmodels}) confirms a narrow positive margin --- and the GELU swap confirms that framework deployment can erase raw-kernel gains entirely.
+\item \textbf{Single-machine benchmarks.} Edge timings come from one CPU-only machine. The cost model counts ALU/SFU units; wall-clock gains on SFU-rich GPUs will be smaller than modeled.
+\item \textbf{Expert hand-fits remain strong.} One expert hand-fit (Narkowicz ACES) resisted every budget tried. We claim complementarity with, not superiority over, expert derivation.
+\item \textbf{Benchmark-domain records.} Records are measured on benchmark domains; forms fitted on a bounded interval can diverge outside it (flagged in the ledger).
+\end{enumerate}
+
+\section{Reproducibility}
+Every record carries its seed, iteration count, serialized AST, cost breakdown, and both operating points; same seed $\Rightarrow$ same data, same formulas, same metrics. \texttt{npm ci \&\& npx tsx scripts/test-wasm-parity.ts} replays the full parity audit; \texttt{npx tsx scripts/run-farm.ts <seed> <budget> <workers>} replays discovery. MIT licensed.
+
+\section{Conclusion}
+SPEAR treats kernel replacement as a full pipeline, not just a search: an ALU/SFU-priced NSGA-II finds formulas; rails-faithful codegen and MISRA/gcc/parity audits make them deployable; dual precise/fast slots expose the accuracy-latency trade-off deployers actually live by; and a four-regime taxonomy plus scaffold-seeding methodology tell practitioners where to spend iterations. The honest outcomes matter as much as the wins: evolution rediscovers classic human forms, loses gracefully to excellent ones, and its framework-level gains evaporate exactly where fused native kernels are already cheap. Future work: deeper Bessel-capable scaffolds, GPU wall-clock validation, and richer seed grammars for regime-R4 tricks.
+
+\bibliographystyle{plain}
+\bibliography{refs}
+
+\end{document}

@@ -1,0 +1,240 @@
+{
+  "description": "SPEAR vs PySR head-to-head datasets. Rows regenerate the registry evaluation grids exactly; spearChampion.mse is the ledger champion re-scored on these rows.",
+  "generatedAt": "2026-08-24T03:21:10.925Z",
+  "costUnitsNote": "SPEAR cost units are GPU ALU/SFU op weights (add/mul=1, div=4, sqrt=2, transcendental=20), NOT FLOPs.",
+  "tasks": [
+    {
+      "id": "silu",
+      "varNames": [
+        "x"
+      ],
+      "domain": {
+        "x": [
+          -6,
+          6
+        ]
+      },
+      "rows": 400,
+      "groundTruth": "SiLU(x) = x·σ(x) = x / (1 + e⁻ˣ)",
+      "spearChampion": {
+        "formula": "((0.997587 * (x * (0.501 + (0.587 * (x / (0.815 + sqrt(|(0.909361 + (x)Â²)|))))))) + -0.005749)",
+        "costUnits": 14,
+        "mse": 0.0007795906249592223
+      }
+    },
+    {
+      "id": "gelu",
+      "varNames": [
+        "x"
+      ],
+      "domain": {
+        "x": [
+          -6,
+          6
+        ]
+      },
+      "rows": 400,
+      "groundTruth": "GELU(x) = 0.5x(1 + erf(x/√2))",
+      "spearChampion": {
+        "formula": "((0.997729 * (x * min(1.002, relu(((0.306923 * x) + 0.501))))) + -0.004004)",
+        "costUnits": 7,
+        "mse": 0.0005322566020140329
+      }
+    },
+    {
+      "id": "sigmoid",
+      "varNames": [
+        "x"
+      ],
+      "domain": {
+        "x": [
+          -8,
+          8
+        ]
+      },
+      "rows": 400,
+      "groundTruth": "σ(x) = 1 / (1 + e⁻ˣ)",
+      "spearChampion": {
+        "formula": "((-(1 / (1 + exp(x)))) + 1)",
+        "costUnits": 27,
+        "mse": 4.790511494175498e-33
+      }
+    },
+    {
+      "id": "softplus",
+      "varNames": [
+        "x"
+      ],
+      "domain": {
+        "x": [
+          -4,
+          4
+        ]
+      },
+      "rows": 200,
+      "groundTruth": "sp(x) = ln(1 + eˣ)",
+      "spearChampion": {
+        "formula": "((1.002747 * log(max((1.010159 + exp(x)), 1e-30))) + -0.008384)",
+        "costUnits": 43,
+        "mse": 0.0000018948345099656158
+      }
+    },
+    {
+      "id": "tanh_sat",
+      "varNames": [
+        "x"
+      ],
+      "domain": {
+        "x": [
+          -3,
+          3
+        ]
+      },
+      "rows": 400,
+      "groundTruth": "tanh(x)",
+      "spearChampion": {
+        "formula": "(0.900021 * ((x + (0.053639 * (x)Â³)) / (0.90122 + (0.343141 * (x)Â²))))",
+        "costUnits": 12,
+        "mse": 0.0000046412770528300585
+      }
+    },
+    {
+      "id": "atan_unit",
+      "varNames": [
+        "x"
+      ],
+      "domain": {
+        "x": [
+          -1,
+          1
+        ]
+      },
+      "rows": 400,
+      "groundTruth": "atan(x)",
+      "spearChampion": {
+        "formula": "atan(x)",
+        "costUnits": 20,
+        "mse": 0
+      }
+    },
+    {
+      "id": "srgb_gamma",
+      "varNames": [
+        "x"
+      ],
+      "domain": {
+        "x": [
+          0,
+          1
+        ]
+      },
+      "rows": 400,
+      "groundTruth": "srgb(x) = 1.055·x^(1/2.4) − 0.055",
+      "spearChampion": {
+        "formula": "((0.330799 * (sqrt(|sqrt(|sin(x)|)|) + ((1.41372 * sqrt(|x|)) + (0.881576 * sqrt(|x|))))) + -0.07679)",
+        "costUnits": 34,
+        "mse": 0.0000019009578309001974
+      }
+    },
+    {
+      "id": "gaussian_cdf",
+      "varNames": [
+        "x"
+      ],
+      "domain": {
+        "x": [
+          -6,
+          6
+        ]
+      },
+      "rows": 400,
+      "groundTruth": "Φ(x) = 0.5·(1 + erf(x/√2))",
+      "spearChampion": {
+        "formula": "((0.446257 * atan(min((0.946094 * max(x, -2.183)), 2.045418))) + 0.50123)",
+        "costUnits": 25,
+        "mse": 0.000016407954856661242
+      }
+    },
+    {
+      "id": "hill",
+      "varNames": [
+        "c"
+      ],
+      "domain": {
+        "c": [
+          0.05,
+          5
+        ]
+      },
+      "rows": 200,
+      "groundTruth": "E = c³/(1 + c³)",
+      "spearChampion": {
+        "formula": "((-0.508815 * cos((atan(c) + atan((c)Â²)))) + 0.500599)",
+        "costUnits": 64,
+        "mse": 0.000004468114072258487
+      }
+    },
+    {
+      "id": "logistic_growth",
+      "varNames": [
+        "t"
+      ],
+      "domain": {
+        "t": [
+          0,
+          4
+        ]
+      },
+      "rows": 200,
+      "groundTruth": "y(t) = 1/(1 + e^(−2(t−2)))",
+      "spearChampion": {
+        "formula": "((-0.416375 * (sin(sin((8.28632 - t))) - (t * 0.170954))) + 0.358312)",
+        "costUnits": 45,
+        "mse": 0.000011045057513989082
+      }
+    },
+    {
+      "id": "damped_oscillation",
+      "varNames": [
+        "t"
+      ],
+      "domain": {
+        "t": [
+          0,
+          6
+        ]
+      },
+      "rows": 250,
+      "groundTruth": "y(t) = e^(−t/4)·cos(3t)",
+      "spearChampion": {
+        "formula": "((0.00696 * ((t - 16.41765) * ((t - 8.280135) * cos((t * 2.996281))))) + -0.000501)",
+        "costUnits": 27,
+        "mse": 0.00030630571172772763
+      }
+    },
+    {
+      "id": "kdv_soliton",
+      "varNames": [
+        "x",
+        "t"
+      ],
+      "domain": {
+        "x": [
+          -10,
+          10
+        ],
+        "t": [
+          0,
+          2
+        ]
+      },
+      "rows": 400,
+      "groundTruth": "η = 2κ²·sech²(κ(x − 4κ²t − x₀))",
+      "spearChampion": {
+        "formula": "((-1.553578 * max(sqrt(|(6.660595 - max(3.1671, x))|), 0.603662)) + 2.906087)",
+        "costUnits": 7,
+        "mse": 0.0017117911533114868
+      }
+    }
+  ]
+}

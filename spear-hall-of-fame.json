@@ -5323,91 +5323,6 @@
       ]
     }
   },
-  "logit_ml": {
-    "taskId": "logit_ml",
-    "title": "Logit (probas ↔ logits, têtes de classification)",
-    "direction": "min",
-    "metric": 0.0008206231598785846,
-    "level": 2,
-    "formula": "((2.126622 * (((x)Â² + log(max(sqrt(|x|), 1e-30))) + (((x)Â³)Â²)Â³)) + 0.224449)",
-    "seed": 999801,
-    "iteration": 1600,
-    "speed": {
-      "formulaCost": 32,
-      "exactCost": 27,
-      "speedup": 0.84375
-    },
-    "tree": {
-      "o": "add",
-      "c": [
-        {
-          "o": "mul",
-          "c": [
-            {
-              "o": "const",
-              "v": 2.1266220342385473
-            },
-            {
-              "o": "add",
-              "c": [
-                {
-                  "o": "add",
-                  "c": [
-                    {
-                      "o": "sq",
-                      "c": [
-                        {
-                          "o": "var",
-                          "n": "x"
-                        }
-                      ]
-                    },
-                    {
-                      "o": "log",
-                      "c": [
-                        {
-                          "o": "sqrt",
-                          "c": [
-                            {
-                              "o": "var",
-                              "n": "x"
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "o": "cube",
-                  "c": [
-                    {
-                      "o": "sq",
-                      "c": [
-                        {
-                          "o": "cube",
-                          "c": [
-                            {
-                              "o": "var",
-                              "n": "x"
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "o": "const",
-          "v": 0.2244487406420216
-        }
-      ]
-    }
-  },
   "bessel_j1": {
     "taskId": "bessel_j1",
     "title": "Bessel J₁ (FM · membranes antisym)",
@@ -6573,6 +6488,72 @@
               ]
             }
           ]
+        }
+      ]
+    }
+  },
+  "logit_ml": {
+    "taskId": "logit_ml",
+    "title": "Logit (probas ↔ logits, têtes de classification)",
+    "direction": "min",
+    "metric": 0.016974946048628873,
+    "level": 0,
+    "formula": "((-2.920975 * sqrt(|(exp(exp(x)) * log(max(x, 1e-30)))|)) + 5.533519)",
+    "seed": 1000044,
+    "iteration": 556,
+    "speed": {
+      "formulaCost": 65,
+      "exactCost": 27,
+      "speedup": 0.4153846153846154
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": -2.9209753441117647
+            },
+            {
+              "o": "sqrt",
+              "c": [
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "exp",
+                      "c": [
+                        {
+                          "o": "exp",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "x"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "o": "log",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "x"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 5.533519427397523
         }
       ]
     }
