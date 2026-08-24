@@ -4,219 +4,206 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SPEAR — Closed forms, evolved</title>
-<meta name="description" content="SPEAR is a symbolic regression engine that discovers closed-form math laws from data and compiles them to verified WebAssembly and MISRA-C. No neural nets. No black boxes. Just formulas you can read and deploy.">
+<meta name="description" content="SPEAR is a symbolic regression engine that discovers closed-form math laws and compiles them to verified WebAssembly & MISRA-C. Browse the live registry of 73 parity-audited kernels, watch discovered formulas race their exact laws, and drive it all from any LLM via MCP.">
+<meta property="og:title" content="SPEAR — Closed forms, evolved">
+<meta property="og:description" content="73 evolved math kernels, parity-audited WASM/MISRA-C exports, MCP-native. No neural nets, no black boxes.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230b0d0f'/%3E%3Ctext x='16' y='23' font-size='19' text-anchor='middle' fill='%23e9a23b' font-family='Georgia'%3E%E2%88%91%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0b0d0f;
-  --bg-2:#101317;
-  --panel:#14181d;
-  --panel-2:#0f1216;
-  --line:#232a31;
-  --line-hi:#33404a;
-  --ink:#e6e9ec;
-  --ink-dim:#98a1ab;
-  --ink-faint:#5c6670;
-  --amber:#e9a23b;
-  --amber-hi:#f4c170;
-  --amber-dim:#8a6423;
-  --teal:#5fb7b2;
-  --red:#c0554a;
+  --bg:#0b0d0f; --bg-2:#101317; --panel:#14181d; --panel-2:#0f1216;
+  --line:#232a31; --line-hi:#33404a;
+  --ink:#e6e9ec; --ink-dim:#98a1ab; --ink-faint:#5c6670;
+  --amber:#e9a23b; --amber-hi:#f4c170; --amber-dim:#8a6423;
+  --teal:#5fb7b2; --red:#c0554a;
   --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
   --serif:'Fraunces',Georgia,serif;
   --sans:'Figtree',system-ui,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{
-  background:var(--bg);
-  color:var(--ink);
-  font-family:var(--sans);
-  line-height:1.6;
-  overflow-x:hidden;
-  -webkit-font-smoothing:antialiased;
-}
-/* grain + scanline atmosphere */
-body::before{
-  content:"";position:fixed;inset:0;pointer-events:none;z-index:1;
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
-  mix-blend-mode:overlay;
-}
-body::after{
-  content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.5;
-  background:
-    linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);
-  background-size:56px 56px;
-  mask-image:radial-gradient(ellipse at 50% 0%,#000 0%,transparent 78%);
-}
+  mix-blend-mode:overlay}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.5;
+  background:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);
+  background-size:56px 56px;mask-image:radial-gradient(ellipse at 50% 0%,#000 0%,transparent 78%)}
 .wrap{max-width:1180px;margin:0 auto;padding:0 28px;position:relative;z-index:2}
 a{color:var(--amber-hi);text-decoration:none}
 a:hover{text-decoration:underline}
 .mono{font-family:var(--mono);font-size:.82rem}
-.amber{color:var(--amber-hi)}
-.teal{color:var(--teal)}
-.dim{color:var(--ink-dim)}
+.amber{color:var(--amber-hi)}.teal{color:var(--teal)}
 
-/* ---------------- nav ---------------- */
-.nav{
-  position:sticky;top:0;z-index:20;backdrop-filter:blur(10px);
-  background:rgba(11,13,15,.72);border-bottom:1px solid var(--line);
-}
+/* corner-bracket panels */
+.bracket{position:relative;border:1px solid var(--line);background:var(--panel)}
+.bracket::before,.bracket::after{content:"";position:absolute;width:14px;height:14px;pointer-events:none}
+.bracket::before{top:-1px;left:-1px;border-top:2px solid var(--amber-dim);border-left:2px solid var(--amber-dim)}
+.bracket::after{bottom:-1px;right:-1px;border-bottom:2px solid var(--amber-dim);border-right:2px solid var(--amber-dim)}
+
+/* nav */
+.nav{position:sticky;top:0;z-index:30;backdrop-filter:blur(10px);background:rgba(11,13,15,.78);border-bottom:1px solid var(--line)}
 .nav .wrap{display:flex;align-items:center;gap:28px;height:58px}
-.brand{font-family:var(--mono);font-weight:500;letter-spacing:.18em;font-size:.82rem;color:var(--ink);text-transform:uppercase}
+.brand{font-family:var(--mono);letter-spacing:.18em;font-size:.82rem;color:var(--ink);text-transform:uppercase}
 .brand b{color:var(--amber-hi);font-weight:500}
 .nav-links{margin-left:auto;display:flex;gap:24px}
 .nav-links a{color:var(--ink-dim);font-size:.82rem;font-family:var(--mono);letter-spacing:.04em}
 .nav-links a:hover{color:var(--amber-hi);text-decoration:none}
 @media(max-width:720px){.nav-links{display:none}}
 
-/* ---------------- hero ---------------- */
-.hero{position:relative;padding:118px 0 90px;overflow:hidden}
-.hero .wrap{position:relative}
-.kicker{
-  font-family:var(--mono);font-size:.74rem;letter-spacing:.34em;color:var(--amber-dim);
-  text-transform:uppercase;margin-bottom:26px;display:flex;align-items:center;gap:14px;
-}
+/* hero */
+.hero{position:relative;padding:110px 0 80px;overflow:hidden}
+.hero::before{content:"";position:absolute;top:-220px;left:-160px;width:640px;height:640px;border-radius:50%;
+  background:radial-gradient(circle,rgba(233,162,59,.09),transparent 65%);pointer-events:none}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
+@media(max-width:960px){.hero-grid{grid-template-columns:1fr}}
+.kicker{font-family:var(--mono);font-size:.72rem;letter-spacing:.32em;color:var(--amber-dim);text-transform:uppercase;margin-bottom:24px;display:flex;align-items:center;gap:14px}
 .kicker::before{content:"";width:34px;height:1px;background:var(--amber-dim)}
-h1{
-  font-family:var(--serif);font-weight:600;font-size:clamp(2.7rem,7.4vw,5.6rem);
-  line-height:1.02;letter-spacing:-.015em;max-width:15ch;color:var(--ink);
-}
-h1 .lt{color:var(--ink-dim)}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(2.6rem,6vw,4.7rem);line-height:1.03;letter-spacing:-.015em;color:var(--ink)}
+h1 .lt{color:var(--ink-dim);font-size:.62em;font-weight:300;display:block;margin-top:10px}
 h1 .amp{font-style:italic;color:var(--amber-hi);font-weight:400}
-.lede{
-  margin-top:30px;max-width:54ch;font-size:1.08rem;color:var(--ink-dim);
-}
+.lede{margin-top:26px;max-width:54ch;font-size:1.05rem;color:var(--ink-dim)}
 .lede b{color:var(--ink);font-weight:600}
-.cta-row{display:flex;gap:14px;margin-top:40px;flex-wrap:wrap;align-items:center}
-.btn{
-  font-family:var(--mono);font-size:.8rem;letter-spacing:.06em;padding:13px 22px;
-  border:1px solid var(--line-hi);border-radius:3px;color:var(--ink);transition:.18s;
-  display:inline-flex;align-items:center;gap:9px;
-}
+.cta-row{display:flex;gap:12px;margin-top:36px;flex-wrap:wrap;align-items:center}
+.btn{font-family:var(--mono);font-size:.8rem;letter-spacing:.06em;padding:13px 22px;border:1px solid var(--line-hi);border-radius:3px;color:var(--ink);transition:.18s;display:inline-flex;align-items:center;gap:9px;cursor:pointer;background:none}
 .btn.primary{background:var(--amber-hi);color:#131008;border-color:var(--amber-hi);font-weight:500}
 .btn.primary:hover{background:var(--amber);text-decoration:none;transform:translateY(-1px)}
 .btn:hover{border-color:var(--amber-hi);text-decoration:none;transform:translateY(-1px)}
-.btn .prompt{color:var(--ink-faint)}
 
-/* hero formula specimen */
-.specimen{
-  margin-top:64px;border:1px solid var(--line);border-radius:6px;background:var(--panel);
-  overflow:hidden;max-width:760px;box-shadow:0 30px 80px rgba(0,0,0,.5);
-}
-.specimen-bar{
-  display:flex;align-items:center;gap:8px;padding:12px 18px;border-bottom:1px solid var(--line);
-  background:var(--panel-2);font-family:var(--mono);font-size:.72rem;color:var(--ink-faint);
-  letter-spacing:.08em;
-}
-.specimen-bar .dot{width:9px;height:9px;border-radius:50%}
-.specimen-bar .fname{margin-left:8px;color:var(--ink-dim)}
-.specimen-body{padding:26px 26px 22px;font-family:var(--mono);font-size:clamp(.86rem,2.4vw,1.14rem);line-height:2}
-.specimen-body .arrow{color:var(--amber-dim);margin:0 10px}
-.specimen-body .del{color:var(--ink-faint);text-decoration:line-through;text-decoration-color:var(--red);text-decoration-thickness:2px}
-.specimen-foot{
-  display:flex;gap:26px;padding:14px 18px;border-top:1px solid var(--line);
-  font-family:var(--mono);font-size:.76rem;color:var(--ink-dim);flex-wrap:wrap;
-}
-.specimen-foot span b{color:var(--amber-hi);font-weight:500}
-.blink{display:inline-block;width:.55em;height:1.1em;background:var(--amber-hi);vertical-align:-.16em;margin-left:6px;animation:blink 1.1s steps(1) infinite}
-@keyframes blink{50%{opacity:0}}
+/* scope panel */
+.scope{padding:0;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.scope-bar{display:flex;align-items:center;gap:8px;padding:11px 16px;border-bottom:1px solid var(--line);background:var(--panel-2);font-family:var(--mono);font-size:.72rem;color:var(--ink-faint);letter-spacing:.08em}
+.scope-bar .dot{width:9px;height:9px;border-radius:50%}
+.scope-bar .fname{margin-left:8px;color:var(--ink-dim)}
+.scope canvas{display:block;width:100%;height:280px}
+.scope-foot{display:flex;gap:22px;padding:12px 16px;border-top:1px solid var(--line);font-family:var(--mono);font-size:.74rem;color:var(--ink-dim);flex-wrap:wrap}
+.scope-foot span b{color:var(--amber-hi);font-weight:500}
+.legend{display:flex;gap:18px;margin-left:auto;font-size:.68rem}
+.legend i{display:inline-block;width:16px;height:2px;vertical-align:middle;margin-right:6px}
 
-/* ---------------- stats strip ---------------- */
-.stats{
-  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
-  background:var(--bg-2);
-}
+/* stats */
+.stats{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--bg-2)}
 .stats .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line)}
-.stat{background:var(--bg-2);padding:34px 26px}
-.stat .n{font-family:var(--serif);font-weight:600;font-size:2.5rem;color:var(--amber-hi);line-height:1}
-.stat .n small{font-size:1.1rem;color:var(--ink-faint)}
-.stat .l{margin-top:10px;font-size:.84rem;color:var(--ink-dim);line-height:1.45}
+.stat{background:var(--bg-2);padding:32px 26px}
+.stat .n{font-family:var(--serif);font-weight:600;font-size:2.4rem;color:var(--amber-hi);line-height:1}
+.stat .n small{font-size:1.05rem;color:var(--ink-faint)}
+.stat .l{margin-top:10px;font-size:.83rem;color:var(--ink-dim);line-height:1.45}
 @media(max-width:820px){.stats .wrap{grid-template-columns:repeat(2,1fr)}}
 
-/* ---------------- sections ---------------- */
-section{padding:96px 0}
-.sec-head{margin-bottom:52px}
-.sec-tag{
-  font-family:var(--mono);font-size:.72rem;letter-spacing:.3em;color:var(--teal);
-  text-transform:uppercase;display:flex;align-items:center;gap:12px;margin-bottom:18px;
-}
+/* sections */
+section{padding:92px 0}
+.sec-head{margin-bottom:44px}
+.sec-tag{font-family:var(--mono);font-size:.72rem;letter-spacing:.3em;color:var(--teal);text-transform:uppercase;display:flex;align-items:center;gap:12px;margin-bottom:16px}
 .sec-tag::before{content:"//";color:var(--line-hi)}
-.sec-head h2{font-family:var(--serif);font-weight:600;font-size:clamp(1.9rem,4vw,2.8rem);line-height:1.1;max-width:22ch}
-.sec-head p{margin-top:16px;color:var(--ink-dim);max-width:60ch}
+.sec-head h2{font-family:var(--serif);font-weight:600;font-size:clamp(1.85rem,3.8vw,2.7rem);line-height:1.12;max-width:26ch}
+.sec-head p{margin-top:14px;color:var(--ink-dim);max-width:64ch}
 
-/* ---------------- method pipeline ---------------- */
-.pipe{display:grid;grid-template-columns:repeat(6,1fr);gap:0;margin-top:20px}
-.pipe .step{padding:22px 20px;border-top:2px solid var(--line-hi);position:relative}
-.pipe .step::after{content:"→";position:absolute;right:-12px;top:8px;color:var(--amber-dim);font-family:var(--mono)}
+/* live lab tabs */
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.tab{font-family:var(--mono);font-size:.76rem;padding:9px 16px;border:1px solid var(--line);border-radius:3px;background:var(--panel-2);color:var(--ink-dim);cursor:pointer;transition:.15s}
+.tab:hover{border-color:var(--line-hi);color:var(--ink)}
+.tab.on{border-color:var(--amber-hi);color:var(--amber-hi)}
+.lab-grid{display:grid;grid-template-columns:1fr 340px;gap:22px;align-items:stretch}
+@media(max-width:900px){.lab-grid{grid-template-columns:1fr}}
+.lab-panel{overflow:hidden}
+.lab-panel canvas{display:block;width:100%;height:300px}
+.lab-meta{padding:22px;display:flex;flex-direction:column;gap:14px}
+.lab-meta .big{font-family:var(--serif);font-size:2rem;color:var(--amber-hi);font-weight:600;line-height:1}
+.lab-meta .big small{font-size:.75rem;color:var(--ink-faint);font-family:var(--mono);font-weight:400}
+.formula-box{font-family:var(--mono);font-size:.76rem;line-height:1.75;color:var(--ink-dim);border-top:1px dashed var(--line);padding-top:12px;word-break:break-word}
+.formula-box .k{color:var(--teal)}
+
+/* registry */
+.reg-tools{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.reg-search{flex:1;min-width:220px;font-family:var(--mono);font-size:.84rem;padding:11px 14px;background:var(--panel-2);border:1px solid var(--line);border-radius:3px;color:var(--ink);outline:none}
+.reg-search:focus{border-color:var(--amber-hi)}
+.chip{font-family:var(--mono);font-size:.72rem;padding:8px 13px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--ink-dim);cursor:pointer;transition:.15s}
+.chip.on{border-color:var(--amber-hi);color:var(--amber-hi)}
+.reg-count{font-family:var(--mono);font-size:.74rem;color:var(--ink-faint);margin-left:auto}
+.reg-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--panel)}
+table.reg{width:100%;border-collapse:collapse;font-size:.86rem;min-width:720px}
+.reg th{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);text-align:left;padding:12px 16px;border-bottom:1px solid var(--line-hi);cursor:pointer;user-select:none;white-space:nowrap}
+.reg th:hover{color:var(--amber-hi)}
+.reg th .arr{color:var(--amber-hi);margin-left:4px}
+.reg td{padding:13px 16px;border-bottom:1px solid var(--line);vertical-align:top}
+.reg tbody tr.row{cursor:pointer;transition:background .12s}
+.reg tbody tr.row:hover{background:rgba(233,162,59,.045)}
+.reg tbody tr.row.open{background:rgba(233,162,59,.06)}
+.reg .kid{font-family:var(--mono);color:var(--amber-hi);white-space:nowrap}
+.reg .kt{color:var(--ink-dim);font-size:.82rem}
+.reg .km{font-family:var(--mono);font-size:.8rem;color:var(--teal);white-space:nowrap}
+.reg .ks{font-family:var(--mono);font-size:.8rem;color:var(--amber-hi);white-space:nowrap;text-align:right}
+.badge{display:inline-block;font-family:var(--mono);font-size:.66rem;padding:2px 8px;border-radius:999px;border:1px solid var(--line-hi);color:var(--ink-faint);letter-spacing:.05em}
+.badge.exact{border-color:var(--amber-hi);color:var(--amber-hi)}
+.badge.hi{border-color:var(--teal);color:var(--teal)}
+.badge.open{border-color:var(--red);color:var(--red)}
+tr.detail td{background:var(--panel-2);padding:18px 22px;font-family:var(--mono);font-size:.76rem;line-height:1.8;color:var(--ink-dim)}
+tr.detail .lbl{color:var(--ink-faint);text-transform:uppercase;letter-spacing:.08em;font-size:.64rem;margin-right:8px}
+tr.detail .fx{color:var(--ink)}
+@media(max-width:760px){.reg .hide-m{display:none}}
+
+/* MCP */
+.mcp-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:26px;align-items:start}
+@media(max-width:960px){.mcp-grid{grid-template-columns:1fr}}
+.term{overflow:hidden;font-family:var(--mono);font-size:.78rem;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.term-bar{display:flex;align-items:center;gap:8px;padding:11px 16px;border-bottom:1px solid var(--line);background:var(--panel-2);color:var(--ink-faint);font-size:.7rem;letter-spacing:.08em}
+.term-bar .dot{width:9px;height:9px;border-radius:50%}
+.term-body{padding:20px 20px 24px;min-height:380px;line-height:1.9}
+.tl{opacity:0;transform:translateY(4px);animation:tlin .3s forwards;white-space:pre-wrap;word-break:break-word}
+@keyframes tlin{to{opacity:1;transform:none}}
+.tl.user{color:var(--ink)}
+.tl.user::before{content:"❯ ";color:var(--amber-hi)}
+.tl.call{color:var(--ink-faint)}
+.tl.call::before{content:"⏺ ";color:var(--teal)}
+.tl.ok{color:var(--teal)}
+.tl.ok::before{content:"✓ ";color:var(--teal)}
+.tl.out{color:var(--amber-hi);padding-left:1.2em}
+.caret{display:inline-block;width:.55em;height:1em;background:var(--amber-hi);vertical-align:-.12em;animation:blink 1.1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
+.tool{border:1px solid var(--line);border-radius:6px;background:var(--panel-2);padding:16px 16px}
+.tool .tname{font-family:var(--mono);font-size:.86rem;color:var(--amber-hi)}
+.tool p{font-size:.77rem;color:var(--ink-dim);margin-top:6px;line-height:1.5}
+.snippet{position:relative;margin-top:16px;border:1px solid var(--line);border-radius:6px;background:var(--panel-2);padding:16px 18px;font-family:var(--mono);font-size:.74rem;line-height:1.7;color:var(--ink-dim);overflow-x:auto}
+.copy{position:absolute;top:10px;right:10px;font-family:var(--mono);font-size:.64rem;padding:5px 10px;border:1px solid var(--line-hi);border-radius:3px;background:var(--panel);color:var(--ink-dim);cursor:pointer}
+.copy:hover{color:var(--amber-hi);border-color:var(--amber-hi)}
+
+/* method */
+.pipe{display:grid;grid-template-columns:repeat(6,1fr);margin-top:10px}
+.pipe .step{padding:20px 18px;border-top:2px solid var(--line-hi);position:relative}
+.pipe .step::after{content:"→";position:absolute;right:-11px;top:6px;color:var(--amber-dim);font-family:var(--mono)}
 .pipe .step:last-child::after{display:none}
-.pipe .idx{font-family:var(--mono);font-size:.7rem;color:var(--amber-dim)}
-.pipe h3{font-family:var(--serif);font-size:1.12rem;margin:8px 0 6px;font-weight:600}
-.pipe p{font-size:.82rem;color:var(--ink-dim);line-height:1.5}
-@media(max-width:980px){.pipe{grid-template-columns:repeat(3,1fr);row-gap:20px}}
+.pipe .idx{font-family:var(--mono);font-size:.68rem;color:var(--amber-dim)}
+.pipe h3{font-family:var(--serif);font-size:1.08rem;margin:7px 0 5px;font-weight:600}
+.pipe p{font-size:.79rem;color:var(--ink-dim);line-height:1.5}
+@media(max-width:980px){.pipe{grid-template-columns:repeat(3,1fr);row-gap:22px}}
+@media(max-width:560px){.pipe{grid-template-columns:repeat(2,1fr)}}
 
-/* ---------------- hall of fame table ---------------- */
-.hof{width:100%;border-collapse:collapse;font-size:.86rem}
-.hof th{
-  font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--ink-faint);text-align:left;padding:12px 16px;border-bottom:1px solid var(--line-hi);
-}
-.hof td{padding:15px 16px;border-bottom:1px solid var(--line);vertical-align:top}
-.hof tr:hover td{background:rgba(233,162,59,.03)}
-.hof .t{font-weight:600;color:var(--ink);font-family:var(--sans);white-space:nowrap}
-.hof .f{font-family:var(--mono);font-size:.78rem;color:var(--ink-dim);line-height:1.6;word-break:break-word}
-.hof .m{font-family:var(--mono);font-size:.8rem;color:var(--teal);white-space:nowrap}
-.hof .x{font-family:var(--mono);font-size:.8rem;color:var(--amber-hi);white-space:nowrap;text-align:right}
-.hof .x .note{color:var(--ink-faint);font-size:.7rem}
-.hof .exact{color:var(--amber-hi)}
-@media(max-width:760px){.hof .f{display:none}}
-
-/* ---------------- speed grid ---------------- */
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+/* speed cards */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 @media(max-width:820px){.grid2{grid-template-columns:1fr}}
-.card{
-  border:1px solid var(--line);border-radius:6px;background:var(--panel);padding:26px 26px 22px;
-  transition:.2s;position:relative;overflow:hidden;
-}
-.card:hover{border-color:var(--line-hi);transform:translateY(-2px)}
+.card{transition:.2s;padding:24px 24px 20px}
+.card:hover{transform:translateY(-2px);border-color:var(--line-hi)}
 .card .top{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
-.card h3{font-family:var(--serif);font-size:1.25rem;font-weight:600}
-.card .mult{font-family:var(--serif);font-size:1.6rem;color:var(--amber-hi);font-weight:600;white-space:nowrap}
-.card .mult small{font-size:.8rem;color:var(--ink-faint);font-weight:400;font-family:var(--mono)}
-.card p{font-size:.85rem;color:var(--ink-dim);margin-top:10px;line-height:1.55}
-.card .f{font-family:var(--mono);font-size:.76rem;color:var(--ink-dim);margin-top:14px;border-top:1px dashed var(--line);padding-top:12px;line-height:1.7;word-break:break-word}
+.card h3{font-family:var(--serif);font-size:1.2rem;font-weight:600}
+.card .mult{font-family:var(--serif);font-size:1.55rem;color:var(--amber-hi);font-weight:600;white-space:nowrap}
+.card .mult small{font-size:.76rem;color:var(--ink-faint);font-weight:400;font-family:var(--mono)}
+.card p{font-size:.83rem;color:var(--ink-dim);margin-top:9px;line-height:1.55}
+.card .f{font-family:var(--mono);font-size:.74rem;color:var(--ink-dim);margin-top:12px;border-top:1px dashed var(--line);padding-top:11px;line-height:1.7;word-break:break-word}
 .card .f .o{color:var(--teal)}
 
-/* ---------------- tools ---------------- */
-.tools{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
-.tool{border:1px solid var(--line);border-radius:6px;background:var(--panel-2);padding:20px 18px}
-.tool .tname{font-family:var(--mono);font-size:.9rem;color:var(--amber-hi)}
-.tool p{font-size:.78rem;color:var(--ink-dim);margin-top:8px;line-height:1.5}
-@media(max-width:900px){.tools{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:520px){.tools{grid-template-columns:1fr}}
-
-/* ---------------- export pipeline ---------------- */
-.checks{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:26px}
-.check{border:1px solid var(--line);border-radius:6px;background:var(--panel-2);padding:18px 20px}
-.check .label{font-family:var(--mono);font-size:.72rem;color:var(--teal);text-transform:uppercase;letter-spacing:.1em}
-.check .val{font-family:var(--serif);font-size:1.4rem;font-weight:600;margin-top:8px}
-.check p{font-size:.78rem;color:var(--ink-dim);margin-top:6px}
-@media(max-width:820px){.checks{grid-template-columns:1fr}}
-
-/* ---------------- cta ---------------- */
-.cta-band{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--bg-2);padding:80px 0}
-.cta-band h2{font-family:var(--serif);font-weight:600;font-size:clamp(1.8rem,4vw,2.6rem);max-width:20ch;line-height:1.12}
-.cta-band p{color:var(--ink-dim);max-width:52ch;margin-top:14px}
-
-footer{border-top:1px solid var(--line);padding:34px 0}
-footer .wrap{display:flex;justify-content:space-between;gap:20px;font-family:var(--mono);font-size:.76rem;color:var(--ink-faint);flex-wrap:wrap}
+/* cta + footer */
+.cta-band{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--bg-2);padding:76px 0}
+.cta-band h2{font-family:var(--serif);font-weight:600;font-size:clamp(1.7rem,3.8vw,2.5rem);max-width:22ch;line-height:1.14}
+.cta-band p{color:var(--ink-dim);max-width:54ch;margin-top:12px}
+footer{border-top:1px solid var(--line);padding:32px 0}
+footer .wrap{display:flex;justify-content:space-between;gap:20px;font-family:var(--mono);font-size:.74rem;color:var(--ink-faint);flex-wrap:wrap}
 
 .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
 .reveal.in{opacity:1;transform:none}
-
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001s!important;transition-duration:.001s!important}
   .reveal{opacity:1;transform:none}
@@ -229,127 +216,159 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;font-family:var
   <div class="wrap">
     <a class="brand" href="#top"><b>SPEAR</b>&nbsp;· Lab</a>
     <nav class="nav-links">
+      <a href="#live">Live demo</a>
+      <a href="#registry">Registry</a>
+      <a href="#mcp">MCP</a>
       <a href="#method">Method</a>
-      <a href="#hof">Hall of Fame</a>
-      <a href="#speed">Speed</a>
-      <a href="#tools">MCP tools</a>
       <a href="#cta">Install</a>
     </nav>
   </div>
 </header>
 
 <!-- HERO -->
-<section class="hero" id="top">
+<section class="hero" id="top" style="padding-bottom:70px">
   <div class="wrap">
-    <div class="kicker reveal">Symbolic Pareto Evolutionary Algorithm for Research</div>
-    <h1 class="reveal" style="animation-delay:.05s">Closed forms, <span class="amp">evolved</span>.<br><span class="lt">No neural nets. No black boxes.</span></h1>
-    <p class="lede reveal" style="animation-delay:.12s">
-      SPEAR is a symbolic regression engine that <b>discovers closed-form mathematical laws</b> from data —
-      then compiles them to <b>verified WebAssembly</b> and <b>MISRA-C:2012</b>, with machine-checked parity.
-      What comes out is a formula you can <b>read, audit, and deploy on a microcontroller</b>.
-    </p>
-    <div class="cta-row reveal" style="animation-delay:.18s">
-      <a class="btn primary" href="#cta">npm install spear-kernels</a>
-      <a class="btn" href="https://github.com/bahira/superspear" target="_blank" rel="noopener">GitHub ↗</a>
-      <a class="btn" href="#hof">Browse the ledger</a>
-    </div>
-
-    <!-- live-ish specimen: a transcendental kernel replaced by pure algebra -->
-    <div class="specimen reveal" style="animation-delay:.26s">
-      <div class="specimen-bar">
-        <span class="dot" style="background:#c0554a"></span>
-        <span class="dot" style="background:#e9a23b"></span>
-        <span class="dot" style="background:#5fb7b2"></span>
-        <span class="fname">siLu.swiglu → evolved.spear</span>
+    <div class="hero-grid">
+      <div>
+        <div class="kicker reveal">Symbolic Pareto Evolutionary Algorithm for Research</div>
+        <h1 class="reveal">Closed forms, <span class="amp">evolved</span>.<span class="lt">No neural nets. No black boxes.</span></h1>
+        <p class="lede reveal">
+          SPEAR evolves <b>closed-form mathematical laws</b> from data, then compiles them to
+          <b>verified WebAssembly</b> and <b>MISRA-C:2012</b> with machine-checked parity.
+          Formulas you can read, audit, and deploy on a microcontroller — and an
+          <b>MCP server</b> so your LLM can drive the whole engine mid-conversation.
+        </p>
+        <div class="cta-row reveal">
+          <a class="btn primary" href="#mcp">Try it from your agent ↓</a>
+          <a class="btn" href="#registry">Browse 73 kernels</a>
+          <a class="btn" href="https://github.com/bahira/superspear" target="_blank" rel="noopener">GitHub ↗</a>
+        </div>
       </div>
-      <div class="specimen-body">
-        <span class="del">x · σ(x) &nbsp;=&nbsp; x/(1 + e<sup>−x</sup>)</span>
-        <span class="arrow">→</span>
-        x·(0.501 + 0.587·x/(0.815 + √(1+x²)))
-        <span class="blink"></span>
-      </div>
-      <div class="specimen-foot">
-        <span><b>×2.43</b> faster than exp-based</span>
-        <span>0 transcendental ops</span>
-        <span>MSE 7.8e-4</span>
-        <span>FP16-safe</span>
+      <div class="scope bracket reveal">
+        <div class="scope-bar">
+          <span class="dot" style="background:#c0554a"></span><span class="dot" style="background:#e9a23b"></span><span class="dot" style="background:#5fb7b2"></span>
+          <span class="fname">oscilloscope · silu.swiglu — exact vs evolved</span>
+        </div>
+        <canvas id="heroScope" width="760" height="420"></canvas>
+        <div class="scope-foot">
+          <span><b>×2.43</b> faster than exp-based</span>
+          <span>0 transcendental ops</span>
+          <span id="heroErr">max err …</span>
+          <span class="legend"><span><i style="background:var(--teal)"></i>exact σ</span><span><i style="background:var(--amber-hi)"></i>evolved</span></span>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- STATS -->
-<section class="stats" style="padding:0">
+<div class="stats" style="padding:0">
   <div class="wrap">
-    <div class="stat"><div class="n">70<small>+</small></div><div class="l">verified kernels in the registry — activations, physics, finance, quantum, shaders</div></div>
-    <div class="stat"><div class="n">0</div><div class="l">transcendental ops in the shipped forms — pure algebra, GPU / MCU / shader deployable</div></div>
-    <div class="stat"><div class="n">≤1e-6</div><div class="l">machine-checked parity between WASM and C on every exported kernel</div></div>
-    <div class="stat"><div class="n">×480</div><div class="l">fastest speedup vs an iterative solver — replacing loops with O(1) formulas</div></div>
+    <div class="stat"><div class="n" data-count="73">0</div><div class="l">evolved kernels in the registry — activations, physics, finance, quantum, shaders</div></div>
+    <div class="stat"><div class="n" data-count="52">0</div><div class="l">ship a second, cheaper <b>fast slot</b> — two validated operating points per law</div></div>
+    <div class="stat"><div class="n">≤1e-6</div><div class="l">machine-checked C ↔ WASM numeric parity on every exported kernel</div></div>
+    <div class="stat"><div class="n" data-count="1840" data-prefix="×">0</div><div class="l">vs Monte-Carlo on the Gaussian CDF — loops replaced by O(1) formulas</div></div>
+  </div>
+</div>
+
+<!-- LIVE LAB -->
+<section id="live">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-tag">Live, in your browser</div>
+      <h2>The discovered formulas, plotted against the truth. Right here.</h2>
+      <p>No screenshots. The amber curves below are the actual evolved champions, evaluated client-side against the exact laws they replace — same expressions the WASM exports run.</p>
+    </div>
+    <div class="tabs" id="labTabs"></div>
+    <div class="lab-grid">
+      <div class="lab-panel bracket"><canvas id="labCanvas" width="900" height="450"></canvas></div>
+      <div class="lab-meta bracket">
+        <div><div class="big" id="labMult">—<small>&nbsp;speed vs exact</small></div></div>
+        <div class="formula-box" id="labExact"></div>
+        <div class="formula-box" id="labEvo"></div>
+        <div class="formula-box" id="labErr" style="border-top:1px dashed var(--line)"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REGISTRY -->
+<section id="registry" style="border-top:1px solid var(--line);background:var(--bg-2)">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-tag">The ledger</div>
+      <h2>Every kernel. Every record. Click anything.</h2>
+      <p>The full registry, straight from <span class="mono">spear-hall-of-fame.json</span>. Search, filter, sort — open a row for its precise &amp; fast formulas, costs and solver replacements.</p>
+    </div>
+    <div class="reg-tools">
+      <input class="reg-search" id="regSearch" type="search" placeholder="search id, title, formula…  (e.g. kerr, exp-free, atan)" aria-label="Search kernels">
+      <button class="chip on" data-f="all">All</button>
+      <button class="chip" data-f="exact">Exact</button>
+      <button class="chip" data-f="fast">Fast slot</button>
+      <button class="chip" data-f="open">Open (L0)</button>
+      <span class="reg-count" id="regCount"></span>
+    </div>
+    <div class="reg-wrap">
+      <table class="reg" aria-label="Kernel registry">
+        <thead><tr>
+          <th data-s="i">Kernel</th>
+          <th data-s="l">Grade</th>
+          <th data-s="m">Record</th>
+          <th data-s="sp" class="hide-m">Cost</th>
+          <th data-s="sp" style="text-align:right">Speed</th>
+        </tr></thead>
+        <tbody id="regBody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- MCP -->
+<section id="mcp">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-tag">Agent-native · Model Context Protocol</div>
+      <h2>Your LLM already knows how to evolve kernels.</h2>
+      <p>SPEAR ships a standard <b>MCP server</b>: Claude Desktop, Cursor, Windsurf — any MCP client — gets the engine as five native tools. Below, a real session: the numbers in the tool result are being computed right now by the actual champion formula, in this page.</p>
+    </div>
+    <div class="mcp-grid">
+      <div>
+        <div class="tools">
+          <div class="tool"><div class="tname">discover</div><p>Evolve a replacement kernel for any target formula — seconds, not sprints.</p></div>
+          <div class="tool"><div class="tname">list_kernels</div><p>Browse the registry: records, speedups, exact-solve status.</p></div>
+          <div class="tool"><div class="tname">get_kernel</div><p>Precise/fast formulas, MISRA-C, torch export, cost breakdown.</p></div>
+          <div class="tool"><div class="tname">evaluate_kernel</div><p>Evaluate any kernel at specific inputs, either operating point.</p></div>
+          <div class="tool"><div class="tname">run_benchmark</div><p>Launch discovery passes on selected tasks from chat.</p></div>
+          <div class="tool" style="display:flex;flex-direction:column;justify-content:center"><div class="tname" style="color:var(--teal)">stdio transport</div><p>Zero daemon, zero API keys — a plain subprocess.</p></div>
+        </div>
+        <div class="snippet"><button class="copy" data-copy='{"mcpServers":{"spear-kernels":{"command":"npx","args":["tsx","/path/to/superspear/src/mcp/server.ts"]}}}'>copy</button><span class="teal">claude_desktop_config.json</span>
+{<br>&nbsp;&nbsp;"mcpServers": {<br>&nbsp;&nbsp;&nbsp;&nbsp;"spear-kernels": {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"command": "npx",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"args": ["tsx", "/path/to/superspear/src/mcp/server.ts"]<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;}<br>}</div>
+        <p style="margin-top:14px;font-size:.8rem;color:var(--ink-faint)">Then just ask: <i>"Discover a fast algebraic replacement for silu on [−6, 8]"</i></p>
+      </div>
+      <div class="term bracket">
+        <div class="term-bar"><span class="dot" style="background:#c0554a"></span><span class="dot" style="background:#e9a23b"></span><span class="dot" style="background:#5fb7b2"></span><span style="margin-left:8px">agent session — spear-kernels MCP</span><button class="copy" style="position:static;margin-left:auto" id="replay">↻ replay</button></div>
+        <div class="term-body" id="termBody"></div>
+      </div>
+    </div>
   </div>
 </section>
 
 <!-- METHOD -->
-<section id="method">
+<section id="method" style="border-top:1px solid var(--line);background:var(--bg-2)">
   <div class="wrap">
     <div class="sec-head">
       <div class="sec-tag">The method</div>
       <h2>Evolution, not approximation.</h2>
-      <p>
-        A population of algebraic trees competes on <b>accuracy ↔ parsimony</b>. Transcedental operations are
-        allowed but priced honestly — an <span class="mono">exp</span> costs ~20 ALU/SFU units against 1 for a
-        multiply — so the search is biased toward cheap, deployable algebra. Every discovery is reproducible
-        from a single seed: same seed, same data, same formulas, same metrics.
-      </p>
+      <p>A population of algebraic trees competes on accuracy ↔ parsimony under NSGA-II. Transcendental ops are allowed but priced honestly (~20 ALU/SFU units vs 1 for a multiply), so the search is biased toward cheap deployable algebra. An out-of-distribution gate rejects formulas that only interpolate; past champions seed every new run. Same seed ⇒ same formulas.</p>
     </div>
     <div class="pipe">
-      <div class="step"><div class="idx">01</div><h3>Data</h3><p>Seeded datasets &amp; exact-law baselines priced as cost-model references.</p></div>
-      <div class="step"><div class="idx">02</div><h3>Evolve</h3><p>NSGA-II multi-objective GP. Heritage bootstrap: past champions seed the next run.</p></div>
-      <div class="step"><div class="idx">03</div><h3>Attack</h3><p>Out-of-distribution extrapolation gate — off-support blow-ups are rejected.</p></div>
-      <div class="step"><div class="idx">04</div><h3>Verify</h3><p>Holdout scoring + MISRA lint + gcc compile + C↔WASM numeric parity.</p></div>
-      <div class="step"><div class="idx">05</div><h3>Export</h3><p>Python (torch), CUDA C, strict MISRA-C99, and hand-rolled WASM.</p></div>
-      <div class="step"><div class="idx">06</div><h3>Re-inject</h3><p>Champions join the ledger and warm up the next generation of runs.</p></div>
+      <div class="step"><div class="idx">01</div><h3>Data</h3><p>Seeded datasets; exact-law baselines priced as cost-model references.</p></div>
+      <div class="step"><div class="idx">02</div><h3>Evolve</h3><p>NSGA-II GP + heritage bootstrap from the champion ledger.</p></div>
+      <div class="step"><div class="idx">03</div><h3>Attack</h3><p>OOD extrapolation gate — off-support blow-ups rejected.</p></div>
+      <div class="step"><div class="idx">04</div><h3>Verify</h3><p>Holdout scoring, MISRA lint, gcc, C↔WASM parity.</p></div>
+      <div class="step"><div class="idx">05</div><h3>Export</h3><p>torch, CUDA C, strict MISRA-C99, hand-rolled WASM.</p></div>
+      <div class="step"><div class="idx">06</div><h3>Re-inject</h3><p>Champions join the ledger and warm up the next generation.</p></div>
     </div>
-  </div>
-</section>
-
-<!-- HALL OF FAME -->
-<section id="hof" style="border-top:1px solid var(--line);background:var(--bg-2)">
-  <div class="wrap">
-    <div class="sec-head">
-      <div class="sec-tag">Hall of fame</div>
-      <h2>The ledger is the evidence.</h2>
-      <p>
-        Best discoveries across all seeds. <b>Speed</b> = exact reference cost ÷ discovered formula cost in GPU
-        ALU/SFU units. Every record is replayable from the seed that found it.
-      </p>
-    </div>
-
-    <table class="hof">
-      <thead><tr><th>Kernel</th><th>Record</th><th>Speed</th></tr></thead>
-      <tbody>
-        <tr><td class="t">Kerr deflection, spin a≠0</td><td class="f">rational double-pole in (b−0.196)</td><td class="m">7.5e-10</td><td class="x">×133 vs RK4</td></tr>
-        <tr><td class="t">Gaussian CDF Φ(x)</td><td class="f">clamped rational, div→mul strength reduction</td><td class="m">1.6e-5</td><td class="x">×1840 vs Monte-Carlo</td></tr>
-        <tr><td class="t">Damped oscillation</td><td class="f">(t−16.4)(t−8.3)·cos(2.996t)</td><td class="m">3.1e-4</td><td class="x">×200 vs RKF45</td></tr>
-        <tr><td class="t">2-link IK elbow</td><td class="f">atan identity — full analytic inverse</td><td class="m exact">EXACT 1.1e-13</td><td class="x">×20 vs Newton-DLS</td></tr>
-        <tr><td class="t">eigen3_sym λmax</td><td class="f">Cardano trisection scaffold recovered</td><td class="m exact">EXACT 3.3e-11</td><td class="x">×18 vs Jacobi</td></tr>
-        <tr><td class="t">GELU</td><td class="f">x·min(1.002, relu(0.308x + 0.501))</td><td class="m">5.3e-4</td><td class="x">×6.57</td></tr>
-        <tr><td class="t">KdV soliton</td><td class="f">max(√(6.66−max(3.17,x)), 0.60)</td><td class="m">1.7e-3</td><td class="x">×7.57</td></tr>
-        <tr><td class="t">SiLU / Swish</td><td class="f">x·(0.501 + 0.587·x/(0.815 + √(1+x²)))</td><td class="m">7.8e-4</td><td class="x">×2.43</td></tr>
-        <tr><td class="t">Concurrence (entanglement)</td><td class="f">2·|ad − bc| — cheaper than hand-written</td><td class="m exact">EXACT @5u</td><td class="x">×1.40</td></tr>
-        <tr><td class="t">Stefan–Boltzmann</td><td class="f">σT⁴ — recovered to machine precision</td><td class="m exact">EXACT @5u</td><td class="x">optimal</td></tr>
-        <tr><td class="t">Hill dose-response</td><td class="f">c³/(1 + c³) — exact recovery</td><td class="m exact">TRUE ZERO @9u</td><td class="x">×26</td></tr>
-        <tr><td class="t">M/M/1 queue wait</td><td class="f">−((λ/μ)/(λ−μ)) — the true form</td><td class="m exact">EXACT</td><td class="x">optimal</td></tr>
-        <tr><td class="t">Doppler (audio/radar)</td><td class="f">exact law via perturbed scaffold</td><td class="m exact">EXACT</td><td class="x">—</td></tr>
-        <tr><td class="t">PMT loan payment</td><td class="f">atan(n) hybrid — novel, replaces e^(n·ln(1+r))</td><td class="m">4.4e-7</td><td class="x">×1.38</td></tr>
-        <tr><td class="t">qfi_dephasing (quantum)</td><td class="f">replaces BFGS optimization over bases</td><td class="m">1.47</td><td class="x">×15 vs BFGS</td></tr>
-        <tr><td class="t">loschmidt_rate (quantum)</td><td class="f">replaces exact diagonalization of TFIM</td><td class="m">5.3e-2</td><td class="x">×14 vs diag</td></tr>
-      </tbody>
-    </table>
-
-    <p style="margin-top:26px;font-size:.82rem;color:var(--ink-dim)">
-      <span class="mono amber">↯</span> Physics recovered from noise: <b class="mono">g = 9.812 m·s⁻²</b> from free-fall data,
-      the <b class="mono">1.5</b> Kepler exponent, the Lorentz factor exact — the engine rediscovers laws, not just fits.
-    </p>
   </div>
 </section>
 
@@ -359,56 +378,13 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;font-family:var
     <div class="sec-head">
       <div class="sec-tag">The honest multipliers</div>
       <h2>Cheap O(1) formulas beat loops.</h2>
-      <p>
-        Where practitioners normally run an <i>iterative solver</i>, SPEAR finds a closed form. Counting the
-        solver's full bill — every iteration, in the same ALU/SFU units — the accelerations are legitimate,
-        measured, and reported even when the discovered formula is slower.
-      </p>
+      <p>Where practitioners normally run an iterative solver, SPEAR finds a closed form. Solver bills counted fully, in the same ALU/SFU units — slower results reported as measured, never hidden.</p>
     </div>
     <div class="grid2">
-      <div class="card"><div class="top"><h3>Gaussian CDF</h3><div class="mult">×1840<small>&nbsp;vs Monte-Carlo</small></div></div><p>1000 Box–Muller draws → one clamped rational. The div rails double as free saturation.</p><div class="f"><span class="o">9 units</span> · 46,000 → 9</div></div>
-      <div class="card"><div class="top"><h3>Kerr deflection + spin</h3><div class="mult">×480<small>&nbsp;fast slot vs RK4</small></div></div><p>RK4 geodesic integration, 200 steps, → a 5-unit rational. Precise slot still ×133.</p><div class="f"><span class="o">10.49/(s+b)</span> · 5 units</div></div>
-      <div class="card"><div class="top"><h3>Damped oscillation</h3><div class="mult">×200<small>&nbsp;vs RKF45</small></div></div><p>Adaptive 300-step solve → polynomial envelope × carrier, exact-grade amplitude modulation.</p><div class="f"><span class="o">(t−16.4)(t−8.3)·cos(2.996t)</span></div></div>
-      <div class="card"><div class="top"><h3>Kerr (weak field)</h3><div class="mult">×1.31<small>&nbsp;vs exact</small></div></div><p>The rational form recovered near-exactly — a case where the evolved form beats the hand reference on cost.</p><div class="f"><span class="o">13 → 17 units</span></div></div>
-      <div class="card"><div class="top"><h3>2-link IK elbow</h3><div class="mult">×20<small>&nbsp;vs Newton-DLS</small></div></div><p>8 iterations of damped least-squares → the analytic inverse, exact to 1.1e-13.</p><div class="f"><span class="o">atan identity</span> · 52 units</div></div>
-      <div class="card"><div class="top"><h3>RoPE rotation</h3><div class="mult">EXACT<small>&nbsp;×1.45 vs CORDIC</small></div></div><p>sin/cos carriers are served as primitives, so the rotation falls out to machine precision at depth 6000.</p><div class="f"><span class="o">44 units</span> · MSE = 0</div></div>
-    </div>
-  </div>
-</section>
-
-<!-- TOOLS -->
-<section id="tools" style="border-top:1px solid var(--line);background:var(--bg-2)">
-  <div class="wrap">
-    <div class="sec-head">
-      <div class="sec-tag">Agent-native</div>
-      <h2>Drive it from any LLM.</h2>
-      <p>
-        SPEAR ships a <b>Model Context Protocol</b> server — Claude, Cursor, Windsurf and any MCP agent can
-        evolve, inspect and evaluate kernels natively, mid-conversation.
-      </p>
-    </div>
-    <div class="tools">
-      <div class="tool"><div class="tname">discover</div><p>Evolve a kernel for a target formula in seconds → returns formula + WASM/C/PyTorch.</p></div>
-      <div class="tool"><div class="tname">list_kernels</div><p>Browse the registry with records, speedups and exact-solve status.</p></div>
-      <div class="tool"><div class="tname">get_kernel</div><p>Full details: precise/fast formulas, MISRA-C, Python, cost breakdown.</p></div>
-      <div class="tool"><div class="tname">evaluate_kernel</div><p>Evaluate any kernel at specific inputs — precise or fast slot.</p></div>
-      <div class="tool"><div class="tname">run_benchmark</div><p>Launch discovery passes on selected tasks from the conversation.</p></div>
-    </div>
-  </div>
-</section>
-
-<!-- EXPORT / VERIFY -->
-<section id="export">
-  <div class="wrap">
-    <div class="sec-head">
-      <div class="sec-tag">Ship it</div>
-      <h2>Verified to the edge.</h2>
-      <p>Every discovered law is exported through an automated audit before it earns a place in the ledger.</p>
-    </div>
-    <div class="checks">
-      <div class="check"><div class="label">Static MISRA lint</div><div class="val">✓ every task</div><p>Zero heap, branchless (fminf/fmaxf), fixed-width float32_t, FMA-friendly Horner shapes.</p></div>
-      <div class="check"><div class="label">Real compilation</div><div class="val">gcc -std=c99</div><p>-Wall -Wextra -pedantic -O2, compiled per task in CI.</p></div>
-      <div class="check"><div class="label">Numeric parity</div><div class="val">≤ 1e-6 rel.</div><p>C ↔ WASM evaluated on identical sweeps; 69/69 op-parity tests green.</p></div>
+      <div class="card bracket"><div class="top"><h3>Gaussian CDF</h3><div class="mult">×1840<small>&nbsp;vs Monte-Carlo</small></div></div><p>1000 Box–Muller draws → one clamped rational. The protected-div rails double as free saturation.</p><div class="f"><span class="o">9 units</span> · 46,000 → 9</div></div>
+      <div class="card bracket"><div class="top"><h3>Kerr deflection + spin</h3><div class="mult">×480<small>&nbsp;fast vs RK4</small></div></div><p>RK4 geodesic integration, 200 steps → a 5-unit rational. Precise slot still ×133.</p><div class="f"><span class="o">10.49/(s+b)</span> · 5 units</div></div>
+      <div class="card bracket"><div class="top"><h3>Damped oscillation</h3><div class="mult">×200<small>&nbsp;vs RKF45</small></div></div><p>Adaptive 300-step solve → polynomial envelope × carrier.</p><div class="f"><span class="o">(t−16.4)(t−8.3)·cos(2.996t)</span></div></div>
+      <div class="card bracket"><div class="top"><h3>2-link IK elbow</h3><div class="mult">×20<small>&nbsp;vs Newton-DLS</small></div></div><p>8 damped least-squares iterations → the analytic inverse, exact to 1.1e-13.</p><div class="f"><span class="o">atan identity</span> · 52 units</div></div>
     </div>
   </div>
 </section>
@@ -417,31 +393,211 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;font-family:var
 <section class="cta-band" id="cta">
   <div class="wrap">
     <h2>Evolve your own kernel.</h2>
-    <p>Same seed ⇒ same data, same formulas, same metrics. Every record is replayable, every export parity-audited, every formula yours to ship.</p>
-    <div class="cta-row" style="margin-top:34px">
+    <p>Same seed ⇒ same data, same formulas, same metrics. Every record replayable, every export parity-audited, every formula yours to ship.</p>
+    <div class="cta-row" style="margin-top:30px">
       <a class="btn primary" href="https://www.npmjs.com/package/spear-kernels" target="_blank" rel="noopener">npm install spear-kernels</a>
       <a class="btn" href="https://github.com/bahira/superspear" target="_blank" rel="noopener">github.com/bahira/superspear ↗</a>
     </div>
-    <p class="mono dim" style="margin-top:26px;font-size:.76rem">npx tsx scripts/hall-of-fame.ts 777888 500&nbsp;&nbsp;<span class="amber">// rediscovers the RC record</span></p>
+    <div class="snippet" style="max-width:560px"><button class="copy" data-copy="npx tsx scripts/hall-of-fame.ts 777888 500">copy</button><span class="amber">$</span> npx tsx scripts/hall-of-fame.ts 777888 500<br><span style="color:var(--ink-faint)"># rediscovers the RC-circuit record from one integer</span></div>
   </div>
 </section>
 
 <footer>
-  <div class="wrap">
-    <span>SPEAR · MIT licensed</span>
-    <span>the discovered formulas are yours too</span>
-  </div>
+  <div class="wrap"><span>SPEAR · MIT licensed — the discovered formulas are yours too</span><span><a href="https://github.com/bahira/superspear">repo</a> · <a href="https://www.npmjs.com/package/spear-kernels">npm</a> · built by evolution</span></div>
 </footer>
 
+<script src="./kernels.js"></script>
 <script>
-  // staggered reveal on scroll
-  const io = new IntersectionObserver((entries)=>{
-    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
-  },{threshold:.12});
-  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
-  // synthetic cursor blink typing on the specimen arrow target
-  const blink = document.querySelector('.blink');
-  if (blink && matchMedia('(prefers-reduced-motion: reduce)').matches) blink.style.display='none';
+"use strict";
+/* ---------------- helpers ---------------- */
+const $ = (s)=>document.querySelector(s);
+const $$ = (s)=>document.querySelectorAll(s);
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ---------------- reveals ---------------- */
+const io = new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target);}});},{threshold:.12});
+$$(".reveal").forEach(el=>io.observe(el));
+
+/* ---------------- stat count-up ---------------- */
+const cio = new IntersectionObserver((es)=>{es.forEach(e=>{
+  if(!e.isIntersecting)return; cio.unobserve(e.target);
+  const el=e.target,end=+el.dataset.count,pre=el.dataset.prefix||"",dur=reduced?0:1100,t0=performance.now();
+  const step=(t)=>{const p=dur?Math.min(1,(t-t0)/dur):1;el.textContent=pre+Math.round(end*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(step);};
+  requestAnimationFrame(step);
+});},{threshold:.5});
+$$("[data-count]").forEach(el=>cio.observe(el));
+
+/* ---------------- copy buttons ---------------- */
+$$(".copy[data-copy]").forEach(b=>b.addEventListener("click",()=>{
+  navigator.clipboard?.writeText(b.dataset.copy).then(()=>{b.textContent="copied";setTimeout(()=>b.textContent="copy",1400);});
+}));
+
+/* ================= SCOPE PLOTS ================= */
+function erf(x){const s=Math.sign(x);x=Math.abs(x);const t=1/(1+0.3275911*x);
+  return s*(1-((((1.061405429*t-1.453152027)*t+1.421413741)*t-0.284496736)*t+0.254829592)*t*Math.exp(-x*x));}
+const CHAMPIONS={
+  silu:{exact:x=>x/(1+Math.exp(-x)),evo:x=>0.997587*(x*(0.501+(0.587*x/(0.815+Math.sqrt(Math.abs(0.909361+x*x))))))-0.005749,
+        lo:-6,hi:8,name:"silu.swiglu"},
+  gelu:{exact:x=>0.5*x*(1+Math.tanh(0.7978845608*(x+0.044715*x*x*x))),evo:x=>0.997729*(x*Math.min(1.002,Math.max(0,0.306923*x+0.501)))-0.004004,
+        lo:-4,hi:4,name:"gelu.geglu"},
+  phi:{exact:x=>0.5*(1+erf(x/Math.SQRT2)),evo:x=>0.446257*Math.atan(Math.min(0.946094*Math.max(x,-2.183),2.045418))+0.50123,
+       lo:-3,hi:3,name:"gaussian_cdf"},
+  hill:{exact:x=>{const c=x*x*x;return c/(1+c);},evo:x=>-0.5088154625822694*Math.cos(Math.atan(x)+Math.atan(x*x))+0.5005994325153399,
+        lo:0,hi:6,name:"hill.dose-response"}
+};
+function setupCanvas(cv){
+  const dpr=Math.min(2,window.devicePixelRatio||1),w=cv.clientWidth,h=cv.clientHeight||cv.height/2;
+  cv.width=w*dpr;cv.height=h*dpr;const ctx=cv.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);return{ctx,w,h};
+}
+function drawCurves(cv,cfg,progress){
+  const{ctx,w,h}=setupCanvas(cv);
+  const pad={l:38,r:14,t:14,b:26};
+  let ymin=Infinity,ymax=-Infinity;const N=180,xs=[];
+  for(let i=0;i<=N;i++){const x=cfg.lo+(cfg.hi-cfg.lo)*i/N;xs.push(x);
+    for(const f of[cfg.exact,cfg.evo]){const v=f(x);if(Number.isFinite(v)){ymin=Math.min(ymin,v);ymax=Math.max(ymax,v);}}}
+  const spanY=(ymax-ymin)||1;ymin-=spanY*.1;ymax+=spanY*.1;
+  const X=x=>pad.l+(w-pad.l-pad.r)*(x-cfg.lo)/(cfg.hi-cfg.lo);
+  const Y=v=>pad.t+(h-pad.t-pad.b)*(1-(v-ymin)/(ymax-ymin));
+  ctx.clearRect(0,0,w,h);
+  // oscillo grid
+  ctx.strokeStyle="rgba(255,255,255,.05)";ctx.lineWidth=1;
+  for(let gy=0;gy<=5;gy++){ctx.beginPath();ctx.moveTo(pad.l,pad.t+(h-pad.t-pad.b)*gy/5);ctx.lineTo(w-pad.r,pad.t+(h-pad.t-pad.b)*gy/5);ctx.stroke();}
+  for(let gx=0;gx<=6;gx++){ctx.beginPath();ctx.moveTo(pad.l+(w-pad.l-pad.r)*gx/6,pad.t);ctx.lineTo(pad.l+(w-pad.l-pad.r)*gx/6,h-pad.b);ctx.stroke();}
+  // axes labels
+  ctx.fillStyle="#5c6670";ctx.font="10px 'IBM Plex Mono',monospace";
+  ctx.fillText(cfg.lo.toFixed(0),pad.l-4,h-8);ctx.fillText(cfg.hi.toFixed(0),w-pad.r-16,h-8);
+  const curve=(fn,color,width,dash)=>{
+    ctx.save();ctx.strokeStyle=color;ctx.lineWidth=width;if(dash)ctx.setLineDash([5,5]);
+    if(color===getComputedStyle(document.documentElement).getPropertyValue("--amber-hi")){ctx.shadowColor="rgba(244,193,112,.55)";ctx.shadowBlur=8;}
+    ctx.beginPath();let started=false;
+    const upto=Math.floor(N*progress);
+    for(let i=0;i<=upto;i++){const x=xs[i],v=fn(x);if(!Number.isFinite(v)){started=false;continue;}
+      const px=X(x),py=Y(Math.max(ymin-spanY,Math.min(ymax+spanY,v)));
+      if(!started){ctx.moveTo(px,py);started=true;}else ctx.lineTo(px,py);}
+    ctx.stroke();ctx.restore();};
+  curve(cfg.exact,"#5fb7b2",1.4,true);
+  curve(cfg.evo,"#f4c170",2,false);
+  return{X,Y,xs,N};
+}
+function maxErr(cfg){let m=0;for(let i=0;i<=200;i++){const x=cfg.lo+(cfg.hi-cfg.lo)*i/200;const e=Math.abs(cfg.exact(x)-cfg.evo(x));if(Number.isFinite(e))m=Math.max(m,e);}return m;}
+
+/* hero scope */
+const heroCfg=CHAMPIONS.silu,heroCv=$("#heroScope");
+function animateHero(){
+  if(reduced){drawCurves(heroCv,heroCfg,1);$("#heroErr").innerHTML="max err <b>"+maxErr(heroCfg).toExponential(1)+"</b>";return;}
+  const t0=performance.now(),dur=1500;
+  const tick=(t)=>{const p=Math.min(1,(t-t0)/dur);drawCurves(heroCv,heroCfg,1-Math.pow(1-p,3));
+    if(p<1)requestAnimationFrame(tick);else $("#heroErr").innerHTML="max err <b>"+maxErr(heroCfg).toExponential(1)+"</b>";};
+  requestAnimationFrame(tick);
+}
+addEventListener("load",animateHero);
+
+/* live lab */
+const SHOW=[
+  {id:"silu",label:"SiLU · ×2.43",mult:"×2.43",ex:"x · σ(x) &nbsp;<span class='k'>=</span> x/(1 + e⁻ˣ)",ev:"<span class='k'>evolved</span> 0.997587·x·(0.501 + 0.587·x/(0.815 + √(0.909+x²))) − 0.005749"},
+  {id:"gelu",label:"GELU · ×6.57",mult:"×6.57",ex:"0.5·x·(1 + tanh(0.798·(x+0.045x³)))",ev:"<span class='k'>evolved</span> 0.997729·x·min(1.002, relu(0.308x + 0.501)) − 0.004"},
+  {id:"phi",label:"Φ(x) · ×1840 vs MC",mult:"×1840",ex:"Φ(x) &nbsp;<span class='k'>=</span> ½(1 + erf(x/√2))",ev:"<span class='k'>evolved</span> 0.446257·atan(clamp(0.946·x, −2.183, 2.163)) + 0.50123"},
+  {id:"hill",label:"Hill · TRUE ZERO",mult:"EXACT",ex:"c³/(1 + c³)",ev:"<span class='k'>evolved</span> −0.5088·cos(atan(c) + atan(c²)) + 0.5006"}
+];
+let labSel="silu";
+function renderTabs(){$("#labTabs").innerHTML=SHOW.map(s=>`<button class="tab${s.id===labSel?" on":""}" data-id="${s.id}">${s.label}</button>`).join("");
+  $$("#labTabs .tab").forEach(b=>b.addEventListener("click",()=>{labSel=b.dataset.id;renderLab();}));}
+function renderLab(){
+  renderTabs();const s=SHOW.find(v=>v.id===labSel),cfg=CHAMPIONS[labSel],cv=$("#labCanvas");
+  $("#labMult").innerHTML=s.mult+"<small>&nbsp;speed vs exact</small>";
+  $("#labExact").innerHTML="<span class='k'>exact law</span>&nbsp; "+s.ex;
+  $("#labEvo").innerHTML=s.ev;
+  $("#labErr").innerHTML="max |error| over ["+cfg.lo+", "+cfg.hi+"] :&nbsp; <span class='amber'>"+maxErr(cfg).toExponential(2)+"</span>";
+  if(reduced){drawCurves(cv,cfg,1);return;}
+  const t0=performance.now(),dur=900;
+  const tick=(t)=>{const p=Math.min(1,(t-t0)/dur);drawCurves(cv,cfg,1-Math.pow(1-p,3));if(p<1)requestAnimationFrame(tick);};
+  requestAnimationFrame(tick);
+}
+renderLab();
+
+/* ================= REGISTRY ================= */
+const K=window.SPEAR_KERNELS||[];
+const fmtM=(v)=>v<=1e-12?"EXACT":v.toExponential(2);
+const badgeFor=(k)=>{
+  if(k.m<=1e-12)return'<span class="badge exact">EXACT</span>';
+  if(k.l>=4)return'<span class="badge hi">L'+k.l+"</span>";
+  if(k.l===0)return'<span class="badge open">L0 · open</span>';
+  return'<span class="badge">L'+k.l+"</span>";};
+let regFilter="all",regQuery="",sortKey=null,sortDir=-1;
+function matches(k){
+  if(regFilter==="exact"&&k.m>1e-12)return false;
+  if(regFilter==="fast"&&!k.ff)return false;
+  if(regFilter==="open"&&!(k.l===0&&k.m>1e-12))return false;
+  if(!regQuery)return true;const q=regQuery.toLowerCase();
+  return(k.i+" "+k.t+" "+(k.f||"")).toLowerCase().includes(q);}
+function sorted(list){
+  if(!sortKey)return list;
+  const val=(k)=>{switch(sortKey){case"i":return k.i;case"l":return k.l;case"m":return k.m;case"sp":return k.sp??-1;default:return 0;}};
+  return list.slice().sort((a,b)=>{const va=val(a),vb=val(b);
+    if(typeof va==="string")return va.localeCompare(vb)*(-sortDir);
+    return(va-vb)*(-sortDir);});}
+function renderReg(){
+  const rows=sorted(K.filter(matches));
+  $("#regCount").textContent=rows.length+" / "+K.length+" kernels";
+  $("#regBody").innerHTML=rows.map(k=>`
+    <tr class="row" data-id="${k.i}" aria-expanded="false">
+      <td><span class="kid">${k.i}</span>${k.ff?' <span title="has fast slot" style="color:var(--amber-dim)">▸</span>':""}<br><span class="kt">${k.t.length>44?k.t.slice(0,44)+"…":k.t}</span></td>
+      <td>${badgeFor(k)}</td>
+      <td class="km">${fmtM(k.m)}</td>
+      <td class="km hide-m">${k.fc!=null?k.fc+" u":"—"}</td>
+      <td class="ks">${k.vi?("×"+k.vi.s+"<br><span style='color:var(--ink-faint);font-size:.62rem'>"+k.vi.l+"</span>"):(k.sp!=null&&k.sp>=1?"×"+k.sp:"—")}</td>
+    </tr>
+    <tr class="detail" hidden><td colspan="5">
+      <div><span class="lbl">precise</span><span class="fx">${k.f||"—"}</span></div>
+      ${k.ff?`<div><span class="lbl">fast&nbsp;(${fmtM(k.fm)})</span><span class="fx">${k.ff}</span></div>`:""}
+      <div style="margin-top:6px;color:var(--ink-faint)">
+        ${k.fc!=null?`formula ${k.fc} u`:""}${k.xc!=null?" · exact ref "+k.xc+" u":""}${k.sp!=null?" · ×"+k.sp+" vs exact":""}
+        ${k.vi?` · <span class="amber">×${k.vi.s} vs ${k.vi.l}</span>`:""}
+      </div>
+    </td></tr>`).join("")||'<tr><td colspan="5" style="color:var(--ink-faint);padding:26px;text-align:center">no kernel matches — try another query</td></tr>';
+  $$("#regBody tr.row").forEach(tr=>tr.addEventListener("click",()=>{
+    const d=tr.nextElementSibling,open=d.hidden;d.hidden=!open;tr.classList.toggle("open",open);tr.setAttribute("aria-expanded",open);}));
+}
+$("#regSearch").addEventListener("input",(e)=>{regQuery=e.target.value.trim();renderReg();});
+$$(".chip").forEach(c=>c.addEventListener("click",()=>{
+  $$(".chip").forEach(x=>x.classList.remove("on"));c.classList.add("on");regFilter=c.dataset.f;renderReg();}));
+$$(".reg th").forEach(th=>th.addEventListener("click",()=>{
+  const k=th.dataset.s;if(sortKey===k)sortDir*=-1;else{sortKey=k;sortDir=k==="i"?1:-1;}
+  $$(".reg th .arr").forEach(a=>a.remove());
+  th.insertAdjacentHTML("beforeend",'<span class="arr">'+(sortDir>0?"↑":"↓")+"</span>");renderReg();}));
+renderReg();
+
+/* ================= MCP TERMINAL ================= */
+const termLines=[
+  {c:"user",t:"Discover a fast algebraic replacement for SiLU on [-6, 8]"},
+  {c:"call",t:'spear · discover({ target: "x·σ(x)", domain: [-6, 8] })'},
+  {c:"ok",t:"champion found — MSE 7.8e-4 · level 2 · 14 units vs 34 (×2.43)"},
+  {c:"out",t:"x·(0.501 + 0.587·x/(0.815 + √(0.909+x²))) − 0.005749"},
+  {c:"call",t:'spear · evaluate_kernel({ id: "silu", inputs: [-1, 0, 1, 2] })'},
+  {c:"dyn"}, /* filled at runtime: real champion outputs vs true σ outputs */
+  {c:"call",t:"exports → wasm ✓ · misra-c99 ✓ · torch ✓ (parity ≤ 1e-6)"},
+  {c:"ok",t:"deployable. zero transcendental ops — runs on a microcontroller."}
+];
+function playTerm(){
+  const body=$("#termBody");body.innerHTML="";
+  const evo=CHAMPIONS.silu.evo,ex=CHAMPIONS.silu.exact;
+  const pts=[-1,0,1,2];
+  termLines.forEach((ln,i)=>{
+    setTimeout(()=>{
+      const div=document.createElement("div");div.className="tl "+ln.c;
+      if(ln.c==="dyn"){
+        const got=pts.map(x=>evo(x).toFixed(3)).join("  ");
+        const ref=pts.map(x=>"σ="+ex(x).toFixed(3)).join(" ");
+        div.innerHTML='<span style="color:var(--ink)">['+pts.map(x=>x.toFixed(0)).join(", ")+'] → '+got+"</span><br>"+
+          '<span style="color:var(--ink-faint);font-size:.68rem">reference now: '+ref+'</span>';
+      } else div.textContent=ln.t;
+      body.appendChild(div);
+      if(i===termLines.length-1){const c=document.createElement("div");c.className="tl user";c.innerHTML='Ask yours. <span class="caret"></span>';body.appendChild(c);}
+    },reduced?0:i*(reduced?0:520));
+  });
+}
+playTerm();
+$("#replay").addEventListener("click",playTerm);
 </script>
 </body>
 </html>
