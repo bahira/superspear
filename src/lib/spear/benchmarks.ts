@@ -1423,6 +1423,26 @@ function narkowiczAces(x: number): number {
   return Math.min(1, Math.max(0, a / b));
 }
 
+// Acklam's inverse-normal-Coefficients algorithm (~1.15e-9 relative accuracy)
+function acklamProbit(p: number): number {
+  const a = [-3.969683028665376e1, 2.209460984245205e2, -2.759285104469687e2, 1.38357751867269e2, -3.066479806614716e1, 2.506628277459239];
+  const b = [-5.447609879822406e1, 1.615858368580409e2, -1.556989798598866e2, 6.680131188771972e1, -1.328068155288572e1];
+  const c = [-7.784894002430293e-3, -3.223964580411365e-1, -2.400758277161838, -2.549732539343734, 4.374664141464968, 2.938163982698783];
+  const d = [7.784695709041462e-3, 3.224671290700398e-1, 2.445134137142996, 3.754408661907416];
+  const plow = 0.02425;
+  if (p < plow) {
+    const t = Math.sqrt(-2 * Math.log(p));
+    return (((((c[0] * t + c[1]) * t + c[2]) * t + c[3]) * t + c[4]) * t + c[5]) / ((((d[0] * t + d[1]) * t + d[2]) * t + d[3]) * t + 1);
+  }
+  if (p <= 1 - plow) {
+    const t = p - 0.5;
+    const r = t * t;
+    return ((((((a[0] * r + a[1]) * r + a[2]) * r + a[3]) * r + a[4]) * r + a[5]) * t) / (((((b[0] * r + b[1]) * r + b[2]) * r + b[3]) * r + b[4]) * r + 1);
+  }
+  const t = Math.sqrt(-2 * Math.log(1 - p));
+  return -(((((c[0] * t + c[1]) * t + c[2]) * t + c[3]) * t + c[4]) * t + c[5]) / ((((d[0] * t + d[1]) * t + d[2]) * t + d[3]) * t + 1);
+}
+
 // ---------------------------------------------------------------------------
 // Registry
 // ---------------------------------------------------------------------------
@@ -1638,6 +1658,54 @@ export function buildTasks(): TaskDef[] {
       hi: 0.98,
       groundTruth: "logit(x) = ln(x/(1−x))",
       exactCost: 27,
+    }),
+    // ---- wave 4: never-before-benchmarked operations -----------------------
+    // Probit = inverse normal CDF: THE quantile kernel of finance/risk/stats
+    // (VaR, probit regression, z-scores). No closed form even with erf served;
+    // Acklam-style rational+exp hybrids are the human art — can evolution
+    // rediscover or beat them? Never seen as an SR benchmark.
+    buildActivationTask({
+      id: "probit_quantile",
+      title: "Probit / quantile normal (finance · risque · z-scores)",
+      subtitle: "Φ⁻¹(p) sur [0.02, 0.98] — l'inverse sans forme close : chasse à l'hybride rationnel+exp",
+      fn: (p) => acklamProbit(p),
+      lo: 0.02,
+      hi: 0.98,
+      groundTruth: "probit(p) = Φ⁻¹(p)",
+      exactCost: 28,
+    }),
+    // Loan payment per unit principal: r(1+r)^n / ((1+r)^n − 1). Variable
+    // exponent is unservable directly BUT e^(n·ln(1+r)) makes the hybrid
+    // expressible — fintech edge kernels pay well.
+    buildRegressionTask({
+      id: "pmt_finance",
+      title: "Mensualité de prêt par unité (fintech edge)",
+      subtitle: "PMT(r,n) = r(1+r)ⁿ/((1+r)ⁿ−1) via hybride exp∘ln — calcul d'emprunt embarqué",
+      groundTruth: "PMT = r(1+r)ⁿ/((1+r)ⁿ−1)",
+      rows: 500,
+      varNames: ["r", "n"],
+      exactCost: 47,
+      build: () => {
+        const rows = 500;
+        const rv = new Float64Array(rows), nv = new Float64Array(rows), y = new Float64Array(rows);
+        for (let i = 0; i < rows; i++) {
+          const r = 0.002 + 0.018 * ((i * 0.6180339887) % 1);
+          const n = 12 + 348 * ((i * 0.7548776662) % 1);
+          const g = Math.exp(n * Math.log(1 + r));
+          rv[i] = r; nv[i] = n;
+          y[i] = (r * g) / (g - 1);
+        }
+        return { vars: { r: rv, n: nv }, y };
+      },
+      trueLaw: (v, i) => {
+        const g = Math.exp(v.n[i] * Math.log(1 + v.r[i]));
+        return (v.r[i] * g) / (g - 1);
+      },
+      verify: (node) => {
+        const m = evaluateScalar(node, { r: 0.005, n: 240 });
+        if (!Number.isFinite(m)) return null;
+        return Math.abs(m - 0.00716) < 0.004 ? `PMT(0.5%, 240m) ≈ ${m.toFixed(5)} par unité` : null;
+      },
     }),
     // ---- third wave: wave 3 — companions, tonemap, physics glue ------------
     // Bessel J1: FM modulation index, vibrating membranes' antisymmetric modes.
