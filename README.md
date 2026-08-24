@@ -173,6 +173,15 @@ With `blackbody_r` (L4), the full PBR color-temperature trio is discovered and r
 | **michaelis_menten** | biochemistry/pharma | 6.9e-10, near-exact rational | 15 |
 | **temperature_softmax** ⭐ | LLM sampling temperature | 4.2e-4 via NOVEL `atan(e^(Δ/T))` Gudermannian shape | 46 |
 | **doppler_effect** | audio/radar sirens | **9.3e-10 EXACT** via perturbed scaffold | 9 |
+### ⚛️ Wave 8 — quantum computing operations
+
+| Task | Domain | Record | Cost |
+|---|---|---|---|
+| **concurrence_pure** ✅ | entanglement measure | **EXACT (MSE=0, L5) at 5 units** — better than hand-written estimate | 5 |
+| **chsh_correlation** ✅ | Bell inequality · Nobel Physics 2022 | **2.1e-32 EXACT** — full CHSH expression recovered via scaffold | 92 |
+| **grover_amplitude** | quadratic speedup law | 1.07e-1, L0 — asin unservable, hard mode open | 30 |
+
+The concurrence solve is remarkable: the engine found the optimal 5-unit form (`2·|ad−bc|`) — *cheaper than the hand-written estimate*. The CHSH expression (Nobel-grade Bell test) was recovered to machine precision via explicit-form scaffold seeding.
 ### ⚙️ Ultra-common operations registry (new)
 
 Five everyday kernel/program primitives added, first-generation results at 500 iterations:

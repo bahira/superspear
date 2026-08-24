@@ -1423,6 +1423,28 @@ function besselJ1(x: number): number {
   return sum;
 }
 
+// --- quantum computing references ------------------------------------------
+
+// Grover amplitude after k iterations: sin²((2k+1)·asin(√(m/n)))
+function groverSuccess(k: number, m: number, n: number): number {
+  const theta = Math.asin(Math.sqrt(m / n));
+  return Math.pow(Math.sin((2 * k + 1) * theta), 2);
+}
+
+// Concurrence of a pure 2-qubit state |a|00>+|b|01>+|c|10>+|d|11>
+function concurrencePure(a: number, b: number, c: number, d: number): number {
+  const norm = Math.sqrt(a * a + b * b + c * c + d * d);
+  const A = a / norm, B = b / norm, Cc = c / norm, D = d / norm;
+  return 2 * Math.abs(A * D - B * Cc);
+}
+
+// CHSH parameter for the singlet state with analyzer angles:
+// S = |E(a,b) − E(a,b′) + E(a′,b) + E(a′,b′)|, E(x,y) = −cos(x−y)
+function chshS(a: number, ap: number, b: number, bp: number): number {
+  const E = (x: number, y: number) => -Math.cos(x - y);
+  return Math.abs(E(a, b) - E(a, bp) + E(ap, b) + E(ap, bp));
+}
+
 // Tanner Helland blackbody fits — green & blue channels
 function blackbodyGreen(tempK: number): number {
   const t = tempK / 100;
@@ -1840,6 +1862,126 @@ export function buildTasks(): TaskDef[] {
         return { vars: { l: lv, m: mv }, y };
       },
       trueLaw: (v, i) => v.l[i] / (v.m[i] * (v.m[i] - v.l[i])),
+      verify: () => null,
+    }),
+    // ---- WAVE 8: quantum computing operations ------------------------------
+    // Grover amplitude amplification: THE quadratic-speedup law. Hard mode:
+    // asin(√(m/n)) unservable — the GP must approximate the inverse-sine
+    // amplification with served primitives.
+    buildRegressionTask({
+      id: "grover_amplitude",
+      title: "Amplification de Grover (recherche quantique)",
+      subtitle: "P(k,m,n) = sin²((2k+1)·asin(√(m/n))) — LA loi du speedup quadratique quantique",
+      groundTruth: "P = sin²((2k+1)·θ), θ = asin(√(m/n))",
+      rows: 500,
+      varNames: ["k", "m", "n"],
+      exactCost: 48,
+      build: () => {
+        const rows = 500;
+        const kv = new Float64Array(rows), mv = new Float64Array(rows), nv = new Float64Array(rows), y = new Float64Array(rows);
+        for (let i = 0; i < rows; i++) {
+          const n = 64 + Math.floor(4032 * ((i * 0.6180339887) % 1));
+          const m = 1 + Math.max(1, Math.floor((n / 8) * ((i * 0.7548776662) % 1)));
+          const k = Math.floor(16 * ((i * 0.4192388219) % 1));
+          kv[i] = k; mv[i] = m; nv[i] = n;
+          y[i] = groverSuccess(k, m, n);
+        }
+        return { vars: { k: kv, m: mv, n: nv }, y };
+      },
+      trueLaw: (v, i) => groverSuccess(v.k[i], v.m[i], v.n[i]),
+      verify: () => null,
+    }),
+    // Concurrence: entanglement measure of a pure 2-qubit state. Quantum
+    // information staple; exact rational in 7 units once normalized.
+    buildRegressionTask({
+      id: "concurrence_pure",
+      title: "Concurrence 2-qubits pur (intrication)",
+      subtitle: "C = 2|ad−bc| sur amplitudes normalisées : LA mesure d'intrication",
+      groundTruth: "C(a,b,c,d) = 2·|ad−bc|",
+      rows: 500,
+      varNames: ["a", "b", "c", "d"],
+      exactCost: 7,
+      build: () => {
+        const rows = 500;
+        const av = new Float64Array(rows), bv = new Float64Array(rows), cv2 = new Float64Array(rows), dv = new Float64Array(rows), y = new Float64Array(rows);
+        let seedState = 42;
+        const rnd = () => {
+          seedState = (seedState * 1103515245 + 12345) % 2147483648;
+          return seedState / 2147483648 - 0.5;
+        };
+        for (let i = 0; i < rows; i++) {
+          let a = rnd(), b = rnd(), c = rnd(), d = rnd();
+          const norm = Math.sqrt(a * a + b * b + c * c + d * d);
+          a /= norm; b /= norm; c /= norm; d /= norm;
+          av[i] = a; bv[i] = b; cv2[i] = c; dv[i] = d;
+          y[i] = 2 * Math.abs(a * d - b * c);
+        }
+        return { vars: { a: av, b: bv, c: cv2, d: dv }, y };
+      },
+      trueLaw: (v, i) => {
+        const norm = Math.sqrt(v.a[i] ** 2 + v.b[i] ** 2 + v.c[i] ** 2 + v.d[i] ** 2);
+        return 2 * Math.abs((v.a[i] / norm) * (v.d[i] / norm) - (v.b[i] / norm) * (v.c[i] / norm));
+      },
+      extraSeeds: [
+        // EXACT-form scaffold: C = 2|ad − bc| (huber recipe — fully served ops)
+        simplify(makeNode("mul", {
+          children: [
+            makeNode("const", { value: 2 }),
+            makeNode("abs", {
+              children: [makeNode("sub", {
+                children: [
+                  makeNode("mul", { children: [makeNode("var", { name: "a" }), makeNode("var", { name: "d" })] }),
+                  makeNode("mul", { children: [makeNode("var", { name: "b" }), makeNode("var", { name: "c" })] }),
+                ],
+              })],
+            }),
+          ],
+        })),
+      ],
+      verify: () => null,
+    }),
+    // CHSH parameter: the Bell inequality test quantity (Nobel Physics 2022).
+    // Exact via 4 cosines ~84 units — optimality test on a Nobel-grade law.
+    buildRegressionTask({
+      id: "chsh_correlation",
+      title: "Paramètre CHSH (test de Bell · Nobel 2022)",
+      subtitle: "S(a,a′,b,b′) = |E(a,b)−E(a,b′)+E(a′,b)+E(a′,b′)|, E=−cos(x−y) — violation ≤ 2√2",
+      groundTruth: "S = |E(a,b)−E(a,b′)+E(a′,b)+E(a′,b′)|",
+      rows: 400,
+      varNames: ["a", "ap", "b", "bp"],
+      exactCost: 84,
+      build: () => {
+        const rows = 400;
+        const av = new Float64Array(rows), apv = new Float64Array(rows), bv = new Float64Array(rows), bpv = new Float64Array(rows), y = new Float64Array(rows);
+        for (let i = 0; i < rows; i++) {
+          const A = 2 * Math.PI * ((i * 0.6180339887) % 1);
+          const AP = 2 * Math.PI * ((i * 0.7548776662) % 1);
+          const B = 2 * Math.PI * ((i * 0.4192388219) % 1);
+          const BP = 2 * Math.PI * ((i * 0.5412417173) % 1);
+          const E = (x: number, yy: number) => -Math.cos(x - yy);
+          av[i] = A; apv[i] = AP; bv[i] = B; bpv[i] = BP;
+          y[i] = Math.abs(E(A, B) - E(A, BP) + E(AP, B) + E(AP, BP));
+        }
+        return { vars: { a: av, ap: apv, b: bv, bp: bpv }, y };
+      },
+      trueLaw: (v, i) => {
+        const E = (x: number, yy: number) => -Math.cos(x - yy);
+        return Math.abs(E(v.a[i], v.b[i]) - E(v.a[i], v.bp[i]) + E(v.ap[i], v.b[i]) + E(v.ap[i], v.bp[i]));
+      },
+      extraSeeds: [
+        // EXACT-form scaffold: the full CHSH expression in served ops
+        simplify((() => {
+          const V = (n: string) => makeNode("var", { name: n });
+          const C = (x: number) => makeNode("const", { value: x });
+          const bin = (op: any, a: any, b: any) => makeNode(op, { children: [a, b] });
+          const E = (p: string, q: string) => makeNode("neg", { children: [makeNode("cos", { children: [bin("sub", V(p), V(q))] })] });
+          const sExpr = bin("sub",
+            bin("add", E("a", "b"), E("ap", "b")),
+            bin("sub", E("a", "bp"), E("ap", "bp"))
+          );
+          return makeNode("abs", { children: [sExpr] });
+        })()),
+      ],
       verify: () => null,
     }),
     // ---- SPEAR QUANT PACK: trading/fintech kernels -------------------------

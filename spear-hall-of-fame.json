@@ -7291,5 +7291,271 @@
         }
       ]
     }
+  },
+  "grover_amplitude": {
+    "taskId": "grover_amplitude",
+    "title": "Amplification de Grover (recherche quantique)",
+    "direction": "min",
+    "metric": 0.10656101522361813,
+    "level": 0,
+    "formula": "((0.420867 * ((-k) / ((-k) + min(0.966947, log(max(k, 1e-30)))))) + 0.037043)",
+    "seed": 1000070,
+    "iteration": 400,
+    "speed": {
+      "formulaCost": 30,
+      "exactCost": 48,
+      "speedup": 1.6
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 0.4208666946976904
+            },
+            {
+              "o": "pdiv",
+              "c": [
+                {
+                  "o": "neg",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "k"
+                    }
+                  ]
+                },
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "neg",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "k"
+                        }
+                      ]
+                    },
+                    {
+                      "o": "min",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 0.966947
+                        },
+                        {
+                          "o": "log",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "k"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.03704337736862953
+        }
+      ]
+    }
+  },
+  "concurrence_pure": {
+    "taskId": "concurrence_pure",
+    "title": "Concurrence 2-qubits pur (intrication)",
+    "direction": "min",
+    "metric": 0,
+    "level": 5,
+    "formula": "(2 * |((a * d) - (b * c))|)",
+    "seed": 1000070,
+    "iteration": 104,
+    "speed": {
+      "formulaCost": 5,
+      "exactCost": 7,
+      "speedup": 1.4
+    },
+    "tree": {
+      "o": "mul",
+      "c": [
+        {
+          "o": "const",
+          "v": 2
+        },
+        {
+          "o": "abs",
+          "c": [
+            {
+              "o": "sub",
+              "c": [
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "a"
+                    },
+                    {
+                      "o": "var",
+                      "n": "d"
+                    }
+                  ]
+                },
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "b"
+                    },
+                    {
+                      "o": "var",
+                      "n": "c"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "chsh_correlation": {
+    "taskId": "chsh_correlation",
+    "title": "Paramètre CHSH (test de Bell · Nobel 2022)",
+    "direction": "min",
+    "metric": 2.1055469858256505e-32,
+    "level": 2,
+    "formula": "|(((-cos((a - b))) + (-cos((ap - b)))) - ((-cos((a - bp))) - (-cos((ap - bp)))))|",
+    "seed": 1000070,
+    "iteration": 400,
+    "speed": {
+      "formulaCost": 92,
+      "exactCost": 84,
+      "speedup": 0.9130434782608695
+    },
+    "tree": {
+      "o": "abs",
+      "c": [
+        {
+          "o": "sub",
+          "c": [
+            {
+              "o": "add",
+              "c": [
+                {
+                  "o": "neg",
+                  "c": [
+                    {
+                      "o": "cos",
+                      "c": [
+                        {
+                          "o": "sub",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "a"
+                            },
+                            {
+                              "o": "var",
+                              "n": "b"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "neg",
+                  "c": [
+                    {
+                      "o": "cos",
+                      "c": [
+                        {
+                          "o": "sub",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "ap"
+                            },
+                            {
+                              "o": "var",
+                              "n": "b"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "o": "sub",
+              "c": [
+                {
+                  "o": "neg",
+                  "c": [
+                    {
+                      "o": "cos",
+                      "c": [
+                        {
+                          "o": "sub",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "a"
+                            },
+                            {
+                              "o": "var",
+                              "n": "bp"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "neg",
+                  "c": [
+                    {
+                      "o": "cos",
+                      "c": [
+                        {
+                          "o": "sub",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "ap"
+                            },
+                            {
+                              "o": "var",
+                              "n": "bp"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
   }
 }
