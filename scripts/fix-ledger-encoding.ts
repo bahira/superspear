@@ -101,6 +101,24 @@ async function main() {
 
   console.log(`champs réparés: ${fixed} · titres synchronisés: ${synced}`);
   for (const s of samples.slice(0, 12)) console.log("  " + s);
+
+  // final polish: reprint every display string from its authoritative AST —
+  // heals characters no decoder can recover (e.g. U+FFFD-baked superscripts)
+  const { parseNode, nodeToString } = await import("../src/lib/spear/engine");
+  let reprinted = 0;
+  for (const e of Object.values(ledger)) {
+    const t = e as Finding & { tree?: unknown; fastTree?: unknown };
+    if (t.tree) {
+      const s = nodeToString(parseNode(t.tree as never));
+      if (e.formula !== s) { e.formula = s; reprinted++; }
+    }
+    if (t.fastTree && e.fast) {
+      const s = nodeToString(parseNode(t.fastTree as never));
+      if (e.fast.formula !== s) { e.fast.formula = s; reprinted++; }
+    }
+  }
+  console.log(`formules réimprimées depuis les arbres: ${reprinted}`);
+
   // honest residue report: what NO decoder could recover
   const bad = /[\u00c3][\u0080-\u00bf]|\uFFFD|â€/;
   const residue: string[] = [];
