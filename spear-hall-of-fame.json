@@ -475,7 +475,7 @@
       "exactCost": 34,
       "speedup": 1.36,
       "vsIterative": {
-        "label": "Monte-Carlo Â· 1000 tirages",
+        "label": "Monte-Carlo · 1000 tirages",
         "speedup": 1840
       }
     },
@@ -538,7 +538,11 @@
       "metric": 0.000140774362370438,
       "level": 2,
       "formulaCost": 9,
-      "seed": 990303
+      "seed": 990303,
+      "vsIterative": {
+        "label": "Monte-Carlo · 1000 tirages",
+        "speedup": 5111.1
+      }
     },
     "fastTree": {
       "o": "add",
@@ -675,8 +679,8 @@
     "speed": {
       "formulaCost": 46,
       "vsIterative": {
-        "label": "Euler-Cromer Â· 60 pas",
-        "speedup": 32.608695652173914
+        "label": "Euler-Cromer · 60 pas",
+        "speedup": 32.6
       }
     },
     "fast": {
@@ -690,6 +694,10 @@
           "label": "Euler-Cromer Â· 60 pas",
           "speedup": 71.42857142857143
         }
+      },
+      "vsIterative": {
+        "label": "Euler-Cromer · 60 pas",
+        "speedup": 71.4
       }
     },
     "fastTree": {
@@ -1522,8 +1530,8 @@
       "exactCost": 17,
       "speedup": 1.3076923076923077,
       "vsIterative": {
-        "label": "RK4 gÃ©odÃ©sique Â· 200 pas",
-        "speedup": 184.6153846153846
+        "label": "RK4 géodésique · 200 pas",
+        "speedup": 184.6
       }
     },
     "fast": {
@@ -1539,6 +1547,10 @@
           "label": "RK4 gÃ©odÃ©sique Â· 200 pas",
           "speedup": 480
         }
+      },
+      "vsIterative": {
+        "label": "RK4 géodésique · 200 pas",
+        "speedup": 480
       }
     },
     "fastTree": {
@@ -1786,7 +1798,7 @@
       "exactCost": 44,
       "speedup": 1.6296296296296295,
       "vsIterative": {
-        "label": "RKF45 Â· 300 pas",
+        "label": "RKF45 · 300 pas",
         "speedup": 200
       }
     },
@@ -2154,6 +2166,76 @@
           "v": 2.906087
         }
       ]
+    },
+    "fast": {
+      "formula": "(((t)Â² * sin((4.822148 * t))) * (x * sin((4.8694 * t))))",
+      "metric": 0.0051856251259923165,
+      "level": 2,
+      "formulaCost": 46
+    },
+    "fastTree": {
+      "o": "mul",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "sq",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "t"
+                }
+              ]
+            },
+            {
+              "o": "sin",
+              "c": [
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 4.822148
+                    },
+                    {
+                      "o": "var",
+                      "n": "t"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "var",
+              "n": "x"
+            },
+            {
+              "o": "sin",
+              "c": [
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 4.8694
+                    },
+                    {
+                      "o": "var",
+                      "n": "t"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   },
   "kerr_spin": {
@@ -2170,8 +2252,8 @@
       "exactCost": 21,
       "speedup": 1.1666666666666667,
       "vsIterative": {
-        "label": "RK4 gÃ©odÃ©sique Â· 200 pas",
-        "speedup": 133.33333333333334
+        "label": "RK4 géodésique · 200 pas",
+        "speedup": 133.3
       }
     },
     "tree": {
@@ -2272,6 +2354,10 @@
           "label": "RK4 gÃ©odÃ©sique Â· 200 pas",
           "speedup": 600
         }
+      },
+      "vsIterative": {
+        "label": "RK4 géodésique · 200 pas",
+        "speedup": 600
       }
     },
     "fastTree": {
@@ -2866,7 +2952,11 @@
       "metric": 0.030848965408385668,
       "level": 2,
       "formulaCost": 11,
-      "seed": 999904
+      "seed": 999904,
+      "vsIterative": {
+        "label": "Jacobi · 4 balayages",
+        "speedup": 18.2
+      }
     },
     "fastTree": {
       "o": "add",
@@ -2966,8 +3056,8 @@
     "speed": {
       "formulaCost": 120,
       "vsIterative": {
-        "label": "Jacobi Â· 4 balayages",
-        "speedup": 1.6666666666666667
+        "label": "Jacobi · 4 balayages",
+        "speedup": 1.7
       }
     }
   },
@@ -3154,8 +3244,8 @@
     "speed": {
       "formulaCost": 52,
       "vsIterative": {
-        "label": "Newton-DLS Â· 8 itÃ©rations",
-        "speedup": 6.153846153846154
+        "label": "Newton-DLS · 8 itérations",
+        "speedup": 6.2
       }
     },
     "fast": {
@@ -3163,7 +3253,11 @@
       "metric": 0.002245031097953282,
       "level": 2,
       "formulaCost": 16,
-      "seed": 960202
+      "seed": 960202,
+      "vsIterative": {
+        "label": "Newton-DLS · 8 itérations",
+        "speedup": 20
+      }
     },
     "fastTree": {
       "o": "add",
@@ -3264,11 +3358,11 @@
     "taskId": "idm_following",
     "title": "Suivi IDM trafic urbain (city.ts)",
     "direction": "min",
-    "metric": 0.004462086832640868,
+    "metric": 0.002938652617546022,
     "level": 2,
-    "formula": "((1.817293 * min(0.9724, max(-5.078809, ((1 - (((v)Ã‚Â²)Ã‚Â² * 0.000001)) - (((2.643464 + max(-0.582903, ((v * 1.536227) + ((v * dv) * 0.212766)))) / s))Ã‚Â²)))) + 0.215108)",
-    "seed": 999911,
-    "iteration": 1600,
+    "formula": "((1.825166 * min(1.9, max(-5.198308, ((0.840532 - (((v)Â²)Â² * 0.000001)) - (((2.393229 + max(-0.435303, ((v * 1.543892) + ((v * dv) * 0.212766)))) / s))Â²)))) + 0.486206)",
+    "seed": 910502,
+    "iteration": 800,
     "speed": {
       "formulaCost": 20,
       "exactCost": 30,
@@ -3282,21 +3376,21 @@
           "c": [
             {
               "o": "const",
-              "v": 1.817293
+              "v": 1.825166
             },
             {
               "o": "min",
               "c": [
                 {
                   "o": "const",
-                  "v": 0.9724
+                  "v": 1.9
                 },
                 {
                   "o": "max",
                   "c": [
                     {
                       "o": "const",
-                      "v": -5.078809
+                      "v": -5.198308
                     },
                     {
                       "o": "sub",
@@ -3306,7 +3400,7 @@
                           "c": [
                             {
                               "o": "const",
-                              "v": 1
+                              "v": 0.840532
                             },
                             {
                               "o": "mul",
@@ -3344,14 +3438,14 @@
                                   "c": [
                                     {
                                       "o": "const",
-                                      "v": 2.643464
+                                      "v": 2.393229
                                     },
                                     {
                                       "o": "max",
                                       "c": [
                                         {
                                           "o": "const",
-                                          "v": -0.582903
+                                          "v": -0.435303
                                         },
                                         {
                                           "o": "add",
@@ -3365,7 +3459,7 @@
                                                 },
                                                 {
                                                   "o": "const",
-                                                  "v": 1.536227
+                                                  "v": 1.543892
                                                 }
                                               ]
                                             },
@@ -3415,7 +3509,176 @@
         },
         {
           "o": "const",
-          "v": 0.215108
+          "v": 0.4862064122902764
+        }
+      ]
+    },
+    "fast": {
+      "formula": "((1.141421 * ((1.22047 * min(1.9, max(-7.31, ((1 - (((v)Â²)Â² * 0.000001)) - (((3.45 + max(-0.05, ((v * 1.45) + ((v * dv) * 0.212766)))) / s))Â²)))) + 0.215661)) + 0.024217)",
+      "metric": 0.564832696603028,
+      "level": 2,
+      "formulaCost": 22
+    },
+    "fastTree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 1.1414205468162575
+            },
+            {
+              "o": "add",
+              "c": [
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 1.22047
+                    },
+                    {
+                      "o": "min",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 1.9
+                        },
+                        {
+                          "o": "max",
+                          "c": [
+                            {
+                              "o": "const",
+                              "v": -7.31
+                            },
+                            {
+                              "o": "sub",
+                              "c": [
+                                {
+                                  "o": "sub",
+                                  "c": [
+                                    {
+                                      "o": "const",
+                                      "v": 1
+                                    },
+                                    {
+                                      "o": "mul",
+                                      "c": [
+                                        {
+                                          "o": "sq",
+                                          "c": [
+                                            {
+                                              "o": "sq",
+                                              "c": [
+                                                {
+                                                  "o": "var",
+                                                  "n": "v"
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "o": "const",
+                                          "v": 0.000001
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "o": "sq",
+                                  "c": [
+                                    {
+                                      "o": "pdiv",
+                                      "c": [
+                                        {
+                                          "o": "add",
+                                          "c": [
+                                            {
+                                              "o": "const",
+                                              "v": 3.45
+                                            },
+                                            {
+                                              "o": "max",
+                                              "c": [
+                                                {
+                                                  "o": "const",
+                                                  "v": -0.05
+                                                },
+                                                {
+                                                  "o": "add",
+                                                  "c": [
+                                                    {
+                                                      "o": "mul",
+                                                      "c": [
+                                                        {
+                                                          "o": "var",
+                                                          "n": "v"
+                                                        },
+                                                        {
+                                                          "o": "const",
+                                                          "v": 1.45
+                                                        }
+                                                      ]
+                                                    },
+                                                    {
+                                                      "o": "mul",
+                                                      "c": [
+                                                        {
+                                                          "o": "mul",
+                                                          "c": [
+                                                            {
+                                                              "o": "var",
+                                                              "n": "v"
+                                                            },
+                                                            {
+                                                              "o": "var",
+                                                              "n": "dv"
+                                                            }
+                                                          ]
+                                                        },
+                                                        {
+                                                          "o": "const",
+                                                          "v": 0.212766
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "o": "var",
+                                          "n": "s"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "const",
+                  "v": 0.215661
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.024217427345017313
         }
       ]
     }
@@ -3684,8 +3947,8 @@
       "exactCost": 43,
       "speedup": 0.9772727272727273,
       "vsIterative": {
-        "label": "CORDIC Â· 16 micro-rotations",
-        "speedup": 1.4545454545454546
+        "label": "CORDIC · 16 micro-rotations",
+        "speedup": 1.5
       }
     },
     "tree": {
@@ -6692,6 +6955,53 @@
           ]
         }
       ]
+    },
+    "fast": {
+      "formula": "(1 / (1 + exp((-(da / t)))))",
+      "metric": 7.439476402624881e-47,
+      "level": 2,
+      "formulaCost": 30
+    },
+    "fastTree": {
+      "o": "pdiv",
+      "c": [
+        {
+          "o": "const",
+          "v": 1
+        },
+        {
+          "o": "add",
+          "c": [
+            {
+              "o": "const",
+              "v": 1
+            },
+            {
+              "o": "exp",
+              "c": [
+                {
+                  "o": "neg",
+                  "c": [
+                    {
+                      "o": "pdiv",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "da"
+                        },
+                        {
+                          "o": "var",
+                          "n": "t"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   },
   "doppler_effect": {
@@ -6955,15 +7265,15 @@
     "taskId": "grover_amplitude",
     "title": "Amplification de Grover (recherche quantique)",
     "direction": "min",
-    "metric": 0.10656101522361813,
+    "metric": 0.10609082949960358,
     "level": 0,
-    "formula": "((0.420867 * ((-k) / ((-k) + min(0.966947, log(max(k, 1e-30)))))) + 0.037043)",
-    "seed": 1000070,
-    "iteration": 400,
+    "formula": "((-0.908403 * (min(k, ((1.924223 / k) + (k / k))) * -0.387345)) + 0.074351)",
+    "seed": 910502,
+    "iteration": 801,
     "speed": {
-      "formulaCost": 30,
+      "formulaCost": 13,
       "exactCost": 48,
-      "speedup": 1.6
+      "speedup": 3.6923076923076925
     },
     "tree": {
       "o": "add",
@@ -6973,42 +7283,41 @@
           "c": [
             {
               "o": "const",
-              "v": 0.4208666946976904
+              "v": -0.9084030522924049
             },
             {
-              "o": "pdiv",
+              "o": "mul",
               "c": [
                 {
-                  "o": "neg",
+                  "o": "min",
                   "c": [
                     {
                       "o": "var",
                       "n": "k"
-                    }
-                  ]
-                },
-                {
-                  "o": "add",
-                  "c": [
-                    {
-                      "o": "neg",
-                      "c": [
-                        {
-                          "o": "var",
-                          "n": "k"
-                        }
-                      ]
                     },
                     {
-                      "o": "min",
+                      "o": "add",
                       "c": [
                         {
-                          "o": "const",
-                          "v": 0.966947
+                          "o": "pdiv",
+                          "c": [
+                            {
+                              "o": "const",
+                              "v": 1.924223
+                            },
+                            {
+                              "o": "var",
+                              "n": "k"
+                            }
+                          ]
                         },
                         {
-                          "o": "log",
+                          "o": "pdiv",
                           "c": [
+                            {
+                              "o": "var",
+                              "n": "k"
+                            },
                             {
                               "o": "var",
                               "n": "k"
@@ -7018,6 +7327,10 @@
                       ]
                     }
                   ]
+                },
+                {
+                  "o": "const",
+                  "v": -0.38734452474957204
                 }
               ]
             }
@@ -7025,7 +7338,7 @@
         },
         {
           "o": "const",
-          "v": 0.03704337736862953
+          "v": 0.07435079907199241
         }
       ]
     }
@@ -7514,7 +7827,7 @@
       "speedup": 0.4,
       "vsIterative": {
         "label": "BFGS optimisation",
-        "speedup": 14.545454545454545
+        "speedup": 14.5
       }
     },
     "tree": {
@@ -7600,8 +7913,8 @@
       "exactCost": 24,
       "speedup": 0.1935483870967742,
       "vsIterative": {
-        "label": "Kraus ops 4Ã—4 matmul",
-        "speedup": 0.3870967741935484
+        "label": "Kraus ops 4×4 matmul",
+        "speedup": 0.4
       }
     },
     "tree": {
@@ -7689,8 +8002,8 @@
       "exactCost": 18,
       "speedup": 0.3829787234042553,
       "vsIterative": {
-        "label": "Diag complÃ¨te 128 modes",
-        "speedup": 13.617021276595745
+        "label": "Diag complète 128 modes",
+        "speedup": 13.6
       }
     },
     "tree": {
@@ -7783,6 +8096,10 @@
           "label": "Diag complÃ¨te 128 modes",
           "speedup": 26.666666666666668
         }
+      },
+      "vsIterative": {
+        "label": "Diag complète 128 modes",
+        "speedup": 26.7
       }
     },
     "fastTree": {

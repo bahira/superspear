@@ -42,5 +42,5 @@ instance.exports.spear(2); // same protected-division semantics as the JS backen
 ```
 
 Division is **protected** exactly like the engine: denominators floored at
-±1e-4 (sign-preserving), results clamped to ±1e4. Discovered formulas rely on
-these rails — do not swap in bare `/`.
+Â±1e-4 (sign-preserving), results clamped to Â±1e4. Discovered formulas rely on
+these rails â€” do not swap in bare `/`.

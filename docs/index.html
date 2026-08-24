@@ -549,7 +549,7 @@ function renderReg(){
     </tr>
     <tr class="detail" hidden><td colspan="5">
       <div><span class="lbl">precise</span><span class="fx">${k.f||"—"}</span></div>
-      ${k.ff?`<div><span class="lbl">fast&nbsp;(${fmtM(k.fm)})</span><span class="fx">${k.ff}</span></div>`:""}
+      ${k.ff?`<div><span class="lbl">fast&nbsp;(${fmtM(k.fm)}${k.fs?", "+k.fs+" u":""})</span><span class="fx">${k.ff}</span>${k.fvi?` <span class="amber">×${k.fvi.s} vs ${k.fvi.l}</span>`:""}</div>`:""}
       <div style="margin-top:6px;color:var(--ink-faint)">
         ${k.fc!=null?`formula ${k.fc} u`:""}${k.xc!=null?" · exact ref "+k.xc+" u":""}${k.sp!=null?" · ×"+k.sp+" vs exact":""}
         ${k.vi?` · <span class="amber">×${k.vi.s} vs ${k.vi.l}</span>`:""}
