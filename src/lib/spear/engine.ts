@@ -1,4 +1,4 @@
-// SPEAR â€” Symbolic Pareto Evolutionary Algorithm for Research
+// SPEAR — Symbolic Pareto Evolutionary Algorithm for Research
 // Engine v2: seeded RNG, algebraic simplification, affine wrapping, constant
 // refinement (coordinate descent), full NSGA-II (non-dominated sort +
 // crowding distance), Pareto archive and code generation.
@@ -303,8 +303,8 @@ export function nodeToString(node: SpearNode): string {
     case "relu": return `relu(${nodeToString(node.children[0])})`;
     case "abs": return `|${nodeToString(node.children[0])}|`;
     case "neg": return `(-${nodeToString(node.children[0])})`;
-    case "sq": return `(${nodeToString(node.children[0])})Â²`;
-    case "cube": return `(${nodeToString(node.children[0])})Â³`;
+    case "sq": return `(${nodeToString(node.children[0])})²`;
+    case "cube": return `(${nodeToString(node.children[0])})³`;
     case "sqrt": return `sqrt(|${nodeToString(node.children[0])}|)`;
     case "exp": return `exp(${nodeToString(node.children[0])})`;
     case "sin": return `sin(${nodeToString(node.children[0])})`;
@@ -328,7 +328,7 @@ export function nodeToString(node: SpearNode): string {
 // precision, so parsed trees may differ from originals in far decimals.
 
 export function parseFormula(src: string): SpearNode {
-  // repair double-encoded superscripts (Â² -> ²) left by old Windows writes
+  // repair double-encoded superscripts (² -> ²) left by old Windows writes
   src = src.replace(/\u00C2\u00B2/g, "\u00B2").replace(/\u00C2\u00B3/g, "\u00B3");
   const toks: string[] = [];
   {
@@ -458,7 +458,7 @@ export function toPython(node: SpearNode, fnName = "spear_fn"): string {
     if (nd.op === "const") return fmt(nd.value);
     const tpl = PY[nd.op];
     if (!tpl) {
-      console.error(`[toPython] op inconnu "${String(nd.op)}" â€” arbre: ${JSON.stringify(node).slice(0, 300)}`);
+      console.error(`[toPython] op inconnu "${String(nd.op)}" — arbre: ${JSON.stringify(node).slice(0, 300)}`);
       return "0";
     }
     if (nd.op === "cube") return `(${walk(nd.children[0])} ** 3)`;
@@ -466,7 +466,7 @@ export function toPython(node: SpearNode, fnName = "spear_fn"): string {
     return tpl.replace(/\{a\}/g, walk(nd.children[0])).replace(/\{b\}/g, walk(nd.children[1]));
   };
   const args = [...new Set(collectVarNames(node))].join(", ");
-  return `import torch\n\ndef ${fnName}(${args}):\n    # Evolved by SPEAR â€” zero transcendental ops (exp/erf/tanh free)\n    return ${walk(node)}`;
+  return `import torch\n\ndef ${fnName}(${args}):\n    # Evolved by SPEAR — zero transcendental ops (exp/erf/tanh free)\n    return ${walk(node)}`;
 }
 
 export function toC(node: SpearNode, fnName = "spear_fn", varDecl = "const float x"): string {
@@ -494,7 +494,7 @@ export function toC(node: SpearNode, fnName = "spear_fn", varDecl = "const float
     }
     return `(${walk(nd.children[0])} ${nd.op === "add" ? "+" : nd.op === "sub" ? "-" : "*"} ${walk(nd.children[1])})`;
   };
-  return `// Evolved by SPEAR â€” algebraic only, FP16 safe\n__device__ inline float ${fnName}(${varDecl}) {\n    return ${walk(node)};\n}`;
+  return `// Evolved by SPEAR — algebraic only, FP16 safe\n__device__ inline float ${fnName}(${varDecl}) {\n    return ${walk(node)};\n}`;
 }
 
 /**

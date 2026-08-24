@@ -1,11 +1,11 @@
 {
   "silu": {
     "taskId": "silu",
-    "title": "SiLU / Swish (LLaMA Â· Mistral Â· Qwen â€” SwiGLU)",
+    "title": "SiLU / Swish (LLaMA · Mistral · Qwen — SwiGLU)",
     "direction": "min",
     "metric": 0.0007795906249592223,
     "level": 2,
-    "formula": "((0.997587 * (x * (0.501 + (0.587 * (x / (0.815 + sqrt(|(0.909361 + (x)Ã‚Â²)|))))))) + -0.005749)",
+    "formula": "((0.997587 * (x * (0.501 + (0.587 * (x / (0.815 + sqrt(|(0.909361 + (x)²)|))))))) + -0.005749)",
     "seed": 910001,
     "iteration": 199,
     "speed": {
@@ -102,7 +102,7 @@
   },
   "gelu": {
     "taskId": "gelu",
-    "title": "GELU (GPT Â· BERT â€” GEGLU)",
+    "title": "GELU (GPT · BERT — GEGLU)",
     "direction": "min",
     "metric": 0.0005322566020140329,
     "level": 2,
@@ -180,7 +180,7 @@
   },
   "sigmoid": {
     "taskId": "sigmoid",
-    "title": "Sigmoid",
+    "title": "Sigmoid (routage MoE · portes d'attention)",
     "direction": "min",
     "metric": 4.790511494175498e-33,
     "level": 5,
@@ -274,7 +274,7 @@
   },
   "kv_cache": {
     "taskId": "kv_cache",
-    "title": "RÃ¨gle d'Ã©viction du KV-cache",
+    "title": "Règle d'éviction du KV-cache",
     "direction": "max",
     "metric": 69.97633394818372,
     "level": 2,
@@ -329,7 +329,7 @@
     "direction": "min",
     "metric": 0.00018985148816310314,
     "level": 5,
-    "formula": "((4.905917 * (t)Ã‚Â²) + -0.001081)",
+    "formula": "((4.905917 * (t)²) + -0.001081)",
     "seed": 3333,
     "iteration": 28,
     "tree": {
@@ -365,7 +365,7 @@
       "speedup": 0.6666666666666666
     },
     "fast": {
-      "formula": "(t)Ã‚Â²",
+      "formula": "(t)²",
       "metric": 0.0005030952469190765,
       "level": 5,
       "formulaCost": 1,
@@ -387,7 +387,7 @@
   },
   "kepler": {
     "taskId": "kepler",
-    "title": "Kepler's third law",
+    "title": "3ᵉ loi de Kepler",
     "direction": "min",
     "metric": 0.047018,
     "level": 5,
@@ -395,7 +395,7 @@
     "seed": 555666,
     "iteration": 6,
     "fast": {
-      "formula": "sqrt(|(a)Ã‚Â³|)",
+      "formula": "sqrt(|(a)³|)",
       "metric": 0.04833668157942985,
       "level": 5,
       "formulaCost": 4,
@@ -463,7 +463,7 @@
   },
   "gaussian_cdf": {
     "taskId": "gaussian_cdf",
-    "title": "RÃ©partition gaussienne Î¦(x)",
+    "title": "Répartition gaussienne Φ(x)",
     "direction": "min",
     "metric": 0.000016407954856661242,
     "level": 3,
@@ -601,7 +601,7 @@
   },
   "damped_pendulum": {
     "taskId": "damped_pendulum",
-    "title": "Pendule amorti Â· Ã©tat terminal",
+    "title": "Pendule amorti · état terminal",
     "direction": "min",
     "metric": 0.0006756423002196924,
     "level": 2,
@@ -721,11 +721,11 @@
   },
   "rl_distillation": {
     "taskId": "rl_distillation",
-    "title": "Deep-RL actor distillation",
+    "title": "Distillation d'acteur Deep-RL",
     "direction": "min",
     "metric": 0.00015509445364142197,
     "level": 2,
-    "formula": "(1.143472 * ((x + (0.135 * (x)Ã‚Â³)) / (0.584 + (0.75 * (x)Ã‚Â²))))",
+    "formula": "(1.143472 * ((x + (0.135 * (x)³)) / (0.584 + (0.75 * (x)²))))",
     "seed": 777,
     "iteration": 106,
     "speed": {
@@ -802,7 +802,7 @@
       ]
     },
     "fast": {
-      "formula": "((x + (0.169 * (x)Ã‚Â³)) / (0.5 + (0.75 * (x)Ã‚Â²)))",
+      "formula": "((x + (0.169 * (x)³)) / (0.5 + (0.75 * (x)²)))",
       "metric": 0.0005281406564176935,
       "level": 2,
       "formulaCost": 11,
@@ -874,7 +874,7 @@
   },
   "lambert_w": {
     "taskId": "lambert_w",
-    "title": "Lambert Wâ‚€ function",
+    "title": "Fonction implicite Lambert W₀(x)",
     "direction": "min",
     "metric": 0,
     "level": 5,
@@ -910,7 +910,7 @@
       ]
     },
     "fast": {
-      "formula": "(x)Ã‚Â²",
+      "formula": "(x)²",
       "metric": 0.011194370036126207,
       "level": 2,
       "formulaCost": 1,
@@ -932,7 +932,7 @@
   },
   "rc_circuit": {
     "taskId": "rc_circuit",
-    "title": "Circuit RC Â· tension terminale",
+    "title": "Circuit RC · tension terminale",
     "direction": "min",
     "metric": 0.00007258403509477666,
     "level": 5,
@@ -1045,7 +1045,7 @@
   },
   "layernorm_scale": {
     "taskId": "layernorm_scale",
-    "title": "LayerNorm rsqrt scale",
+    "title": "LayerNorm · échelle 1/√(var+ε)",
     "direction": "min",
     "metric": 0,
     "level": 2,
@@ -1084,11 +1084,11 @@
   },
   "gaussian_kernel": {
     "taskId": "gaussian_kernel",
-    "title": "Blur gaussien Â· noyau exp(âˆ’xÂ²/2ÏƒÂ²)",
+    "title": "Blur gaussien · noyau exp(−x²/2σ²)",
     "direction": "min",
     "metric": 5.356342194550095e-34,
     "level": 2,
-    "formula": "sqrt(|exp((-(x)Ã‚Â²))|)",
+    "formula": "sqrt(|exp((-(x)²))|)",
     "seed": 920101,
     "iteration": 400,
     "speed": {
@@ -1143,7 +1143,7 @@
   },
   "diffusion_beta": {
     "taskId": "diffusion_beta",
-    "title": "Diffusion Â· schedule de bruit Î²(t)",
+    "title": "Diffusion · schedule de bruit β(t)",
     "direction": "min",
     "metric": 0.0000018372650878577204,
     "level": 2,
@@ -1223,7 +1223,7 @@
   },
   "bilinear_interp": {
     "taskId": "bilinear_interp",
-    "title": "Bilinear upsampling weight",
+    "title": "Upsampling · poids bilinéaire (1−u)",
     "direction": "min",
     "metric": 0,
     "level": 1,
@@ -1280,11 +1280,11 @@
   },
   "european_call": {
     "taskId": "european_call",
-    "title": "Prime d'un call europÃ©en",
+    "title": "Prime d'un call européen",
     "direction": "min",
     "metric": 0.17682071689836543,
     "level": 5,
-    "formula": "((19.224472 * ((1 + sigma))Ã‚Â²) + -19.114468)",
+    "formula": "((19.224472 * ((1 + sigma))²) + -19.114468)",
     "seed": 700001,
     "iteration": 128,
     "speed": {
@@ -1341,7 +1341,7 @@
   },
   "temporal_grad": {
     "taskId": "temporal_grad",
-    "title": "Video temporal gradient âˆ‚I/âˆ‚t",
+    "title": "Vidéo · gradient temporel ∂I/∂t",
     "direction": "min",
     "metric": 0,
     "level": 5,
@@ -1369,11 +1369,11 @@
   },
   "lorentz": {
     "taskId": "lorentz",
-    "title": "Lorentz factor Î³(Î²)",
+    "title": "Facteur de Lorentz γ(β)",
     "direction": "min",
     "metric": 0,
     "level": 5,
-    "formula": "(1 / sqrt(|(1 + (-(b)Ã‚Â²))|))",
+    "formula": "(1 / sqrt(|(1 + (-(b)²))|))",
     "seed": 4242,
     "iteration": 28,
     "speed": {
@@ -1464,11 +1464,11 @@
   },
   "hill": {
     "taskId": "hill",
-    "title": "Ã‰quation de Hill Â· dose-rÃ©ponse",
+    "title": "Équation de Hill · dose-réponse",
     "direction": "min",
     "metric": 0,
     "level": 5,
-    "formula": "((c)Ã‚Â³ / (1 + (c)Ã‚Â³))",
+    "formula": "((c)³ / (1 + (c)³))",
     "seed": 1000120,
     "iteration": 400,
     "speed": {
@@ -1518,11 +1518,11 @@
   },
   "kerr": {
     "taskId": "kerr",
-    "title": "Kerr light deflection (weak field)",
+    "title": "Déflexion de Kerr · lentille gravitationnelle",
     "direction": "min",
     "metric": 1.39756685796311e-7,
     "level": 2,
-    "formula": "((4.044113 * (((2.83748 + (10.692104 / b)) + b) / (b)Ã‚Â²)) + -0.001252)",
+    "formula": "((4.044113 * (((2.83748 + (10.692104 / b)) + b) / (b)²)) + -0.001252)",
     "seed": 777,
     "iteration": 132,
     "speed": {
@@ -1535,7 +1535,7 @@
       }
     },
     "fast": {
-      "formula": "((0.630738 / b))Ã‚Â²",
+      "formula": "((0.630738 / b))²",
       "metric": 0.0014679448665524788,
       "level": 2,
       "formulaCost": 5,
@@ -1641,7 +1641,7 @@
     "direction": "min",
     "metric": 0.00003245566387678721,
     "level": 2,
-    "formula": "((-23.07526 * ((log(max(r, 1e-30)) / ((r)Ã‚Â³)Ã‚Â³) / cos(sqrt(|(r + -1.017418)|)))) + -0.001951)",
+    "formula": "((-23.07526 * ((log(max(r, 1e-30)) / ((r)³)³) / cos(sqrt(|(r + -1.017418)|)))) + -0.001951)",
     "seed": 990303,
     "iteration": 158,
     "speed": {
@@ -1786,7 +1786,7 @@
   },
   "damped_oscillation": {
     "taskId": "damped_oscillation",
-    "title": "Oscillation amortie e^(âˆ’t/Ï„)Â·cos(Ï‰t)",
+    "title": "Oscillation amortie e^(−t/τ)·cos(ωt)",
     "direction": "min",
     "metric": 0.00030630571172772763,
     "level": 2,
@@ -1949,7 +1949,7 @@
       ]
     },
     "fast": {
-      "formula": "((min(t, 2.609741))Ã‚Â² + (0.86783 * max(1.214626, t)))",
+      "formula": "((min(t, 2.609741))² + (0.86783 * max(1.214626, t)))",
       "metric": 0.0004105827823591433,
       "level": 2,
       "formulaCost": 5,
@@ -2007,7 +2007,7 @@
   },
   "softplus": {
     "taskId": "softplus",
-    "title": "Softplus ln(1+eË£)",
+    "title": "Softplus ln(1+eˣ)",
     "direction": "min",
     "metric": 0.0000018948345099656158,
     "level": 2,
@@ -2061,7 +2061,7 @@
       ]
     },
     "fast": {
-      "formula": "(((x + 6.630221))Ã‚Â³ + 239.762951)",
+      "formula": "(((x + 6.630221))³ + 239.762951)",
       "metric": 0.007707567263369909,
       "level": 2,
       "formulaCost": 4,
@@ -2101,7 +2101,7 @@
   },
   "kdv_soliton": {
     "taskId": "kdv_soliton",
-    "title": "Soliton KdV Â· sechÂ²",
+    "title": "Soliton KdV · sech²",
     "direction": "min",
     "metric": 0.0017117911533114868,
     "level": 2,
@@ -2168,7 +2168,7 @@
       ]
     },
     "fast": {
-      "formula": "(((t)Â² * sin((4.822148 * t))) * (x * sin((4.8694 * t))))",
+      "formula": "(((t)² * sin((4.822148 * t))) * (x * sin((4.8694 * t))))",
       "metric": 0.0051856251259923165,
       "level": 2,
       "formulaCost": 46
@@ -2240,7 +2240,7 @@
   },
   "kerr_spin": {
     "taskId": "kerr_spin",
-    "title": "DÃ©flexion Kerr avec spin (Lense-Thirring)",
+    "title": "Déflexion Kerr avec spin (Lense-Thirring)",
     "direction": "min",
     "metric": 7.518473348732604e-10,
     "level": 2,
@@ -2376,7 +2376,7 @@
   },
   "pendulum_hybrid": {
     "taskId": "pendulum_hybrid",
-    "title": "ContrÃ´le hybride pendule inversÃ©",
+    "title": "Contrôle hybride pendule inversé",
     "direction": "min",
     "metric": 2.0391289425393437,
     "level": 0,
@@ -2451,11 +2451,11 @@
   },
   "eigen3_sym": {
     "taskId": "eigen3_sym",
-    "title": "Valeur propre max 3Ã—3 symÃ©trique (BT29)",
+    "title": "Valeur propre max 3×3 symétrique (BT29)",
     "direction": "min",
     "metric": 3.325277645075658e-11,
     "level": 2,
-    "formula": "((1.000001 * ((t * 0.333333) + ((2 * sqrt(|((-(u - ((t)Ã‚Â² * 0.333333))) * 0.333333)|)) * cos(((1.570796 - atan((min(1, max(-1, (((3 * (((t * u) * 0.333333) - (((t)Ã‚Â³ * 0.074074) + w))) / (2 * (u - ((t)Ã‚Â² * 0.333333)))) * sqrt(|(-3 / (u - ((t)Ã‚Â² * 0.333333)))|)))) / sqrt(||(1 - (min(1, max(-1, (((3 * (((t * u) * 0.333333) - (((t)Ã‚Â³ * 0.074074) + w))) / (2 * (u - ((t)Ã‚Â² * 0.333333)))) * sqrt(|(-3 / (u - ((t)Ã‚Â² * 0.333333)))|)))))Ã‚Â²)||)))) * 0.333333))))) + -0.000002)",
+    "formula": "((1.000001 * ((t * 0.333333) + ((2 * sqrt(|((-(u - ((t)² * 0.333333))) * 0.333333)|)) * cos(((1.570796 - atan((min(1, max(-1, (((3 * (((t * u) * 0.333333) - (((t)³ * 0.074074) + w))) / (2 * (u - ((t)² * 0.333333)))) * sqrt(|(-3 / (u - ((t)² * 0.333333)))|)))) / sqrt(||(1 - (min(1, max(-1, (((3 * (((t * u) * 0.333333) - (((t)³ * 0.074074) + w))) / (2 * (u - ((t)² * 0.333333)))) * sqrt(|(-3 / (u - ((t)² * 0.333333)))|)))))²)||)))) * 0.333333))))) + -0.000002)",
     "seed": 1000090,
     "iteration": 643,
     "tree": {
@@ -3067,7 +3067,7 @@
     "direction": "min",
     "metric": 4.0626336618882106e-32,
     "level": 2,
-    "formula": "(1.570796 - atan(((((d)Ã‚Â² - ((l2)Ã‚Â² + (l3)Ã‚Â²)) / (2 * (l2 * l3))) / sqrt(||(1 - ((((d)Ã‚Â² - ((l2)Ã‚Â² + (l3)Ã‚Â²)) / (2 * (l2 * l3))))Ã‚Â²)||))))",
+    "formula": "(1.570796 - atan(((((d)² - ((l2)² + (l3)²)) / (2 * (l2 * l3))) / sqrt(||(1 - ((((d)² - ((l2)² + (l3)²)) / (2 * (l2 * l3))))²)||))))",
     "seed": 1000001,
     "iteration": 199,
     "tree": {
@@ -3360,7 +3360,7 @@
     "direction": "min",
     "metric": 0.002938652617546022,
     "level": 2,
-    "formula": "((1.825166 * min(1.9, max(-5.198308, ((0.840532 - (((v)Â²)Â² * 0.000001)) - (((2.393229 + max(-0.435303, ((v * 1.543892) + ((v * dv) * 0.212766)))) / s))Â²)))) + 0.486206)",
+    "formula": "((1.825166 * min(1.9, max(-5.198308, ((0.840532 - (((v)²)² * 0.000001)) - (((2.393229 + max(-0.435303, ((v * 1.543892) + ((v * dv) * 0.212766)))) / s))²)))) + 0.486206)",
     "seed": 910502,
     "iteration": 800,
     "speed": {
@@ -3514,7 +3514,7 @@
       ]
     },
     "fast": {
-      "formula": "((1.141421 * ((1.22047 * min(1.9, max(-7.31, ((1 - (((v)Â²)Â² * 0.000001)) - (((3.45 + max(-0.05, ((v * 1.45) + ((v * dv) * 0.212766)))) / s))Â²)))) + 0.215661)) + 0.024217)",
+      "formula": "((1.141421 * ((1.22047 * min(1.9, max(-7.31, ((1 - (((v)²)² * 0.000001)) - (((3.45 + max(-0.05, ((v * 1.45) + ((v * dv) * 0.212766)))) / s))²)))) + 0.215661)) + 0.024217)",
       "metric": 0.564832696603028,
       "level": 2,
       "formulaCost": 22
@@ -3685,7 +3685,7 @@
   },
   "gemv4": {
     "taskId": "gemv4",
-    "title": "GEMV dÃ©codage LLM â€” cellule 4-lanes",
+    "title": "GEMV décodage LLM — cellule 4-lanes",
     "direction": "min",
     "metric": 1.6074532951505583e-7,
     "level": 2,
@@ -4004,7 +4004,7 @@
     "direction": "min",
     "metric": 8.1772509994516e-34,
     "level": 5,
-    "formula": "sqrt(|exp((-(x)Ã‚Â²))|)",
+    "formula": "sqrt(|exp((-(x)²))|)",
     "seed": 993001,
     "iteration": 400,
     "speed": {
@@ -4039,11 +4039,11 @@
   },
   "ema_smooth": {
     "taskId": "ema_smooth",
-    "title": "Facteur EMA indÃ©pendant du framerate",
+    "title": "Facteur EMA indépendant du framerate",
     "direction": "min",
     "metric": 1.6354908540365558e-11,
     "level": 5,
-    "formula": "((1.192774 * ((2 * (x / (x + 0.745653))) - ((x)Ã‚Â² * max(x, 0.692832)))) + 0.000009)",
+    "formula": "((1.192774 * ((2 * (x / (x + 0.745653))) - ((x)² * max(x, 0.692832)))) + 0.000009)",
     "seed": 995002,
     "iteration": 400,
     "speed": {
@@ -4149,7 +4149,7 @@
     "direction": "min",
     "metric": 3.283596399606784e-7,
     "level": 5,
-    "formula": "((-1.988372 * ((x)Ã‚Â² * (x + -1.503545))) + 0.000554)",
+    "formula": "((-1.988372 * ((x)² * (x + -1.503545))) + 0.000554)",
     "seed": 999801,
     "iteration": 1600,
     "speed": {
@@ -4203,7 +4203,7 @@
       ]
     },
     "fast": {
-      "formula": "((x)Ã‚Â² * (x + -1.503545))",
+      "formula": "((x)² * (x + -1.503545))",
       "metric": 3.283596399606784e-7,
       "level": 5,
       "formulaCost": 3,
@@ -4243,7 +4243,7 @@
   },
   "srgb_gamma": {
     "taskId": "srgb_gamma",
-    "title": "Transfert sRGB (encodage linÃ©aireâ†’affichage)",
+    "title": "Transfert sRGB (encodage linéaire→affichage)",
     "direction": "min",
     "metric": 0.0000019009578309001974,
     "level": 4,
@@ -4361,11 +4361,11 @@
   },
   "tanh_sat": {
     "taskId": "tanh_sat",
-    "title": "Tanh soft-clip (audio Â· gating)",
+    "title": "Tanh soft-clip (audio · gating)",
     "direction": "min",
     "metric": 0.0000046412770528300585,
     "level": 4,
-    "formula": "(0.900021 * ((x + (0.053639 * (x)Ã‚Â³)) / (0.90122 + (0.343141 * (x)Ã‚Â²))))",
+    "formula": "(0.900021 * ((x + (0.053639 * (x)³)) / (0.90122 + (0.343141 * (x)²))))",
     "seed": 999101,
     "iteration": 200,
     "speed": {
@@ -4442,7 +4442,7 @@
       ]
     },
     "fast": {
-      "formula": "(x / (2.598194 * (4.397731 + (x)Ã‚Â²)))",
+      "formula": "(x / (2.598194 * (4.397731 + (x)²)))",
       "metric": 0.0005936593577891905,
       "level": 2,
       "formulaCost": 7,
@@ -4491,7 +4491,7 @@
   },
   "atan_unit": {
     "taskId": "atan_unit",
-    "title": "Atan unitaire (cÅ“ur des atan2)",
+    "title": "Atan unitaire (cœur des atan2)",
     "direction": "min",
     "metric": 0,
     "level": 5,
@@ -4525,11 +4525,11 @@
   },
   "srgb_decode": {
     "taskId": "srgb_decode",
-    "title": "DÃ©code sRGB (affichage â†’ linÃ©aire)",
+    "title": "Décode sRGB (affichage → linéaire)",
     "direction": "min",
     "metric": 2.5435325790046406e-7,
     "level": 5,
-    "formula": "((-0.194813 * min(x, ((x)Ã‚Â² * (-5.123166 - log(max(x, 1e-30)))))) + 0.001458)",
+    "formula": "((-0.194813 * min(x, ((x)² * (-5.123166 - log(max(x, 1e-30)))))) + 0.001458)",
     "seed": 996001,
     "iteration": 800,
     "speed": {
@@ -4597,7 +4597,7 @@
       ]
     },
     "fast": {
-      "formula": "(x)Ã‚Â²",
+      "formula": "(x)²",
       "metric": 0.0001304377643047933,
       "level": 2,
       "formulaCost": 1,
@@ -4619,11 +4619,11 @@
   },
   "erf_prob": {
     "taskId": "erf_prob",
-    "title": "Erf probabiliste (noyaux de probabilitÃ© Â· GELU-exact)",
+    "title": "Erf probabiliste (noyaux de probabilité · GELU-exact)",
     "direction": "min",
     "metric": 0.00004650870031371604,
     "level": 3,
-    "formula": "(1.106774 * ((x + (0.034298 * (x)Ã‚Â³)) / (0.995 + (0.378089 * (x)Ã‚Â²))))",
+    "formula": "(1.106774 * ((x + (0.034298 * (x)³)) / (0.995 + (0.378089 * (x)²))))",
     "seed": 20260825,
     "iteration": 5,
     "tree": {
@@ -4702,11 +4702,11 @@
   },
   "huber_loss": {
     "taskId": "huber_loss",
-    "title": "Perte de Huber Î´=1 (entraÃ®nement robuste)",
+    "title": "Perte de Huber δ=1 (entraînement robuste)",
     "direction": "min",
     "metric": 2.992203818088443e-7,
     "level": 5,
-    "formula": "((-1.00272 * ((1.127009 - ((x)Ã‚Â² - -0.157558)) / (max(1.000633, |x|) + 0.998628))) + 0.485943)",
+    "formula": "((-1.00272 * ((1.127009 - ((x)² - -0.157558)) / (max(1.000633, |x|) + 0.998628))) + 0.485943)",
     "seed": 999401,
     "iteration": 400,
     "speed": {
@@ -4792,7 +4792,7 @@
       ]
     },
     "fast": {
-      "formula": "((x)Ã‚Â² / (|x| + 0.989))",
+      "formula": "((x)² / (|x| + 0.989))",
       "metric": 0.0008124159207928629,
       "level": 2,
       "formulaCost": 7,
@@ -4837,11 +4837,11 @@
   },
   "cosh_curve": {
     "taskId": "cosh_curve",
-    "title": "Cosh (catÃ©naires Â· ring-mod audio)",
+    "title": "Cosh (caténaires · ring-mod audio)",
     "direction": "min",
     "metric": 2.6331998691285042e-8,
     "level": 5,
-    "formula": "((0.001256 * ((sqrt(|(x)Ã‚Â²|) * cos((x)Ã‚Â²)) + (((x)Ã‚Â² + 11.494621))Ã‚Â³)) + -0.907039)",
+    "formula": "((0.001256 * ((sqrt(|(x)²|) * cos((x)²)) + (((x)² + 11.494621))³)) + -0.907039)",
     "seed": 996002,
     "iteration": 800,
     "speed": {
@@ -4929,7 +4929,7 @@
       ]
     },
     "fast": {
-      "formula": "(((x)Ã‚Â² + 5.05555))Ã‚Â²",
+      "formula": "(((x)² + 5.05555))²",
       "metric": 0.000005967909320814225,
       "level": 4,
       "formulaCost": 3,
@@ -4965,7 +4965,7 @@
   },
   "bessel_j0": {
     "taskId": "bessel_j0",
-    "title": "Bessel Jâ‚€ (FM Â· vibrations Â· poutres)",
+    "title": "Bessel J₀ (FM · vibrations · poutres)",
     "direction": "min",
     "metric": 0.00026389864276618125,
     "level": 2,
@@ -5161,7 +5161,7 @@
   },
   "bessel_j1": {
     "taskId": "bessel_j1",
-    "title": "Bessel Jâ‚ (FM Â· membranes antisym)",
+    "title": "Bessel J₁ (FM · membranes antisym)",
     "direction": "min",
     "metric": 0.000005197986685271395,
     "level": 4,
@@ -5327,11 +5327,11 @@
   },
   "blackbody_r": {
     "taskId": "blackbody_r",
-    "title": "Corps noir â€” canal rouge (Ã©clairage PBR)",
+    "title": "Corps noir — canal rouge (éclairage PBR)",
     "direction": "min",
     "metric": 0.0000036433250399925394,
     "level": 4,
-    "formula": "((12961264.054148 * ((6608.647704 / max(x, 6608.647704)) / (max(max(x, 6608.647704), 6449.745424))Ã‚Â²)) + 0.703081)",
+    "formula": "((12961264.054148 * ((6608.647704 / max(x, 6608.647704)) / (max(max(x, 6608.647704), 6449.745424))²)) + 0.703081)",
     "seed": 997001,
     "iteration": 800,
     "speed": {
@@ -5438,7 +5438,7 @@
   },
   "aces_fit": {
     "taskId": "aces_fit",
-    "title": "Tonemap ACES ajustÃ© (Narkowicz) â€” optimality test #4",
+    "title": "Tonemap ACES ajusté (Narkowicz) — optimality test #4",
     "direction": "min",
     "metric": 0.000012114994026428819,
     "level": 3,
@@ -5553,7 +5553,7 @@
   },
   "logsumexp2": {
     "taskId": "logsumexp2",
-    "title": "LogSumExp 2-logits (max diffÃ©rentiable)",
+    "title": "LogSumExp 2-logits (max différentiable)",
     "direction": "min",
     "metric": 0.01044425969530025,
     "level": 2,
@@ -5659,11 +5659,11 @@
   },
   "probit_quantile": {
     "taskId": "probit_quantile",
-    "title": "Probit / quantile normal (finance Â· risque Â· z-scores)",
+    "title": "Probit / quantile normal (finance · risque · z-scores)",
     "direction": "min",
     "metric": 0.00001901761235141796,
     "level": 3,
-    "formula": "((-4.274877 * (sqrt(|sqrt(|log(max(x, 1e-30))|)|) + (0.076417 * (x)Ã‚Â²))) + 3.983949)",
+    "formula": "((-4.274877 * (sqrt(|sqrt(|log(max(x, 1e-30))|)|) + (0.076417 * (x)²))) + 3.983949)",
     "seed": 1000010,
     "iteration": 1200,
     "speed": {
@@ -5764,7 +5764,7 @@
   },
   "pmt_finance": {
     "taskId": "pmt_finance",
-    "title": "MensualitÃ© de prÃªt par unitÃ© (fintech edge)",
+    "title": "Mensualité de prêt par unité (fintech edge)",
     "direction": "min",
     "metric": 4.3680216924352057e-7,
     "level": 2,
@@ -5858,7 +5858,7 @@
       ]
     },
     "fast": {
-      "formula": "((r - atan((n - 2.963402))))Ã‚Â³",
+      "formula": "((r - atan((n - 2.963402))))³",
       "metric": 5.568566032461893e-7,
       "level": 2,
       "formulaCost": 24,
@@ -5903,7 +5903,7 @@
   },
   "blackbody_g": {
     "taskId": "blackbody_g",
-    "title": "Corps noir â€” canal vert (Ã©clairage PBR)",
+    "title": "Corps noir — canal vert (éclairage PBR)",
     "direction": "min",
     "metric": 0.00012987872179127979,
     "level": 2,
@@ -6061,7 +6061,7 @@
   },
   "blackbody_b": {
     "taskId": "blackbody_b",
-    "title": "Corps noir â€” canal bleu (Ã©clairage PBR)",
+    "title": "Corps noir — canal bleu (éclairage PBR)",
     "direction": "min",
     "metric": 0.00022595735189612456,
     "level": 2,
@@ -6196,7 +6196,7 @@
   },
   "bessel_j2": {
     "taskId": "bessel_j2",
-    "title": "Bessel Jâ‚‚ (membranes sym Â· 2e sideband)",
+    "title": "Bessel J₂ (membranes sym · 2e sideband)",
     "direction": "min",
     "metric": 0.00010589472510666084,
     "level": 2,
@@ -6330,7 +6330,7 @@
   },
   "logit_ml": {
     "taskId": "logit_ml",
-    "title": "Logit (probas â†” logits, tÃªtes de classification)",
+    "title": "Logit (probas ↔ logits, têtes de classification)",
     "direction": "min",
     "metric": 0.016974946048628873,
     "level": 0,
@@ -6394,7 +6394,7 @@
       ]
     },
     "fast": {
-      "formula": "((2.126622 * (((x)Â² + log(max(sqrt(|x|), 1e-30))) + (((x)Â³)Â²)Â³)) + 0.224449)",
+      "formula": "((2.126622 * (((x)² + log(max(sqrt(|x|), 1e-30))) + (((x)³)²)³)) + 0.224449)",
       "metric": 0.0008206231598785846,
       "level": 2,
       "formulaCost": 32,
@@ -6473,7 +6473,7 @@
   },
   "kelly_criterion": {
     "taskId": "kelly_criterion",
-    "title": "Kelly criterion â€” position sizing",
+    "title": "Kelly criterion — position sizing",
     "direction": "min",
     "metric": 9.839944734124527e-9,
     "level": 2,
@@ -6606,7 +6606,7 @@
   },
   "rsi_momentum": {
     "taskId": "rsi_momentum",
-    "title": "RSI depuis moyennes lissÃ©es (TradingView)",
+    "title": "RSI depuis moyennes lissées (TradingView)",
     "direction": "min",
     "metric": 1.836172557108052e-29,
     "level": 2,
@@ -6652,7 +6652,7 @@
   },
   "implied_vol": {
     "taskId": "implied_vol",
-    "title": "VolatilitÃ© implicite (inversion Black-Scholes)",
+    "title": "Volatilité implicite (inversion Black-Scholes)",
     "direction": "min",
     "metric": 0.9827107320402105,
     "level": 0,
@@ -6734,7 +6734,7 @@
   },
   "michaelis_menten": {
     "taskId": "michaelis_menten",
-    "title": "Michaelis-Menten (biochimie Â· pharma)",
+    "title": "Michaelis-Menten (biochimie · pharma)",
     "direction": "min",
     "metric": 6.947760597116317e-10,
     "level": 2,
@@ -6903,7 +6903,7 @@
   },
   "temperature_softmax": {
     "taskId": "temperature_softmax",
-    "title": "Softmax tempÃ©rÃ© 2-logits (Ã©chantillonnage LLM)",
+    "title": "Softmax tempéré 2-logits (échantillonnage LLM)",
     "direction": "min",
     "metric": 7.439476402624881e-47,
     "level": 2,
@@ -7006,7 +7006,7 @@
   },
   "doppler_effect": {
     "taskId": "doppler_effect",
-    "title": "Effet Doppler (audio Â· radar)",
+    "title": "Effet Doppler (audio · radar)",
     "direction": "min",
     "metric": 9.281797631143672e-10,
     "level": 2,
@@ -7116,7 +7116,7 @@
     "direction": "min",
     "metric": 2.1322035895929197e-26,
     "level": 2,
-    "formula": "(0.42 * (relu(t) * (t)Ã‚Â³))",
+    "formula": "(0.42 * (relu(t) * (t)³))",
     "seed": 1000080,
     "iteration": 400,
     "speed": {
@@ -7157,7 +7157,7 @@
       ]
     },
     "fast": {
-      "formula": "(t)Ã‚Â³",
+      "formula": "(t)³",
       "metric": 19301.61438055919,
       "level": 2,
       "formulaCost": 2,
@@ -7179,7 +7179,7 @@
   },
   "mm1_queue_wait": {
     "taskId": "mm1_queue_wait",
-    "title": "Attente file M/M/1 (SRE Â· systÃ¨mes)",
+    "title": "Attente file M/M/1 (SRE · systèmes)",
     "direction": "min",
     "metric": 6.062690637388583e-33,
     "level": 2,
@@ -7405,7 +7405,7 @@
   },
   "chsh_correlation": {
     "taskId": "chsh_correlation",
-    "title": "ParamÃ¨tre CHSH (test de Bell Â· Nobel 2022)",
+    "title": "Paramètre CHSH (test de Bell · Nobel 2022)",
     "direction": "min",
     "metric": 2.1055469858256505e-32,
     "level": 2,
@@ -7532,11 +7532,11 @@
   },
   "legendre_p2": {
     "taskId": "legendre_p2",
-    "title": "Legendre Pâ‚‚ (harmonique sphÃ©rique Â· moments quantiques)",
+    "title": "Legendre P₂ (harmonique sphérique · moments quantiques)",
     "direction": "min",
     "metric": 3.250969746125654e-33,
     "level": 5,
-    "formula": "((1.5 * (x)Ã‚Â²) + -0.5)",
+    "formula": "((1.5 * (x)²) + -0.5)",
     "seed": 1000140,
     "iteration": 400,
     "speed": {
@@ -7572,7 +7572,7 @@
       ]
     },
     "fast": {
-      "formula": "(-0.774693 * (x)Ã‚Â²)",
+      "formula": "(-0.774693 * (x)²)",
       "metric": 3.250969746125654e-33,
       "level": 5,
       "formulaCost": 2,
@@ -7603,11 +7603,11 @@
   },
   "laguerre_l2": {
     "taskId": "laguerre_l2",
-    "title": "Laguerre Lâ‚‚ (radiale hydrogÃ¨ne Â· oscillateur)",
+    "title": "Laguerre L₂ (radiale hydrogène · oscillateur)",
     "direction": "min",
     "metric": 8.257087129644967e-7,
     "level": 5,
-    "formula": "((0.250056 * ((-0.01236 + ((x + -1.996089))Ã‚Â²) + ((x + -2.005496))Ã‚Â²)) + -0.996478)",
+    "formula": "((0.250056 * ((-0.01236 + ((x + -1.996089))²) + ((x + -2.005496))²)) + -0.996478)",
     "seed": 1000140,
     "iteration": 400,
     "speed": {
@@ -7684,7 +7684,7 @@
       ]
     },
     "fast": {
-      "formula": "(((x + -1.996089))Ã‚Â² + -0.262804)",
+      "formula": "(((x + -1.996089))² + -0.262804)",
       "metric": 0.000020056550508695337,
       "level": 3,
       "formulaCost": 3,
@@ -7724,7 +7724,7 @@
   },
   "asin_hard": {
     "taskId": "asin_hard",
-    "title": "Arcsinus unitaire (quantique Â· rotations)",
+    "title": "Arcsinus unitaire (quantique · rotations)",
     "direction": "min",
     "metric": 0,
     "level": 5,
@@ -7746,7 +7746,7 @@
       "speedup": 1.4
     },
     "fast": {
-      "formula": "(0.529961 * ((1.930182 * x) + ((0.645691 * (x)Â²) * (x)Â³)))",
+      "formula": "(0.529961 * ((1.930182 * x) + ((0.645691 * (x)²) * (x)³)))",
       "metric": 0.000010180605716772432,
       "level": 3,
       "formulaCost": 8,
@@ -7814,7 +7814,7 @@
   },
   "qfi_dephasing": {
     "taskId": "qfi_dephasing",
-    "title": "QFI GHZ dÃ©phasage collectif (mÃ©trologie quantique)",
+    "title": "QFI GHZ déphasage collectif (métrologie quantique)",
     "direction": "min",
     "metric": 1.4726216379152874,
     "level": 0,
@@ -7901,7 +7901,7 @@
   },
   "amp_damp_fid": {
     "taskId": "amp_damp_fid",
-    "title": "FidÃ©litÃ© canal damping (correction d'erreur)",
+    "title": "Fidélité canal damping (correction d'erreur)",
     "direction": "min",
     "metric": 0.021192299809747715,
     "level": 2,
@@ -8084,7 +8084,7 @@
       ]
     },
     "fast": {
-      "formula": "((-0.287877 + cos((t * 3.057635))))Ã‚Â³",
+      "formula": "((-0.287877 + cos((t * 3.057635))))³",
       "metric": 0.0613458418308354,
       "level": 2,
       "formulaCost": 24,
@@ -8137,7 +8137,7 @@
   },
   "bessel_i0e": {
     "taskId": "bessel_i0e",
-    "title": "Bessel Iâ‚€e modifiÃ©e (fenÃªtres KBD Â· diffusion)",
+    "title": "Bessel I₀e modifiée (fenêtres KBD · diffusion)",
     "direction": "min",
     "metric": 0.00003056208763233721,
     "level": 2,
@@ -8197,11 +8197,11 @@
   },
   "elliptic_k": {
     "taskId": "elliptic_k",
-    "title": "IntÃ©grale elliptique K(m) (pendule Â· gÃ©odÃ©siques)",
+    "title": "Intégrale elliptique K(m) (pendule · géodésiques)",
     "direction": "min",
     "metric": 0.004333603318947968,
     "level": 2,
-    "formula": "((0.229391 * ((exp(m) * (asin(m))Ã‚Â³) + m)) + 1.642805)",
+    "formula": "((0.229391 * ((exp(m) * (asin(m))³) + m)) + 1.642805)",
     "seed": 20260825,
     "iteration": 7,
     "tree": {
@@ -8267,7 +8267,7 @@
   },
   "kepler_solver": {
     "taskId": "kepler_solver",
-    "title": "Solveur de Kepler O(1) (mÃ©canique orbitale)",
+    "title": "Solveur de Kepler O(1) (mécanique orbitale)",
     "direction": "min",
     "metric": 0.025907227034892635,
     "level": 1,
@@ -8332,7 +8332,7 @@
   },
   "fast_exp_alu": {
     "taskId": "fast_exp_alu",
-    "title": "Exp algÃ©brique pure (sans exp/log/sin/cos)",
+    "title": "Exp algébrique pure (sans exp/log/sin/cos)",
     "direction": "min",
     "metric": 0,
     "level": 5,

@@ -30,17 +30,21 @@ async function main() {
     const ib = defs.get(id)?.iterativeBaseline;
     if (!ib) continue;
     // refresh precise pricing if missing, stale-labelled or mis-rounded
-    const wantPrecise = e.speed?.formulaCost ? round1(ib.totalCost / Math.max(1, e.speed.formulaCost!)) : null;
-    if (wantPrecise && (!e.speed.vsIterative || e.speed.vsIterative.label !== ib.label ||
-        Math.abs(e.speed.vsIterative.speedup - wantPrecise) > 0.005)) {
-      e.speed.vsIterative = { label: ib.label, speedup: wantPrecise };
-      priced++;
+    if (e.speed?.formulaCost) {
+      const wantPrecise = round1(ib.totalCost / Math.max(1, e.speed.formulaCost));
+      if (!e.speed.vsIterative || e.speed.vsIterative.label !== ib.label ||
+          Math.abs(e.speed.vsIterative.speedup - wantPrecise) > 0.005) {
+        e.speed.vsIterative = { label: ib.label, speedup: wantPrecise };
+        priced++;
+      }
     }
     // THE point: fast slots earn their own multiplier record
-    const wantFast = e.fast?.formulaCost ? round1(ib.totalCost / Math.max(1, e.fast.formulaCost!)) : null;
-    if (wantFast && (!e.fast.vsIterative || Math.abs(e.fast.vsIterative.speedup - wantFast) > 0.005)) {
-      e.fast.vsIterative = { label: ib.label, speedup: wantFast };
-      priced++;
+    if (e.fast?.formulaCost) {
+      const wantFast = round1(ib.totalCost / Math.max(1, e.fast.formulaCost));
+      if (!e.fast.vsIterative || Math.abs(e.fast.vsIterative.speedup - wantFast) > 0.005) {
+        e.fast.vsIterative = { label: ib.label, speedup: wantFast };
+        priced++;
+      }
     }
   }
 
