@@ -24,3 +24,5 @@ validation/__pycache__/
 *.pyc
 spear-hall-of-fame*.txt
 spear-hall-of-fame*Copie*
+
+*.onnx
