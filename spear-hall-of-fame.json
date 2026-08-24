@@ -7817,5 +7817,324 @@
         }
       ]
     }
+  },
+  "qfi_dephasing": {
+    "taskId": "qfi_dephasing",
+    "title": "QFI GHZ déphasage collectif (métrologie quantique)",
+    "direction": "min",
+    "metric": 1.4726216379152874,
+    "level": 0,
+    "formula": "((0.002631 * (sin(log(max(n, 1e-30))) / ((0.35138 / (t / g)) * g))) + 0.159052)",
+    "seed": 1000095,
+    "iteration": 1600,
+    "speed": {
+      "formulaCost": 55,
+      "exactCost": 22,
+      "speedup": 0.4,
+      "vsIterative": {
+        "label": "BFGS optimisation",
+        "speedup": 14.545454545454545
+      }
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 0.002631
+            },
+            {
+              "o": "pdiv",
+              "c": [
+                {
+                  "o": "sin",
+                  "c": [
+                    {
+                      "o": "log",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "n"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "pdiv",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 0.35138
+                        },
+                        {
+                          "o": "pdiv",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "t"
+                            },
+                            {
+                              "o": "var",
+                              "n": "g"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "o": "var",
+                      "n": "g"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.159052
+        }
+      ]
+    }
+  },
+  "amp_damp_fid": {
+    "taskId": "amp_damp_fid",
+    "title": "Fidélité canal damping (correction d'erreur)",
+    "direction": "min",
+    "metric": 0.021192299809747715,
+    "level": 2,
+    "formula": "((-2.161354 * ((cos(sin(th)) - cos(cos(th))) * sin(sin(t)))) + 0.998678)",
+    "seed": 1000095,
+    "iteration": 1600,
+    "speed": {
+      "formulaCost": 124,
+      "exactCost": 24,
+      "speedup": 0.1935483870967742,
+      "vsIterative": {
+        "label": "Kraus ops 4×4 matmul",
+        "speedup": 0.3870967741935484
+      }
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": -2.161354036444073
+            },
+            {
+              "o": "mul",
+              "c": [
+                {
+                  "o": "sub",
+                  "c": [
+                    {
+                      "o": "cos",
+                      "c": [
+                        {
+                          "o": "sin",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "th"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "o": "cos",
+                      "c": [
+                        {
+                          "o": "cos",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "th"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "sin",
+                  "c": [
+                    {
+                      "o": "sin",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "t"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.9986778255438645
+        }
+      ]
+    }
+  },
+  "loschmidt_rate": {
+    "taskId": "loschmidt_rate",
+    "title": "Loschmidt echo rate TFIM (DQPT)",
+    "direction": "min",
+    "metric": 0.052925894381018135,
+    "level": 2,
+    "formula": "((3.270734 * (min(cos((t * 3.130638)), 3.047207) * min(-0.185459, cos((t * 3.047207))))) + 0.594297)",
+    "seed": 1000095,
+    "iteration": 1600,
+    "speed": {
+      "formulaCost": 47,
+      "exactCost": 18,
+      "speedup": 0.3829787234042553,
+      "vsIterative": {
+        "label": "Diag complète 128 modes",
+        "speedup": 13.617021276595745
+      }
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 3.2707335278466636
+            },
+            {
+              "o": "mul",
+              "c": [
+                {
+                  "o": "min",
+                  "c": [
+                    {
+                      "o": "cos",
+                      "c": [
+                        {
+                          "o": "mul",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "t"
+                            },
+                            {
+                              "o": "const",
+                              "v": 3.130638
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "o": "const",
+                      "v": 3.047207
+                    }
+                  ]
+                },
+                {
+                  "o": "min",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": -0.185459
+                    },
+                    {
+                      "o": "cos",
+                      "c": [
+                        {
+                          "o": "mul",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "t"
+                            },
+                            {
+                              "o": "const",
+                              "v": 3.047207
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.5942965371145621
+        }
+      ]
+    },
+    "fast": {
+      "formula": "((-0.287877 + cos((t * 3.057635))))Â³",
+      "metric": 0.0613458418308354,
+      "level": 2,
+      "formulaCost": 24,
+      "speed": {
+        "formulaCost": 24,
+        "exactCost": 18,
+        "speedup": 0.75,
+        "vsIterative": {
+          "label": "Diag complète 128 modes",
+          "speedup": 26.666666666666668
+        }
+      }
+    },
+    "fastTree": {
+      "o": "cube",
+      "c": [
+        {
+          "o": "add",
+          "c": [
+            {
+              "o": "const",
+              "v": -0.287877
+            },
+            {
+              "o": "cos",
+              "c": [
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "t"
+                    },
+                    {
+                      "o": "const",
+                      "v": 3.057635
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
   }
 }

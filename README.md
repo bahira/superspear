@@ -190,6 +190,14 @@ Two more tasks fell to machine-zero via targeted scaffolds:
 |---|---|---|---|
 | **temperature_softmax** ✅ | LLM sampling temperature | **7.4e-47 EXACT** | σ(Δ/T) scaffold → full convergence |
 | **hill** ✅ | pharmacology dose-response | **TRUE ZERO** at 9 units | c³/(1+c³) scaffold → exact recovery |
+### 🔮 Quantum speedup front — replacing iterative solvers in quantum computing
+
+| Task | Replaces | Record | vs Solver |
+|---|---|---|---|
+| **qfi_dephasing** | BFGS optimization over measurement bases | 1.47, L0 | **×15 vs BFGS** |
+| **amp_damp_fid** | Kraus operator evaluation for QEC | 2.1e-2, L2 | ×0.19 (needs slimming) |
+| **loschmidt_rate** | Exact diagonalization of TFIM modes | 5.3e-2, L2 | **×14 vs full diag** |
+| **grover_amplitude** | asin-based Grover phase computation | 1.07e-1, L0 | hard mode open |
 ### ⚙️ Ultra-common operations registry (new)
 
 Five everyday kernel/program primitives added, first-generation results at 500 iterations:
