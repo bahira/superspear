@@ -2,6 +2,8 @@
 
 [![npm](https://img.shields.io/npm/v/spear-kernels)](https://www.npmjs.com/package/spear-kernels) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
+**Project page**: [bahira.github.io/superspear](https://bahira.github.io/superspear/) — static landing page served from [`docs/`](./docs).
+
 ```bash
 npm install spear-kernels
 ```
@@ -179,7 +181,7 @@ With `blackbody_r` (L4), the full PBR color-temperature trio is discovered and r
 |---|---|---|---|
 | **concurrence_pure** ✅ | entanglement measure | **EXACT (MSE=0, L5) at 5 units** — better than hand-written estimate | 5 |
 | **chsh_correlation** ✅ | Bell inequality · Nobel Physics 2022 | **2.1e-32 EXACT** — full CHSH expression recovered via scaffold | 92 |
-| **grover_amplitude** | quadratic speedup law | 1.07e-1, L0 — asin unservable, hard mode open | 30 |
+| **grover_amplitude** | quadratic speedup law | 1.07e-1, L0 — now that `asin` is served, hard mode is open | 30 |
 
 The concurrence solve is remarkable: the engine found the optimal 5-unit form (`2·|ad−bc|`) — *cheaper than the hand-written estimate*. The CHSH expression (Nobel-grade Bell test) was recovered to machine precision via explicit-form scaffold seeding.
 ### ⚗️ Wave 7b — scaffold-exact breakthroughs
@@ -197,7 +199,7 @@ Two more tasks fell to machine-zero via targeted scaffolds:
 | **qfi_dephasing** | BFGS optimization over measurement bases | 1.47, L0 | **×15 vs BFGS** |
 | **amp_damp_fid** | Kraus operator evaluation for QEC | 2.1e-2, L2 | ×0.19 (needs slimming) |
 | **loschmidt_rate** | Exact diagonalization of TFIM modes | 5.3e-2, L2 | **×14 vs full diag** |
-| **grover_amplitude** | asin-based Grover phase computation | 1.07e-1, L0 | hard mode open |
+| **grover_amplitude** | asin-based Grover phase computation | 1.07e-1, L0 — hard mode open; `asin` now served | 30 |
 ### ⚙️ Ultra-common operations registry (new)
 
 Five everyday kernel/program primitives added, first-generation results at 500 iterations:
@@ -289,12 +291,15 @@ The engine (`src/lib/spear/`) combines:
 
 - **Multi-objective GP**: non-dominated sorting + crowding distance, growing parsimony pressure (formulas must be *small* AND *accurate*);
 - **End-to-end seeded RNG**: datasets, evolution and noise are reproducible from one integer (`setSeed` + injected uniform source);
-- **Operator set**: `add sub mul pdiv relu abs neg sq sqrt cube max min exp sin cos log` — transcendental ops are allowed but priced honestly (≈20 ALU/SFU units vs 1 for `mul`);
+- **Operator set**: `add sub mul pdiv relu abs neg sq sqrt cube max min exp sin cos log atan asin` — transcendental ops are allowed but priced honestly (≈20 ALU/SFU units vs 1 for `mul`);
 - **Multi-start warm-up**: primitive shapes (rationals, Padé [3/2], exponential decay, inverse powers, rsqrt family) tuned by coordinate descent before evolution starts;
 - **Cultural bootstrapping**: champion ASTs are stored in the ledger and re-injected as warm-up bricks for *other* tasks (variable-renamed, size-capped, never the task's own answer) — each generation of runs starts smarter than the last;
 - **UCB budget allocation** across tasks: exploit what improves, explore what stagnates;
 - **Anti-stagnation**: constant polishing, structural mutations, shape re-injection;
 - **Honest scoring**: selection on train split, reporting on an unseen holdout (KV-cache task);
+- **OOD robustness gate** (constrained NSGA-II): every candidate is scored on an extrapolation band outside its training support (`[lo−span/2, lo] ∪ [hi, hi+span/2]`); a feasible individual always dominates an infeasible one, so a formula that only interpolates the training grid — however tightly — is rejected. Off-support blow-ups die instead of winning;
+- **Dual population** A/B: exploration (aggressive crossover/mutation) and heritage (past champions + composite motifs, local-search only) evolve side-by-side, exchanging elites every few generations — discoveries re-enter refinement, refined shapes re-enter exploration;
+- **`asin` primitive** served across all backends (JS/WASM/C/torch, cost 20) — closes the one documented inverse-trig gap (Grover amplitudes were previously unservable);
 - **Algebraic simplification**: constant folding, nested-constant collapsing (`c₁·(c₂·x) → (c₁c₂)·x`, `(x+a)−a → x`) — kills degenerate records and sped the search up ~3×;
 - **Verified exports**: every formula is emitted to **Python (torch)**, **CUDA C**, **strict MISRA-C99**, and **WebAssembly**, with op-by-op parity checks;
 - **Light/full snapshots**: periodic UI snapshots stay cheap; codegen + WASM compile + speed benchmarks run once on the final snapshot.

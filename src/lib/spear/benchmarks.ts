@@ -18,6 +18,7 @@ import {
   type SpearNode,
 } from "./engine";
 import { erf, gaussianRandom, linfError, linspace, mapArray, mse, silu } from "./math-utils";
+import { compositeSeeds, makeOodProbe } from "./heritage";
 
 // ---------------------------------------------------------------------------
 // Task contract: every task is measured with the same code path as its
@@ -84,6 +85,12 @@ export interface TaskDef {
   evaluateScored?: (node: SpearNode) => { metric: number; secondary?: number; finite: boolean; node: SpearNode };
   /** Honest generalisation score (train/test split). Falls back to evaluate. */
   holdout?: (node: SpearNode) => TaskEval;
+  /**
+   * OOD constraint probe (constrained NSGA-II): returns violation >= 0 on an
+   * extrapolation band; 0 = feasible, Infinity = blows up off-distribution.
+   * Shapes selection only — never alters reported metrics.
+   */
+  ood?: (node: SpearNode) => number;
 }
 
 const GP_OPS = ALL_OPS;
@@ -126,6 +133,20 @@ function buildActivationTask(spec: ActivationSpec, points = 400): TaskDef {
   const x = grid(points, spec.lo, spec.hi);
   const y = mapArray(x, spec.fn);
   const vars = { x };
+  // OOD extrapolation band: [lo − span/2, lo] ∪ [hi, hi + span/2] — targets
+  // come straight from the exact function, so candidates that only interpolate
+  // the training grid die here.
+  const span = spec.hi - spec.lo;
+  const oodPts = 32;
+  const oodX = new Float64Array(oodPts * 2);
+  for (let i = 0; i < oodPts; i++) {
+    oodX[i] = spec.lo - span * 0.5 * (1 - i / (oodPts - 1));
+    oodX[oodPts + i] = spec.hi + span * 0.5 * (i / (oodPts - 1));
+  }
+  const oodProbe = makeOodProbe(
+    { vars, y, n: points },
+    { vars: { x: oodX }, y: mapArray(oodX, spec.fn), n: oodX.length },
+  );
   const gpConfig: GpConfig = {
     variables: ["x"],
     constRange: [-3, 3],
@@ -382,6 +403,7 @@ function buildActivationTask(spec: ActivationSpec, points = 400): TaskDef {
       return out;
     },
     codeVarDecl: "const float x",
+    ood: oodProbe,
     exactFn: spec.fn,
     exactCost: spec.exactCost ?? (spec.id === "gelu" ? 46 : 34),
     iterativeBaseline: ITERATIVE_BASELINES[spec.id],
@@ -859,6 +881,36 @@ function buildRegressionTask(cfg: {
   for (let i = 0; i < n; i++) noiseFloor += (cfg.trueLaw(vars, i) - y[i]) ** 2;
   noiseFloor /= n;
 
+  // OOD probe from the exact law AST: sweep the first variable half a span
+  // beyond both edges of its observed range, other variables pinned at their
+  // dataset mean. Tasks without an exact-law AST simply get no constraint.
+  const lawAst = cfg.exactLaw ?? EXACT_LAWS[cfg.id];
+  let oodProbe: ((node: SpearNode) => number) | undefined;
+  if (lawAst) {
+    const xv = vars[varNames[0]];
+    let lo = Infinity;
+    let hi = -Infinity;
+    for (let i = 0; i < n; i++) { if (xv[i] < lo) lo = xv[i]; if (xv[i] > hi) hi = xv[i]; }
+    const fixed: Record<string, number> = {};
+    for (const vn of varNames.slice(1)) {
+      let s = 0;
+      for (let i = 0; i < n; i++) s += vars[vn][i];
+      fixed[vn] = s / n;
+    }
+    const rspan = hi - lo;
+    const oodPts = 32;
+    const oodX = new Float64Array(oodPts * 2);
+    for (let i = 0; i < oodPts; i++) {
+      oodX[i] = lo - rspan * 0.5 * (1 - i / (oodPts - 1));
+      oodX[oodPts + i] = hi + rspan * 0.5 * (i / (oodPts - 1));
+    }
+    const oy = new Float64Array(oodX.length);
+    for (let i = 0; i < oodX.length; i++) {
+      oy[i] = evaluateScalar(lawAst, { ...fixed, [varNames[0]]: oodX[i] });
+    }
+    oodProbe = makeOodProbe({ vars, y, n }, { vars: { [varNames[0]]: oodX }, y: oy, n: oodX.length });
+  }
+
   return {
     id: cfg.id,
     family: "regression",
@@ -904,6 +956,8 @@ function buildRegressionTask(cfg: {
     },
     seedPool: [
       ...loadBootstrapSeeds(varNames, cfg.id),
+      // composite algebraic motifs (softsign / Padé / rsqrt shapes)
+      ...compositeSeeds(varNames[0]),
       makeNode("sq", { children: [makeNode("var", { name: varNames[0] })] }),
       makeNode("mul", { children: [makeNode("var", { name: varNames[0] }), makeNode("sqrt", { children: [makeNode("var", { name: varNames[0] })] })] }),
       makeNode("sqrt", { children: [makeNode("cube", { children: [makeNode("var", { name: varNames[0] })] })] }),
@@ -955,6 +1009,7 @@ function buildRegressionTask(cfg: {
     },
     verify: cfg.verify,
     codeVarDecl: `const float ${varNames.join(", const float ")}`,
+    ood: oodProbe,
     exactRefNode: cfg.exactLaw ?? EXACT_LAWS[cfg.id],
     exactCost: cfg.exactCost,
     iterativeBaseline: ITERATIVE_BASELINES[cfg.id],

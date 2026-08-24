@@ -8,7 +8,7 @@ export type NodeOp =
   | "add" | "sub" | "mul" | "pdiv"
   | "relu" | "abs" | "neg" | "sq" | "sqrt" | "cube"
   | "max" | "min"
-  | "exp" | "sin" | "cos" | "log" | "atan";
+  | "exp" | "sin" | "cos" | "log" | "atan" | "asin";
 
 export interface SpearNode {
   op: NodeOp;
@@ -20,10 +20,10 @@ export interface SpearNode {
 }
 
 const BINARY = new Set<NodeOp>(["add", "sub", "mul", "pdiv", "max", "min"]);
-const UNARY = new Set<NodeOp>(["relu", "abs", "neg", "sq", "sqrt", "cube", "exp", "atan", "sin", "cos", "log"]);
+const UNARY = new Set<NodeOp>(["relu", "abs", "neg", "sq", "sqrt", "cube", "exp", "atan", "asin", "sin", "cos", "log"]);
 
 export const ALL_OPS: NodeOp[] = [
-  "add", "sub", "mul", "pdiv", "relu", "abs", "neg", "sq", "sqrt", "cube", "max", "atan", "min", "exp", "sin", "cos", "log",
+  "add", "sub", "mul", "pdiv", "relu", "abs", "neg", "sq", "sqrt", "cube", "max", "atan", "min", "exp", "sin", "cos", "log", "asin",
 ];
 
 /** Ops that a GPU/TPU executes as plain algebra (no transcendental unit). */
@@ -70,7 +70,7 @@ export const OP_COST: Record<NodeOp, number> = {
   var: 0, const: 0,
   add: 1, sub: 1, mul: 1,
   pdiv: 4, relu: 1, abs: 1, neg: 1, sq: 1, cube: 2, sqrt: 2, max: 1, min: 1,
-  exp: 20, sin: 20, cos: 20, atan: 20, log: 20,
+  exp: 20, sin: 20, cos: 20, atan: 20, log: 20, asin: 20,
 };
 
 export function estimateCost(node: SpearNode): number {
@@ -245,7 +245,8 @@ export function evaluateNode(
       case "exp": r = Math.exp(Math.max(-50, Math.min(50, av))); break;
       case "sin": r = Math.sin(av); break;
       case "cos": r = Math.cos(av); break;
-        case "atan": r = Math.atan(av); break;
+      case "atan": r = Math.atan(av); break;
+      case "asin": r = Math.asin(Math.max(-1, Math.min(1, av))); break;
       case "log": r = Math.log(av > 1e-30 ? av : 1e-30); break;
       default: break;
     }
@@ -283,6 +284,7 @@ export function evaluateScalar(node: SpearNode, scope: Record<string, number>): 
     case "sin": return Math.sin(a[0]);
       case "cos": return Math.cos(a[0]);
       case "atan": return Math.atan(a[0]);
+      case "asin": return Math.asin(Math.max(-1, Math.min(1, a[0])));
       case "log": return Math.log(a[0] > 1e-30 ? a[0] : 1e-30);
     default: return 0;
   }
@@ -308,6 +310,7 @@ export function nodeToString(node: SpearNode): string {
     case "sin": return `sin(${nodeToString(node.children[0])})`;
     case "cos": return `cos(${nodeToString(node.children[0])})`;
     case "atan": return `atan(${nodeToString(node.children[0])})`;
+    case "asin": return `asin(${nodeToString(node.children[0])})`;
     case "log": return `log(max(${nodeToString(node.children[0])}, 1e-30))`;
     case "max": return `max(${nodeToString(node.children[0])}, ${nodeToString(node.children[1])})`;
     case "min": return `min(${nodeToString(node.children[0])}, ${nodeToString(node.children[1])})`;
@@ -362,7 +365,7 @@ export function parseFormula(src: string): SpearNode {
   };
 
   const BIN: Record<string, NodeOp> = { "+": "add", "-": "sub", "*": "mul", "/": "pdiv" };
-  const FUNCS = new Set(["relu", "sqrt", "exp", "sin", "cos", "log", "atan", "max", "min"]);
+  const FUNCS = new Set(["relu", "sqrt", "exp", "sin", "cos", "log", "atan", "asin", "max", "min"]);
 
   const atom = (): SpearNode => {
     const t = peek();
@@ -445,6 +448,7 @@ const PY: Record<NodeOp, string> = {
   sin: "torch.sin({a})", cos: "torch.cos({a})",
   log: "torch.log(torch.clamp({a}, min=1e-30))",
     atan: "torch.atan({a})",
+    asin: "torch.asin(torch.clamp({a}, -1.0, 1.0))",
 };
 
 export function toPython(node: SpearNode, fnName = "spear_fn"): string {
@@ -454,7 +458,6 @@ export function toPython(node: SpearNode, fnName = "spear_fn"): string {
     if (nd.op === "const") return fmt(nd.value);
     const tpl = PY[nd.op];
     if (!tpl) {
-      // eslint-disable-next-line no-console
       console.error(`[toPython] op inconnu "${String(nd.op)}" â€” arbre: ${JSON.stringify(node).slice(0, 300)}`);
       return "0";
     }
@@ -481,6 +484,7 @@ export function toC(node: SpearNode, fnName = "spear_fn", varDecl = "const float
       case "sin": return `sinf(${walk(nd.children[0])})`;
       case "cos": return `cosf(${walk(nd.children[0])})`;
       case "atan": return `atanf(${walk(nd.children[0])})`;
+      case "asin": return `asinf(fmaxf(-1.0f, fminf(1.0f, ${walk(nd.children[0])})))`;
       case "log": return `logf(fmaxf(1.0e-30f, ${walk(nd.children[0])}))`;
       case "max": return `fmaxf(${walk(nd.children[0])}, ${walk(nd.children[1])})`;
       case "min": return `fminf(${walk(nd.children[0])}, ${walk(nd.children[1])})`;
@@ -520,6 +524,7 @@ export function toMisraC(node: SpearNode, fnName = "spear_fn", params = "const f
       case "sin": return `sinf(${walk(nd.children[0])})`;
       case "cos": return `cosf(${walk(nd.children[0])})`;
       case "atan": return `atanf(${walk(nd.children[0])})`;
+      case "asin": return `asinf(fminf(fmaxf(${walk(nd.children[0])}, -1.0F), 1.0F))`;
       case "log": return `logf(fmaxf(1.0e-30F, ${walk(nd.children[0])}))`;
       case "max": return `fmaxf(${walk(nd.children[0])}, ${walk(nd.children[1])})`;
       case "min": return `fminf(${walk(nd.children[0])}, ${walk(nd.children[1])})`;
@@ -897,6 +902,17 @@ export interface ObjectiveVector {
   fitness: number;
   /** parsimony: smaller is better */
   size: number;
+  /**
+   * Constrained NSGA-II (Deb 2002): total constraint violation, >= 0 feasible.
+   * Any feasible individual dominates any infeasible one; among infeasible
+   * ones the smaller violation wins. undefined/0 = no constraint.
+   */
+  violation?: number;
+}
+
+function violationOf(v: ObjectiveVector): number {
+  if (v.violation === undefined) return 0;
+  return Number.isFinite(v.violation) && v.violation > 0 ? v.violation : 0;
 }
 
 export function dominates(a: ObjectiveVector, b: ObjectiveVector): boolean {
@@ -904,6 +920,12 @@ export function dominates(a: ObjectiveVector, b: ObjectiveVector): boolean {
   const bFit = Number.isFinite(b.fitness);
   if (!aFit) return false;
   if (!bFit) return true;
+  const va = violationOf(a);
+  const vb = violationOf(b);
+  // feasibility first; equal-class comparisons fall through to the classic
+  // two-objective rule (infeasible pairs with identical violation also fall
+  // through, which keeps repair pressure without stalling the sort)
+  if (va !== vb) return va < vb;
   return (a.fitness >= b.fitness && a.size <= b.size) && (a.fitness > b.fitness || a.size < b.size);
 }
 
@@ -955,6 +977,9 @@ export function tournamentSelect(pop: ObjectiveVector[]): number {
   const b = randInt(pop.length);
   const rA = pop[a];
   const rB = pop[b];
+  const vA = violationOf(rA);
+  const vB = violationOf(rB);
+  if (vA !== vB) return vA < vB ? a : b;
   if (rA.fitness !== rB.fitness) {
     if (!Number.isFinite(rB.fitness)) return a;
     if (!Number.isFinite(rA.fitness)) return b;
@@ -1012,7 +1037,7 @@ export function evolve(cfg: EvolveConfig, fitnessFn: FitnessFn): EvolveResult {
       evals++;
       return fitnessFn(ind);
     });
-    const objs = results.map((r) => ({ fitness: r.fitness, size: r.size }));
+    const objs = results.map((r) => ({ fitness: r.fitness, size: r.size, violation: r.violation }));
 
     for (let i = 0; i < population.length; i++) {
       const key = canonicalKey(population[i]);

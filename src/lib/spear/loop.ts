@@ -4,6 +4,7 @@ import {
   canonicalKey,
   estimateCost,
   rand,
+  randInt,
   mutatePolish,
   mutateStructure,
   prune,
@@ -119,7 +120,7 @@ export interface LoopProgress {
 interface TaskRuntime {
   def: TaskDef;
   population: SpearNode[];
-  cache: Map<string, { metric: number; secondary?: number }>;
+  cache: Map<string, { metric: number; secondary?: number; violation?: number }>;
   iterations: number;
   evals: number;
   cacheHits: number;
@@ -138,10 +139,15 @@ interface TaskRuntime {
 }
 
 const POP = 72;
+/** Population B (héritage) size — first half of the flat population array. */
+const HERITAGE = POP >> 1;
 const REFINE_EVERY = 4;
 const STAGNATION_LIMIT = 18;
 const UCB_C = 0.9;
 const RELATIVE_IMPROVE = 0.04;
+/** A↔B migration cadence (per-task generations) and how many swap each time. */
+const MIGRATE_EVERY = 8;
+const MIGRATE_K = 3;
 
 function directionSign(t: TaskDef): number {
   return t.metricDirection === "min" ? -1 : 1;
@@ -172,6 +178,8 @@ interface ShapedEval {
   secondary?: number;
   /** self-contained formula whose metric is `metric` (affine-wrapped if the task uses linear scaling) */
   node: SpearNode;
+  /** OOD constraint violation (undefined when the task has no probe) */
+  violation?: number;
 }
 
 function scored(rt: TaskRuntime, node: SpearNode): ShapedEval {
@@ -201,15 +209,20 @@ function cachedEval(rt: TaskRuntime, node: SpearNode): ShapedEval {
   const hit = rt.cache.get(key);
   if (hit) {
     rt.cacheHits++;
-    return { metric: hit.metric, secondary: hit.secondary, node };
+    return { metric: hit.metric, secondary: hit.secondary, violation: hit.violation, node };
   }
   const res = scored(rt, node);
   rt.evals++;
+  let violation: number | undefined;
   if (Number.isFinite(res.metric)) {
-    rt.cache.set(key, { metric: res.metric, secondary: res.secondary });
+    // OOD probe runs on the SHAPED (affine-wrapped) node — that self-contained
+    // formula is what gets reported and deployed, so it is what must survive
+    // extrapolation.
+    violation = rt.def.ood ? rt.def.ood(res.node) : undefined;
+    rt.cache.set(key, { metric: res.metric, secondary: res.secondary, violation });
     if (rt.cache.size > 20000) rt.cache.clear();
   }
-  return res;
+  return { metric: res.metric, secondary: res.secondary, node: res.node, violation };
 }
 
 function bestBaselineMetric(t: TaskDef): { name: string; metric: number } {
@@ -393,11 +406,17 @@ export async function runGroundedLoop(opts: GroundedLoopOptions = {}): Promise<L
   const rts: TaskRuntime[] = defs.map((def, di) => ({
     def,
     population: Array.from({ length: POP }, (_, i) => {
-      // half of generation 0 comes from generic algebraic primitives, the rest
-      // is random — never from the published baselines we compete against.
-      const pool = def.seedPool ?? [];
-      const base = pool.length > 0 && i % 2 === 0 ? pool[(di + i) % pool.length] : undefined;
-      return base ? simplify(mutate(base, def.gpConfig)) : simplify(randomTree(def.gpConfig, def.gpConfig.maxDepth));
+      // Dual population. Slots [0, HERITAGE) = population B (héritage): seeded
+      // from the pool — cross-task champions, composite motifs, generic
+      // primitives (never the published baselines we compete against) — and
+      // bred with local-search pressure only. Slots [HERITAGE, POP) =
+      // population A (exploration): pure random trees, aggressive regime.
+      if (i < HERITAGE) {
+        const pool = def.seedPool ?? [];
+        const base = pool.length > 0 ? pool[(di * 3 + i * 7) % pool.length] : undefined;
+        return base ? simplify(mutatePolish(base, 0.15)) : simplify(randomTree(def.gpConfig, def.gpConfig.maxDepth));
+      }
+      return simplify(randomTree(def.gpConfig, def.gpConfig.maxDepth));
     }),
     cache: new Map(),
     iterations: 0,
@@ -542,7 +561,9 @@ export async function runGroundedLoop(opts: GroundedLoopOptions = {}): Promise<L
           }
         }
       }
-      while (rt.population.length > POP) rt.population.shift();
+      // trim overflow from the EXPLORATION half only — shift() would eat the
+      // heritage seeds sitting at the front of the array
+      while (rt.population.length > POP) rt.population.splice(HERITAGE, 1);
     }
 
     // ---- anti-stagnation: when pinned against the wall, do three things:
@@ -580,7 +601,11 @@ export async function runGroundedLoop(opts: GroundedLoopOptions = {}): Promise<L
 
     // ---- one generation: evaluate → NSGA-II sort → crowding → breed
     const results = rt.population.map((ind) => cachedEval(rt, ind));
-    const objs = results.map((r, i) => ({ fitness: selectFitness(rt, r.metric, rt.population[i].size, progress.iterationsUsed, budget), size: rt.population[i].size }));
+    const objs = results.map((r, i) => ({
+      fitness: selectFitness(rt, r.metric, rt.population[i].size, progress.iterationsUsed, budget),
+      size: rt.population[i].size,
+      violation: r.violation,
+    }));
     const ranks = nonDominatedSort(objs);
 
     // track elite + breakthroughs
@@ -699,6 +724,25 @@ export async function runGroundedLoop(opts: GroundedLoopOptions = {}): Promise<L
       rt.frontRaw.push({ node: rt.population[i], metric: results[i].metric, size: rt.population[i].size });
     }
 
+    // ---- A↔B migration: every MIGRATE_EVERY generations, exchange elites for
+    // laggards across the two regimes. Exploration wins get refined by the
+    // heritage regime; heritage shapes re-enter aggressive exploration.
+    // eliteIdx is never migrated away — it seeds slot 0 of the next generation.
+    if (rt.iterations % MIGRATE_EVERY === MIGRATE_EVERY - 1 && POP - HERITAGE > MIGRATE_K * 2) {
+      const fitOrder = (zone: number[]) =>
+        zone.filter((i) => i !== eliteIdx).sort((a, b) => objs[b].fitness - objs[a].fitness);
+      const herSorted = fitOrder([...Array(HERITAGE).keys()]);
+      const expSorted = fitOrder([...Array(POP - HERITAGE).keys()].map((i) => i + HERITAGE));
+      for (let k = 0; k < MIGRATE_K; k++) {
+        const hiHer = herSorted[k];
+        const loExp = expSorted[expSorted.length - 1 - k];
+        [rt.population[hiHer], rt.population[loExp]] = [rt.population[loExp], rt.population[hiHer]];
+        const hiExp = expSorted[k];
+        const loHer = herSorted[herSorted.length - 1 - k];
+        [rt.population[hiExp], rt.population[loHer]] = [rt.population[loHer], rt.population[hiExp]];
+      }
+    }
+
     // elitist replacement + breeding
     const maxRank = Math.max(...ranks);
     const byFront: number[][] = Array.from({ length: maxRank + 1 }, () => []);
@@ -719,13 +763,34 @@ export async function runGroundedLoop(opts: GroundedLoopOptions = {}): Promise<L
       break;
     }
     const parentPool = survivors.length > 0 ? survivors : objs.map((_, i) => i);
+    const herPool = parentPool.filter((i) => i < HERITAGE);
+    const expPool = parentPool.filter((i) => i >= HERITAGE);
+    // keep both regimes breedable even if one side died out of the survivors
+    if (herPool.length === 0) for (let i = 0; i < HERITAGE; i++) herPool.push(i);
+    if (expPool.length === 0) for (let i = HERITAGE; i < POP; i++) expPool.push(i);
     const next: SpearNode[] = [rt.population[eliteIdx]];
     while (next.length < POP) {
-      const p1 = rt.population[parentPool[tournamentSelect(parentPool.map((i) => objs[i]))]];
-      let child = rand01() < 0.8
-        ? crossover(p1, rt.population[parentPool[tournamentSelect(parentPool.map((i) => objs[i]))]], t.gpConfig.maxDepth)
-        : p1;
-      if (rand01() < 0.4) child = mutate(child, t.gpConfig);
+      const slot = next.length;
+      // slot 0 holds the elite; heritage regime fills [1, HERITAGE)
+      const heritageSlot = slot < HERITAGE && slot !== 0;
+      const pool = heritageSlot ? herPool : expPool;
+      const idxA = pool[tournamentSelect(pool.map((i) => objs[i]))];
+      const p1 = rt.population[idxA];
+      let child: SpearNode;
+      if (heritageSlot) {
+        // population B — local search around inherited shapes (polish-heavy,
+        // occasional crossover within the zone). Never aggressive mutation:
+        // its job is to specialise constants, not to wander.
+        child = rand01() < 0.5
+          ? mutatePolish(p1, [0.05, 0.12, 0.3][randInt(3)])
+          : crossover(p1, rt.population[pool[tournamentSelect(pool.map((i) => objs[i]))]], t.gpConfig.maxDepth);
+      } else {
+        // population A — unchanged aggressive exploration
+        child = rand01() < 0.8
+          ? crossover(p1, rt.population[pool[tournamentSelect(pool.map((i) => objs[i]))]], t.gpConfig.maxDepth)
+          : p1;
+        if (rand01() < 0.4) child = mutate(child, t.gpConfig);
+      }
       child = simplify(child);
       if (child.depth <= t.gpConfig.maxDepth) next.push(child);
       else next.push(p1);
