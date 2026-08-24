@@ -60,6 +60,7 @@ function astToJs(node: SpearNode): string {
       case "sin": return `Math.sin(${walk(nd.children[0])})`;
       case "cos": return `Math.cos(${walk(nd.children[0])})`;
       case "atan": return `Math.atan(${walk(nd.children[0])})`;
+      case "asin": return `Math.asin(Math.max(-1, Math.min(1, ${walk(nd.children[0])})))`;
       case "log": return `Math.log(Math.max(1e-30, ${walk(nd.children[0])}))`;
       default: throw new Error(`astToJs: op inconnu "${nd.op}"`);
     }

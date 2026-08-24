@@ -1,11 +1,11 @@
 {
   "silu": {
     "taskId": "silu",
-    "title": "SiLU / Swish (LLaMA · Mistral · Qwen — SwiGLU)",
+    "title": "SiLU / Swish (LLaMA Â· Mistral Â· Qwen â€” SwiGLU)",
     "direction": "min",
     "metric": 0.0007795906249592223,
     "level": 2,
-    "formula": "((0.997587 * (x * (0.501 + (0.587 * (x / (0.815 + sqrt(|(0.909361 + (x)Â²)|))))))) + -0.005749)",
+    "formula": "((0.997587 * (x * (0.501 + (0.587 * (x / (0.815 + sqrt(|(0.909361 + (x)Ã‚Â²)|))))))) + -0.005749)",
     "seed": 910001,
     "iteration": 199,
     "speed": {
@@ -102,7 +102,7 @@
   },
   "gelu": {
     "taskId": "gelu",
-    "title": "GELU (GPT · BERT — GEGLU)",
+    "title": "GELU (GPT Â· BERT â€” GEGLU)",
     "direction": "min",
     "metric": 0.0005322566020140329,
     "level": 2,
@@ -274,7 +274,7 @@
   },
   "kv_cache": {
     "taskId": "kv_cache",
-    "title": "Règle d'éviction du KV-cache",
+    "title": "RÃ¨gle d'Ã©viction du KV-cache",
     "direction": "max",
     "metric": 69.97633394818372,
     "level": 2,
@@ -329,7 +329,7 @@
     "direction": "min",
     "metric": 0.00018985148816310314,
     "level": 5,
-    "formula": "((4.905917 * (t)Â²) + -0.001081)",
+    "formula": "((4.905917 * (t)Ã‚Â²) + -0.001081)",
     "seed": 3333,
     "iteration": 28,
     "tree": {
@@ -365,7 +365,7 @@
       "speedup": 0.6666666666666666
     },
     "fast": {
-      "formula": "(t)Â²",
+      "formula": "(t)Ã‚Â²",
       "metric": 0.0005030952469190765,
       "level": 5,
       "formulaCost": 1,
@@ -395,7 +395,7 @@
     "seed": 555666,
     "iteration": 6,
     "fast": {
-      "formula": "sqrt(|(a)Â³|)",
+      "formula": "sqrt(|(a)Ã‚Â³|)",
       "metric": 0.04833668157942985,
       "level": 5,
       "formulaCost": 4,
@@ -463,7 +463,7 @@
   },
   "gaussian_cdf": {
     "taskId": "gaussian_cdf",
-    "title": "Répartition gaussienne Φ(x)",
+    "title": "RÃ©partition gaussienne Î¦(x)",
     "direction": "min",
     "metric": 0.000016407954856661242,
     "level": 3,
@@ -475,7 +475,7 @@
       "exactCost": 34,
       "speedup": 1.36,
       "vsIterative": {
-        "label": "Monte-Carlo · 1000 tirages",
+        "label": "Monte-Carlo Â· 1000 tirages",
         "speedup": 1840
       }
     },
@@ -534,19 +534,11 @@
       ]
     },
     "fast": {
-      "formula": "((0.000017 * (((0.680392 * x) / 0.000034) + ((min(132.262684, x) / 0.000034) + ((0.426743 * x) / 0.000034)))) + 0.5)",
-      "metric": 0.00002655101736531925,
-      "level": 3,
-      "formulaCost": 19,
-      "speed": {
-        "formulaCost": 19,
-        "exactCost": 34,
-        "speedup": 1.7894736842105263,
-        "vsIterative": {
-          "label": "Monte-Carlo · 1000 tirages",
-          "speedup": 2421.0526315789475
-        }
-      }
+      "formula": "((0.543518 * (x / max(1.559472, (0.337459 + |x|)))) + 0.5)",
+      "metric": 0.000140774362370438,
+      "level": 2,
+      "formulaCost": 9,
+      "seed": 990303
     },
     "fastTree": {
       "o": "add",
@@ -556,77 +548,37 @@
           "c": [
             {
               "o": "const",
-              "v": 0.000016644068119142568
+              "v": 0.543518
             },
             {
-              "o": "add",
+              "o": "pdiv",
               "c": [
                 {
-                  "o": "pdiv",
-                  "c": [
-                    {
-                      "o": "mul",
-                      "c": [
-                        {
-                          "o": "const",
-                          "v": 0.680392
-                        },
-                        {
-                          "o": "var",
-                          "n": "x"
-                        }
-                      ]
-                    },
-                    {
-                      "o": "const",
-                      "v": 0.000034
-                    }
-                  ]
+                  "o": "var",
+                  "n": "x"
                 },
                 {
-                  "o": "add",
+                  "o": "max",
                   "c": [
                     {
-                      "o": "pdiv",
-                      "c": [
-                        {
-                          "o": "min",
-                          "c": [
-                            {
-                              "o": "const",
-                              "v": 132.262684
-                            },
-                            {
-                              "o": "var",
-                              "n": "x"
-                            }
-                          ]
-                        },
-                        {
-                          "o": "const",
-                          "v": 0.000034
-                        }
-                      ]
+                      "o": "const",
+                      "v": 1.559472
                     },
                     {
-                      "o": "pdiv",
+                      "o": "add",
                       "c": [
                         {
-                          "o": "mul",
+                          "o": "const",
+                          "v": 0.337459
+                        },
+                        {
+                          "o": "abs",
                           "c": [
-                            {
-                              "o": "const",
-                              "v": 0.426743
-                            },
                             {
                               "o": "var",
                               "n": "x"
                             }
                           ]
-                        },
-                        {
-                          "o": "const",
-                          "v": 0.000034
                         }
                       ]
                     }
@@ -638,14 +590,14 @@
         },
         {
           "o": "const",
-          "v": 0.4999999999999995
+          "v": 0.5
         }
       ]
     }
   },
   "damped_pendulum": {
     "taskId": "damped_pendulum",
-    "title": "Pendule amorti · état terminal",
+    "title": "Pendule amorti Â· Ã©tat terminal",
     "direction": "min",
     "metric": 0.0006756423002196924,
     "level": 2,
@@ -723,7 +675,7 @@
     "speed": {
       "formulaCost": 46,
       "vsIterative": {
-        "label": "Euler-Cromer · 60 pas",
+        "label": "Euler-Cromer Â· 60 pas",
         "speedup": 32.608695652173914
       }
     },
@@ -735,7 +687,7 @@
       "speed": {
         "formulaCost": 21,
         "vsIterative": {
-          "label": "Euler-Cromer · 60 pas",
+          "label": "Euler-Cromer Â· 60 pas",
           "speedup": 71.42857142857143
         }
       }
@@ -765,7 +717,7 @@
     "direction": "min",
     "metric": 0.00015509445364142197,
     "level": 2,
-    "formula": "(1.143472 * ((x + (0.135 * (x)Â³)) / (0.584 + (0.75 * (x)Â²))))",
+    "formula": "(1.143472 * ((x + (0.135 * (x)Ã‚Â³)) / (0.584 + (0.75 * (x)Ã‚Â²))))",
     "seed": 777,
     "iteration": 106,
     "speed": {
@@ -842,7 +794,7 @@
       ]
     },
     "fast": {
-      "formula": "((x + (0.169 * (x)Â³)) / (0.5 + (0.75 * (x)Â²)))",
+      "formula": "((x + (0.169 * (x)Ã‚Â³)) / (0.5 + (0.75 * (x)Ã‚Â²)))",
       "metric": 0.0005281406564176935,
       "level": 2,
       "formulaCost": 11,
@@ -914,7 +866,7 @@
   },
   "lambert_w": {
     "taskId": "lambert_w",
-    "title": "Lambert W₀ function",
+    "title": "Lambert Wâ‚€ function",
     "direction": "min",
     "metric": 0,
     "level": 5,
@@ -950,7 +902,7 @@
       ]
     },
     "fast": {
-      "formula": "(x)Â²",
+      "formula": "(x)Ã‚Â²",
       "metric": 0.011194370036126207,
       "level": 2,
       "formulaCost": 1,
@@ -972,7 +924,7 @@
   },
   "rc_circuit": {
     "taskId": "rc_circuit",
-    "title": "Circuit RC · tension terminale",
+    "title": "Circuit RC Â· tension terminale",
     "direction": "min",
     "metric": 0.00007258403509477666,
     "level": 5,
@@ -1124,11 +1076,11 @@
   },
   "gaussian_kernel": {
     "taskId": "gaussian_kernel",
-    "title": "Blur gaussien · noyau exp(−x²/2σ²)",
+    "title": "Blur gaussien Â· noyau exp(âˆ’xÂ²/2ÏƒÂ²)",
     "direction": "min",
     "metric": 5.356342194550095e-34,
     "level": 2,
-    "formula": "sqrt(|exp((-(x)Â²))|)",
+    "formula": "sqrt(|exp((-(x)Ã‚Â²))|)",
     "seed": 920101,
     "iteration": 400,
     "speed": {
@@ -1183,7 +1135,7 @@
   },
   "diffusion_beta": {
     "taskId": "diffusion_beta",
-    "title": "Diffusion · schedule de bruit β(t)",
+    "title": "Diffusion Â· schedule de bruit Î²(t)",
     "direction": "min",
     "metric": 0.0000018372650878577204,
     "level": 2,
@@ -1320,11 +1272,11 @@
   },
   "european_call": {
     "taskId": "european_call",
-    "title": "Prime d'un call européen",
+    "title": "Prime d'un call europÃ©en",
     "direction": "min",
     "metric": 0.17682071689836543,
     "level": 5,
-    "formula": "((19.224472 * ((1 + sigma))Â²) + -19.114468)",
+    "formula": "((19.224472 * ((1 + sigma))Ã‚Â²) + -19.114468)",
     "seed": 700001,
     "iteration": 128,
     "speed": {
@@ -1381,7 +1333,7 @@
   },
   "temporal_grad": {
     "taskId": "temporal_grad",
-    "title": "Video temporal gradient ∂I/∂t",
+    "title": "Video temporal gradient âˆ‚I/âˆ‚t",
     "direction": "min",
     "metric": 0,
     "level": 5,
@@ -1409,11 +1361,11 @@
   },
   "lorentz": {
     "taskId": "lorentz",
-    "title": "Lorentz factor γ(β)",
+    "title": "Lorentz factor Î³(Î²)",
     "direction": "min",
     "metric": 0,
     "level": 5,
-    "formula": "(1 / sqrt(|(1 + (-(b)Â²))|))",
+    "formula": "(1 / sqrt(|(1 + (-(b)Ã‚Â²))|))",
     "seed": 4242,
     "iteration": 28,
     "speed": {
@@ -1504,11 +1456,11 @@
   },
   "hill": {
     "taskId": "hill",
-    "title": "Équation de Hill · dose-réponse",
+    "title": "Ã‰quation de Hill Â· dose-rÃ©ponse",
     "direction": "min",
     "metric": 0,
     "level": 5,
-    "formula": "((c)Â³ / (1 + (c)Â³))",
+    "formula": "((c)Ã‚Â³ / (1 + (c)Ã‚Â³))",
     "seed": 1000120,
     "iteration": 400,
     "speed": {
@@ -1547,6 +1499,13 @@
           ]
         }
       ]
+    },
+    "fast": {
+      "formula": "((0.531674 * min(c, min((c)², 1.833607))) + -0.016796)",
+      "metric": 0.0009225802066077555,
+      "level": 2,
+      "formulaCost": 5,
+      "seed": 424242
     }
   },
   "kerr": {
@@ -1555,7 +1514,7 @@
     "direction": "min",
     "metric": 1.39756685796311e-7,
     "level": 2,
-    "formula": "((4.044113 * (((2.83748 + (10.692104 / b)) + b) / (b)Â²)) + -0.001252)",
+    "formula": "((4.044113 * (((2.83748 + (10.692104 / b)) + b) / (b)Ã‚Â²)) + -0.001252)",
     "seed": 777,
     "iteration": 132,
     "speed": {
@@ -1563,12 +1522,12 @@
       "exactCost": 17,
       "speedup": 1.3076923076923077,
       "vsIterative": {
-        "label": "RK4 géodésique · 200 pas",
+        "label": "RK4 gÃ©odÃ©sique Â· 200 pas",
         "speedup": 184.6153846153846
       }
     },
     "fast": {
-      "formula": "((0.630738 / b))Â²",
+      "formula": "((0.630738 / b))Ã‚Â²",
       "metric": 0.0014679448665524788,
       "level": 2,
       "formulaCost": 5,
@@ -1577,7 +1536,7 @@
         "exactCost": 17,
         "speedup": 3.4,
         "vsIterative": {
-          "label": "RK4 géodésique · 200 pas",
+          "label": "RK4 gÃ©odÃ©sique Â· 200 pas",
           "speedup": 480
         }
       }
@@ -1670,7 +1629,7 @@
     "direction": "min",
     "metric": 0.00003245566387678721,
     "level": 2,
-    "formula": "((-23.07526 * ((log(max(r, 1e-30)) / ((r)Â³)Â³) / cos(sqrt(|(r + -1.017418)|)))) + -0.001951)",
+    "formula": "((-23.07526 * ((log(max(r, 1e-30)) / ((r)Ã‚Â³)Ã‚Â³) / cos(sqrt(|(r + -1.017418)|)))) + -0.001951)",
     "seed": 990303,
     "iteration": 158,
     "speed": {
@@ -1815,7 +1774,7 @@
   },
   "damped_oscillation": {
     "taskId": "damped_oscillation",
-    "title": "Oscillation amortie e^(−t/τ)·cos(ωt)",
+    "title": "Oscillation amortie e^(âˆ’t/Ï„)Â·cos(Ï‰t)",
     "direction": "min",
     "metric": 0.00030630571172772763,
     "level": 2,
@@ -1827,7 +1786,7 @@
       "exactCost": 44,
       "speedup": 1.6296296296296295,
       "vsIterative": {
-        "label": "RKF45 · 300 pas",
+        "label": "RKF45 Â· 300 pas",
         "speedup": 200
       }
     },
@@ -1978,7 +1937,7 @@
       ]
     },
     "fast": {
-      "formula": "((min(t, 2.609741))Â² + (0.86783 * max(1.214626, t)))",
+      "formula": "((min(t, 2.609741))Ã‚Â² + (0.86783 * max(1.214626, t)))",
       "metric": 0.0004105827823591433,
       "level": 2,
       "formulaCost": 5,
@@ -2036,7 +1995,7 @@
   },
   "softplus": {
     "taskId": "softplus",
-    "title": "Softplus ln(1+eˣ)",
+    "title": "Softplus ln(1+eË£)",
     "direction": "min",
     "metric": 0.0000018948345099656158,
     "level": 2,
@@ -2090,7 +2049,7 @@
       ]
     },
     "fast": {
-      "formula": "(((x + 6.630221))Â³ + 239.762951)",
+      "formula": "(((x + 6.630221))Ã‚Â³ + 239.762951)",
       "metric": 0.007707567263369909,
       "level": 2,
       "formulaCost": 4,
@@ -2130,7 +2089,7 @@
   },
   "kdv_soliton": {
     "taskId": "kdv_soliton",
-    "title": "Soliton KdV · sech²",
+    "title": "Soliton KdV Â· sechÂ²",
     "direction": "min",
     "metric": 0.0017117911533114868,
     "level": 2,
@@ -2199,7 +2158,7 @@
   },
   "kerr_spin": {
     "taskId": "kerr_spin",
-    "title": "Déflexion Kerr avec spin (Lense-Thirring)",
+    "title": "DÃ©flexion Kerr avec spin (Lense-Thirring)",
     "direction": "min",
     "metric": 7.518473348732604e-10,
     "level": 2,
@@ -2211,7 +2170,7 @@
       "exactCost": 21,
       "speedup": 1.1666666666666667,
       "vsIterative": {
-        "label": "RK4 géodésique · 200 pas",
+        "label": "RK4 gÃ©odÃ©sique Â· 200 pas",
         "speedup": 133.33333333333334
       }
     },
@@ -2310,7 +2269,7 @@
         "exactCost": 21,
         "speedup": 5.25,
         "vsIterative": {
-          "label": "RK4 géodésique · 200 pas",
+          "label": "RK4 gÃ©odÃ©sique Â· 200 pas",
           "speedup": 600
         }
       }
@@ -2331,7 +2290,7 @@
   },
   "pendulum_hybrid": {
     "taskId": "pendulum_hybrid",
-    "title": "Contrôle hybride pendule inversé",
+    "title": "ContrÃ´le hybride pendule inversÃ©",
     "direction": "min",
     "metric": 2.0391289425393437,
     "level": 0,
@@ -2406,11 +2365,11 @@
   },
   "eigen3_sym": {
     "taskId": "eigen3_sym",
-    "title": "Valeur propre max 3×3 symétrique (BT29)",
+    "title": "Valeur propre max 3Ã—3 symÃ©trique (BT29)",
     "direction": "min",
     "metric": 3.325277645075658e-11,
     "level": 2,
-    "formula": "((1.000001 * ((t * 0.333333) + ((2 * sqrt(|((-(u - ((t)Â² * 0.333333))) * 0.333333)|)) * cos(((1.570796 - atan((min(1, max(-1, (((3 * (((t * u) * 0.333333) - (((t)Â³ * 0.074074) + w))) / (2 * (u - ((t)Â² * 0.333333)))) * sqrt(|(-3 / (u - ((t)Â² * 0.333333)))|)))) / sqrt(||(1 - (min(1, max(-1, (((3 * (((t * u) * 0.333333) - (((t)Â³ * 0.074074) + w))) / (2 * (u - ((t)Â² * 0.333333)))) * sqrt(|(-3 / (u - ((t)Â² * 0.333333)))|)))))Â²)||)))) * 0.333333))))) + -0.000002)",
+    "formula": "((1.000001 * ((t * 0.333333) + ((2 * sqrt(|((-(u - ((t)Ã‚Â² * 0.333333))) * 0.333333)|)) * cos(((1.570796 - atan((min(1, max(-1, (((3 * (((t * u) * 0.333333) - (((t)Ã‚Â³ * 0.074074) + w))) / (2 * (u - ((t)Ã‚Â² * 0.333333)))) * sqrt(|(-3 / (u - ((t)Ã‚Â² * 0.333333)))|)))) / sqrt(||(1 - (min(1, max(-1, (((3 * (((t * u) * 0.333333) - (((t)Ã‚Â³ * 0.074074) + w))) / (2 * (u - ((t)Ã‚Â² * 0.333333)))) * sqrt(|(-3 / (u - ((t)Ã‚Â² * 0.333333)))|)))))Ã‚Â²)||)))) * 0.333333))))) + -0.000002)",
     "seed": 1000090,
     "iteration": 643,
     "tree": {
@@ -2903,17 +2862,11 @@
       ]
     },
     "fast": {
-      "formula": "((t * 0.333333) + ((2 * sqrt(|((-(u - ((t)Â² * 0.333333))) * 0.333333)|)) * cos(((1.570796 - atan((min(1, max(-1, (((3 * (((t * u) * 0.333333) - (((t)Â³ * 0.074074) + w))) / (2 * (u - ((t)Â² * 0.333333)))) * sqrt(|(-3 / (u - ((t)Â² * 0.333333)))|)))) / sqrt(||(1 - (min(1, max(-1, (((3 * (((t * u) * 0.333333) - (((t)Â³ * 0.074074) + w))) / (2 * (u - ((t)Â² * 0.333333)))) * sqrt(|(-3 / (u - ((t)Â² * 0.333333)))|)))))Â²)||)))) * 0.333333))))",
-      "metric": 3.3141511098464744e-11,
+      "formula": "((-0.073807 * (min(((-7.599615 * t) - (-u)), |t|) - (t + (w - (2.202856 * u))))) + 0.941245)",
+      "metric": 0.030848965408385668,
       "level": 2,
-      "formulaCost": 118,
-      "speed": {
-        "formulaCost": 118,
-        "vsIterative": {
-          "label": "Jacobi · 4 balayages",
-          "speedup": 1.694915254237288
-        }
-      }
+      "formulaCost": 11,
+      "seed": 999904
     },
     "fastTree": {
       "o": "add",
@@ -2922,474 +2875,98 @@
           "o": "mul",
           "c": [
             {
-              "o": "var",
-              "n": "t"
-            },
-            {
               "o": "const",
-              "v": 0.3333333333333333
-            }
-          ]
-        },
-        {
-          "o": "mul",
-          "c": [
-            {
-              "o": "mul",
-              "c": [
-                {
-                  "o": "const",
-                  "v": 2
-                },
-                {
-                  "o": "sqrt",
-                  "c": [
-                    {
-                      "o": "mul",
-                      "c": [
-                        {
-                          "o": "neg",
-                          "c": [
-                            {
-                              "o": "sub",
-                              "c": [
-                                {
-                                  "o": "var",
-                                  "n": "u"
-                                },
-                                {
-                                  "o": "mul",
-                                  "c": [
-                                    {
-                                      "o": "sq",
-                                      "c": [
-                                        {
-                                          "o": "var",
-                                          "n": "t"
-                                        }
-                                      ]
-                                    },
-                                    {
-                                      "o": "const",
-                                      "v": 0.3333333333333333
-                                    }
-                                  ]
-                                }
-                              ]
-                            }
-                          ]
-                        },
-                        {
-                          "o": "const",
-                          "v": 0.3333333333333333
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
+              "v": -0.07380655703135926
             },
             {
-              "o": "cos",
+              "o": "sub",
               "c": [
                 {
-                  "o": "mul",
+                  "o": "min",
                   "c": [
                     {
                       "o": "sub",
                       "c": [
                         {
-                          "o": "const",
-                          "v": 1.5707963267948966
-                        },
-                        {
-                          "o": "atan",
+                          "o": "mul",
                           "c": [
                             {
-                              "o": "pdiv",
-                              "c": [
-                                {
-                                  "o": "min",
-                                  "c": [
-                                    {
-                                      "o": "const",
-                                      "v": 1
-                                    },
-                                    {
-                                      "o": "max",
-                                      "c": [
-                                        {
-                                          "o": "const",
-                                          "v": -1
-                                        },
-                                        {
-                                          "o": "mul",
-                                          "c": [
-                                            {
-                                              "o": "pdiv",
-                                              "c": [
-                                                {
-                                                  "o": "mul",
-                                                  "c": [
-                                                    {
-                                                      "o": "const",
-                                                      "v": 3
-                                                    },
-                                                    {
-                                                      "o": "sub",
-                                                      "c": [
-                                                        {
-                                                          "o": "mul",
-                                                          "c": [
-                                                            {
-                                                              "o": "mul",
-                                                              "c": [
-                                                                {
-                                                                  "o": "var",
-                                                                  "n": "t"
-                                                                },
-                                                                {
-                                                                  "o": "var",
-                                                                  "n": "u"
-                                                                }
-                                                              ]
-                                                            },
-                                                            {
-                                                              "o": "const",
-                                                              "v": 0.3333333333333333
-                                                            }
-                                                          ]
-                                                        },
-                                                        {
-                                                          "o": "add",
-                                                          "c": [
-                                                            {
-                                                              "o": "mul",
-                                                              "c": [
-                                                                {
-                                                                  "o": "cube",
-                                                                  "c": [
-                                                                    {
-                                                                      "o": "var",
-                                                                      "n": "t"
-                                                                    }
-                                                                  ]
-                                                                },
-                                                                {
-                                                                  "o": "const",
-                                                                  "v": 0.07407407407407407
-                                                                }
-                                                              ]
-                                                            },
-                                                            {
-                                                              "o": "var",
-                                                              "n": "w"
-                                                            }
-                                                          ]
-                                                        }
-                                                      ]
-                                                    }
-                                                  ]
-                                                },
-                                                {
-                                                  "o": "mul",
-                                                  "c": [
-                                                    {
-                                                      "o": "const",
-                                                      "v": 2
-                                                    },
-                                                    {
-                                                      "o": "sub",
-                                                      "c": [
-                                                        {
-                                                          "o": "var",
-                                                          "n": "u"
-                                                        },
-                                                        {
-                                                          "o": "mul",
-                                                          "c": [
-                                                            {
-                                                              "o": "sq",
-                                                              "c": [
-                                                                {
-                                                                  "o": "var",
-                                                                  "n": "t"
-                                                                }
-                                                              ]
-                                                            },
-                                                            {
-                                                              "o": "const",
-                                                              "v": 0.3333333333333333
-                                                            }
-                                                          ]
-                                                        }
-                                                      ]
-                                                    }
-                                                  ]
-                                                }
-                                              ]
-                                            },
-                                            {
-                                              "o": "sqrt",
-                                              "c": [
-                                                {
-                                                  "o": "pdiv",
-                                                  "c": [
-                                                    {
-                                                      "o": "const",
-                                                      "v": -3
-                                                    },
-                                                    {
-                                                      "o": "sub",
-                                                      "c": [
-                                                        {
-                                                          "o": "var",
-                                                          "n": "u"
-                                                        },
-                                                        {
-                                                          "o": "mul",
-                                                          "c": [
-                                                            {
-                                                              "o": "sq",
-                                                              "c": [
-                                                                {
-                                                                  "o": "var",
-                                                                  "n": "t"
-                                                                }
-                                                              ]
-                                                            },
-                                                            {
-                                                              "o": "const",
-                                                              "v": 0.3333333333333333
-                                                            }
-                                                          ]
-                                                        }
-                                                      ]
-                                                    }
-                                                  ]
-                                                }
-                                              ]
-                                            }
-                                          ]
-                                        }
-                                      ]
-                                    }
-                                  ]
-                                },
-                                {
-                                  "o": "sqrt",
-                                  "c": [
-                                    {
-                                      "o": "abs",
-                                      "c": [
-                                        {
-                                          "o": "sub",
-                                          "c": [
-                                            {
-                                              "o": "const",
-                                              "v": 1
-                                            },
-                                            {
-                                              "o": "sq",
-                                              "c": [
-                                                {
-                                                  "o": "min",
-                                                  "c": [
-                                                    {
-                                                      "o": "const",
-                                                      "v": 1
-                                                    },
-                                                    {
-                                                      "o": "max",
-                                                      "c": [
-                                                        {
-                                                          "o": "const",
-                                                          "v": -1
-                                                        },
-                                                        {
-                                                          "o": "mul",
-                                                          "c": [
-                                                            {
-                                                              "o": "pdiv",
-                                                              "c": [
-                                                                {
-                                                                  "o": "mul",
-                                                                  "c": [
-                                                                    {
-                                                                      "o": "const",
-                                                                      "v": 3
-                                                                    },
-                                                                    {
-                                                                      "o": "sub",
-                                                                      "c": [
-                                                                        {
-                                                                          "o": "mul",
-                                                                          "c": [
-                                                                            {
-                                                                              "o": "mul",
-                                                                              "c": [
-                                                                                {
-                                                                                  "o": "var",
-                                                                                  "n": "t"
-                                                                                },
-                                                                                {
-                                                                                  "o": "var",
-                                                                                  "n": "u"
-                                                                                }
-                                                                              ]
-                                                                            },
-                                                                            {
-                                                                              "o": "const",
-                                                                              "v": 0.3333333333333333
-                                                                            }
-                                                                          ]
-                                                                        },
-                                                                        {
-                                                                          "o": "add",
-                                                                          "c": [
-                                                                            {
-                                                                              "o": "mul",
-                                                                              "c": [
-                                                                                {
-                                                                                  "o": "cube",
-                                                                                  "c": [
-                                                                                    {
-                                                                                      "o": "var",
-                                                                                      "n": "t"
-                                                                                    }
-                                                                                  ]
-                                                                                },
-                                                                                {
-                                                                                  "o": "const",
-                                                                                  "v": 0.07407407407407407
-                                                                                }
-                                                                              ]
-                                                                            },
-                                                                            {
-                                                                              "o": "var",
-                                                                              "n": "w"
-                                                                            }
-                                                                          ]
-                                                                        }
-                                                                      ]
-                                                                    }
-                                                                  ]
-                                                                },
-                                                                {
-                                                                  "o": "mul",
-                                                                  "c": [
-                                                                    {
-                                                                      "o": "const",
-                                                                      "v": 2
-                                                                    },
-                                                                    {
-                                                                      "o": "sub",
-                                                                      "c": [
-                                                                        {
-                                                                          "o": "var",
-                                                                          "n": "u"
-                                                                        },
-                                                                        {
-                                                                          "o": "mul",
-                                                                          "c": [
-                                                                            {
-                                                                              "o": "sq",
-                                                                              "c": [
-                                                                                {
-                                                                                  "o": "var",
-                                                                                  "n": "t"
-                                                                                }
-                                                                              ]
-                                                                            },
-                                                                            {
-                                                                              "o": "const",
-                                                                              "v": 0.3333333333333333
-                                                                            }
-                                                                          ]
-                                                                        }
-                                                                      ]
-                                                                    }
-                                                                  ]
-                                                                }
-                                                              ]
-                                                            },
-                                                            {
-                                                              "o": "sqrt",
-                                                              "c": [
-                                                                {
-                                                                  "o": "pdiv",
-                                                                  "c": [
-                                                                    {
-                                                                      "o": "const",
-                                                                      "v": -3
-                                                                    },
-                                                                    {
-                                                                      "o": "sub",
-                                                                      "c": [
-                                                                        {
-                                                                          "o": "var",
-                                                                          "n": "u"
-                                                                        },
-                                                                        {
-                                                                          "o": "mul",
-                                                                          "c": [
-                                                                            {
-                                                                              "o": "sq",
-                                                                              "c": [
-                                                                                {
-                                                                                  "o": "var",
-                                                                                  "n": "t"
-                                                                                }
-                                                                              ]
-                                                                            },
-                                                                            {
-                                                                              "o": "const",
-                                                                              "v": 0.3333333333333333
-                                                                            }
-                                                                          ]
-                                                                        }
-                                                                      ]
-                                                                    }
-                                                                  ]
-                                                                }
-                                                              ]
-                                                            }
-                                                          ]
-                                                        }
-                                                      ]
-                                                    }
-                                                  ]
-                                                }
-                                              ]
-                                            }
-                                          ]
-                                        }
-                                      ]
-                                    }
-                                  ]
-                                }
-                              ]
+                              "o": "const",
+                              "v": -7.599615
+                            },
+                            {
+                              "o": "var",
+                              "n": "t"
+                            }
+                          ]
+                        },
+                        {
+                          "o": "neg",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "u"
                             }
                           ]
                         }
                       ]
                     },
                     {
-                      "o": "const",
-                      "v": 0.3333333333333333
+                      "o": "abs",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "t"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "t"
+                    },
+                    {
+                      "o": "sub",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "w"
+                        },
+                        {
+                          "o": "mul",
+                          "c": [
+                            {
+                              "o": "const",
+                              "v": 2.202856
+                            },
+                            {
+                              "o": "var",
+                              "n": "u"
+                            }
+                          ]
+                        }
+                      ]
                     }
                   ]
                 }
               ]
             }
           ]
+        },
+        {
+          "o": "const",
+          "v": 0.9412449424916474
         }
       ]
     },
     "speed": {
       "formulaCost": 120,
       "vsIterative": {
-        "label": "Jacobi · 4 balayages",
+        "label": "Jacobi Â· 4 balayages",
         "speedup": 1.6666666666666667
       }
     }
@@ -3400,7 +2977,7 @@
     "direction": "min",
     "metric": 4.0626336618882106e-32,
     "level": 2,
-    "formula": "(1.570796 - atan(((((d)Â² - ((l2)Â² + (l3)Â²)) / (2 * (l2 * l3))) / sqrt(||(1 - ((((d)Â² - ((l2)Â² + (l3)Â²)) / (2 * (l2 * l3))))Â²)||))))",
+    "formula": "(1.570796 - atan(((((d)Ã‚Â² - ((l2)Ã‚Â² + (l3)Ã‚Â²)) / (2 * (l2 * l3))) / sqrt(||(1 - ((((d)Ã‚Â² - ((l2)Ã‚Â² + (l3)Ã‚Â²)) / (2 * (l2 * l3))))Ã‚Â²)||))))",
     "seed": 1000001,
     "iteration": 199,
     "tree": {
@@ -3577,9 +3154,110 @@
     "speed": {
       "formulaCost": 52,
       "vsIterative": {
-        "label": "Newton-DLS · 8 itérations",
+        "label": "Newton-DLS Â· 8 itÃ©rations",
         "speedup": 6.153846153846154
       }
+    },
+    "fast": {
+      "formula": "((-0.160608 * (((4.080818 / l3) * (max(d, l3) - l2)) - ((5.542562 / l2) * (l3 - d)))) + 2.187926)",
+      "metric": 0.002245031097953282,
+      "level": 2,
+      "formulaCost": 16,
+      "seed": 960202
+    },
+    "fastTree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": -0.1606079676705464
+            },
+            {
+              "o": "sub",
+              "c": [
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "pdiv",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 4.080818
+                        },
+                        {
+                          "o": "var",
+                          "n": "l3"
+                        }
+                      ]
+                    },
+                    {
+                      "o": "sub",
+                      "c": [
+                        {
+                          "o": "max",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "d"
+                            },
+                            {
+                              "o": "var",
+                              "n": "l3"
+                            }
+                          ]
+                        },
+                        {
+                          "o": "var",
+                          "n": "l2"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "pdiv",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 5.542562
+                        },
+                        {
+                          "o": "var",
+                          "n": "l2"
+                        }
+                      ]
+                    },
+                    {
+                      "o": "sub",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "l3"
+                        },
+                        {
+                          "o": "var",
+                          "n": "d"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 2.18792552115997
+        }
+      ]
     }
   },
   "idm_following": {
@@ -3588,7 +3266,7 @@
     "direction": "min",
     "metric": 0.004462086832640868,
     "level": 2,
-    "formula": "((1.817293 * min(0.9724, max(-5.078809, ((1 - (((v)Â²)Â² * 0.000001)) - (((2.643464 + max(-0.582903, ((v * 1.536227) + ((v * dv) * 0.212766)))) / s))Â²)))) + 0.215108)",
+    "formula": "((1.817293 * min(0.9724, max(-5.078809, ((1 - (((v)Ã‚Â²)Ã‚Â² * 0.000001)) - (((2.643464 + max(-0.582903, ((v * 1.536227) + ((v * dv) * 0.212766)))) / s))Ã‚Â²)))) + 0.215108)",
     "seed": 999911,
     "iteration": 1600,
     "speed": {
@@ -3744,7 +3422,7 @@
   },
   "gemv4": {
     "taskId": "gemv4",
-    "title": "GEMV décodage LLM — cellule 4-lanes",
+    "title": "GEMV dÃ©codage LLM â€” cellule 4-lanes",
     "direction": "min",
     "metric": 1.6074532951505583e-7,
     "level": 2,
@@ -4006,7 +3684,7 @@
       "exactCost": 43,
       "speedup": 0.9772727272727273,
       "vsIterative": {
-        "label": "CORDIC · 16 micro-rotations",
+        "label": "CORDIC Â· 16 micro-rotations",
         "speedup": 1.4545454545454546
       }
     },
@@ -4063,7 +3741,7 @@
     "direction": "min",
     "metric": 8.1772509994516e-34,
     "level": 5,
-    "formula": "sqrt(|exp((-(x)Â²))|)",
+    "formula": "sqrt(|exp((-(x)Ã‚Â²))|)",
     "seed": 993001,
     "iteration": 400,
     "speed": {
@@ -4098,11 +3776,11 @@
   },
   "ema_smooth": {
     "taskId": "ema_smooth",
-    "title": "Facteur EMA indépendant du framerate",
+    "title": "Facteur EMA indÃ©pendant du framerate",
     "direction": "min",
     "metric": 1.6354908540365558e-11,
     "level": 5,
-    "formula": "((1.192774 * ((2 * (x / (x + 0.745653))) - ((x)Â² * max(x, 0.692832)))) + 0.000009)",
+    "formula": "((1.192774 * ((2 * (x / (x + 0.745653))) - ((x)Ã‚Â² * max(x, 0.692832)))) + 0.000009)",
     "seed": 995002,
     "iteration": 400,
     "speed": {
@@ -4208,7 +3886,7 @@
     "direction": "min",
     "metric": 3.283596399606784e-7,
     "level": 5,
-    "formula": "((-1.988372 * ((x)Â² * (x + -1.503545))) + 0.000554)",
+    "formula": "((-1.988372 * ((x)Ã‚Â² * (x + -1.503545))) + 0.000554)",
     "seed": 999801,
     "iteration": 1600,
     "speed": {
@@ -4262,7 +3940,7 @@
       ]
     },
     "fast": {
-      "formula": "((x)Â² * (x + -1.503545))",
+      "formula": "((x)Ã‚Â² * (x + -1.503545))",
       "metric": 3.283596399606784e-7,
       "level": 5,
       "formulaCost": 3,
@@ -4302,7 +3980,7 @@
   },
   "srgb_gamma": {
     "taskId": "srgb_gamma",
-    "title": "Transfert sRGB (encodage linéaire→affichage)",
+    "title": "Transfert sRGB (encodage linÃ©aireâ†’affichage)",
     "direction": "min",
     "metric": 0.0000019009578309001974,
     "level": 4,
@@ -4420,11 +4098,11 @@
   },
   "tanh_sat": {
     "taskId": "tanh_sat",
-    "title": "Tanh soft-clip (audio · gating)",
+    "title": "Tanh soft-clip (audio Â· gating)",
     "direction": "min",
     "metric": 0.0000046412770528300585,
     "level": 4,
-    "formula": "(0.900021 * ((x + (0.053639 * (x)Â³)) / (0.90122 + (0.343141 * (x)Â²))))",
+    "formula": "(0.900021 * ((x + (0.053639 * (x)Ã‚Â³)) / (0.90122 + (0.343141 * (x)Ã‚Â²))))",
     "seed": 999101,
     "iteration": 200,
     "speed": {
@@ -4501,7 +4179,7 @@
       ]
     },
     "fast": {
-      "formula": "(x / (2.598194 * (4.397731 + (x)Â²)))",
+      "formula": "(x / (2.598194 * (4.397731 + (x)Ã‚Â²)))",
       "metric": 0.0005936593577891905,
       "level": 2,
       "formulaCost": 7,
@@ -4550,7 +4228,7 @@
   },
   "atan_unit": {
     "taskId": "atan_unit",
-    "title": "Atan unitaire (cœur des atan2)",
+    "title": "Atan unitaire (cÅ“ur des atan2)",
     "direction": "min",
     "metric": 0,
     "level": 5,
@@ -4584,11 +4262,11 @@
   },
   "srgb_decode": {
     "taskId": "srgb_decode",
-    "title": "Décode sRGB (affichage → linéaire)",
+    "title": "DÃ©code sRGB (affichage â†’ linÃ©aire)",
     "direction": "min",
     "metric": 2.5435325790046406e-7,
     "level": 5,
-    "formula": "((-0.194813 * min(x, ((x)Â² * (-5.123166 - log(max(x, 1e-30)))))) + 0.001458)",
+    "formula": "((-0.194813 * min(x, ((x)Ã‚Â² * (-5.123166 - log(max(x, 1e-30)))))) + 0.001458)",
     "seed": 996001,
     "iteration": 800,
     "speed": {
@@ -4656,7 +4334,7 @@
       ]
     },
     "fast": {
-      "formula": "(x)Â²",
+      "formula": "(x)Ã‚Â²",
       "metric": 0.0001304377643047933,
       "level": 2,
       "formulaCost": 1,
@@ -4678,146 +4356,94 @@
   },
   "erf_prob": {
     "taskId": "erf_prob",
-    "title": "Erf probabiliste (noyaux de probabilité · GELU-exact)",
+    "title": "Erf probabiliste (noyaux de probabilitÃ© Â· GELU-exact)",
     "direction": "min",
-    "metric": 0.0002023037156607867,
-    "level": 2,
-    "formula": "(0.000062 * ((0.826194 * ((x / 0) * 0.926259)) + (atan(atan(x)) / sqrt(|(x - x)|))))",
-    "seed": 1000001,
-    "iteration": 213,
-    "speed": {
-      "formulaCost": 55,
-      "exactCost": 26,
-      "speedup": 0.4727272727272727
-    },
+    "metric": 0.00004650870031371604,
+    "level": 3,
+    "formula": "(1.106774 * ((x + (0.034298 * (x)Ã‚Â³)) / (0.995 + (0.378089 * (x)Ã‚Â²))))",
+    "seed": 20260825,
+    "iteration": 5,
     "tree": {
       "o": "mul",
       "c": [
         {
           "o": "const",
-          "v": 0.0000615491375380159
-        },
-        {
-          "o": "add",
-          "c": [
-            {
-              "o": "mul",
-              "c": [
-                {
-                  "o": "const",
-                  "v": 0.826194
-                },
-                {
-                  "o": "mul",
-                  "c": [
-                    {
-                      "o": "pdiv",
-                      "c": [
-                        {
-                          "o": "var",
-                          "n": "x"
-                        },
-                        {
-                          "o": "const",
-                          "v": 0
-                        }
-                      ]
-                    },
-                    {
-                      "o": "const",
-                      "v": 0.926259
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "o": "pdiv",
-              "c": [
-                {
-                  "o": "atan",
-                  "c": [
-                    {
-                      "o": "atan",
-                      "c": [
-                        {
-                          "o": "var",
-                          "n": "x"
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "o": "sqrt",
-                  "c": [
-                    {
-                      "o": "sub",
-                      "c": [
-                        {
-                          "o": "var",
-                          "n": "x"
-                        },
-                        {
-                          "o": "var",
-                          "n": "x"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    "fast": {
-      "formula": "(x + (atan(x) / 0))",
-      "metric": 0.0009921700507465742,
-      "level": 2,
-      "formulaCost": 25,
-      "speed": {
-        "formulaCost": 25,
-        "exactCost": 26,
-        "speedup": 1.04
-      }
-    },
-    "fastTree": {
-      "o": "add",
-      "c": [
-        {
-          "o": "var",
-          "n": "x"
+          "v": 1.106774
         },
         {
           "o": "pdiv",
           "c": [
             {
-              "o": "atan",
+              "o": "add",
               "c": [
                 {
                   "o": "var",
                   "n": "x"
+                },
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 0.034298
+                    },
+                    {
+                      "o": "cube",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "x"
+                        }
+                      ]
+                    }
+                  ]
                 }
               ]
             },
             {
-              "o": "const",
-              "v": 0
+              "o": "add",
+              "c": [
+                {
+                  "o": "const",
+                  "v": 0.995
+                },
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 0.378089
+                    },
+                    {
+                      "o": "sq",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "x"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
             }
           ]
         }
       ]
+    },
+    "speed": {
+      "formulaCost": 12,
+      "exactCost": 26,
+      "speedup": 2.1666666666666665
     }
   },
   "huber_loss": {
     "taskId": "huber_loss",
-    "title": "Perte de Huber δ=1 (entraînement robuste)",
+    "title": "Perte de Huber Î´=1 (entraÃ®nement robuste)",
     "direction": "min",
     "metric": 2.992203818088443e-7,
     "level": 5,
-    "formula": "((-1.00272 * ((1.127009 - ((x)Â² - -0.157558)) / (max(1.000633, |x|) + 0.998628))) + 0.485943)",
+    "formula": "((-1.00272 * ((1.127009 - ((x)Ã‚Â² - -0.157558)) / (max(1.000633, |x|) + 0.998628))) + 0.485943)",
     "seed": 999401,
     "iteration": 400,
     "speed": {
@@ -4903,7 +4529,7 @@
       ]
     },
     "fast": {
-      "formula": "((x)Â² / (|x| + 0.989))",
+      "formula": "((x)Ã‚Â² / (|x| + 0.989))",
       "metric": 0.0008124159207928629,
       "level": 2,
       "formulaCost": 7,
@@ -4948,11 +4574,11 @@
   },
   "cosh_curve": {
     "taskId": "cosh_curve",
-    "title": "Cosh (caténaires · ring-mod audio)",
+    "title": "Cosh (catÃ©naires Â· ring-mod audio)",
     "direction": "min",
     "metric": 2.6331998691285042e-8,
     "level": 5,
-    "formula": "((0.001256 * ((sqrt(|(x)Â²|) * cos((x)Â²)) + (((x)Â² + 11.494621))Â³)) + -0.907039)",
+    "formula": "((0.001256 * ((sqrt(|(x)Ã‚Â²|) * cos((x)Ã‚Â²)) + (((x)Ã‚Â² + 11.494621))Ã‚Â³)) + -0.907039)",
     "seed": 996002,
     "iteration": 800,
     "speed": {
@@ -5040,7 +4666,7 @@
       ]
     },
     "fast": {
-      "formula": "(((x)Â² + 5.05555))Â²",
+      "formula": "(((x)Ã‚Â² + 5.05555))Ã‚Â²",
       "metric": 0.000005967909320814225,
       "level": 4,
       "formulaCost": 3,
@@ -5076,7 +4702,7 @@
   },
   "bessel_j0": {
     "taskId": "bessel_j0",
-    "title": "Bessel J₀ (FM · vibrations · poutres)",
+    "title": "Bessel Jâ‚€ (FM Â· vibrations Â· poutres)",
     "direction": "min",
     "metric": 0.00026389864276618125,
     "level": 2,
@@ -5272,7 +4898,7 @@
   },
   "bessel_j1": {
     "taskId": "bessel_j1",
-    "title": "Bessel J₁ (FM · membranes antisym)",
+    "title": "Bessel Jâ‚ (FM Â· membranes antisym)",
     "direction": "min",
     "metric": 0.000005197986685271395,
     "level": 4,
@@ -5438,11 +5064,11 @@
   },
   "blackbody_r": {
     "taskId": "blackbody_r",
-    "title": "Corps noir — canal rouge (éclairage PBR)",
+    "title": "Corps noir â€” canal rouge (Ã©clairage PBR)",
     "direction": "min",
     "metric": 0.0000036433250399925394,
     "level": 4,
-    "formula": "((12961264.054148 * ((6608.647704 / max(x, 6608.647704)) / (max(max(x, 6608.647704), 6449.745424))Â²)) + 0.703081)",
+    "formula": "((12961264.054148 * ((6608.647704 / max(x, 6608.647704)) / (max(max(x, 6608.647704), 6449.745424))Ã‚Â²)) + 0.703081)",
     "seed": 997001,
     "iteration": 800,
     "speed": {
@@ -5549,7 +5175,7 @@
   },
   "aces_fit": {
     "taskId": "aces_fit",
-    "title": "Tonemap ACES ajusté (Narkowicz) — optimality test #4",
+    "title": "Tonemap ACES ajustÃ© (Narkowicz) â€” optimality test #4",
     "direction": "min",
     "metric": 0.000012114994026428819,
     "level": 3,
@@ -5664,7 +5290,7 @@
   },
   "logsumexp2": {
     "taskId": "logsumexp2",
-    "title": "LogSumExp 2-logits (max différentiable)",
+    "title": "LogSumExp 2-logits (max diffÃ©rentiable)",
     "direction": "min",
     "metric": 0.01044425969530025,
     "level": 2,
@@ -5770,11 +5396,11 @@
   },
   "probit_quantile": {
     "taskId": "probit_quantile",
-    "title": "Probit / quantile normal (finance · risque · z-scores)",
+    "title": "Probit / quantile normal (finance Â· risque Â· z-scores)",
     "direction": "min",
     "metric": 0.00001901761235141796,
     "level": 3,
-    "formula": "((-4.274877 * (sqrt(|sqrt(|log(max(x, 1e-30))|)|) + (0.076417 * (x)Â²))) + 3.983949)",
+    "formula": "((-4.274877 * (sqrt(|sqrt(|log(max(x, 1e-30))|)|) + (0.076417 * (x)Ã‚Â²))) + 3.983949)",
     "seed": 1000010,
     "iteration": 1200,
     "speed": {
@@ -5875,7 +5501,7 @@
   },
   "pmt_finance": {
     "taskId": "pmt_finance",
-    "title": "Mensualité de prêt par unité (fintech edge)",
+    "title": "MensualitÃ© de prÃªt par unitÃ© (fintech edge)",
     "direction": "min",
     "metric": 4.3680216924352057e-7,
     "level": 2,
@@ -5969,7 +5595,7 @@
       ]
     },
     "fast": {
-      "formula": "((r - atan((n - 2.963402))))Â³",
+      "formula": "((r - atan((n - 2.963402))))Ã‚Â³",
       "metric": 5.568566032461893e-7,
       "level": 2,
       "formulaCost": 24,
@@ -6014,7 +5640,7 @@
   },
   "blackbody_g": {
     "taskId": "blackbody_g",
-    "title": "Corps noir — canal vert (éclairage PBR)",
+    "title": "Corps noir â€” canal vert (Ã©clairage PBR)",
     "direction": "min",
     "metric": 0.00012987872179127979,
     "level": 2,
@@ -6172,7 +5798,7 @@
   },
   "blackbody_b": {
     "taskId": "blackbody_b",
-    "title": "Corps noir — canal bleu (éclairage PBR)",
+    "title": "Corps noir â€” canal bleu (Ã©clairage PBR)",
     "direction": "min",
     "metric": 0.00022595735189612456,
     "level": 2,
@@ -6307,7 +5933,7 @@
   },
   "bessel_j2": {
     "taskId": "bessel_j2",
-    "title": "Bessel J₂ (membranes sym · 2e sideband)",
+    "title": "Bessel Jâ‚‚ (membranes sym Â· 2e sideband)",
     "direction": "min",
     "metric": 0.00010589472510666084,
     "level": 2,
@@ -6441,7 +6067,7 @@
   },
   "logit_ml": {
     "taskId": "logit_ml",
-    "title": "Logit (probas ↔ logits, têtes de classification)",
+    "title": "Logit (probas â†” logits, tÃªtes de classification)",
     "direction": "min",
     "metric": 0.016974946048628873,
     "level": 0,
@@ -6503,11 +6129,88 @@
           "v": 5.533519427397523
         }
       ]
+    },
+    "fast": {
+      "formula": "((2.126622 * (((x)Â² + log(max(sqrt(|x|), 1e-30))) + (((x)Â³)Â²)Â³)) + 0.224449)",
+      "metric": 0.0008206231598785846,
+      "level": 2,
+      "formulaCost": 32,
+      "seed": 999801
+    },
+    "fastTree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 2.1266220342385473
+            },
+            {
+              "o": "add",
+              "c": [
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "sq",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "x"
+                        }
+                      ]
+                    },
+                    {
+                      "o": "log",
+                      "c": [
+                        {
+                          "o": "sqrt",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "x"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "cube",
+                  "c": [
+                    {
+                      "o": "sq",
+                      "c": [
+                        {
+                          "o": "cube",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "x"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.2244487406420216
+        }
+      ]
     }
   },
   "kelly_criterion": {
     "taskId": "kelly_criterion",
-    "title": "Kelly criterion — position sizing",
+    "title": "Kelly criterion â€” position sizing",
     "direction": "min",
     "metric": 9.839944734124527e-9,
     "level": 2,
@@ -6640,7 +6343,7 @@
   },
   "rsi_momentum": {
     "taskId": "rsi_momentum",
-    "title": "RSI depuis moyennes lissées (TradingView)",
+    "title": "RSI depuis moyennes lissÃ©es (TradingView)",
     "direction": "min",
     "metric": 1.836172557108052e-29,
     "level": 2,
@@ -6686,7 +6389,7 @@
   },
   "implied_vol": {
     "taskId": "implied_vol",
-    "title": "Volatilité implicite (inversion Black-Scholes)",
+    "title": "VolatilitÃ© implicite (inversion Black-Scholes)",
     "direction": "min",
     "metric": 0.9827107320402105,
     "level": 0,
@@ -6768,7 +6471,7 @@
   },
   "michaelis_menten": {
     "taskId": "michaelis_menten",
-    "title": "Michaelis-Menten (biochimie · pharma)",
+    "title": "Michaelis-Menten (biochimie Â· pharma)",
     "direction": "min",
     "metric": 6.947760597116317e-10,
     "level": 2,
@@ -6937,7 +6640,7 @@
   },
   "temperature_softmax": {
     "taskId": "temperature_softmax",
-    "title": "Softmax tempéré 2-logits (échantillonnage LLM)",
+    "title": "Softmax tempÃ©rÃ© 2-logits (Ã©chantillonnage LLM)",
     "direction": "min",
     "metric": 7.439476402624881e-47,
     "level": 2,
@@ -6993,7 +6696,7 @@
   },
   "doppler_effect": {
     "taskId": "doppler_effect",
-    "title": "Effet Doppler (audio · radar)",
+    "title": "Effet Doppler (audio Â· radar)",
     "direction": "min",
     "metric": 9.281797631143672e-10,
     "level": 2,
@@ -7103,7 +6806,7 @@
     "direction": "min",
     "metric": 2.1322035895929197e-26,
     "level": 2,
-    "formula": "(0.42 * (relu(t) * (t)Â³))",
+    "formula": "(0.42 * (relu(t) * (t)Ã‚Â³))",
     "seed": 1000080,
     "iteration": 400,
     "speed": {
@@ -7144,7 +6847,7 @@
       ]
     },
     "fast": {
-      "formula": "(t)Â³",
+      "formula": "(t)Ã‚Â³",
       "metric": 19301.61438055919,
       "level": 2,
       "formulaCost": 2,
@@ -7166,7 +6869,7 @@
   },
   "mm1_queue_wait": {
     "taskId": "mm1_queue_wait",
-    "title": "Attente file M/M/1 (SRE · systèmes)",
+    "title": "Attente file M/M/1 (SRE Â· systÃ¨mes)",
     "direction": "min",
     "metric": 6.062690637388583e-33,
     "level": 2,
@@ -7389,7 +7092,7 @@
   },
   "chsh_correlation": {
     "taskId": "chsh_correlation",
-    "title": "Paramètre CHSH (test de Bell · Nobel 2022)",
+    "title": "ParamÃ¨tre CHSH (test de Bell Â· Nobel 2022)",
     "direction": "min",
     "metric": 2.1055469858256505e-32,
     "level": 2,
@@ -7516,11 +7219,11 @@
   },
   "legendre_p2": {
     "taskId": "legendre_p2",
-    "title": "Legendre P₂ (harmonique sphérique · moments quantiques)",
+    "title": "Legendre Pâ‚‚ (harmonique sphÃ©rique Â· moments quantiques)",
     "direction": "min",
     "metric": 3.250969746125654e-33,
     "level": 5,
-    "formula": "((1.5 * (x)Â²) + -0.5)",
+    "formula": "((1.5 * (x)Ã‚Â²) + -0.5)",
     "seed": 1000140,
     "iteration": 400,
     "speed": {
@@ -7556,7 +7259,7 @@
       ]
     },
     "fast": {
-      "formula": "(-0.774693 * (x)Â²)",
+      "formula": "(-0.774693 * (x)Ã‚Â²)",
       "metric": 3.250969746125654e-33,
       "level": 5,
       "formulaCost": 2,
@@ -7587,11 +7290,11 @@
   },
   "laguerre_l2": {
     "taskId": "laguerre_l2",
-    "title": "Laguerre L₂ (radiale hydrogène · oscillateur)",
+    "title": "Laguerre Lâ‚‚ (radiale hydrogÃ¨ne Â· oscillateur)",
     "direction": "min",
     "metric": 8.257087129644967e-7,
     "level": 5,
-    "formula": "((0.250056 * ((-0.01236 + ((x + -1.996089))Â²) + ((x + -2.005496))Â²)) + -0.996478)",
+    "formula": "((0.250056 * ((-0.01236 + ((x + -1.996089))Ã‚Â²) + ((x + -2.005496))Ã‚Â²)) + -0.996478)",
     "seed": 1000140,
     "iteration": 400,
     "speed": {
@@ -7668,7 +7371,7 @@
       ]
     },
     "fast": {
-      "formula": "(((x + -1.996089))Â² + -0.262804)",
+      "formula": "(((x + -1.996089))Ã‚Â² + -0.262804)",
       "metric": 0.000020056550508695337,
       "level": 3,
       "formulaCost": 3,
@@ -7708,19 +7411,35 @@
   },
   "asin_hard": {
     "taskId": "asin_hard",
-    "title": "Arcsinus unitaire (quantique · rotations)",
+    "title": "Arcsinus unitaire (quantique Â· rotations)",
     "direction": "min",
-    "metric": 0.000010180605716772432,
-    "level": 3,
-    "formula": "(0.529961 * ((1.930182 * x) + ((0.645691 * (x)Â²) * (x)Â³)))",
-    "seed": 1000140,
-    "iteration": 400,
-    "speed": {
-      "formulaCost": 8,
-      "exactCost": 28,
-      "speedup": 3.5
-    },
+    "metric": 0,
+    "level": 5,
+    "formula": "asin(x)",
+    "seed": 20260825,
+    "iteration": 5,
     "tree": {
+      "o": "asin",
+      "c": [
+        {
+          "o": "var",
+          "n": "x"
+        }
+      ]
+    },
+    "speed": {
+      "formulaCost": 20,
+      "exactCost": 28,
+      "speedup": 1.4
+    },
+    "fast": {
+      "formula": "(0.529961 * ((1.930182 * x) + ((0.645691 * (x)Â²) * (x)Â³)))",
+      "metric": 0.000010180605716772432,
+      "level": 3,
+      "formulaCost": 8,
+      "seed": 1000140
+    },
+    "fastTree": {
       "o": "mul",
       "c": [
         {
@@ -7778,49 +7497,11 @@
           ]
         }
       ]
-    },
-    "fast": {
-      "formula": "(x + (0.5175 * (x)Â³))",
-      "metric": 0.0003251710369703949,
-      "level": 2,
-      "formulaCost": 4,
-      "speed": {
-        "formulaCost": 4,
-        "exactCost": 28,
-        "speedup": 7
-      }
-    },
-    "fastTree": {
-      "o": "add",
-      "c": [
-        {
-          "o": "var",
-          "n": "x"
-        },
-        {
-          "o": "mul",
-          "c": [
-            {
-              "o": "const",
-              "v": 0.5175
-            },
-            {
-              "o": "cube",
-              "c": [
-                {
-                  "o": "var",
-                  "n": "x"
-                }
-              ]
-            }
-          ]
-        }
-      ]
     }
   },
   "qfi_dephasing": {
     "taskId": "qfi_dephasing",
-    "title": "QFI GHZ déphasage collectif (métrologie quantique)",
+    "title": "QFI GHZ dÃ©phasage collectif (mÃ©trologie quantique)",
     "direction": "min",
     "metric": 1.4726216379152874,
     "level": 0,
@@ -7907,7 +7588,7 @@
   },
   "amp_damp_fid": {
     "taskId": "amp_damp_fid",
-    "title": "Fidélité canal damping (correction d'erreur)",
+    "title": "FidÃ©litÃ© canal damping (correction d'erreur)",
     "direction": "min",
     "metric": 0.021192299809747715,
     "level": 2,
@@ -7919,7 +7600,7 @@
       "exactCost": 24,
       "speedup": 0.1935483870967742,
       "vsIterative": {
-        "label": "Kraus ops 4×4 matmul",
+        "label": "Kraus ops 4Ã—4 matmul",
         "speedup": 0.3870967741935484
       }
     },
@@ -8008,7 +7689,7 @@
       "exactCost": 18,
       "speedup": 0.3829787234042553,
       "vsIterative": {
-        "label": "Diag complète 128 modes",
+        "label": "Diag complÃ¨te 128 modes",
         "speedup": 13.617021276595745
       }
     },
@@ -8090,7 +7771,7 @@
       ]
     },
     "fast": {
-      "formula": "((-0.287877 + cos((t * 3.057635))))Â³",
+      "formula": "((-0.287877 + cos((t * 3.057635))))Ã‚Â³",
       "metric": 0.0613458418308354,
       "level": 2,
       "formulaCost": 24,
@@ -8099,7 +7780,7 @@
         "exactCost": 18,
         "speedup": 0.75,
         "vsIterative": {
-          "label": "Diag complète 128 modes",
+          "label": "Diag complÃ¨te 128 modes",
           "speedup": 26.666666666666668
         }
       }
@@ -8135,6 +7816,225 @@
           ]
         }
       ]
+    }
+  },
+  "bessel_i0e": {
+    "taskId": "bessel_i0e",
+    "title": "Bessel Iâ‚€e modifiÃ©e (fenÃªtres KBD Â· diffusion)",
+    "direction": "min",
+    "metric": 0.00003056208763233721,
+    "level": 2,
+    "formula": "((-0.956621 * (x / (0.802245 + |x|))) + 1.00551)",
+    "seed": 20260825,
+    "iteration": 5,
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": -0.956621415374655
+            },
+            {
+              "o": "pdiv",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "x"
+                },
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 0.802245
+                    },
+                    {
+                      "o": "abs",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "x"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 1.0055104538128088
+        }
+      ]
+    },
+    "speed": {
+      "formulaCost": 8,
+      "exactCost": 24,
+      "speedup": 3
+    }
+  },
+  "elliptic_k": {
+    "taskId": "elliptic_k",
+    "title": "IntÃ©grale elliptique K(m) (pendule Â· gÃ©odÃ©siques)",
+    "direction": "min",
+    "metric": 0.004333603318947968,
+    "level": 2,
+    "formula": "((0.229391 * ((exp(m) * (asin(m))Ã‚Â³) + m)) + 1.642805)",
+    "seed": 20260825,
+    "iteration": 7,
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 0.22939144913554116
+            },
+            {
+              "o": "add",
+              "c": [
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "exp",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "m"
+                        }
+                      ]
+                    },
+                    {
+                      "o": "cube",
+                      "c": [
+                        {
+                          "o": "asin",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "m"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "var",
+                  "n": "m"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 1.6428050203299513
+        }
+      ]
+    },
+    "speed": {
+      "formulaCost": 46,
+      "exactCost": 16,
+      "speedup": 0.34782608695652173
+    }
+  },
+  "kepler_solver": {
+    "taskId": "kepler_solver",
+    "title": "Solveur de Kepler O(1) (mÃ©canique orbitale)",
+    "direction": "min",
+    "metric": 0.025907227034892635,
+    "level": 1,
+    "formula": "((1.899188 * (relu(log(max((e + M), 1e-30))) - 4.88761)) + 9.923214)",
+    "seed": 20260825,
+    "iteration": 6,
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 1.8991880781575727
+            },
+            {
+              "o": "sub",
+              "c": [
+                {
+                  "o": "relu",
+                  "c": [
+                    {
+                      "o": "log",
+                      "c": [
+                        {
+                          "o": "add",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "e"
+                            },
+                            {
+                              "o": "var",
+                              "n": "M"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "const",
+                  "v": 4.88761
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 9.923214341619618
+        }
+      ]
+    },
+    "speed": {
+      "formulaCost": 25,
+      "exactCost": 32,
+      "speedup": 1.28
+    }
+  },
+  "fast_exp_alu": {
+    "taskId": "fast_exp_alu",
+    "title": "Exp algÃ©brique pure (sans exp/log/sin/cos)",
+    "direction": "min",
+    "metric": 0,
+    "level": 5,
+    "formula": "exp(x)",
+    "seed": 20260825,
+    "iteration": 5,
+    "tree": {
+      "o": "exp",
+      "c": [
+        {
+          "o": "var",
+          "n": "x"
+        }
+      ]
+    },
+    "speed": {
+      "formulaCost": 20,
+      "exactCost": 34,
+      "speedup": 1.7
     }
   }
 }
