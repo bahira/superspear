@@ -6818,5 +6818,496 @@
         }
       ]
     }
+  },
+  "michaelis_menten": {
+    "taskId": "michaelis_menten",
+    "title": "Michaelis-Menten (biochimie · pharma)",
+    "direction": "min",
+    "metric": 6.947760597116317e-10,
+    "level": 2,
+    "formula": "((5.18082 * (((s + -75.797025) / (s - -3.997718)) - (-2.586911 / max(s, (s - -3.930559))))) + 94.819196)",
+    "seed": 1000080,
+    "iteration": 400,
+    "speed": {
+      "formulaCost": 15,
+      "exactCost": 7,
+      "speedup": 0.4666666666666667
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 5.180819843767829
+            },
+            {
+              "o": "sub",
+              "c": [
+                {
+                  "o": "pdiv",
+                  "c": [
+                    {
+                      "o": "add",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "s"
+                        },
+                        {
+                          "o": "const",
+                          "v": -75.797025
+                        }
+                      ]
+                    },
+                    {
+                      "o": "sub",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "s"
+                        },
+                        {
+                          "o": "const",
+                          "v": -3.997718
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "pdiv",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": -2.586911
+                    },
+                    {
+                      "o": "max",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "s"
+                        },
+                        {
+                          "o": "sub",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "s"
+                            },
+                            {
+                              "o": "const",
+                              "v": -3.930559
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 94.81919572289306
+        }
+      ]
+    },
+    "fast": {
+      "formula": "((-79.794743 / (s - -3.997718)) - (-2.586911 / max(-79.794743, (s - -3.930559))))",
+      "metric": 6.947760596857253e-10,
+      "level": 2,
+      "formulaCost": 12,
+      "speed": {
+        "formulaCost": 12,
+        "exactCost": 7,
+        "speedup": 0.5833333333333334
+      }
+    },
+    "fastTree": {
+      "o": "sub",
+      "c": [
+        {
+          "o": "pdiv",
+          "c": [
+            {
+              "o": "const",
+              "v": -79.794743
+            },
+            {
+              "o": "sub",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "s"
+                },
+                {
+                  "o": "const",
+                  "v": -3.997718
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "pdiv",
+          "c": [
+            {
+              "o": "const",
+              "v": -2.586911
+            },
+            {
+              "o": "max",
+              "c": [
+                {
+                  "o": "const",
+                  "v": -79.794743
+                },
+                {
+                  "o": "sub",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "s"
+                    },
+                    {
+                      "o": "const",
+                      "v": -3.930559
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "temperature_softmax": {
+    "taskId": "temperature_softmax",
+    "title": "Softmax tempéré 2-logits (échantillonnage LLM)",
+    "direction": "min",
+    "metric": 0.0004222196614761441,
+    "level": 2,
+    "formula": "((0.604782 * atan(exp((da / t)))) + 0.02495)",
+    "seed": 1000080,
+    "iteration": 400,
+    "speed": {
+      "formulaCost": 46,
+      "exactCost": 26,
+      "speedup": 0.5652173913043478
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 0.60478168356113
+            },
+            {
+              "o": "atan",
+              "c": [
+                {
+                  "o": "exp",
+                  "c": [
+                    {
+                      "o": "pdiv",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "da"
+                        },
+                        {
+                          "o": "var",
+                          "n": "t"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.024950081662086007
+        }
+      ]
+    }
+  },
+  "doppler_effect": {
+    "taskId": "doppler_effect",
+    "title": "Effet Doppler (audio · radar)",
+    "direction": "min",
+    "metric": 1.3570793498552753,
+    "level": 2,
+    "formula": "((0.498019 * ((max(vs, 28.216144) + (3.667732 * (vo + vs))) + (vs + vo))) + 681.25215)",
+    "seed": 1000080,
+    "iteration": 400,
+    "speed": {
+      "formulaCost": 8,
+      "exactCost": 5,
+      "speedup": 0.625
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 0.49801865416681684
+            },
+            {
+              "o": "add",
+              "c": [
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "max",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "vs"
+                        },
+                        {
+                          "o": "const",
+                          "v": 28.216144
+                        }
+                      ]
+                    },
+                    {
+                      "o": "mul",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 3.667732
+                        },
+                        {
+                          "o": "add",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "vo"
+                            },
+                            {
+                              "o": "var",
+                              "n": "vs"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "vs"
+                    },
+                    {
+                      "o": "var",
+                      "n": "vo"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 681.2521501030918
+        }
+      ]
+    },
+    "fast": {
+      "formula": "(vs + vo)",
+      "metric": 11.408687912051402,
+      "level": 2,
+      "formulaCost": 1,
+      "speed": {
+        "formulaCost": 1,
+        "exactCost": 5,
+        "speedup": 5
+      }
+    },
+    "fastTree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "var",
+          "n": "vs"
+        },
+        {
+          "o": "var",
+          "n": "vo"
+        }
+      ]
+    }
+  },
+  "stefan_boltzmann": {
+    "taskId": "stefan_boltzmann",
+    "title": "Stefan-Boltzmann (radiation thermique)",
+    "direction": "min",
+    "metric": 2.1322035895929197e-26,
+    "level": 2,
+    "formula": "(0.42 * (relu(t) * (t)Â³))",
+    "seed": 1000080,
+    "iteration": 400,
+    "speed": {
+      "formulaCost": 5,
+      "exactCost": 3,
+      "speedup": 0.6
+    },
+    "tree": {
+      "o": "mul",
+      "c": [
+        {
+          "o": "const",
+          "v": 0.42
+        },
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "relu",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "t"
+                }
+              ]
+            },
+            {
+              "o": "cube",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "t"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "fast": {
+      "formula": "(t)Â³",
+      "metric": 19301.61438055919,
+      "level": 2,
+      "formulaCost": 2,
+      "speed": {
+        "formulaCost": 2,
+        "exactCost": 3,
+        "speedup": 1.5
+      }
+    },
+    "fastTree": {
+      "o": "cube",
+      "c": [
+        {
+          "o": "var",
+          "n": "t"
+        }
+      ]
+    }
+  },
+  "mm1_queue_wait": {
+    "taskId": "mm1_queue_wait",
+    "title": "Attente file M/M/1 (SRE · systèmes)",
+    "direction": "min",
+    "metric": 6.062690637388583e-33,
+    "level": 2,
+    "formula": "(-((l / m) / (l - m)))",
+    "seed": 1000080,
+    "iteration": 83,
+    "speed": {
+      "formulaCost": 10,
+      "exactCost": 6,
+      "speedup": 0.6
+    },
+    "tree": {
+      "o": "neg",
+      "c": [
+        {
+          "o": "pdiv",
+          "c": [
+            {
+              "o": "pdiv",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "l"
+                },
+                {
+                  "o": "var",
+                  "n": "m"
+                }
+              ]
+            },
+            {
+              "o": "sub",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "l"
+                },
+                {
+                  "o": "var",
+                  "n": "m"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "fast": {
+      "formula": "(-1.22881 / (l - m))",
+      "metric": 0.021826793682645364,
+      "level": 2,
+      "formulaCost": 5,
+      "speed": {
+        "formulaCost": 5,
+        "exactCost": 6,
+        "speedup": 1.2
+      }
+    },
+    "fastTree": {
+      "o": "pdiv",
+      "c": [
+        {
+          "o": "const",
+          "v": -1.22881
+        },
+        {
+          "o": "sub",
+          "c": [
+            {
+              "o": "var",
+              "n": "l"
+            },
+            {
+              "o": "var",
+              "n": "m"
+            }
+          ]
+        }
+      ]
+    }
   }
 }

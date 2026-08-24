@@ -1714,6 +1714,123 @@ export function buildTasks(): TaskDef[] {
       groundTruth: "logit(x) = ln(x/(1−x))",
       exactCost: 27,
     }),
+    // ---- WAVE 7: exact-representable everyday-science kernels -------------
+    // Michaelis-Menten: enzyme/drug velocity — biochemistry staple, exact
+    // rational in 7 units. Pairs with hill (same family, different law).
+    buildRegressionTask({
+      id: "michaelis_menten",
+      title: "Michaelis-Menten (biochimie · pharma)",
+      subtitle: "v = Vmax·[S]/(Km+[S]) : vitesse enzymatique, rationnel exact à 7 unités",
+      groundTruth: "v = 100·S/(4+S) (Vmax=100, Km=4)",
+      rows: 400,
+      varNames: ["s"],
+      exactCost: 7,
+      build: () => {
+        const rows = 400;
+        const sv = new Float64Array(rows), y = new Float64Array(rows);
+        for (let i = 0; i < rows; i++) {
+          const s = 0.1 + 40 * ((i * 0.6180339887) % 1);
+          sv[i] = s;
+          y[i] = (100 * s) / (4 + s);
+        }
+        return { vars: { s: sv }, y };
+      },
+      trueLaw: (v, i) => (100 * v.s[i]) / (4 + v.s[i]),
+      verify: () => null,
+    }),
+    // Temperature-scaled softmax over two logits: THE LLM sampling kernel.
+    // Exact via exp: sigmoid(Δ/T). Directly relevant to inference stacks.
+    buildRegressionTask({
+      id: "temperature_softmax",
+      title: "Softmax tempéré 2-logits (échantillonnage LLM)",
+      subtitle: "P(a>b | Δa, T) = σ(Δ/T) — le contrôle de créativité des LLM en forme close",
+      groundTruth: "p = 1/(1+e^(−Δ/T))",
+      rows: 500,
+      varNames: ["da", "t"],
+      exactCost: 26,
+      build: () => {
+        const rows = 500;
+        const dav = new Float64Array(rows), tv = new Float64Array(rows), y = new Float64Array(rows);
+        for (let i = 0; i < rows; i++) {
+          const da = -6 + 12 * ((i * 0.6180339887) % 1);
+          const t = 0.1 + 2.9 * ((i * 0.7548776662) % 1);
+          dav[i] = da; tv[i] = t;
+          y[i] = 1 / (1 + Math.exp(-da / t));
+        }
+        return { vars: { da: dav, t: tv }, y };
+      },
+      trueLaw: (v, i) => 1 / (1 + Math.exp(-v.da[i] / v.t[i])),
+      verify: () => null,
+    }),
+    // Doppler effect: f' = f·(v+vo)/(v−vs) — audio/radar/astronomy staple.
+    buildRegressionTask({
+      id: "doppler_effect",
+      title: "Effet Doppler (audio · radar)",
+      subtitle: "f' = f·(v+v₀)/(v−vs) : pitch d'une sirène qui passe, forme exacte",
+      groundTruth: "f' = f·(v+v₀)/(v−vs), f=700 Hz, v=340 m/s",
+      rows: 400,
+      varNames: ["vo", "vs"],
+      exactCost: 5,
+      build: () => {
+        const rows = 400;
+        const ov = new Float64Array(rows), sv = new Float64Array(rows), y = new Float64Array(rows);
+        for (let i = 0; i < rows; i++) {
+          const vo = 30 * ((i * 0.6180339887) % 1);
+          const vs = 10 + 50 * ((i * 0.7548776662) % 1);
+          ov[i] = vo; sv[i] = vs;
+          y[i] = 700 * (340 + vo) / (340 - vs);
+        }
+        return { vars: { vo: ov, vs: sv }, y };
+      },
+      trueLaw: (v, i) => 700 * (340 + v.vo[i]) / (340 - v.vs[i]),
+      verify: () => null,
+    }),
+    // Stefan-Boltzmann: radiated power ∝ T⁴ — thermal PBR / engineering.
+    // sq∘sq chain: EXACT at 3 units — the cheapest optimality test possible.
+    buildRegressionTask({
+      id: "stefan_boltzmann",
+      title: "Stefan-Boltzmann (radiation thermique)",
+      subtitle: "P = σ·T⁴ : la chaîne sq∘sq exacte à 3 unités — test d'optimalité #5",
+      groundTruth: "P(T) = σT⁴ (σ normalisé)",
+      rows: 400,
+      varNames: ["t"],
+      exactCost: 3,
+      build: () => {
+        const rows = 400;
+        const tv = new Float64Array(rows), y = new Float64Array(rows);
+        for (let i = 0; i < rows; i++) {
+          const T = 1 + 9 * ((i * 0.6180339887) % 1);
+          tv[i] = T;
+          y[i] = 0.42 * Math.pow(T, 4);
+        }
+        return { vars: { t: tv }, y };
+      },
+      trueLaw: (v, i) => 0.42 * Math.pow(v.t[i], 4),
+      verify: () => null,
+    }),
+    // M/M/1 queue wait: λ/(μ(μ−λ)) — systems/SRE staple, exact rational.
+    buildRegressionTask({
+      id: "mm1_queue_wait",
+      title: "Attente file M/M/1 (SRE · systèmes)",
+      subtitle: "W = λ/(μ(μ−λ)) : temps d'attente moyen, exact en 6 unités",
+      groundTruth: "W(λ,μ) = λ/(μ(μ−λ))",
+      rows: 400,
+      varNames: ["l", "m"],
+      exactCost: 6,
+      build: () => {
+        const rows = 400;
+        const lv = new Float64Array(rows), mv = new Float64Array(rows), y = new Float64Array(rows);
+        for (let i = 0; i < rows; i++) {
+          const m = 1.2 + 8.8 * ((i * 0.6180339887) % 1);
+          const l = 0.05 + (m - 0.15) * ((i * 0.7548776662) % 1);
+          lv[i] = l; mv[i] = m;
+          y[i] = l / (m * (m - l));
+        }
+        return { vars: { l: lv, m: mv }, y };
+      },
+      trueLaw: (v, i) => v.l[i] / (v.m[i] * (v.m[i] - v.l[i])),
+      verify: () => null,
+    }),
     // ---- SPEAR QUANT PACK: trading/fintech kernels -------------------------
     // Kelly criterion: optimal bet fraction. EXACTLY expressible — the
     // elegant form f* = p − (1−p)/b costs 6 units (mul+sub+pdiv).
