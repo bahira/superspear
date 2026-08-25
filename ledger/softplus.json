@@ -1,0 +1,94 @@
+{
+  "taskId": "softplus",
+  "title": "Softplus ln(1+eˣ)",
+  "direction": "min",
+  "metric": 0.0000018948345099656158,
+  "level": 2,
+  "formula": "((1.002747 * log(max((1.010159 + exp(x)), 1e-30))) + -0.008384)",
+  "seed": 1000002,
+  "iteration": 201,
+  "speed": {
+    "formulaCost": 43,
+    "exactCost": 41,
+    "speedup": 0.9534883720930233
+  },
+  "tree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": 1.002747
+          },
+          {
+            "o": "log",
+            "c": [
+              {
+                "o": "add",
+                "c": [
+                  {
+                    "o": "const",
+                    "v": 1.010159
+                  },
+                  {
+                    "o": "exp",
+                    "c": [
+                      {
+                        "o": "var",
+                        "n": "x"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": -0.008384
+      }
+    ]
+  },
+  "fast": {
+    "formula": "(((x + 6.630221))³ + 239.762951)",
+    "metric": 0.007707567263369909,
+    "level": 2,
+    "formulaCost": 4,
+    "speed": {
+      "formulaCost": 4,
+      "exactCost": 41,
+      "speedup": 10.25
+    }
+  },
+  "fastTree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "cube",
+        "c": [
+          {
+            "o": "add",
+            "c": [
+              {
+                "o": "var",
+                "n": "x"
+              },
+              {
+                "o": "const",
+                "v": 6.630221
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": 239.762951
+      }
+    ]
+  }
+}

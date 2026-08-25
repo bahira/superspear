@@ -1,0 +1,62 @@
+{
+  "taskId": "free_fall",
+  "title": "Loi de chute libre",
+  "direction": "min",
+  "metric": 0.00018985148816310314,
+  "level": 5,
+  "formula": "((4.905917 * (t)²) + -0.001081)",
+  "seed": 3333,
+  "iteration": 28,
+  "tree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": 4.905917
+          },
+          {
+            "o": "sq",
+            "c": [
+              {
+                "o": "var",
+                "n": "t"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": -0.001081
+      }
+    ]
+  },
+  "speed": {
+    "formulaCost": 3,
+    "exactCost": 2,
+    "speedup": 0.6666666666666666
+  },
+  "fast": {
+    "formula": "(t)²",
+    "metric": 0.0005030952469190765,
+    "level": 5,
+    "formulaCost": 1,
+    "speed": {
+      "formulaCost": 1,
+      "exactCost": 2,
+      "speedup": 2
+    }
+  },
+  "fastTree": {
+    "o": "sq",
+    "c": [
+      {
+        "o": "var",
+        "n": "t"
+      }
+    ]
+  }
+}

@@ -1,0 +1,120 @@
+{
+  "taskId": "damped_pendulum",
+  "title": "Pendule amorti · état terminal",
+  "direction": "min",
+  "metric": 0.0006756423002196924,
+  "level": 2,
+  "formula": "((-1.310633 * ((max(cos(t), 0.682826) * -0.71535) - cos((2.787312 * t)))) + -0.707513)",
+  "seed": 930101,
+  "iteration": 400,
+  "tree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": -1.3106328406309695
+          },
+          {
+            "o": "sub",
+            "c": [
+              {
+                "o": "mul",
+                "c": [
+                  {
+                    "o": "max",
+                    "c": [
+                      {
+                        "o": "cos",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "t"
+                          }
+                        ]
+                      },
+                      {
+                        "o": "const",
+                        "v": 0.682826
+                      }
+                    ]
+                  },
+                  {
+                    "o": "const",
+                    "v": -0.71535
+                  }
+                ]
+              },
+              {
+                "o": "cos",
+                "c": [
+                  {
+                    "o": "mul",
+                    "c": [
+                      {
+                        "o": "const",
+                        "v": 2.787312
+                      },
+                      {
+                        "o": "var",
+                        "n": "t"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": -0.7075131452525627
+      }
+    ]
+  },
+  "speed": {
+    "formulaCost": 46,
+    "vsIterative": {
+      "label": "Euler-Cromer · 60 pas",
+      "speedup": 32.6
+    }
+  },
+  "fast": {
+    "formula": "cos((2.733044 * t))",
+    "metric": 0.01460094082613519,
+    "level": 2,
+    "formulaCost": 21,
+    "speed": {
+      "formulaCost": 21,
+      "vsIterative": {
+        "label": "Euler-Cromer Â· 60 pas",
+        "speedup": 71.42857142857143
+      }
+    },
+    "vsIterative": {
+      "label": "Euler-Cromer · 60 pas",
+      "speedup": 71.4
+    }
+  },
+  "fastTree": {
+    "o": "cos",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": 2.733044
+          },
+          {
+            "o": "var",
+            "n": "t"
+          }
+        ]
+      }
+    ]
+  }
+}

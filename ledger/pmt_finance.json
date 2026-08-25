@@ -1,0 +1,139 @@
+{
+  "taskId": "pmt_finance",
+  "title": "Mensualité de prêt par unité (fintech edge)",
+  "direction": "min",
+  "metric": 4.3680216924352057e-7,
+  "level": 2,
+  "formula": "((-0.646901 * ((n / (r + (n * 0.269972))) / ((r * 0.810197) - atan(n)))) + -1.526075)",
+  "seed": 1000010,
+  "iteration": 1200,
+  "speed": {
+    "formulaCost": 34,
+    "exactCost": 47,
+    "speedup": 1.3823529411764706
+  },
+  "tree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": -0.6469010959077766
+          },
+          {
+            "o": "pdiv",
+            "c": [
+              {
+                "o": "pdiv",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "n"
+                  },
+                  {
+                    "o": "add",
+                    "c": [
+                      {
+                        "o": "var",
+                        "n": "r"
+                      },
+                      {
+                        "o": "mul",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "n"
+                          },
+                          {
+                            "o": "const",
+                            "v": 0.269972
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "o": "sub",
+                "c": [
+                  {
+                    "o": "mul",
+                    "c": [
+                      {
+                        "o": "var",
+                        "n": "r"
+                      },
+                      {
+                        "o": "const",
+                        "v": 0.810197
+                      }
+                    ]
+                  },
+                  {
+                    "o": "atan",
+                    "c": [
+                      {
+                        "o": "var",
+                        "n": "n"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": -1.5260749723747622
+      }
+    ]
+  },
+  "fast": {
+    "formula": "((r - atan((n - 2.963402))))³",
+    "metric": 5.568566032461893e-7,
+    "level": 2,
+    "formulaCost": 24,
+    "speed": {
+      "formulaCost": 24,
+      "exactCost": 47,
+      "speedup": 1.9583333333333333
+    }
+  },
+  "fastTree": {
+    "o": "cube",
+    "c": [
+      {
+        "o": "sub",
+        "c": [
+          {
+            "o": "var",
+            "n": "r"
+          },
+          {
+            "o": "atan",
+            "c": [
+              {
+                "o": "sub",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "n"
+                  },
+                  {
+                    "o": "const",
+                    "v": 2.963402
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

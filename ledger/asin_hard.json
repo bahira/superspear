@@ -1,0 +1,90 @@
+{
+  "taskId": "asin_hard",
+  "title": "Arcsinus unitaire (quantique · rotations)",
+  "direction": "min",
+  "metric": 0,
+  "level": 5,
+  "formula": "asin(x)",
+  "seed": 20260825,
+  "iteration": 5,
+  "tree": {
+    "o": "asin",
+    "c": [
+      {
+        "o": "var",
+        "n": "x"
+      }
+    ]
+  },
+  "speed": {
+    "formulaCost": 20,
+    "exactCost": 28,
+    "speedup": 1.4
+  },
+  "fast": {
+    "formula": "(0.529961 * ((1.930182 * x) + ((0.645691 * (x)²) * (x)³)))",
+    "metric": 0.000010180605716772432,
+    "level": 3,
+    "formulaCost": 8,
+    "seed": 1000140
+  },
+  "fastTree": {
+    "o": "mul",
+    "c": [
+      {
+        "o": "const",
+        "v": 0.529961
+      },
+      {
+        "o": "add",
+        "c": [
+          {
+            "o": "mul",
+            "c": [
+              {
+                "o": "const",
+                "v": 1.930182
+              },
+              {
+                "o": "var",
+                "n": "x"
+              }
+            ]
+          },
+          {
+            "o": "mul",
+            "c": [
+              {
+                "o": "mul",
+                "c": [
+                  {
+                    "o": "const",
+                    "v": 0.645691
+                  },
+                  {
+                    "o": "sq",
+                    "c": [
+                      {
+                        "o": "var",
+                        "n": "x"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "o": "cube",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "x"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

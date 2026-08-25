@@ -1,0 +1,158 @@
+{
+  "taskId": "blackbody_g",
+  "title": "Corps noir — canal vert (éclairage PBR)",
+  "direction": "min",
+  "metric": 0.00012987872179127979,
+  "level": 2,
+  "formula": "((3896.479658 * ((log(max(sqrt(|x|), 1e-30)) - 2.971801) / ((-1.66618 * x) / atan(atan(x))))) + 1.501624)",
+  "seed": 1000021,
+  "iteration": 1600,
+  "speed": {
+    "formulaCost": 74,
+    "exactCost": 25,
+    "speedup": 0.33783783783783783
+  },
+  "tree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": 3896.479658
+          },
+          {
+            "o": "pdiv",
+            "c": [
+              {
+                "o": "sub",
+                "c": [
+                  {
+                    "o": "log",
+                    "c": [
+                      {
+                        "o": "sqrt",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "x"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "o": "const",
+                    "v": 2.971801
+                  }
+                ]
+              },
+              {
+                "o": "pdiv",
+                "c": [
+                  {
+                    "o": "mul",
+                    "c": [
+                      {
+                        "o": "const",
+                        "v": -1.66618
+                      },
+                      {
+                        "o": "var",
+                        "n": "x"
+                      }
+                    ]
+                  },
+                  {
+                    "o": "atan",
+                    "c": [
+                      {
+                        "o": "atan",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "x"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": 1.501624
+      }
+    ]
+  },
+  "fast": {
+    "formula": "((-1.637862 + (-0.43866 * sqrt(|x|))) / (x / min(-0.661473, x)))",
+    "metric": 0.000249788870750738,
+    "level": 2,
+    "formulaCost": 13,
+    "speed": {
+      "formulaCost": 13,
+      "exactCost": 25,
+      "speedup": 1.9230769230769231
+    }
+  },
+  "fastTree": {
+    "o": "pdiv",
+    "c": [
+      {
+        "o": "add",
+        "c": [
+          {
+            "o": "const",
+            "v": -1.637862
+          },
+          {
+            "o": "mul",
+            "c": [
+              {
+                "o": "const",
+                "v": -0.43866
+              },
+              {
+                "o": "sqrt",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "x"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "pdiv",
+        "c": [
+          {
+            "o": "var",
+            "n": "x"
+          },
+          {
+            "o": "min",
+            "c": [
+              {
+                "o": "const",
+                "v": -0.661473
+              },
+              {
+                "o": "var",
+                "n": "x"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,149 @@
+{
+  "taskId": "lennard_jones",
+  "title": "Potentiel de Lennard-Jones 12-6",
+  "direction": "min",
+  "metric": 0.00003245566387678721,
+  "level": 2,
+  "formula": "((-23.07526 * ((log(max(r, 1e-30)) / ((r)³)³) / cos(sqrt(|(r + -1.017418)|)))) + -0.001951)",
+  "seed": 990303,
+  "iteration": 158,
+  "speed": {
+    "formulaCost": 57,
+    "exactCost": 17,
+    "speedup": 0.2982456140350877
+  },
+  "tree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": -23.07526
+          },
+          {
+            "o": "pdiv",
+            "c": [
+              {
+                "o": "pdiv",
+                "c": [
+                  {
+                    "o": "log",
+                    "c": [
+                      {
+                        "o": "var",
+                        "n": "r"
+                      }
+                    ]
+                  },
+                  {
+                    "o": "cube",
+                    "c": [
+                      {
+                        "o": "cube",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "r"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "o": "cos",
+                "c": [
+                  {
+                    "o": "sqrt",
+                    "c": [
+                      {
+                        "o": "add",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "r"
+                          },
+                          {
+                            "o": "const",
+                            "v": -1.017418
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": -0.001951
+      }
+    ]
+  },
+  "fast": {
+    "formula": "(min(1, r) / (min((r - 0.970147), 0.939027) - -69.077553))",
+    "metric": 0.020446232630864744,
+    "level": 2,
+    "formulaCost": 8,
+    "speed": {
+      "formulaCost": 8,
+      "exactCost": 17,
+      "speedup": 2.125
+    }
+  },
+  "fastTree": {
+    "o": "pdiv",
+    "c": [
+      {
+        "o": "min",
+        "c": [
+          {
+            "o": "const",
+            "v": 1
+          },
+          {
+            "o": "var",
+            "n": "r"
+          }
+        ]
+      },
+      {
+        "o": "sub",
+        "c": [
+          {
+            "o": "min",
+            "c": [
+              {
+                "o": "sub",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "r"
+                  },
+                  {
+                    "o": "const",
+                    "v": 0.970147
+                  }
+                ]
+              },
+              {
+                "o": "const",
+                "v": 0.939027
+              }
+            ]
+          },
+          {
+            "o": "const",
+            "v": -69.077553
+          }
+        ]
+      }
+    ]
+  }
+}

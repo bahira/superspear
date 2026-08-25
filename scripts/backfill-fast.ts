@@ -1,7 +1,8 @@
+import { loadLedger, saveLedger } from "../src/lib/spear/ledger";
 // Backfill the `fast` deployment variant of every ledger entry from git
 // history: displaced champions were accurate-but-slower forms that still
 // passed validation (level >= 2). Resurrect the cheapest one per task.
-import { readFileSync, writeFileSync } from "node:fs";
+
 import { join } from "node:path";
 import { execFileSync } from "node:child_process";
 
@@ -35,8 +36,8 @@ function historicalLedgers(repo: string): Ledger[] {
 
 async function main() {
   const repo = join(import.meta.dirname ?? ".", "..");
-  const path = join(repo, "spear-hall-of-fame.json");
-  const ledger = JSON.parse(readFileSync(path, "utf8")) as Ledger;
+  
+  const ledger = loadLedger() as Ledger;
 
   let revived = 0;
   for (const old of historicalLedgers(repo)) {
@@ -52,7 +53,7 @@ async function main() {
     }
   }
 
-  writeFileSync(path, JSON.stringify(ledger, null, 2));
+  saveLedger(ledger);
   console.log(`fast variants resurrected: ${revived}`);
   for (const [id, e] of Object.entries(ledger)) {
     if (e.fast) {

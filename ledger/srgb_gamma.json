@@ -1,0 +1,118 @@
+{
+  "taskId": "srgb_gamma",
+  "title": "Transfert sRGB (encodage linéaire→affichage)",
+  "direction": "min",
+  "metric": 0.0000019009578309001974,
+  "level": 4,
+  "formula": "((0.330799 * (sqrt(|sqrt(|sin(x)|)|) + ((1.41372 * sqrt(|x|)) + (0.881576 * sqrt(|x|))))) + -0.07679)",
+  "seed": 995003,
+  "iteration": 400,
+  "speed": {
+    "formulaCost": 34,
+    "exactCost": 22,
+    "speedup": 0.6470588235294118
+  },
+  "tree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": 0.3307987373817299
+          },
+          {
+            "o": "add",
+            "c": [
+              {
+                "o": "sqrt",
+                "c": [
+                  {
+                    "o": "sqrt",
+                    "c": [
+                      {
+                        "o": "sin",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "x"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "o": "add",
+                "c": [
+                  {
+                    "o": "mul",
+                    "c": [
+                      {
+                        "o": "const",
+                        "v": 1.41372
+                      },
+                      {
+                        "o": "sqrt",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "x"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "o": "mul",
+                    "c": [
+                      {
+                        "o": "const",
+                        "v": 0.881576
+                      },
+                      {
+                        "o": "sqrt",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "x"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": -0.07678952774168579
+      }
+    ]
+  },
+  "fast": {
+    "formula": "sqrt(|x|)",
+    "metric": 0.00011551060259047266,
+    "level": 2,
+    "formulaCost": 2,
+    "speed": {
+      "formulaCost": 2,
+      "exactCost": 22,
+      "speedup": 11
+    }
+  },
+  "fastTree": {
+    "o": "sqrt",
+    "c": [
+      {
+        "o": "var",
+        "n": "x"
+      }
+    ]
+  }
+}

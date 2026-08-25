@@ -1,0 +1,127 @@
+{
+  "taskId": "chsh_correlation",
+  "title": "Paramètre CHSH (test de Bell · Nobel 2022)",
+  "direction": "min",
+  "metric": 2.1055469858256505e-32,
+  "level": 2,
+  "formula": "|(((-cos((a - b))) + (-cos((ap - b)))) - ((-cos((a - bp))) - (-cos((ap - bp)))))|",
+  "seed": 1000070,
+  "iteration": 400,
+  "speed": {
+    "formulaCost": 92,
+    "exactCost": 84,
+    "speedup": 0.9130434782608695
+  },
+  "tree": {
+    "o": "abs",
+    "c": [
+      {
+        "o": "sub",
+        "c": [
+          {
+            "o": "add",
+            "c": [
+              {
+                "o": "neg",
+                "c": [
+                  {
+                    "o": "cos",
+                    "c": [
+                      {
+                        "o": "sub",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "a"
+                          },
+                          {
+                            "o": "var",
+                            "n": "b"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "o": "neg",
+                "c": [
+                  {
+                    "o": "cos",
+                    "c": [
+                      {
+                        "o": "sub",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "ap"
+                          },
+                          {
+                            "o": "var",
+                            "n": "b"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "o": "sub",
+            "c": [
+              {
+                "o": "neg",
+                "c": [
+                  {
+                    "o": "cos",
+                    "c": [
+                      {
+                        "o": "sub",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "a"
+                          },
+                          {
+                            "o": "var",
+                            "n": "bp"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "o": "neg",
+                "c": [
+                  {
+                    "o": "cos",
+                    "c": [
+                      {
+                        "o": "sub",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "ap"
+                          },
+                          {
+                            "o": "var",
+                            "n": "bp"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

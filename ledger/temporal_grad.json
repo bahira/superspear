@@ -1,0 +1,28 @@
+{
+  "taskId": "temporal_grad",
+  "title": "Vidéo · gradient temporel ∂I/∂t",
+  "direction": "min",
+  "metric": 0,
+  "level": 5,
+  "formula": "(b - a)",
+  "seed": 8888,
+  "iteration": 8,
+  "speed": {
+    "formulaCost": 1,
+    "exactCost": 1,
+    "speedup": 1
+  },
+  "tree": {
+    "o": "sub",
+    "c": [
+      {
+        "o": "var",
+        "n": "b"
+      },
+      {
+        "o": "var",
+        "n": "a"
+      }
+    ]
+  }
+}

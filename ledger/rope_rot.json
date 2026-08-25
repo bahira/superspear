@@ -1,0 +1,65 @@
+{
+  "taskId": "rope_rot",
+  "title": "Rotation RoPE par token (attention)",
+  "direction": "min",
+  "metric": 0,
+  "level": 5,
+  "formula": "((-(sin(th) * y)) + (x * cos(th)))",
+  "seed": 980101,
+  "iteration": 1600,
+  "speed": {
+    "formulaCost": 44,
+    "exactCost": 43,
+    "speedup": 0.9772727272727273,
+    "vsIterative": {
+      "label": "CORDIC · 16 micro-rotations",
+      "speedup": 1.5
+    }
+  },
+  "tree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "neg",
+        "c": [
+          {
+            "o": "mul",
+            "c": [
+              {
+                "o": "sin",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "th"
+                  }
+                ]
+              },
+              {
+                "o": "var",
+                "n": "y"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "var",
+            "n": "x"
+          },
+          {
+            "o": "cos",
+            "c": [
+              {
+                "o": "var",
+                "n": "th"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

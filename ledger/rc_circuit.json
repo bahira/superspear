@@ -1,0 +1,113 @@
+{
+  "taskId": "rc_circuit",
+  "title": "Circuit RC · tension terminale",
+  "direction": "min",
+  "metric": 0.00007258403509477666,
+  "level": 5,
+  "formula": "((-1.419873 * (2.239754 - log(max(atan(exp(t)), 1e-30)))) + 3.532699)",
+  "seed": 1000002,
+  "iteration": 202,
+  "speed": {
+    "formulaCost": 63,
+    "exactCost": 22,
+    "speedup": 0.3492063492063492
+  },
+  "tree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": -1.4198725250153843
+          },
+          {
+            "o": "sub",
+            "c": [
+              {
+                "o": "const",
+                "v": 2.239754
+              },
+              {
+                "o": "log",
+                "c": [
+                  {
+                    "o": "atan",
+                    "c": [
+                      {
+                        "o": "exp",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "t"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": 3.5326988727281186
+      }
+    ]
+  },
+  "fast": {
+    "formula": "((-0.998327 * min(exp((-t)), 2)) + 0.996889)",
+    "metric": 0.0001058221329252825,
+    "level": 5,
+    "formulaCost": 24,
+    "speed": {
+      "formulaCost": 24,
+      "exactCost": 22,
+      "speedup": 0.9166666666666666
+    }
+  },
+  "fastTree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": -0.998327
+          },
+          {
+            "o": "min",
+            "c": [
+              {
+                "o": "exp",
+                "c": [
+                  {
+                    "o": "neg",
+                    "c": [
+                      {
+                        "o": "var",
+                        "n": "t"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "o": "const",
+                "v": 2
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": 0.996889
+      }
+    ]
+  }
+}

@@ -5,8 +5,7 @@
 // makes them first-class records.
 //
 // Usage: npx tsx scripts/price-fast.ts
-import { readFileSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { loadLedger, saveLedger } from "../src/lib/spear/ledger";
 import { buildTasks } from "../src/lib/spear/benchmarks";
 
 interface IterRef { label: string; speedup: number }
@@ -21,8 +20,8 @@ type Ledger = Record<string, Finding>;
 const round1 = (v: number): number => Math.round(v * 10) / 10;
 
 async function main() {
-  const path = join(import.meta.dirname ?? ".", "..", "spear-hall-of-fame.json");
-  const ledger = JSON.parse(readFileSync(path, "utf8")) as Ledger;
+  
+  const ledger = loadLedger() as Ledger;
   const defs = new Map(buildTasks().map((t) => [t.id, t]));
 
   let priced = 0;
@@ -48,7 +47,7 @@ async function main() {
     }
   }
 
-  writeFileSync(path, JSON.stringify(ledger, null, 2));
+  saveLedger(ledger);
   console.log(`entrÃ©es tariffÃ©es: ${priced}\n`);
   console.log("== multiplicateurs vs solveur ==");
   const rows: { id: string; mult: number; what: string; ref: string }[] = [];

@@ -1,0 +1,119 @@
+{
+  "taskId": "kerr",
+  "title": "Déflexion de Kerr · lentille gravitationnelle",
+  "direction": "min",
+  "metric": 1.39756685796311e-7,
+  "level": 2,
+  "formula": "((4.044113 * (((2.83748 + (10.692104 / b)) + b) / (b)²)) + -0.001252)",
+  "seed": 777,
+  "iteration": 132,
+  "speed": {
+    "formulaCost": 13,
+    "exactCost": 17,
+    "speedup": 1.3076923076923077,
+    "vsIterative": {
+      "label": "RK4 géodésique · 200 pas",
+      "speedup": 184.6
+    }
+  },
+  "fast": {
+    "formula": "((0.630738 / b))²",
+    "metric": 0.0014679448665524788,
+    "level": 2,
+    "formulaCost": 5,
+    "speed": {
+      "formulaCost": 5,
+      "exactCost": 17,
+      "speedup": 3.4,
+      "vsIterative": {
+        "label": "RK4 gÃ©odÃ©sique Â· 200 pas",
+        "speedup": 480
+      }
+    },
+    "vsIterative": {
+      "label": "RK4 géodésique · 200 pas",
+      "speedup": 480
+    }
+  },
+  "fastTree": {
+    "o": "sq",
+    "c": [
+      {
+        "o": "pdiv",
+        "c": [
+          {
+            "o": "const",
+            "v": 0.630738
+          },
+          {
+            "o": "var",
+            "n": "b"
+          }
+        ]
+      }
+    ]
+  },
+  "tree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": 4.044113
+          },
+          {
+            "o": "pdiv",
+            "c": [
+              {
+                "o": "add",
+                "c": [
+                  {
+                    "o": "add",
+                    "c": [
+                      {
+                        "o": "const",
+                        "v": 2.83748
+                      },
+                      {
+                        "o": "pdiv",
+                        "c": [
+                          {
+                            "o": "const",
+                            "v": 10.692104
+                          },
+                          {
+                            "o": "var",
+                            "n": "b"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "o": "var",
+                    "n": "b"
+                  }
+                ]
+              },
+              {
+                "o": "sq",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "b"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": -0.001252
+      }
+    ]
+  }
+}

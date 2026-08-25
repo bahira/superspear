@@ -1,0 +1,70 @@
+{
+  "taskId": "elliptic_k",
+  "title": "Intégrale elliptique K(m) (pendule · géodésiques)",
+  "direction": "min",
+  "metric": 0.004333603318947968,
+  "level": 2,
+  "formula": "((0.229391 * ((exp(m) * (asin(m))³) + m)) + 1.642805)",
+  "seed": 20260825,
+  "iteration": 7,
+  "tree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": 0.22939144913554116
+          },
+          {
+            "o": "add",
+            "c": [
+              {
+                "o": "mul",
+                "c": [
+                  {
+                    "o": "exp",
+                    "c": [
+                      {
+                        "o": "var",
+                        "n": "m"
+                      }
+                    ]
+                  },
+                  {
+                    "o": "cube",
+                    "c": [
+                      {
+                        "o": "asin",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "m"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "o": "var",
+                "n": "m"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": 1.6428050203299513
+      }
+    ]
+  },
+  "speed": {
+    "formulaCost": 46,
+    "exactCost": 16,
+    "speedup": 0.34782608695652173
+  }
+}

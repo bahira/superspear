@@ -1,0 +1,60 @@
+{
+  "taskId": "concurrence_pure",
+  "title": "Concurrence 2-qubits pur (intrication)",
+  "direction": "min",
+  "metric": 0,
+  "level": 5,
+  "formula": "(2 * |((a * d) - (b * c))|)",
+  "seed": 1000070,
+  "iteration": 104,
+  "speed": {
+    "formulaCost": 5,
+    "exactCost": 7,
+    "speedup": 1.4
+  },
+  "tree": {
+    "o": "mul",
+    "c": [
+      {
+        "o": "const",
+        "v": 2
+      },
+      {
+        "o": "abs",
+        "c": [
+          {
+            "o": "sub",
+            "c": [
+              {
+                "o": "mul",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "a"
+                  },
+                  {
+                    "o": "var",
+                    "n": "d"
+                  }
+                ]
+              },
+              {
+                "o": "mul",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "b"
+                  },
+                  {
+                    "o": "var",
+                    "n": "c"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

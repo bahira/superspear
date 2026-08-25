@@ -1,0 +1,98 @@
+{
+  "taskId": "smoothstep",
+  "title": "Smoothstep (interpolation shader iconique)",
+  "direction": "min",
+  "metric": 3.283596399606784e-7,
+  "level": 5,
+  "formula": "((-1.988372 * ((x)² * (x + -1.503545))) + 0.000554)",
+  "seed": 999801,
+  "iteration": 1600,
+  "speed": {
+    "formulaCost": 5,
+    "exactCost": 5,
+    "speedup": 1
+  },
+  "tree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": -1.9883720211312108
+          },
+          {
+            "o": "mul",
+            "c": [
+              {
+                "o": "sq",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "x"
+                  }
+                ]
+              },
+              {
+                "o": "add",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "x"
+                  },
+                  {
+                    "o": "const",
+                    "v": -1.503545
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": 0.0005544574268407132
+      }
+    ]
+  },
+  "fast": {
+    "formula": "((x)² * (x + -1.503545))",
+    "metric": 3.283596399606784e-7,
+    "level": 5,
+    "formulaCost": 3,
+    "speed": {
+      "formulaCost": 3,
+      "exactCost": 5,
+      "speedup": 1.6666666666666667
+    }
+  },
+  "fastTree": {
+    "o": "mul",
+    "c": [
+      {
+        "o": "sq",
+        "c": [
+          {
+            "o": "var",
+            "n": "x"
+          }
+        ]
+      },
+      {
+        "o": "add",
+        "c": [
+          {
+            "o": "var",
+            "n": "x"
+          },
+          {
+            "o": "const",
+            "v": -1.503545
+          }
+        ]
+      }
+    ]
+  }
+}

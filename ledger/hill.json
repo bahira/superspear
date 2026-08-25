@@ -1,0 +1,54 @@
+{
+  "taskId": "hill",
+  "title": "Équation de Hill · dose-réponse",
+  "direction": "min",
+  "metric": 0,
+  "level": 5,
+  "formula": "((c)³ / (1 + (c)³))",
+  "seed": 1000120,
+  "iteration": 400,
+  "speed": {
+    "formulaCost": 9,
+    "exactCost": 9,
+    "speedup": 1
+  },
+  "tree": {
+    "o": "pdiv",
+    "c": [
+      {
+        "o": "cube",
+        "c": [
+          {
+            "o": "var",
+            "n": "c"
+          }
+        ]
+      },
+      {
+        "o": "add",
+        "c": [
+          {
+            "o": "const",
+            "v": 1
+          },
+          {
+            "o": "cube",
+            "c": [
+              {
+                "o": "var",
+                "n": "c"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "fast": {
+    "formula": "((0.531674 * min(c, min((c)², 1.833607))) + -0.016796)",
+    "metric": 0.0009225802066077555,
+    "level": 2,
+    "formulaCost": 5,
+    "seed": 424242
+  }
+}

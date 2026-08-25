@@ -1,0 +1,94 @@
+{
+  "taskId": "srgb_decode",
+  "title": "Décode sRGB (affichage → linéaire)",
+  "direction": "min",
+  "metric": 2.5435325790046406e-7,
+  "level": 5,
+  "formula": "((-0.194813 * min(x, ((x)² * (-5.123166 - log(max(x, 1e-30)))))) + 0.001458)",
+  "seed": 996001,
+  "iteration": 800,
+  "speed": {
+    "formulaCost": 26,
+    "exactCost": 22,
+    "speedup": 0.8461538461538461
+  },
+  "tree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": -0.19481295478887214
+          },
+          {
+            "o": "min",
+            "c": [
+              {
+                "o": "var",
+                "n": "x"
+              },
+              {
+                "o": "mul",
+                "c": [
+                  {
+                    "o": "sq",
+                    "c": [
+                      {
+                        "o": "var",
+                        "n": "x"
+                      }
+                    ]
+                  },
+                  {
+                    "o": "sub",
+                    "c": [
+                      {
+                        "o": "const",
+                        "v": -5.123166
+                      },
+                      {
+                        "o": "log",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "x"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": 0.0014582970819922636
+      }
+    ]
+  },
+  "fast": {
+    "formula": "(x)²",
+    "metric": 0.0001304377643047933,
+    "level": 2,
+    "formulaCost": 1,
+    "speed": {
+      "formulaCost": 1,
+      "exactCost": 22,
+      "speedup": 22
+    }
+  },
+  "fastTree": {
+    "o": "sq",
+    "c": [
+      {
+        "o": "var",
+        "n": "x"
+      }
+    ]
+  }
+}

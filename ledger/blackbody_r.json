@@ -1,0 +1,111 @@
+{
+  "taskId": "blackbody_r",
+  "title": "Corps noir — canal rouge (éclairage PBR)",
+  "direction": "min",
+  "metric": 0.0000036433250399925394,
+  "level": 4,
+  "formula": "((12961264.054148 * ((6608.647704 / max(x, 6608.647704)) / (max(max(x, 6608.647704), 6449.745424))²)) + 0.703081)",
+  "seed": 997001,
+  "iteration": 800,
+  "speed": {
+    "formulaCost": 14,
+    "exactCost": 25,
+    "speedup": 1.7857142857142858
+  },
+  "tree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": 12961264.054148097
+          },
+          {
+            "o": "pdiv",
+            "c": [
+              {
+                "o": "pdiv",
+                "c": [
+                  {
+                    "o": "const",
+                    "v": 6608.647704
+                  },
+                  {
+                    "o": "max",
+                    "c": [
+                      {
+                        "o": "var",
+                        "n": "x"
+                      },
+                      {
+                        "o": "const",
+                        "v": 6608.647704
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "o": "sq",
+                "c": [
+                  {
+                    "o": "max",
+                    "c": [
+                      {
+                        "o": "max",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "x"
+                          },
+                          {
+                            "o": "const",
+                            "v": 6608.647704
+                          }
+                        ]
+                      },
+                      {
+                        "o": "const",
+                        "v": 6449.745424
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": 0.7030813139014296
+      }
+    ]
+  },
+  "fast": {
+    "formula": "max(x, 5157.260551)",
+    "metric": 0.00034741754943065336,
+    "level": 2,
+    "formulaCost": 1,
+    "speed": {
+      "formulaCost": 1,
+      "exactCost": 25,
+      "speedup": 25
+    }
+  },
+  "fastTree": {
+    "o": "max",
+    "c": [
+      {
+        "o": "var",
+        "n": "x"
+      },
+      {
+        "o": "const",
+        "v": 5157.260551
+      }
+    ]
+  }
+}

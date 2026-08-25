@@ -1,0 +1,147 @@
+{
+  "taskId": "loschmidt_rate",
+  "title": "Loschmidt echo rate TFIM (DQPT)",
+  "direction": "min",
+  "metric": 0.052925894381018135,
+  "level": 2,
+  "formula": "((3.270734 * (min(cos((t * 3.130638)), 3.047207) * min(-0.185459, cos((t * 3.047207))))) + 0.594297)",
+  "seed": 1000095,
+  "iteration": 1600,
+  "speed": {
+    "formulaCost": 47,
+    "exactCost": 18,
+    "speedup": 0.3829787234042553,
+    "vsIterative": {
+      "label": "Diag complète 128 modes",
+      "speedup": 13.6
+    }
+  },
+  "tree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": 3.2707335278466636
+          },
+          {
+            "o": "mul",
+            "c": [
+              {
+                "o": "min",
+                "c": [
+                  {
+                    "o": "cos",
+                    "c": [
+                      {
+                        "o": "mul",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "t"
+                          },
+                          {
+                            "o": "const",
+                            "v": 3.130638
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "o": "const",
+                    "v": 3.047207
+                  }
+                ]
+              },
+              {
+                "o": "min",
+                "c": [
+                  {
+                    "o": "const",
+                    "v": -0.185459
+                  },
+                  {
+                    "o": "cos",
+                    "c": [
+                      {
+                        "o": "mul",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "t"
+                          },
+                          {
+                            "o": "const",
+                            "v": 3.047207
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": 0.5942965371145621
+      }
+    ]
+  },
+  "fast": {
+    "formula": "((-0.287877 + cos((t * 3.057635))))³",
+    "metric": 0.0613458418308354,
+    "level": 2,
+    "formulaCost": 24,
+    "speed": {
+      "formulaCost": 24,
+      "exactCost": 18,
+      "speedup": 0.75,
+      "vsIterative": {
+        "label": "Diag complÃ¨te 128 modes",
+        "speedup": 26.666666666666668
+      }
+    },
+    "vsIterative": {
+      "label": "Diag complète 128 modes",
+      "speedup": 26.7
+    }
+  },
+  "fastTree": {
+    "o": "cube",
+    "c": [
+      {
+        "o": "add",
+        "c": [
+          {
+            "o": "const",
+            "v": -0.287877
+          },
+          {
+            "o": "cos",
+            "c": [
+              {
+                "o": "mul",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "t"
+                  },
+                  {
+                    "o": "const",
+                    "v": 3.057635
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

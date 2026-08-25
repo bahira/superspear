@@ -1,0 +1,115 @@
+{
+  "taskId": "aces_fit",
+  "title": "Tonemap ACES ajusté (Narkowicz) — optimality test #4",
+  "direction": "min",
+  "metric": 0.000012114994026428819,
+  "level": 3,
+  "formula": "((0.448455 * ((-1.053345 / (0.540086 + x)) / (max(0.123065, x) + 0.74133))) + 0.980331)",
+  "seed": 998003,
+  "iteration": 1600,
+  "speed": {
+    "formulaCost": 13,
+    "exactCost": 8,
+    "speedup": 0.6153846153846154
+  },
+  "tree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": 0.448455
+          },
+          {
+            "o": "pdiv",
+            "c": [
+              {
+                "o": "pdiv",
+                "c": [
+                  {
+                    "o": "const",
+                    "v": -1.053345
+                  },
+                  {
+                    "o": "add",
+                    "c": [
+                      {
+                        "o": "const",
+                        "v": 0.540086
+                      },
+                      {
+                        "o": "var",
+                        "n": "x"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "o": "add",
+                "c": [
+                  {
+                    "o": "max",
+                    "c": [
+                      {
+                        "o": "const",
+                        "v": 0.123065
+                      },
+                      {
+                        "o": "var",
+                        "n": "x"
+                      }
+                    ]
+                  },
+                  {
+                    "o": "const",
+                    "v": 0.74133
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": 0.980331
+      }
+    ]
+  },
+  "fast": {
+    "formula": "(4.095859 / (x + 0.40901))",
+    "metric": 0.00027575018038861454,
+    "level": 2,
+    "formulaCost": 5,
+    "speed": {
+      "formulaCost": 5,
+      "exactCost": 8,
+      "speedup": 1.6
+    }
+  },
+  "fastTree": {
+    "o": "pdiv",
+    "c": [
+      {
+        "o": "const",
+        "v": 4.095859
+      },
+      {
+        "o": "add",
+        "c": [
+          {
+            "o": "var",
+            "n": "x"
+          },
+          {
+            "o": "const",
+            "v": 0.40901
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,138 @@
+{
+  "taskId": "gaussian_cdf",
+  "title": "Répartition gaussienne Φ(x)",
+  "direction": "min",
+  "metric": 0.000016407954856661242,
+  "level": 3,
+  "formula": "((0.446257 * atan(min((0.946094 * max(x, -2.183)), 2.045418))) + 0.50123)",
+  "seed": 1001003,
+  "iteration": 1600,
+  "speed": {
+    "formulaCost": 25,
+    "exactCost": 34,
+    "speedup": 1.36,
+    "vsIterative": {
+      "label": "Monte-Carlo · 1000 tirages",
+      "speedup": 1840
+    }
+  },
+  "tree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": 0.446257
+          },
+          {
+            "o": "atan",
+            "c": [
+              {
+                "o": "min",
+                "c": [
+                  {
+                    "o": "mul",
+                    "c": [
+                      {
+                        "o": "const",
+                        "v": 0.946094
+                      },
+                      {
+                        "o": "max",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "x"
+                          },
+                          {
+                            "o": "const",
+                            "v": -2.183
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "o": "const",
+                    "v": 2.045418
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": 0.50123
+      }
+    ]
+  },
+  "fast": {
+    "formula": "((0.543518 * (x / max(1.559472, (0.337459 + |x|)))) + 0.5)",
+    "metric": 0.000140774362370438,
+    "level": 2,
+    "formulaCost": 9,
+    "seed": 990303,
+    "vsIterative": {
+      "label": "Monte-Carlo · 1000 tirages",
+      "speedup": 5111.1
+    }
+  },
+  "fastTree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": 0.543518
+          },
+          {
+            "o": "pdiv",
+            "c": [
+              {
+                "o": "var",
+                "n": "x"
+              },
+              {
+                "o": "max",
+                "c": [
+                  {
+                    "o": "const",
+                    "v": 1.559472
+                  },
+                  {
+                    "o": "add",
+                    "c": [
+                      {
+                        "o": "const",
+                        "v": 0.337459
+                      },
+                      {
+                        "o": "abs",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "x"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": 0.5
+      }
+    ]
+  }
+}

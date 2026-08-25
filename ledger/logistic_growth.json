@@ -1,0 +1,130 @@
+{
+  "taskId": "logistic_growth",
+  "title": "Croissance logistique",
+  "direction": "min",
+  "metric": 0.000011045057513989082,
+  "level": 2,
+  "formula": "((-0.416375 * (sin(sin((8.28632 - t))) - (t * 0.170954))) + 0.358312)",
+  "seed": 990703,
+  "iteration": 400,
+  "speed": {
+    "formulaCost": 45,
+    "exactCost": 28,
+    "speedup": 0.6222222222222222
+  },
+  "tree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": -0.416375
+          },
+          {
+            "o": "sub",
+            "c": [
+              {
+                "o": "sin",
+                "c": [
+                  {
+                    "o": "sin",
+                    "c": [
+                      {
+                        "o": "sub",
+                        "c": [
+                          {
+                            "o": "const",
+                            "v": 8.28632
+                          },
+                          {
+                            "o": "var",
+                            "n": "t"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "o": "mul",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "t"
+                  },
+                  {
+                    "o": "const",
+                    "v": 0.170954
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": 0.358312
+      }
+    ]
+  },
+  "fast": {
+    "formula": "((min(t, 2.609741))² + (0.86783 * max(1.214626, t)))",
+    "metric": 0.0004105827823591433,
+    "level": 2,
+    "formulaCost": 5,
+    "speed": {
+      "formulaCost": 5,
+      "exactCost": 28,
+      "speedup": 5.6
+    }
+  },
+  "fastTree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "sq",
+        "c": [
+          {
+            "o": "min",
+            "c": [
+              {
+                "o": "var",
+                "n": "t"
+              },
+              {
+                "o": "const",
+                "v": 2.609741
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": 0.86783
+          },
+          {
+            "o": "max",
+            "c": [
+              {
+                "o": "const",
+                "v": 1.214626
+              },
+              {
+                "o": "var",
+                "n": "t"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

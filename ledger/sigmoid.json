@@ -1,0 +1,94 @@
+{
+  "taskId": "sigmoid",
+  "title": "Sigmoid (routage MoE · portes d'attention)",
+  "direction": "min",
+  "metric": 4.790511494175498e-33,
+  "level": 5,
+  "formula": "((-(1 / (1 + exp(x)))) + 1)",
+  "seed": 987654,
+  "iteration": 270,
+  "speed": {
+    "formulaCost": 27,
+    "exactCost": 34,
+    "speedup": 1.2592592592592593
+  },
+  "fast": {
+    "formula": "(x / (1 + |x|))",
+    "metric": 0.0007152203847216084,
+    "level": 2,
+    "formulaCost": 6,
+    "speed": {
+      "formulaCost": 6,
+      "exactCost": 34,
+      "speedup": 5.666666666666667
+    }
+  },
+  "fastTree": {
+    "o": "pdiv",
+    "c": [
+      {
+        "o": "var",
+        "n": "x"
+      },
+      {
+        "o": "add",
+        "c": [
+          {
+            "o": "const",
+            "v": 1
+          },
+          {
+            "o": "abs",
+            "c": [
+              {
+                "o": "var",
+                "n": "x"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "tree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "neg",
+        "c": [
+          {
+            "o": "pdiv",
+            "c": [
+              {
+                "o": "const",
+                "v": 1
+              },
+              {
+                "o": "add",
+                "c": [
+                  {
+                    "o": "const",
+                    "v": 1
+                  },
+                  {
+                    "o": "exp",
+                    "c": [
+                      {
+                        "o": "var",
+                        "n": "x"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": 1
+      }
+    ]
+  }
+}

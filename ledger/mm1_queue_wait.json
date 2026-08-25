@@ -1,0 +1,84 @@
+{
+  "taskId": "mm1_queue_wait",
+  "title": "Attente file M/M/1 (SRE · systèmes)",
+  "direction": "min",
+  "metric": 6.062690637388583e-33,
+  "level": 2,
+  "formula": "(-((l / m) / (l - m)))",
+  "seed": 1000080,
+  "iteration": 83,
+  "speed": {
+    "formulaCost": 10,
+    "exactCost": 6,
+    "speedup": 0.6
+  },
+  "tree": {
+    "o": "neg",
+    "c": [
+      {
+        "o": "pdiv",
+        "c": [
+          {
+            "o": "pdiv",
+            "c": [
+              {
+                "o": "var",
+                "n": "l"
+              },
+              {
+                "o": "var",
+                "n": "m"
+              }
+            ]
+          },
+          {
+            "o": "sub",
+            "c": [
+              {
+                "o": "var",
+                "n": "l"
+              },
+              {
+                "o": "var",
+                "n": "m"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "fast": {
+    "formula": "(-1.22881 / (l - m))",
+    "metric": 0.021826793682645364,
+    "level": 2,
+    "formulaCost": 5,
+    "speed": {
+      "formulaCost": 5,
+      "exactCost": 6,
+      "speedup": 1.2
+    }
+  },
+  "fastTree": {
+    "o": "pdiv",
+    "c": [
+      {
+        "o": "const",
+        "v": -1.22881
+      },
+      {
+        "o": "sub",
+        "c": [
+          {
+            "o": "var",
+            "n": "l"
+          },
+          {
+            "o": "var",
+            "n": "m"
+          }
+        ]
+      }
+    ]
+  }
+}

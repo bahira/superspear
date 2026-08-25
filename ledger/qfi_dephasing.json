@@ -1,0 +1,159 @@
+{
+  "taskId": "qfi_dephasing",
+  "title": "QFI GHZ déphasage collectif (métrologie quantique)",
+  "direction": "min",
+  "metric": 1.6734673238482507e-31,
+  "level": 2,
+  "formula": "((n)² * ((t)² * exp((-((n)² * (g * t))))))",
+  "seed": 930701,
+  "iteration": 1200,
+  "speed": {
+    "formulaCost": 28,
+    "exactCost": 22,
+    "speedup": 0.7857142857142857,
+    "vsIterative": {
+      "label": "BFGS optimisation",
+      "speedup": 28.6
+    }
+  },
+  "tree": {
+    "o": "mul",
+    "c": [
+      {
+        "o": "sq",
+        "c": [
+          {
+            "o": "var",
+            "n": "n"
+          }
+        ]
+      },
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "sq",
+            "c": [
+              {
+                "o": "var",
+                "n": "t"
+              }
+            ]
+          },
+          {
+            "o": "exp",
+            "c": [
+              {
+                "o": "neg",
+                "c": [
+                  {
+                    "o": "mul",
+                    "c": [
+                      {
+                        "o": "sq",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "n"
+                          }
+                        ]
+                      },
+                      {
+                        "o": "mul",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "g"
+                          },
+                          {
+                            "o": "var",
+                            "n": "t"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "fast": {
+    "formula": "((n)² * ((t)² * exp((-((n)² * (g * t))))))",
+    "metric": 1.6734673238482507e-31,
+    "level": 2,
+    "formulaCost": 28,
+    "vsIterative": {
+      "label": "BFGS optimisation",
+      "speedup": 28.6
+    }
+  },
+  "fastTree": {
+    "o": "mul",
+    "c": [
+      {
+        "o": "sq",
+        "c": [
+          {
+            "o": "var",
+            "n": "n"
+          }
+        ]
+      },
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "sq",
+            "c": [
+              {
+                "o": "var",
+                "n": "t"
+              }
+            ]
+          },
+          {
+            "o": "exp",
+            "c": [
+              {
+                "o": "neg",
+                "c": [
+                  {
+                    "o": "mul",
+                    "c": [
+                      {
+                        "o": "sq",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "n"
+                          }
+                        ]
+                      },
+                      {
+                        "o": "mul",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "g"
+                          },
+                          {
+                            "o": "var",
+                            "n": "t"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

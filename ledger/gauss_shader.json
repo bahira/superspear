@@ -1,0 +1,39 @@
+{
+  "taskId": "gauss_shader",
+  "title": "Gaussienne shader-ready (blur variable DoF/bloom)",
+  "direction": "min",
+  "metric": 8.1772509994516e-34,
+  "level": 5,
+  "formula": "sqrt(|exp((-(x)²))|)",
+  "seed": 993001,
+  "iteration": 400,
+  "speed": {
+    "formulaCost": 24,
+    "exactCost": 22,
+    "speedup": 0.9166666666666666
+  },
+  "tree": {
+    "o": "sqrt",
+    "c": [
+      {
+        "o": "exp",
+        "c": [
+          {
+            "o": "neg",
+            "c": [
+              {
+                "o": "sq",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "x"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

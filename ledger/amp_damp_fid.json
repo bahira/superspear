@@ -1,0 +1,225 @@
+{
+  "taskId": "amp_damp_fid",
+  "title": "Fidélité canal damping (correction d'erreur)",
+  "direction": "min",
+  "metric": 0,
+  "level": 5,
+  "formula": "(((cos(th))² * exp((-(g * t)))) + ((sin(th))² * (2 - exp((-(g * t))))))",
+  "seed": 930701,
+  "iteration": 1200,
+  "speed": {
+    "formulaCost": 90,
+    "exactCost": 24,
+    "speedup": 0.26666666666666666,
+    "vsIterative": {
+      "label": "Kraus ops 4×4 matmul",
+      "speedup": 0.5
+    }
+  },
+  "tree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "sq",
+            "c": [
+              {
+                "o": "cos",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "th"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "o": "exp",
+            "c": [
+              {
+                "o": "neg",
+                "c": [
+                  {
+                    "o": "mul",
+                    "c": [
+                      {
+                        "o": "var",
+                        "n": "g"
+                      },
+                      {
+                        "o": "var",
+                        "n": "t"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "sq",
+            "c": [
+              {
+                "o": "sin",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "th"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "o": "sub",
+            "c": [
+              {
+                "o": "const",
+                "v": 2
+              },
+              {
+                "o": "exp",
+                "c": [
+                  {
+                    "o": "neg",
+                    "c": [
+                      {
+                        "o": "mul",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "g"
+                          },
+                          {
+                            "o": "var",
+                            "n": "t"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "fast": {
+    "formula": "(((cos(th))² * exp((-(g * t)))) + ((sin(th))² * (2 - exp((-(g * t))))))",
+    "metric": 0,
+    "level": 5,
+    "formulaCost": 90,
+    "vsIterative": {
+      "label": "Kraus ops 4×4 matmul",
+      "speedup": 0.5
+    }
+  },
+  "fastTree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "sq",
+            "c": [
+              {
+                "o": "cos",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "th"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "o": "exp",
+            "c": [
+              {
+                "o": "neg",
+                "c": [
+                  {
+                    "o": "mul",
+                    "c": [
+                      {
+                        "o": "var",
+                        "n": "g"
+                      },
+                      {
+                        "o": "var",
+                        "n": "t"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "sq",
+            "c": [
+              {
+                "o": "sin",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "th"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "o": "sub",
+            "c": [
+              {
+                "o": "const",
+                "v": 2
+              },
+              {
+                "o": "exp",
+                "c": [
+                  {
+                    "o": "neg",
+                    "c": [
+                      {
+                        "o": "mul",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "g"
+                          },
+                          {
+                            "o": "var",
+                            "n": "t"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

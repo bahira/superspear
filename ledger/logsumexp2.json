@@ -1,0 +1,106 @@
+{
+  "taskId": "logsumexp2",
+  "title": "LogSumExp 2-logits (max différentiable)",
+  "direction": "min",
+  "metric": 0.01044425969530025,
+  "level": 2,
+  "formula": "((0.988445 * max(min(b, a), (max(b, max(a, b)) + -0.863454))) + 0.946364)",
+  "seed": 997001,
+  "iteration": 800,
+  "tree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": 0.9884453418513615
+          },
+          {
+            "o": "max",
+            "c": [
+              {
+                "o": "min",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "b"
+                  },
+                  {
+                    "o": "var",
+                    "n": "a"
+                  }
+                ]
+              },
+              {
+                "o": "add",
+                "c": [
+                  {
+                    "o": "max",
+                    "c": [
+                      {
+                        "o": "var",
+                        "n": "b"
+                      },
+                      {
+                        "o": "max",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "a"
+                          },
+                          {
+                            "o": "var",
+                            "n": "b"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "o": "const",
+                    "v": -0.863454
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": 0.9463635441197152
+      }
+    ]
+  },
+  "fast": {
+    "formula": "max(a, b)",
+    "metric": 0.030249371156328322,
+    "level": 2,
+    "formulaCost": 1,
+    "speed": {
+      "formulaCost": 1,
+      "exactCost": 60,
+      "speedup": 60
+    }
+  },
+  "fastTree": {
+    "o": "max",
+    "c": [
+      {
+        "o": "var",
+        "n": "a"
+      },
+      {
+        "o": "var",
+        "n": "b"
+      }
+    ]
+  },
+  "speed": {
+    "formulaCost": 7,
+    "exactCost": 60,
+    "speedup": 8.571428571428571
+  }
+}

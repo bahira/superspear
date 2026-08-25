@@ -1,0 +1,84 @@
+{
+  "taskId": "logit_ml",
+  "title": "Logit (probas ↔ logits, têtes de classification)",
+  "direction": "min",
+  "metric": 0,
+  "level": 5,
+  "formula": "log(max((x / (1 - x)), 1e-30))",
+  "seed": 930701,
+  "iteration": 1200,
+  "speed": {
+    "formulaCost": 25,
+    "exactCost": 27,
+    "speedup": 1.08
+  },
+  "tree": {
+    "o": "log",
+    "c": [
+      {
+        "o": "pdiv",
+        "c": [
+          {
+            "o": "var",
+            "n": "x"
+          },
+          {
+            "o": "sub",
+            "c": [
+              {
+                "o": "const",
+                "v": 1
+              },
+              {
+                "o": "var",
+                "n": "x"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "fast": {
+    "formula": "log(max((x / ((x / x) - x)), 1e-30))",
+    "metric": 0,
+    "level": 5,
+    "formulaCost": 29
+  },
+  "fastTree": {
+    "o": "log",
+    "c": [
+      {
+        "o": "pdiv",
+        "c": [
+          {
+            "o": "var",
+            "n": "x"
+          },
+          {
+            "o": "sub",
+            "c": [
+              {
+                "o": "pdiv",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "x"
+                  },
+                  {
+                    "o": "var",
+                    "n": "x"
+                  }
+                ]
+              },
+              {
+                "o": "var",
+                "n": "x"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

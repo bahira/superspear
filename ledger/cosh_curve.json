@@ -1,0 +1,128 @@
+{
+  "taskId": "cosh_curve",
+  "title": "Cosh (caténaires · ring-mod audio)",
+  "direction": "min",
+  "metric": 2.6331998691285042e-8,
+  "level": 5,
+  "formula": "((0.001256 * ((sqrt(|(x)²|) * cos((x)²)) + (((x)² + 11.494621))³)) + -0.907039)",
+  "seed": 996002,
+  "iteration": 800,
+  "speed": {
+    "formulaCost": 32,
+    "exactCost": 44,
+    "speedup": 1.375
+  },
+  "tree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": 0.0012556691840234057
+          },
+          {
+            "o": "add",
+            "c": [
+              {
+                "o": "mul",
+                "c": [
+                  {
+                    "o": "sqrt",
+                    "c": [
+                      {
+                        "o": "sq",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "x"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "o": "cos",
+                    "c": [
+                      {
+                        "o": "sq",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "x"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "o": "cube",
+                "c": [
+                  {
+                    "o": "add",
+                    "c": [
+                      {
+                        "o": "sq",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "x"
+                          }
+                        ]
+                      },
+                      {
+                        "o": "const",
+                        "v": 11.494621
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": -0.9070393177602898
+      }
+    ]
+  },
+  "fast": {
+    "formula": "(((x)² + 5.05555))²",
+    "metric": 0.000005967909320814225,
+    "level": 4,
+    "formulaCost": 3,
+    "speed": {
+      "formulaCost": 3,
+      "exactCost": 44,
+      "speedup": 14.666666666666666
+    }
+  },
+  "fastTree": {
+    "o": "sq",
+    "c": [
+      {
+        "o": "add",
+        "c": [
+          {
+            "o": "sq",
+            "c": [
+              {
+                "o": "var",
+                "n": "x"
+              }
+            ]
+          },
+          {
+            "o": "const",
+            "v": 5.05555
+          }
+        ]
+      }
+    ]
+  }
+}

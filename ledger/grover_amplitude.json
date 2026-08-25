@@ -1,0 +1,179 @@
+{
+  "taskId": "grover_amplitude",
+  "title": "Amplification de Grover (recherche quantique)",
+  "direction": "min",
+  "metric": 8.312261599931228e-32,
+  "level": 2,
+  "formula": "(sin((asin(sqrt(|(m / n)|)) + (2 * (k * asin(sqrt(|(m / n)|)))))))²",
+  "seed": 920605,
+  "iteration": 1600,
+  "speed": {
+    "formulaCost": 76,
+    "exactCost": 48,
+    "speedup": 0.631578947368421
+  },
+  "tree": {
+    "o": "sq",
+    "c": [
+      {
+        "o": "sin",
+        "c": [
+          {
+            "o": "add",
+            "c": [
+              {
+                "o": "asin",
+                "c": [
+                  {
+                    "o": "sqrt",
+                    "c": [
+                      {
+                        "o": "pdiv",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "m"
+                          },
+                          {
+                            "o": "var",
+                            "n": "n"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "o": "mul",
+                "c": [
+                  {
+                    "o": "const",
+                    "v": 2
+                  },
+                  {
+                    "o": "mul",
+                    "c": [
+                      {
+                        "o": "var",
+                        "n": "k"
+                      },
+                      {
+                        "o": "asin",
+                        "c": [
+                          {
+                            "o": "sqrt",
+                            "c": [
+                              {
+                                "o": "pdiv",
+                                "c": [
+                                  {
+                                    "o": "var",
+                                    "n": "m"
+                                  },
+                                  {
+                                    "o": "var",
+                                    "n": "n"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "fast": {
+    "formula": "(sin((asin(sqrt(|(m / n)|)) + (2 * (k * asin(sqrt(|(m / n)|)))))))²",
+    "metric": 8.312261599931228e-32,
+    "level": 2,
+    "formulaCost": 76
+  },
+  "fastTree": {
+    "o": "sq",
+    "c": [
+      {
+        "o": "sin",
+        "c": [
+          {
+            "o": "add",
+            "c": [
+              {
+                "o": "asin",
+                "c": [
+                  {
+                    "o": "sqrt",
+                    "c": [
+                      {
+                        "o": "pdiv",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "m"
+                          },
+                          {
+                            "o": "var",
+                            "n": "n"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "o": "mul",
+                "c": [
+                  {
+                    "o": "const",
+                    "v": 2
+                  },
+                  {
+                    "o": "mul",
+                    "c": [
+                      {
+                        "o": "var",
+                        "n": "k"
+                      },
+                      {
+                        "o": "asin",
+                        "c": [
+                          {
+                            "o": "sqrt",
+                            "c": [
+                              {
+                                "o": "pdiv",
+                                "c": [
+                                  {
+                                    "o": "var",
+                                    "n": "m"
+                                  },
+                                  {
+                                    "o": "var",
+                                    "n": "n"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

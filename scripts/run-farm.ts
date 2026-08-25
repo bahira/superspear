@@ -1,3 +1,4 @@
+import { loadLedger, saveLedger } from "../src/lib/spear/ledger";
 // Parallel farm: spawns N node workers, each running a disjoint slice of the
 // benchmark tasks concurrently (one process per slice). Merges all partials
 // into the hall-of-fame ledger.
@@ -62,7 +63,7 @@ async function farmInner(seed: number, budget: number, workers: number, only: Se
   ids.forEach((id, i) => slices[i % workers].push(id));
 
   const ledgerPath = join(import.meta.dirname ?? ".", "..", "spear-hall-of-fame.json");
-  const ledger: Ledger = existsSync(ledgerPath) ? JSON.parse(readFileSync(ledgerPath, "utf8")) : {};
+  const ledger = loadLedger() as Ledger;
 
   const dir = mkdtempSync(join(tmpdir(), "spear-farm-"));
   const tsxCli = join(process.cwd(), "node_modules", "tsx", "dist", "cli.mjs");
@@ -115,7 +116,7 @@ async function farmInner(seed: number, budget: number, workers: number, only: Se
     }
   }
   rmSync(dir, { recursive: true, force: true });
-  writeFileSync(ledgerPath, JSON.stringify(ledger, null, 2));
+  saveLedger(ledger);
 
   console.log(`terminé en ${wall.toFixed(1)} s — ${records} nouveaux records sur ${totalBt} résultats`);
   for (const f of Object.values(ledger).sort((a, b) => a.taskId.localeCompare(b.taskId))) {

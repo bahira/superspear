@@ -1,3 +1,4 @@
+import { loadLedger, saveLedger } from "../src/lib/spear/ledger";
 // SPEAR Hall of Fame — agrège tous les runs et sort le meilleur par tâche.
 // Mode 1 (rebuild): npx tsx scripts/hall-of-fame.ts            → parse les logs run*.txt
 // Mode 2 (live):    npx tsx scripts/hall-of-fame.ts <seed> <budget> [deadlineMs]
@@ -103,7 +104,7 @@ function mergeInto(ledger: Ledger, finds: Map<string, Finding>): number {
 }
 
 async function main() {
-  const ledger: Ledger = existsSync(OUT) ? JSON.parse(readFileSync(OUT, "utf8")) : {};
+  const ledger = loadLedger() as Ledger;
   const live = process.argv[2] && process.argv[3];
 
   if (live) {
@@ -165,7 +166,7 @@ async function main() {
     console.log(`${runs} logs historiques fusionnés\n`);
   }
 
-  writeFileSync(OUT, JSON.stringify(ledger, null, 2));
+  saveLedger(ledger);
 
   // ---- unified post-chain: fast slots resurrected, solver multipliers
   // priced, site dataset regenerated. One command = publishable state.

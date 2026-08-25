@@ -1,0 +1,105 @@
+{
+  "taskId": "probit_quantile",
+  "title": "Probit / quantile normal (finance · risque · z-scores)",
+  "direction": "min",
+  "metric": 0.00001901761235141796,
+  "level": 3,
+  "formula": "((-4.274877 * (sqrt(|sqrt(|log(max(x, 1e-30))|)|) + (0.076417 * (x)²))) + 3.983949)",
+  "seed": 1000010,
+  "iteration": 1200,
+  "speed": {
+    "formulaCost": 29,
+    "exactCost": 28,
+    "speedup": 0.9655172413793104
+  },
+  "tree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": -4.274877162925097
+          },
+          {
+            "o": "add",
+            "c": [
+              {
+                "o": "sqrt",
+                "c": [
+                  {
+                    "o": "sqrt",
+                    "c": [
+                      {
+                        "o": "log",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "x"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "o": "mul",
+                "c": [
+                  {
+                    "o": "const",
+                    "v": 0.076417
+                  },
+                  {
+                    "o": "sq",
+                    "c": [
+                      {
+                        "o": "var",
+                        "n": "x"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": 3.9839485700095683
+      }
+    ]
+  },
+  "fast": {
+    "formula": "sqrt(|sqrt(|log(max(x, 1e-30))|)|)",
+    "metric": 0.000608820558356222,
+    "level": 2,
+    "formulaCost": 24,
+    "speed": {
+      "formulaCost": 24,
+      "exactCost": 28,
+      "speedup": 1.1666666666666667
+    }
+  },
+  "fastTree": {
+    "o": "sqrt",
+    "c": [
+      {
+        "o": "sqrt",
+        "c": [
+          {
+            "o": "log",
+            "c": [
+              {
+                "o": "var",
+                "n": "x"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

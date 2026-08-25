@@ -1,0 +1,46 @@
+{
+  "taskId": "rsi_momentum",
+  "title": "RSI depuis moyennes lissées (TradingView)",
+  "direction": "min",
+  "metric": 1.836172557108052e-29,
+  "level": 2,
+  "formula": "(100 * (g / (g + l)))",
+  "seed": 1000050,
+  "iteration": 1200,
+  "speed": {
+    "formulaCost": 6,
+    "exactCost": 4,
+    "speedup": 0.6666666666666666
+  },
+  "tree": {
+    "o": "mul",
+    "c": [
+      {
+        "o": "const",
+        "v": 100
+      },
+      {
+        "o": "pdiv",
+        "c": [
+          {
+            "o": "var",
+            "n": "g"
+          },
+          {
+            "o": "add",
+            "c": [
+              {
+                "o": "var",
+                "n": "g"
+              },
+              {
+                "o": "var",
+                "n": "l"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

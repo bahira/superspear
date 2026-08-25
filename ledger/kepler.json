@@ -1,0 +1,76 @@
+{
+  "taskId": "kepler",
+  "title": "3ᵉ loi de Kepler",
+  "direction": "min",
+  "metric": 0.047018,
+  "level": 5,
+  "formula": "((1.000934 * (a * sqrt(|a|))) + -0.023116)",
+  "seed": 555666,
+  "iteration": 6,
+  "fast": {
+    "formula": "sqrt(|(a)³|)",
+    "metric": 0.04833668157942985,
+    "level": 5,
+    "formulaCost": 4,
+    "speed": {
+      "formulaCost": 4,
+      "exactCost": 3,
+      "speedup": 0.75
+    }
+  },
+  "fastTree": {
+    "o": "sqrt",
+    "c": [
+      {
+        "o": "cube",
+        "c": [
+          {
+            "o": "var",
+            "n": "a"
+          }
+        ]
+      }
+    ]
+  },
+  "tree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": 1.000934
+          },
+          {
+            "o": "mul",
+            "c": [
+              {
+                "o": "var",
+                "n": "a"
+              },
+              {
+                "o": "sqrt",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "a"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": -0.023116
+      }
+    ]
+  },
+  "speed": {
+    "formulaCost": 5,
+    "exactCost": 3,
+    "speedup": 0.6
+  }
+}

@@ -1,3 +1,4 @@
+import { loadLedger, saveLedger } from "../src/lib/spear/ledger";
 // Repair mojibake (UTF-8 bytes previously decoded as Windows-1252) in ledger
 // text fields. Some historical writes corrupted titles/formulas ("â€”", "Ã‚Â²").
 // Decoder: map every char back to its CP1252 byte, re-interpret as UTF-8,
@@ -62,7 +63,7 @@ async function main() {
   const dry = process.argv.includes("--dry");
   const path = join(import.meta.dirname ?? ".", "..", "spear-hall-of-fame.json");
   type Finding = { taskId: string; title?: string; formula?: string; fast?: { formula?: string } | null };
-  const ledger = JSON.parse(readFileSync(path, "utf8")) as Record<string, Finding>;
+  const ledger = loadLedger() as Record<string, Finding>;
 
   let fixed = 0;
   const samples: string[] = [];
@@ -130,7 +131,7 @@ async function main() {
   console.log(residue.length ? `résidus suspects (${residue.length}):` : "aucun résidu suspect.");
   for (const r of residue.slice(0, 10)) console.log("  " + r);
   if (!dry) {
-    writeFileSync(path, JSON.stringify(ledger, null, 2));
+    saveLedger(ledger);
     console.log("ledger écrit.");
   }
 }

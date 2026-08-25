@@ -1,0 +1,106 @@
+{
+  "taskId": "ema_smooth",
+  "title": "Facteur EMA indépendant du framerate",
+  "direction": "min",
+  "metric": 1.6354908540365558e-11,
+  "level": 5,
+  "formula": "((1.192774 * ((2 * (x / (x + 0.745653))) - ((x)² * max(x, 0.692832)))) + 0.000009)",
+  "seed": 995002,
+  "iteration": 400,
+  "speed": {
+    "formulaCost": 12,
+    "exactCost": 23,
+    "speedup": 1.9166666666666667
+  },
+  "tree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": 1.1927736194522371
+          },
+          {
+            "o": "sub",
+            "c": [
+              {
+                "o": "mul",
+                "c": [
+                  {
+                    "o": "const",
+                    "v": 2
+                  },
+                  {
+                    "o": "pdiv",
+                    "c": [
+                      {
+                        "o": "var",
+                        "n": "x"
+                      },
+                      {
+                        "o": "add",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "x"
+                          },
+                          {
+                            "o": "const",
+                            "v": 0.745653
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "o": "mul",
+                "c": [
+                  {
+                    "o": "sq",
+                    "c": [
+                      {
+                        "o": "var",
+                        "n": "x"
+                      }
+                    ]
+                  },
+                  {
+                    "o": "max",
+                    "c": [
+                      {
+                        "o": "var",
+                        "n": "x"
+                      },
+                      {
+                        "o": "const",
+                        "v": 0.692832
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": 0.000008971056841264869
+      }
+    ]
+  },
+  "fast": {
+    "formula": "x",
+    "metric": 0.0000107285951384828,
+    "level": 3,
+    "formulaCost": 0
+  },
+  "fastTree": {
+    "o": "var",
+    "n": "x"
+  }
+}

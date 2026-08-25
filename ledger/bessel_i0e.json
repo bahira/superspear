@@ -1,0 +1,60 @@
+{
+  "taskId": "bessel_i0e",
+  "title": "Bessel I₀e modifiée (fenêtres KBD · diffusion)",
+  "direction": "min",
+  "metric": 0.00003056208763233721,
+  "level": 2,
+  "formula": "((-0.956621 * (x / (0.802245 + |x|))) + 1.00551)",
+  "seed": 20260825,
+  "iteration": 5,
+  "tree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": -0.956621415374655
+          },
+          {
+            "o": "pdiv",
+            "c": [
+              {
+                "o": "var",
+                "n": "x"
+              },
+              {
+                "o": "add",
+                "c": [
+                  {
+                    "o": "const",
+                    "v": 0.802245
+                  },
+                  {
+                    "o": "abs",
+                    "c": [
+                      {
+                        "o": "var",
+                        "n": "x"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": 1.0055104538128088
+      }
+    ]
+  },
+  "speed": {
+    "formulaCost": 8,
+    "exactCost": 24,
+    "speedup": 3
+  }
+}

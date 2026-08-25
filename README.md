@@ -397,6 +397,8 @@ Same seed ⇒ same data, same formulas, same metrics. The ledger tracks **which 
 ## Project layout
 
 ```
+ledger/           # source of truth — one JSON per task (granular edits/diffs)
+spear-hall-of-fame.json   # GENERATED bundle rebuilt on every write — read API
 src/lib/spear/
   engine.ts       # AST, seeded RNG, simplify, NSGA-II, GP operators, codegen (torch/C/MISRA-C)
   benchmarks.ts   # benchmark tasks + exact-law ASTs for the cost model

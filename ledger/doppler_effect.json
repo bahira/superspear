@@ -1,0 +1,106 @@
+{
+  "taskId": "doppler_effect",
+  "title": "Effet Doppler (audio · radar)",
+  "direction": "min",
+  "metric": 9.281797631143672e-10,
+  "level": 2,
+  "formula": "((-700.007578 * ((vs + vo) / (0.049677 - (340.052626 - vs)))) + 699.999885)",
+  "seed": 1000090,
+  "iteration": 1600,
+  "speed": {
+    "formulaCost": 9,
+    "exactCost": 5,
+    "speedup": 0.5555555555555556
+  },
+  "tree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": -700.007578094087
+          },
+          {
+            "o": "pdiv",
+            "c": [
+              {
+                "o": "add",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "vs"
+                  },
+                  {
+                    "o": "var",
+                    "n": "vo"
+                  }
+                ]
+              },
+              {
+                "o": "sub",
+                "c": [
+                  {
+                    "o": "const",
+                    "v": 0.049677
+                  },
+                  {
+                    "o": "sub",
+                    "c": [
+                      {
+                        "o": "const",
+                        "v": 340.052626
+                      },
+                      {
+                        "o": "var",
+                        "n": "vs"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": 699.9998851514688
+      }
+    ]
+  },
+  "fast": {
+    "formula": "(317.901286 + (vs + vo))",
+    "metric": 11.408687912051366,
+    "level": 2,
+    "formulaCost": 2,
+    "speed": {
+      "formulaCost": 2,
+      "exactCost": 5,
+      "speedup": 2.5
+    }
+  },
+  "fastTree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "const",
+        "v": 317.901286
+      },
+      {
+        "o": "add",
+        "c": [
+          {
+            "o": "var",
+            "n": "vs"
+          },
+          {
+            "o": "var",
+            "n": "vo"
+          }
+        ]
+      }
+    ]
+  }
+}

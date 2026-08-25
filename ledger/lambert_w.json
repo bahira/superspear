@@ -1,0 +1,58 @@
+{
+  "taskId": "lambert_w",
+  "title": "Fonction implicite Lambert W₀(x)",
+  "direction": "min",
+  "metric": 0,
+  "level": 5,
+  "formula": "(x * relu(exp(x)))",
+  "seed": 12345,
+  "iteration": 28,
+  "speed": {
+    "formulaCost": 22,
+    "exactCost": 21,
+    "speedup": 0.9545454545454546
+  },
+  "tree": {
+    "o": "mul",
+    "c": [
+      {
+        "o": "var",
+        "n": "x"
+      },
+      {
+        "o": "relu",
+        "c": [
+          {
+            "o": "exp",
+            "c": [
+              {
+                "o": "var",
+                "n": "x"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "fast": {
+    "formula": "(x)²",
+    "metric": 0.011194370036126207,
+    "level": 2,
+    "formulaCost": 1,
+    "speed": {
+      "formulaCost": 1,
+      "exactCost": 21,
+      "speedup": 21
+    }
+  },
+  "fastTree": {
+    "o": "sq",
+    "c": [
+      {
+        "o": "var",
+        "n": "x"
+      }
+    ]
+  }
+}

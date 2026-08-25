@@ -1,0 +1,108 @@
+{
+  "taskId": "erf_prob",
+  "title": "Erf probabiliste (noyaux de probabilité · GELU-exact)",
+  "direction": "min",
+  "metric": 0.00004650870031371604,
+  "level": 3,
+  "formula": "(1.106774 * ((x + (0.034298 * (x)³)) / (0.995 + (0.378089 * (x)²))))",
+  "seed": 20260825,
+  "iteration": 5,
+  "tree": {
+    "o": "mul",
+    "c": [
+      {
+        "o": "const",
+        "v": 1.106774
+      },
+      {
+        "o": "pdiv",
+        "c": [
+          {
+            "o": "add",
+            "c": [
+              {
+                "o": "var",
+                "n": "x"
+              },
+              {
+                "o": "mul",
+                "c": [
+                  {
+                    "o": "const",
+                    "v": 0.034298
+                  },
+                  {
+                    "o": "cube",
+                    "c": [
+                      {
+                        "o": "var",
+                        "n": "x"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "o": "add",
+            "c": [
+              {
+                "o": "const",
+                "v": 0.995
+              },
+              {
+                "o": "mul",
+                "c": [
+                  {
+                    "o": "const",
+                    "v": 0.378089
+                  },
+                  {
+                    "o": "sq",
+                    "c": [
+                      {
+                        "o": "var",
+                        "n": "x"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "speed": {
+    "formulaCost": 12,
+    "exactCost": 26,
+    "speedup": 2.1666666666666665
+  },
+  "fast": {
+    "formula": "sin(sin(atan(x)))",
+    "metric": 0.0004494300213900222,
+    "level": 2,
+    "formulaCost": 60
+  },
+  "fastTree": {
+    "o": "sin",
+    "c": [
+      {
+        "o": "sin",
+        "c": [
+          {
+            "o": "atan",
+            "c": [
+              {
+                "o": "var",
+                "n": "x"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

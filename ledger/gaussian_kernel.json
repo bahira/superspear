@@ -1,0 +1,59 @@
+{
+  "taskId": "gaussian_kernel",
+  "title": "Blur gaussien · noyau exp(−x²/2σ²)",
+  "direction": "min",
+  "metric": 5.356342194550095e-34,
+  "level": 2,
+  "formula": "sqrt(|exp((-(x)²))|)",
+  "seed": 920101,
+  "iteration": 400,
+  "speed": {
+    "formulaCost": 24,
+    "exactCost": 23,
+    "speedup": 0.9583333333333334
+  },
+  "tree": {
+    "o": "sqrt",
+    "c": [
+      {
+        "o": "exp",
+        "c": [
+          {
+            "o": "neg",
+            "c": [
+              {
+                "o": "sq",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "x"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "fast": {
+    "formula": "|x|",
+    "metric": 0.005657377567763322,
+    "level": 2,
+    "formulaCost": 1,
+    "speed": {
+      "formulaCost": 1,
+      "exactCost": 23,
+      "speedup": 23
+    }
+  },
+  "fastTree": {
+    "o": "abs",
+    "c": [
+      {
+        "o": "var",
+        "n": "x"
+      }
+    ]
+  }
+}

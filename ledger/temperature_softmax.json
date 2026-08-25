@@ -1,0 +1,103 @@
+{
+  "taskId": "temperature_softmax",
+  "title": "Softmax tempéré 2-logits (échantillonnage LLM)",
+  "direction": "min",
+  "metric": 7.439476402624881e-47,
+  "level": 2,
+  "formula": "(1 / (1 + exp((-(da / t)))))",
+  "seed": 1000120,
+  "iteration": 400,
+  "speed": {
+    "formulaCost": 30,
+    "exactCost": 26,
+    "speedup": 0.8666666666666667
+  },
+  "tree": {
+    "o": "pdiv",
+    "c": [
+      {
+        "o": "const",
+        "v": 1
+      },
+      {
+        "o": "add",
+        "c": [
+          {
+            "o": "const",
+            "v": 1
+          },
+          {
+            "o": "exp",
+            "c": [
+              {
+                "o": "neg",
+                "c": [
+                  {
+                    "o": "pdiv",
+                    "c": [
+                      {
+                        "o": "var",
+                        "n": "da"
+                      },
+                      {
+                        "o": "var",
+                        "n": "t"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "fast": {
+    "formula": "(1 / (1 + exp((-(da / t)))))",
+    "metric": 7.439476402624881e-47,
+    "level": 2,
+    "formulaCost": 30
+  },
+  "fastTree": {
+    "o": "pdiv",
+    "c": [
+      {
+        "o": "const",
+        "v": 1
+      },
+      {
+        "o": "add",
+        "c": [
+          {
+            "o": "const",
+            "v": 1
+          },
+          {
+            "o": "exp",
+            "c": [
+              {
+                "o": "neg",
+                "c": [
+                  {
+                    "o": "pdiv",
+                    "c": [
+                      {
+                        "o": "var",
+                        "n": "da"
+                      },
+                      {
+                        "o": "var",
+                        "n": "t"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

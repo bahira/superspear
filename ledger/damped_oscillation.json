@@ -1,0 +1,91 @@
+{
+  "taskId": "damped_oscillation",
+  "title": "Oscillation amortie e^(−t/τ)·cos(ωt)",
+  "direction": "min",
+  "metric": 0.00030630571172772763,
+  "level": 2,
+  "formula": "((0.00696 * ((t - 16.41765) * ((t - 8.280135) * cos((t * 2.996281))))) + -0.000501)",
+  "seed": 910001,
+  "iteration": 200,
+  "speed": {
+    "formulaCost": 27,
+    "exactCost": 44,
+    "speedup": 1.6296296296296295,
+    "vsIterative": {
+      "label": "RKF45 · 300 pas",
+      "speedup": 200
+    }
+  },
+  "tree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": 0.00696
+          },
+          {
+            "o": "mul",
+            "c": [
+              {
+                "o": "sub",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "t"
+                  },
+                  {
+                    "o": "const",
+                    "v": 16.41765
+                  }
+                ]
+              },
+              {
+                "o": "mul",
+                "c": [
+                  {
+                    "o": "sub",
+                    "c": [
+                      {
+                        "o": "var",
+                        "n": "t"
+                      },
+                      {
+                        "o": "const",
+                        "v": 8.280135
+                      }
+                    ]
+                  },
+                  {
+                    "o": "cos",
+                    "c": [
+                      {
+                        "o": "mul",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "t"
+                          },
+                          {
+                            "o": "const",
+                            "v": 2.996281
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": -0.000501
+      }
+    ]
+  }
+}

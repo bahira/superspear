@@ -1,0 +1,75 @@
+{
+  "taskId": "pendulum_hybrid",
+  "title": "Contrôle hybride pendule inversé",
+  "direction": "min",
+  "metric": 2.0391289425393437,
+  "level": 0,
+  "formula": "((-0.479114 * ((d * cos(th)) + cos((-relu(d))))) + 0.193589)",
+  "seed": 950303,
+  "iteration": 400,
+  "speed": {
+    "formulaCost": 46,
+    "exactCost": 173,
+    "speedup": 3.760869565217391
+  },
+  "tree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": -0.4791144877035046
+          },
+          {
+            "o": "add",
+            "c": [
+              {
+                "o": "mul",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "d"
+                  },
+                  {
+                    "o": "cos",
+                    "c": [
+                      {
+                        "o": "var",
+                        "n": "th"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "o": "cos",
+                "c": [
+                  {
+                    "o": "neg",
+                    "c": [
+                      {
+                        "o": "relu",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "d"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": 0.19358895313254176
+      }
+    ]
+  }
+}

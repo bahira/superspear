@@ -1,0 +1,136 @@
+{
+  "taskId": "kerr_spin",
+  "title": "Déflexion Kerr avec spin (Lense-Thirring)",
+  "direction": "min",
+  "metric": 7.518473348732604e-10,
+  "level": 2,
+  "formula": "((0.399181 * (((4.851947 / b) + (5.364206 / (-3.480154 + b))) + (0.368529 / (11.340686 + b)))) + -0.00039)",
+  "seed": 991203,
+  "iteration": 502,
+  "speed": {
+    "formulaCost": 18,
+    "exactCost": 21,
+    "speedup": 1.1666666666666667,
+    "vsIterative": {
+      "label": "RK4 géodésique · 200 pas",
+      "speedup": 133.3
+    }
+  },
+  "tree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": 0.3991806798322823
+          },
+          {
+            "o": "add",
+            "c": [
+              {
+                "o": "add",
+                "c": [
+                  {
+                    "o": "pdiv",
+                    "c": [
+                      {
+                        "o": "const",
+                        "v": 4.851947
+                      },
+                      {
+                        "o": "var",
+                        "n": "b"
+                      }
+                    ]
+                  },
+                  {
+                    "o": "pdiv",
+                    "c": [
+                      {
+                        "o": "const",
+                        "v": 5.364206
+                      },
+                      {
+                        "o": "add",
+                        "c": [
+                          {
+                            "o": "const",
+                            "v": -3.480154
+                          },
+                          {
+                            "o": "var",
+                            "n": "b"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "o": "pdiv",
+                "c": [
+                  {
+                    "o": "const",
+                    "v": 0.368529
+                  },
+                  {
+                    "o": "add",
+                    "c": [
+                      {
+                        "o": "const",
+                        "v": 11.340686
+                      },
+                      {
+                        "o": "var",
+                        "n": "b"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": -0.00039034216985437336
+      }
+    ]
+  },
+  "fast": {
+    "formula": "(s / b)",
+    "metric": 0.0001323874547581254,
+    "level": 2,
+    "formulaCost": 4,
+    "speed": {
+      "formulaCost": 4,
+      "exactCost": 21,
+      "speedup": 5.25,
+      "vsIterative": {
+        "label": "RK4 gÃ©odÃ©sique Â· 200 pas",
+        "speedup": 600
+      }
+    },
+    "vsIterative": {
+      "label": "RK4 géodésique · 200 pas",
+      "speedup": 600
+    }
+  },
+  "fastTree": {
+    "o": "pdiv",
+    "c": [
+      {
+        "o": "var",
+        "n": "s"
+      },
+      {
+        "o": "var",
+        "n": "b"
+      }
+    ]
+  }
+}

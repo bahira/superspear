@@ -1,0 +1,135 @@
+{
+  "taskId": "blackbody_b",
+  "title": "Corps noir — canal bleu (éclairage PBR)",
+  "direction": "min",
+  "metric": 0.00022595735189612456,
+  "level": 2,
+  "formula": "((-0.745669 * max((0.637798 - atan(x)), (cos(log(max(x, 1e-30))) * 1.108946))) + 0.304632)",
+  "seed": 1000021,
+  "iteration": 1600,
+  "speed": {
+    "formulaCost": 65,
+    "exactCost": 25,
+    "speedup": 0.38461538461538464
+  },
+  "tree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": -0.745669
+          },
+          {
+            "o": "max",
+            "c": [
+              {
+                "o": "sub",
+                "c": [
+                  {
+                    "o": "const",
+                    "v": 0.637798
+                  },
+                  {
+                    "o": "atan",
+                    "c": [
+                      {
+                        "o": "var",
+                        "n": "x"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "o": "mul",
+                "c": [
+                  {
+                    "o": "cos",
+                    "c": [
+                      {
+                        "o": "log",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "x"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "o": "const",
+                    "v": 1.108946
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": 0.304632
+      }
+    ]
+  },
+  "fast": {
+    "formula": "((0.747172 * log(max((-0.479425 / (-0.652482 / x)), 1e-30))) + -5.331985)",
+    "metric": 0.00027232367256511703,
+    "level": 2,
+    "formulaCost": 30,
+    "speed": {
+      "formulaCost": 30,
+      "exactCost": 25,
+      "speedup": 0.8333333333333334
+    }
+  },
+  "fastTree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": 0.747172
+          },
+          {
+            "o": "log",
+            "c": [
+              {
+                "o": "pdiv",
+                "c": [
+                  {
+                    "o": "const",
+                    "v": -0.479425
+                  },
+                  {
+                    "o": "pdiv",
+                    "c": [
+                      {
+                        "o": "const",
+                        "v": -0.652482
+                      },
+                      {
+                        "o": "var",
+                        "n": "x"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": -5.331985
+      }
+    ]
+  }
+}

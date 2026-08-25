@@ -1,0 +1,133 @@
+{
+  "taskId": "kelly_criterion",
+  "title": "Kelly criterion — position sizing",
+  "direction": "min",
+  "metric": 9.839944734124527e-9,
+  "level": 2,
+  "formula": "((1.000326 * max(0.0003, (p - ((1.000014 - p) / b)))) + -0.000194)",
+  "seed": 1000060,
+  "iteration": 1072,
+  "speed": {
+    "formulaCost": 9,
+    "exactCost": 6,
+    "speedup": 0.6666666666666666
+  },
+  "tree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": 1.000326
+          },
+          {
+            "o": "max",
+            "c": [
+              {
+                "o": "const",
+                "v": 0.0003
+              },
+              {
+                "o": "sub",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "p"
+                  },
+                  {
+                    "o": "pdiv",
+                    "c": [
+                      {
+                        "o": "sub",
+                        "c": [
+                          {
+                            "o": "const",
+                            "v": 1.000014
+                          },
+                          {
+                            "o": "var",
+                            "n": "p"
+                          }
+                        ]
+                      },
+                      {
+                        "o": "var",
+                        "n": "b"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": -0.000194
+      }
+    ]
+  },
+  "fast": {
+    "formula": "max(0.001, ((p * 1.05) - ((1.018793 - p) / b)))",
+    "metric": 0.000009448441470558611,
+    "level": 2,
+    "formulaCost": 8,
+    "speed": {
+      "formulaCost": 8,
+      "exactCost": 6,
+      "speedup": 0.75
+    }
+  },
+  "fastTree": {
+    "o": "max",
+    "c": [
+      {
+        "o": "const",
+        "v": 0.001
+      },
+      {
+        "o": "sub",
+        "c": [
+          {
+            "o": "mul",
+            "c": [
+              {
+                "o": "var",
+                "n": "p"
+              },
+              {
+                "o": "const",
+                "v": 1.05
+              }
+            ]
+          },
+          {
+            "o": "pdiv",
+            "c": [
+              {
+                "o": "sub",
+                "c": [
+                  {
+                    "o": "const",
+                    "v": 1.018793
+                  },
+                  {
+                    "o": "var",
+                    "n": "p"
+                  }
+                ]
+              },
+              {
+                "o": "var",
+                "n": "b"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

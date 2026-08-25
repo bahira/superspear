@@ -1,0 +1,134 @@
+{
+  "taskId": "bessel_j2",
+  "title": "Bessel J₂ (membranes sym · 2e sideband)",
+  "direction": "min",
+  "metric": 0.00010589472510666084,
+  "level": 2,
+  "formula": "((-0.355956 * cos(max((0.722591 * (x + 1.095797)), max(1.232444, x)))) + 0.1349)",
+  "seed": 1000031,
+  "iteration": 400,
+  "speed": {
+    "formulaCost": 26,
+    "exactCost": 40,
+    "speedup": 1.5384615384615385
+  },
+  "tree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": -0.355956
+          },
+          {
+            "o": "cos",
+            "c": [
+              {
+                "o": "max",
+                "c": [
+                  {
+                    "o": "mul",
+                    "c": [
+                      {
+                        "o": "const",
+                        "v": 0.722591
+                      },
+                      {
+                        "o": "add",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "x"
+                          },
+                          {
+                            "o": "const",
+                            "v": 1.095797
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "o": "max",
+                    "c": [
+                      {
+                        "o": "const",
+                        "v": 1.232444
+                      },
+                      {
+                        "o": "var",
+                        "n": "x"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": 0.1349
+      }
+    ]
+  },
+  "fast": {
+    "formula": "cos(max((0.794393 * (x + 0.979408)), max(1.234601, x)))",
+    "metric": 0.0002754846829909618,
+    "level": 2,
+    "formulaCost": 24,
+    "speed": {
+      "formulaCost": 24,
+      "exactCost": 40,
+      "speedup": 1.6666666666666667
+    }
+  },
+  "fastTree": {
+    "o": "cos",
+    "c": [
+      {
+        "o": "max",
+        "c": [
+          {
+            "o": "mul",
+            "c": [
+              {
+                "o": "const",
+                "v": 0.794393
+              },
+              {
+                "o": "add",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "x"
+                  },
+                  {
+                    "o": "const",
+                    "v": 0.979408
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "o": "max",
+            "c": [
+              {
+                "o": "const",
+                "v": 1.234601
+              },
+              {
+                "o": "var",
+                "n": "x"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,3 +1,4 @@
+import { loadLedger, saveLedger } from "../src/lib/spear/ledger";
 // Champion compression: iteratively prune + refine a ledger champion to shed
 // cost while holding near-exact accuracy. Targets scaffold-exact solutions
 // that resist plain slimming (eigen 120u, logit 32u...).
@@ -14,7 +15,7 @@ async function main() {
   const maxRel = maxRelArgIdx !== -1 ? Number(process.argv[maxRelArgIdx + 1]) : 1e-6;
 
   const ledgerPath = join(import.meta.dirname ?? ".", "..", "spear-hall-of-fame.json");
-  const led = JSON.parse(readFileSync(ledgerPath, "utf8")) as Record<string, any>;
+  const led = loadLedger();
   const entry = led[id];
   if (!entry?.tree) { console.log(`no tree for ${id}`); return; }
 
@@ -60,7 +61,7 @@ async function main() {
     entry.tree = JSON.parse(JSON.stringify(node));
     entry.metric = finalMse;
     if (entry.speed?.formulaCost) entry.speed.formulaCost = finalCost;
-    writeFileSync(ledgerPath, JSON.stringify(led, null, 2));
+    saveLedger(led);
     console.log(`✓ ledger mis à jour (${id}: ${cost0} -> ${finalCost} unités)`);
   } else {
     console.log("aucun gain net — ledger inchangé");
