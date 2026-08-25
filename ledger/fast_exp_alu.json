@@ -20,5 +20,29 @@
     "formulaCost": 20,
     "exactCost": 34,
     "speedup": 1.7
+  },
+  "fast": {
+    "formula": "min(1.491, exp(x))",
+    "metric": 0,
+    "level": 5,
+    "formulaCost": 21
+  },
+  "fastTree": {
+    "o": "min",
+    "c": [
+      {
+        "o": "const",
+        "v": 1.491
+      },
+      {
+        "o": "exp",
+        "c": [
+          {
+            "o": "var",
+            "n": "x"
+          }
+        ]
+      }
+    ]
   }
 }

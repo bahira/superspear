@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import {
   ALL_OPS,
+  ALGEBRAIC_OPS,
   canonicalKey,
   countOps,
   evaluateNode,
@@ -95,6 +96,21 @@ export interface TaskDef {
 
 const GP_OPS = ALL_OPS;
 
+// SPEAR_ALU_ONLY=1 bans every transcendental from the search (exp/sin/cos/
+// log/atan/asin): smaller branching factor, faster generations, and every
+// discovered form is SFU-free by construction. Ground truths that NEED
+// transcendental laws can only be approximated — that is the point: hunt for
+// hyper-cheap VALIDATED forms (fast slots), not for records.
+const GP_OPS_EFFECTIVE = process.env.SPEAR_ALU_ONLY === "1"
+  ? ALL_OPS.filter((o) => ALGEBRAIC_OPS.has(o))
+  : GP_OPS;
+
+/** In ALU-only mode, drop seed shapes that carry transcendental subtrees. */
+const pureSeeds = (seeds: SpearNode[]): SpearNode[] =>
+  process.env.SPEAR_ALU_ONLY === "1"
+    ? seeds.filter((s) => countOps(s).transcendental === 0)
+    : seeds;
+
 // ------------------------------------------------------------------ helpers
 function ols1(x: Float64Array, y: Float64Array): { a: number; b: number; mse: number } {
   const n = x.length;
@@ -150,7 +166,7 @@ function buildActivationTask(spec: ActivationSpec, points = 400): TaskDef {
   const gpConfig: GpConfig = {
     variables: ["x"],
     constRange: [-3, 3],
-    ops: GP_OPS,
+    ops: GP_OPS_EFFECTIVE,
     maxDepth: 5,
     terminalVarProb: 0.55,
   };
@@ -295,7 +311,7 @@ function buildActivationTask(spec: ActivationSpec, points = 400): TaskDef {
         return { node, evals: 0 };
       }
     },
-    seedPool: [
+    seedPool: pureSeeds([
       makeNode("var", { name: "x" }),
       // cultural bootstrap: champions from other tasks, renamed to x
       ...loadBootstrapSeeds(["x"], spec.id),
@@ -391,8 +407,8 @@ function buildActivationTask(spec: ActivationSpec, points = 400): TaskDef {
         makeNode("var", { name: "x" }),
         makeNode("add", { children: [makeNode("const", { value: 1 }), makeNode("sqrt", { children: [makeNode("add", { children: [makeNode("const", { value: 1 }), makeNode("sq", { children: [makeNode("var", { name: "x" })] })] })] })] }),
       ] }),
-    ] : []),
-    ],
+      ] : []),
+    ]),
     baselines,
     milestones,
     chart: (node) => {
@@ -853,7 +869,7 @@ function buildRegressionTask(cfg: {
   const gpConfig: GpConfig = {
     variables: varNames,
     constRange: [-6, 6],
-    ops: GP_OPS,
+    ops: GP_OPS_EFFECTIVE,
     maxDepth: 5,
     terminalVarProb: 0.55,
   };
@@ -954,7 +970,7 @@ function buildRegressionTask(cfg: {
         return { node, evals: 0 };
       }
     },
-    seedPool: [
+    seedPool: pureSeeds([
       ...loadBootstrapSeeds(varNames, cfg.id),
       // composite algebraic motifs (softsign / Padé / rsqrt shapes)
       ...compositeSeeds(varNames[0]),
@@ -984,7 +1000,7 @@ function buildRegressionTask(cfg: {
       makeNode("cos", { children: [makeNode("var", { name: varNames[0] })] }),
       makeNode("sin", { children: [makeNode("var", { name: varNames[0] })] }),
       ...(cfg.extraSeeds ?? []),
-    ],
+    ]),
     baselines: [
       { name: "Loi exacte (plancher de bruit)", metric: noiseFloor, note: "MSE de la vraie loi sur les données bruitées — optimum atteignable", kind: "oracle", formula: cfg.groundTruth },
       { name: "Régression linéaire (MCQ)", metric: lin.mse, note: `y = ${lin.a.toFixed(4)}·${varNames[0]} + ${lin.b.toFixed(4)}`, kind: "statistical", formula: "OLS" },

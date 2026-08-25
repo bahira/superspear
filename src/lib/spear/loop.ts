@@ -958,6 +958,16 @@ export async function runGroundedLoop(opts: GroundedLoopOptions = {}): Promise<L
   if (progress.status === "running") progress.status = progress.iterationsUsed >= budget ? "stopped_budget" : "completed";
   progress.elapsedMs = performance.now() - t0;
   snapshot(rts, progress, true);
+  if (process.env.SPEAR_BANDIT_DEBUG === "1") {
+    for (const rt of rts) {
+      const fmt = (b: OperatorBandit): string =>
+        b.arms.map((a) => {
+          const x = (b as any).s.get(a) as { n: number; v: number };
+          return `${a}:${x.n}(${(x.v / Math.max(1, x.n)).toFixed(3)})`;
+        }).join(" ");
+      if (rt.iterations > 0) console.log(`[bandit] ${rt.def.id.padEnd(20)} H[${fmt(rt.banditH)}]  E[${fmt(rt.banditE)}]`);
+    }
+  }
   if (opts.onProgress) await opts.onProgress(progress);
   return progress;
 }
