@@ -18,7 +18,7 @@ import {
   type NodeOp,
   type SpearNode,
 } from "./engine";
-import { erf, gaussianRandom, linfError, linspace, mapArray, mse, silu } from "./math-utils";
+import { erf, gaussianRandom, linfError, linspace, mapArray, mse, r2Score, silu } from "./math-utils";
 import { compositeSeeds, makeOodProbe } from "./heritage";
 
 // ---------------------------------------------------------------------------
@@ -92,6 +92,8 @@ export interface TaskDef {
    * Shapes selection only — never alters reported metrics.
    */
   ood?: (node: SpearNode) => number;
+  /** R² on train data — powers the deployable fast-slot grade (D2: r² ≥ 0.98) */
+  r2?: (node: SpearNode) => number;
 }
 
 const GP_OPS = ALL_OPS;
@@ -420,6 +422,9 @@ function buildActivationTask(spec: ActivationSpec, points = 400): TaskDef {
     },
     codeVarDecl: "const float x",
     ood: oodProbe,
+    r2: (node) => {
+      try { return r2Score(evaluateNode(node, vars, points), y); } catch { return -Infinity; }
+    },
     exactFn: spec.fn,
     exactCost: spec.exactCost ?? (spec.id === "gelu" ? 46 : 34),
     iterativeBaseline: ITERATIVE_BASELINES[spec.id],
@@ -1026,6 +1031,9 @@ function buildRegressionTask(cfg: {
     verify: cfg.verify,
     codeVarDecl: `const float ${varNames.join(", const float ")}`,
     ood: oodProbe,
+    r2: (node) => {
+      try { return r2Score(evaluateNode(node, vars, n), y); } catch { return -Infinity; }
+    },
     exactRefNode: cfg.exactLaw ?? EXACT_LAWS[cfg.id],
     exactCost: cfg.exactCost,
     iterativeBaseline: ITERATIVE_BASELINES[cfg.id],

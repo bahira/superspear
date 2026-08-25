@@ -1042,54 +1042,31 @@
       ]
     },
     "fast": {
-      "formula": "((-0.998327 * min(exp((-t)), 2)) + 0.996889)",
-      "metric": 0.0001058221329252825,
-      "level": 5,
-      "formulaCost": 24,
-      "speed": {
-        "formulaCost": 24,
-        "exactCost": 22,
-        "speedup": 0.9166666666666666
-      }
+      "formula": "(((6.643258 - t))³)²",
+      "metric": 0.0001796143439852678,
+      "level": 3,
+      "formulaCost": 4
     },
     "fastTree": {
-      "o": "add",
+      "o": "sq",
       "c": [
         {
-          "o": "mul",
+          "o": "cube",
           "c": [
             {
-              "o": "const",
-              "v": -0.998327
-            },
-            {
-              "o": "min",
+              "o": "sub",
               "c": [
                 {
-                  "o": "exp",
-                  "c": [
-                    {
-                      "o": "neg",
-                      "c": [
-                        {
-                          "o": "var",
-                          "n": "t"
-                        }
-                      ]
-                    }
-                  ]
+                  "o": "const",
+                  "v": 6.643258
                 },
                 {
-                  "o": "const",
-                  "v": 2
+                  "o": "var",
+                  "n": "t"
                 }
               ]
             }
           ]
-        },
-        {
-          "o": "const",
-          "v": 0.996889
         }
       ]
     }

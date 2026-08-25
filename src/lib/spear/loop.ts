@@ -350,13 +350,20 @@ function snapshotTask(rt: TaskRuntime, full: boolean): LoopTaskSnapshot {
   // ponytail: frontRaw holds <=12 elite members, not the whole search — the
   // true cheapest validated form may be missed; upgrade path is a dedicated
   // cost-sorted archive in the loop.
-  let fastPick: { node: SpearNode; metric: number } | null = null;
+  let fastPick: { node: SpearNode; metric: number; deploy: boolean } | null = null;
   for (const f of rt.frontRaw) {
-    if (levelOf(t, f.metric) < 2) continue;
-    if (!fastPick || estimateCost(f.node) < estimateCost(fastPick.node)) fastPick = { node: f.node, metric: f.metric };
+    // two validation doors: the record ladder (L≥2) OR the deployment grade
+    // (R² ≥ 0.98 on train data) — cheap approximants of transcendental laws
+    // are legitimately shippable even when absolute MSE milestones are out of reach
+    const lvl = levelOf(t, f.metric);
+    const deploy = lvl < 2 && !!t.r2 && t.r2(f.node) >= 0.98;
+    if (lvl < 2 && !deploy) continue;
+    if (!fastPick || estimateCost(f.node) < estimateCost(fastPick.node)) {
+      fastPick = { node: f.node, metric: f.metric, deploy };
+    }
   }
   const fast = fastPick
-    ? { formula: nodeToString(fastPick.node), metric: fastPick.metric, level: levelOf(t, fastPick.metric), formulaCost: estimateCost(fastPick.node) }
+    ? { formula: nodeToString(fastPick.node), metric: fastPick.metric, level: Math.max(2, levelOf(t, fastPick.metric)), formulaCost: estimateCost(fastPick.node), deploy: fastPick.deploy || undefined }
     : null;
 
   return {

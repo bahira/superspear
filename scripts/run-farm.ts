@@ -107,8 +107,9 @@ async function farmInner(seed: number, budget: number, workers: number, only: Se
           if (prev.speed && !prev.speed.vsIterative && f.speed?.vsIterative) prev.speed.vsIterative = f.speed.vsIterative;
           if (!prev.tree && f.tree) prev.tree = f.tree;
         }
-        // fast-slot: keep the cheapest VALIDATED form ever seen
-        if (f.fast && f.fast.level >= 2 && f.fast.formulaCost < (prev.fast?.formulaCost ?? Infinity)) {
+        // fast-slot: keep the cheapest VALIDATED form ever seen (record
+        // ladder L>=2, or deployment grade R^2>=0.98 flagged `deploy`)
+        if (f.fast && (f.fast.level >= 2 || (f.fast as { deploy?: boolean }).deploy) && f.fast.formulaCost < (prev.fast?.formulaCost ?? Infinity)) {
           prev.fast = f.fast;
           prev.fastTree = f.fastTree;
         }
