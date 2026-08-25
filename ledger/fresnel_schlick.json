@@ -1,0 +1,110 @@
+{
+  "taskId": "fresnel_schlick",
+  "title": "Fresnel-Schlick (réflexion PBR)",
+  "direction": "min",
+  "metric": 0.00010330785959421003,
+  "level": 2,
+  "formula": "((0.246318 * (1.466496 / min(0.743258, (0.248229 + x)))) + -0.441372)",
+  "seed": 990103,
+  "iteration": 354,
+  "speed": {
+    "formulaCost": 8,
+    "exactCost": 12,
+    "speedup": 1.5
+  },
+  "tree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": 0.246318
+          },
+          {
+            "o": "pdiv",
+            "c": [
+              {
+                "o": "const",
+                "v": 1.466496
+              },
+              {
+                "o": "min",
+                "c": [
+                  {
+                    "o": "const",
+                    "v": 0.743258
+                  },
+                  {
+                    "o": "add",
+                    "c": [
+                      {
+                        "o": "const",
+                        "v": 0.248229
+                      },
+                      {
+                        "o": "var",
+                        "n": "x"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": -0.441372
+      }
+    ]
+  },
+  "fast": {
+    "formula": "max(-2.48783, (-0.19049 / min(1.314335, (0.969024 + x))))",
+    "metric": 0.0009765379936983503,
+    "level": 2,
+    "formulaCost": 7
+  },
+  "fastTree": {
+    "o": "max",
+    "c": [
+      {
+        "o": "const",
+        "v": -2.48783
+      },
+      {
+        "o": "pdiv",
+        "c": [
+          {
+            "o": "const",
+            "v": -0.19049
+          },
+          {
+            "o": "min",
+            "c": [
+              {
+                "o": "const",
+                "v": 1.314335
+              },
+              {
+                "o": "add",
+                "c": [
+                  {
+                    "o": "const",
+                    "v": 0.969024
+                  },
+                  {
+                    "o": "var",
+                    "n": "x"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

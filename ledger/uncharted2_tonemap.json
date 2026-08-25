@@ -1,0 +1,92 @@
+{
+  "taskId": "uncharted2_tonemap",
+  "title": "Tonemap Uncharted 2 (filmic)",
+  "direction": "min",
+  "metric": 9.35135840763872e-9,
+  "level": 2,
+  "formula": "((0.375422 * ((3.432475 * x) / (x + 1.607412))) + -0.001248)",
+  "seed": 990102,
+  "iteration": 475,
+  "speed": {
+    "formulaCost": 8,
+    "exactCost": 26,
+    "speedup": 3.25
+  },
+  "tree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": 0.37542164283885915
+          },
+          {
+            "o": "pdiv",
+            "c": [
+              {
+                "o": "mul",
+                "c": [
+                  {
+                    "o": "const",
+                    "v": 3.432475
+                  },
+                  {
+                    "o": "var",
+                    "n": "x"
+                  }
+                ]
+              },
+              {
+                "o": "add",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "x"
+                  },
+                  {
+                    "o": "const",
+                    "v": 1.607412
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": -0.0012480885611314818
+      }
+    ]
+  },
+  "fast": {
+    "formula": "(x / (x + 1.032428))",
+    "metric": 0.0006828435291863329,
+    "level": 2,
+    "formulaCost": 5
+  },
+  "fastTree": {
+    "o": "pdiv",
+    "c": [
+      {
+        "o": "var",
+        "n": "x"
+      },
+      {
+        "o": "add",
+        "c": [
+          {
+            "o": "var",
+            "n": "x"
+          },
+          {
+            "o": "const",
+            "v": 1.032428
+          }
+        ]
+      }
+    ]
+  }
+}

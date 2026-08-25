@@ -1,0 +1,85 @@
+{
+  "taskId": "bias_slope",
+  "title": "Biais de pente (acné d'ombre)",
+  "direction": "min",
+  "metric": 0,
+  "level": 5,
+  "formula": "(sqrt(|(1 - (x)²)|) / x)",
+  "seed": 990103,
+  "iteration": 960,
+  "speed": {
+    "formulaCost": 8,
+    "exactCost": 8,
+    "speedup": 1
+  },
+  "tree": {
+    "o": "pdiv",
+    "c": [
+      {
+        "o": "sqrt",
+        "c": [
+          {
+            "o": "sub",
+            "c": [
+              {
+                "o": "const",
+                "v": 1
+              },
+              {
+                "o": "sq",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "x"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "var",
+        "n": "x"
+      }
+    ]
+  },
+  "fast": {
+    "formula": "(sqrt(|(1 - (x)²)|) / x)",
+    "metric": 0,
+    "level": 5,
+    "formulaCost": 8
+  },
+  "fastTree": {
+    "o": "pdiv",
+    "c": [
+      {
+        "o": "sqrt",
+        "c": [
+          {
+            "o": "sub",
+            "c": [
+              {
+                "o": "const",
+                "v": 1
+              },
+              {
+                "o": "sq",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "x"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "var",
+        "n": "x"
+      }
+    ]
+  }
+}

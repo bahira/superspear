@@ -1,0 +1,97 @@
+{
+  "taskId": "smootherstep",
+  "title": "Smootherstep (fade Perlin)",
+  "direction": "min",
+  "metric": 0.00032318543387844427,
+  "level": 2,
+  "formula": "((1.593609 * max(0.195325, min(x, 0.805))) + -0.296433)",
+  "seed": 990101,
+  "iteration": 486,
+  "speed": {
+    "formulaCost": 4,
+    "exactCost": 9,
+    "speedup": 2.25
+  },
+  "tree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": 1.593609
+          },
+          {
+            "o": "max",
+            "c": [
+              {
+                "o": "const",
+                "v": 0.195325
+              },
+              {
+                "o": "min",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "x"
+                  },
+                  {
+                    "o": "const",
+                    "v": 0.805
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": -0.296433
+      }
+    ]
+  },
+  "fast": {
+    "formula": "(0.866475 / (0.17378 + (x * (x)²)))",
+    "metric": 0.00021789121113632224,
+    "level": 2,
+    "formulaCost": 7
+  },
+  "fastTree": {
+    "o": "pdiv",
+    "c": [
+      {
+        "o": "const",
+        "v": 0.866475
+      },
+      {
+        "o": "add",
+        "c": [
+          {
+            "o": "const",
+            "v": 0.17378
+          },
+          {
+            "o": "mul",
+            "c": [
+              {
+                "o": "var",
+                "n": "x"
+              },
+              {
+                "o": "sq",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "x"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -8992,5 +8992,845 @@
         }
       ]
     }
+  },
+  "fresnel_schlick": {
+    "taskId": "fresnel_schlick",
+    "title": "Fresnel-Schlick (réflexion PBR)",
+    "direction": "min",
+    "metric": 0.00010330785959421003,
+    "level": 2,
+    "formula": "((0.246318 * (1.466496 / min(0.743258, (0.248229 + x)))) + -0.441372)",
+    "seed": 990103,
+    "iteration": 354,
+    "speed": {
+      "formulaCost": 8,
+      "exactCost": 12,
+      "speedup": 1.5
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 0.246318
+            },
+            {
+              "o": "pdiv",
+              "c": [
+                {
+                  "o": "const",
+                  "v": 1.466496
+                },
+                {
+                  "o": "min",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 0.743258
+                    },
+                    {
+                      "o": "add",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 0.248229
+                        },
+                        {
+                          "o": "var",
+                          "n": "x"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": -0.441372
+        }
+      ]
+    },
+    "fast": {
+      "formula": "max(-2.48783, (-0.19049 / min(1.314335, (0.969024 + x))))",
+      "metric": 0.0009765379936983503,
+      "level": 2,
+      "formulaCost": 7
+    },
+    "fastTree": {
+      "o": "max",
+      "c": [
+        {
+          "o": "const",
+          "v": -2.48783
+        },
+        {
+          "o": "pdiv",
+          "c": [
+            {
+              "o": "const",
+              "v": -0.19049
+            },
+            {
+              "o": "min",
+              "c": [
+                {
+                  "o": "const",
+                  "v": 1.314335
+                },
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 0.969024
+                    },
+                    {
+                      "o": "var",
+                      "n": "x"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "rayleigh_phase": {
+    "taskId": "rayleigh_phase",
+    "title": "Phase de Rayleigh (ciel atmosphérique)",
+    "direction": "min",
+    "metric": 0.000028726137982370476,
+    "level": 3,
+    "formula": "((-0.024925 * ((x + (-0.107884 * (x)³)) / (0.404362 + (0.0205 * (x)²)))) + 0.1287)",
+    "seed": 990102,
+    "iteration": 490,
+    "speed": {
+      "formulaCost": 13,
+      "exactCost": 5,
+      "speedup": 0.38461538461538464
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": -0.024925
+            },
+            {
+              "o": "pdiv",
+              "c": [
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "x"
+                    },
+                    {
+                      "o": "mul",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": -0.107884
+                        },
+                        {
+                          "o": "cube",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "x"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 0.404362
+                    },
+                    {
+                      "o": "mul",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 0.0205
+                        },
+                        {
+                          "o": "sq",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "x"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.1287
+        }
+      ]
+    },
+    "fast": {
+      "formula": "0.021241",
+      "metric": 0.0004463666351605404,
+      "level": 2,
+      "formulaCost": 0
+    },
+    "fastTree": {
+      "o": "const",
+      "v": 0.021241
+    }
+  },
+  "smootherstep": {
+    "taskId": "smootherstep",
+    "title": "Smootherstep (fade Perlin)",
+    "direction": "min",
+    "metric": 0.00032318543387844427,
+    "level": 2,
+    "formula": "((1.593609 * max(0.195325, min(x, 0.805))) + -0.296433)",
+    "seed": 990101,
+    "iteration": 486,
+    "speed": {
+      "formulaCost": 4,
+      "exactCost": 9,
+      "speedup": 2.25
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 1.593609
+            },
+            {
+              "o": "max",
+              "c": [
+                {
+                  "o": "const",
+                  "v": 0.195325
+                },
+                {
+                  "o": "min",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "x"
+                    },
+                    {
+                      "o": "const",
+                      "v": 0.805
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": -0.296433
+        }
+      ]
+    },
+    "fast": {
+      "formula": "(0.866475 / (0.17378 + (x * (x)²)))",
+      "metric": 0.00021789121113632224,
+      "level": 2,
+      "formulaCost": 7
+    },
+    "fastTree": {
+      "o": "pdiv",
+      "c": [
+        {
+          "o": "const",
+          "v": 0.866475
+        },
+        {
+          "o": "add",
+          "c": [
+            {
+              "o": "const",
+              "v": 0.17378
+            },
+            {
+              "o": "mul",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "x"
+                },
+                {
+                  "o": "sq",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "x"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "fog_exp2": {
+    "taskId": "fog_exp2",
+    "title": "Brouillard exponentiel carré (three.js)",
+    "direction": "min",
+    "metric": 0.0003272787409612414,
+    "level": 2,
+    "formula": "((-0.127494 * ((-1.929961 * min(1.668613, x)) + (-4.722092 * min(1.135005, x)))) + -0.0965)",
+    "seed": 990101,
+    "iteration": 475,
+    "speed": {
+      "formulaCost": 7,
+      "exactCost": 22,
+      "speedup": 3.142857142857143
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": -0.1274940863656017
+            },
+            {
+              "o": "add",
+              "c": [
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": -1.929961
+                    },
+                    {
+                      "o": "min",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 1.668613
+                        },
+                        {
+                          "o": "var",
+                          "n": "x"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": -4.722092
+                    },
+                    {
+                      "o": "min",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 1.135005
+                        },
+                        {
+                          "o": "var",
+                          "n": "x"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": -0.09650001036725882
+        }
+      ]
+    },
+    "fast": {
+      "formula": "min(x, 1.295335)",
+      "metric": 0.0006703216539337277,
+      "level": 2,
+      "formulaCost": 1
+    },
+    "fastTree": {
+      "o": "min",
+      "c": [
+        {
+          "o": "var",
+          "n": "x"
+        },
+        {
+          "o": "const",
+          "v": 1.295335
+        }
+      ]
+    }
+  },
+  "back_ease_out": {
+    "taskId": "back_ease_out",
+    "title": "Back ease-out (easing p5.js)",
+    "direction": "min",
+    "metric": 0.00002740528761995583,
+    "level": 3,
+    "formula": "((7.763933 * (x / ((x + 1.821643) + (5.203625 * (x)²)))) + 0.011075)",
+    "seed": 990102,
+    "iteration": 476,
+    "speed": {
+      "formulaCost": 10,
+      "exactCost": 11,
+      "speedup": 1.1
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 7.763933157812422
+            },
+            {
+              "o": "pdiv",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "x"
+                },
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "add",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "x"
+                        },
+                        {
+                          "o": "const",
+                          "v": 1.821643
+                        }
+                      ]
+                    },
+                    {
+                      "o": "mul",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 5.203625
+                        },
+                        {
+                          "o": "sq",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "x"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.011074755141712841
+        }
+      ]
+    },
+    "fast": {
+      "formula": "(x / ((x + (x + 2.158024)) + (5.987814 * (x)²)))",
+      "metric": 0.00005395668556911432,
+      "level": 3,
+      "formulaCost": 9
+    },
+    "fastTree": {
+      "o": "pdiv",
+      "c": [
+        {
+          "o": "var",
+          "n": "x"
+        },
+        {
+          "o": "add",
+          "c": [
+            {
+              "o": "add",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "x"
+                },
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "x"
+                    },
+                    {
+                      "o": "const",
+                      "v": 2.158024
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "o": "mul",
+              "c": [
+                {
+                  "o": "const",
+                  "v": 5.987814
+                },
+                {
+                  "o": "sq",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "x"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "light_falloff_punctual": {
+    "taskId": "light_falloff_punctual",
+    "title": "Atténuation punctual (three.js)",
+    "direction": "min",
+    "metric": 0.000013132168838441087,
+    "level": 2,
+    "formula": "((-1.950693 * ((3.068119 / x) / (-0.092287 + min(4.058391, (x * -5.800075))))) + -0.012508)",
+    "seed": 990102,
+    "iteration": 485,
+    "speed": {
+      "formulaCost": 13,
+      "exactCost": 20,
+      "speedup": 1.5384615384615385
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": -1.950692846126142
+            },
+            {
+              "o": "pdiv",
+              "c": [
+                {
+                  "o": "pdiv",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 3.068119
+                    },
+                    {
+                      "o": "var",
+                      "n": "x"
+                    }
+                  ]
+                },
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": -0.092287
+                    },
+                    {
+                      "o": "min",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 4.058391
+                        },
+                        {
+                          "o": "mul",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "x"
+                            },
+                            {
+                              "o": "const",
+                              "v": -5.800075
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": -0.012507849918452899
+        }
+      ]
+    },
+    "fast": {
+      "formula": "((1.449627 / (x)²) * 0.237626)",
+      "metric": 0.000022254134884792464,
+      "level": 2,
+      "formulaCost": 6
+    },
+    "fastTree": {
+      "o": "mul",
+      "c": [
+        {
+          "o": "pdiv",
+          "c": [
+            {
+              "o": "const",
+              "v": 1.449627
+            },
+            {
+              "o": "sq",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "x"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.237626
+        }
+      ]
+    }
+  },
+  "bias_slope": {
+    "taskId": "bias_slope",
+    "title": "Biais de pente (acné d'ombre)",
+    "direction": "min",
+    "metric": 0,
+    "level": 5,
+    "formula": "(sqrt(|(1 - (x)²)|) / x)",
+    "seed": 990103,
+    "iteration": 960,
+    "speed": {
+      "formulaCost": 8,
+      "exactCost": 8,
+      "speedup": 1
+    },
+    "tree": {
+      "o": "pdiv",
+      "c": [
+        {
+          "o": "sqrt",
+          "c": [
+            {
+              "o": "sub",
+              "c": [
+                {
+                  "o": "const",
+                  "v": 1
+                },
+                {
+                  "o": "sq",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "x"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "var",
+          "n": "x"
+        }
+      ]
+    },
+    "fast": {
+      "formula": "(sqrt(|(1 - (x)²)|) / x)",
+      "metric": 0,
+      "level": 5,
+      "formulaCost": 8
+    },
+    "fastTree": {
+      "o": "pdiv",
+      "c": [
+        {
+          "o": "sqrt",
+          "c": [
+            {
+              "o": "sub",
+              "c": [
+                {
+                  "o": "const",
+                  "v": 1
+                },
+                {
+                  "o": "sq",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "x"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "var",
+          "n": "x"
+        }
+      ]
+    }
+  },
+  "uncharted2_tonemap": {
+    "taskId": "uncharted2_tonemap",
+    "title": "Tonemap Uncharted 2 (filmic)",
+    "direction": "min",
+    "metric": 9.35135840763872e-9,
+    "level": 2,
+    "formula": "((0.375422 * ((3.432475 * x) / (x + 1.607412))) + -0.001248)",
+    "seed": 990102,
+    "iteration": 475,
+    "speed": {
+      "formulaCost": 8,
+      "exactCost": 26,
+      "speedup": 3.25
+    },
+    "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 0.37542164283885915
+            },
+            {
+              "o": "pdiv",
+              "c": [
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 3.432475
+                    },
+                    {
+                      "o": "var",
+                      "n": "x"
+                    }
+                  ]
+                },
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "x"
+                    },
+                    {
+                      "o": "const",
+                      "v": 1.607412
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": -0.0012480885611314818
+        }
+      ]
+    },
+    "fast": {
+      "formula": "(x / (x + 1.032428))",
+      "metric": 0.0006828435291863329,
+      "level": 2,
+      "formulaCost": 5
+    },
+    "fastTree": {
+      "o": "pdiv",
+      "c": [
+        {
+          "o": "var",
+          "n": "x"
+        },
+        {
+          "o": "add",
+          "c": [
+            {
+              "o": "var",
+              "n": "x"
+            },
+            {
+              "o": "const",
+              "v": 1.032428
+            }
+          ]
+        }
+      ]
+    }
   }
 }

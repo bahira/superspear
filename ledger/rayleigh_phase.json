@@ -1,0 +1,102 @@
+{
+  "taskId": "rayleigh_phase",
+  "title": "Phase de Rayleigh (ciel atmosphérique)",
+  "direction": "min",
+  "metric": 0.000028726137982370476,
+  "level": 3,
+  "formula": "((-0.024925 * ((x + (-0.107884 * (x)³)) / (0.404362 + (0.0205 * (x)²)))) + 0.1287)",
+  "seed": 990102,
+  "iteration": 490,
+  "speed": {
+    "formulaCost": 13,
+    "exactCost": 5,
+    "speedup": 0.38461538461538464
+  },
+  "tree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": -0.024925
+          },
+          {
+            "o": "pdiv",
+            "c": [
+              {
+                "o": "add",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "x"
+                  },
+                  {
+                    "o": "mul",
+                    "c": [
+                      {
+                        "o": "const",
+                        "v": -0.107884
+                      },
+                      {
+                        "o": "cube",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "x"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "o": "add",
+                "c": [
+                  {
+                    "o": "const",
+                    "v": 0.404362
+                  },
+                  {
+                    "o": "mul",
+                    "c": [
+                      {
+                        "o": "const",
+                        "v": 0.0205
+                      },
+                      {
+                        "o": "sq",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "x"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": 0.1287
+      }
+    ]
+  },
+  "fast": {
+    "formula": "0.021241",
+    "metric": 0.0004463666351605404,
+    "level": 2,
+    "formulaCost": 0
+  },
+  "fastTree": {
+    "o": "const",
+    "v": 0.021241
+  }
+}
