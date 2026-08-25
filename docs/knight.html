@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Aldarion Knight — blockout review (img2threejs)</title>
+<style>
+  body{margin:0;overflow:hidden;background:#15171c;font-family:ui-monospace,monospace;color:#cfd6dd}
+  #bar{position:fixed;top:12px;left:12px;z-index:5;background:rgba(0,0,0,.6);padding:8px 12px;border-radius:6px;font-size:11px}
+  button{font:inherit;background:#f4c170;border:0;border-radius:4px;padding:5px 10px;cursor:pointer;color:#131008}
+</style>
+</head>
+<body>
+<div id="bar">blockout pass — tourne auto · <button id="shot">📸 capture review</button></div>
+<script type="importmap">
+{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+               "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }
+</script>
+<script type="module">
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import {
+  createAldarionKnightModel,
+  createAldarionKnightLookDevLights,
+  frameAldarionKnightCamera,
+  configureAldarionKnightRenderer,
+} from "./createAldarionKnight.js";
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+configureAldarionKnightRenderer(renderer);
+renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(Math.min(2, devicePixelRatio));
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x3a3d42); // gris neutre de la planche
+
+const model = createAldarionKnightModel();
+scene.add(model);
+scene.add(...createAldarionKnightLookDevLights());
+
+const camera = new THREE.PerspectiveCamera(40, innerWidth / innerHeight, 0.1, 100);
+frameAldarionKnightCamera(camera);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.autoRotate = true;
+controls.autoRotateSpeed = 1.2;
+
+$("#shot").onclick = () => {
+  renderer.render(scene, camera);
+  const a = document.createElement("a");
+  a.download = "knight-blockout.png";
+  a.href = renderer.domElement.toDataURL("image/png");
+  a.click();
+};
+addEventListener("resize", () => {
+  camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+(function loop(){ requestAnimationFrame(loop); controls.update(); renderer.render(scene, camera); })();
+</script>
+</body>
+</html>

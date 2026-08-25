@@ -1,0 +1,107 @@
+{
+  "sourceImage": "C:\\Users\\Yuri\\Documents\\superspear\\sprite-front.png",
+  "overlayImage": "C:\\Users\\Yuri\\Documents\\superspear\\sprite-front-landmarks.png",
+  "overlayLegend": {
+    "C": "center symmetry axis",
+    "1..N": "head-unit horizontal ticks (blue, dashed)",
+    "H": "hairline guide (default fraction of the first head-unit band)",
+    "E": "eye line guide",
+    "N": "nose base guide",
+    "M": "mouth line guide",
+    "S": "shoulder line guide (default fraction, adjust to observed pose)",
+    "P": "hip line guide (default fraction, adjust to observed pose)",
+    "grayDashed": "rule-of-thirds compositional grid"
+  },
+  "anatomy": {
+    "styleHeads": 6.0,
+    "proportions": {
+      "headUnit": null,
+      "torso": null,
+      "legs": null,
+      "shoulderWidth": null,
+      "hipWidth": null
+    },
+    "pose": {
+      "type": "",
+      "jointAngles": {
+        "neck": [
+          0,
+          0,
+          0
+        ],
+        "leftShoulder": [
+          0,
+          0,
+          0
+        ],
+        "rightShoulder": [
+          0,
+          0,
+          0
+        ],
+        "leftElbow": [
+          0,
+          0,
+          0
+        ],
+        "rightElbow": [
+          0,
+          0,
+          0
+        ],
+        "leftWrist": [
+          0,
+          0,
+          0
+        ],
+        "rightWrist": [
+          0,
+          0,
+          0
+        ],
+        "leftHip": [
+          0,
+          0,
+          0
+        ],
+        "rightHip": [
+          0,
+          0,
+          0
+        ],
+        "leftKnee": [
+          0,
+          0,
+          0
+        ],
+        "rightKnee": [
+          0,
+          0,
+          0
+        ],
+        "leftAnkle": [
+          0,
+          0,
+          0
+        ],
+        "rightAnkle": [
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "faceLandmarks": {
+      "hairline": null,
+      "eyeLine": null,
+      "eyeSpacing": null,
+      "noseBase": null,
+      "mouthLine": null,
+      "earTop": null,
+      "earBottom": null
+    },
+    "features": [],
+    "confidence": 0.0
+  },
+  "authoringInstruction": "Open overlayImage and read the reference against its head-unit ticks, thirds grid, face-line guides, shoulder/hip lines, and center axis. Replace every null/placeholder value in anatomy with normalized coordinates or joint angles actually observed; the drawn guide lines are generic starting positions, not measurements."
+}

@@ -1,0 +1,2797 @@
+{
+  "targetName": "Aldarion Knight",
+  "targetId": "aldarion-knight",
+  "schemaVersion": "2.1",
+  "terminologyProfile": {
+    "domain": "real-time procedural Three.js asset",
+    "geometryTerms": [
+      "silhouette",
+      "topology",
+      "primitive",
+      "bevel",
+      "chamfer",
+      "taper",
+      "bend",
+      "boolean cut",
+      "edge loop",
+      "surface normal",
+      "displacement"
+    ],
+    "materialTerms": [
+      "albedo",
+      "baseColor",
+      "roughness",
+      "metalness",
+      "normal map",
+      "bump map",
+      "ambient occlusion",
+      "cavity dirt",
+      "edge wear",
+      "clearcoat"
+    ],
+    "lightingTerms": [
+      "key light",
+      "fill light",
+      "rim light",
+      "HDRI/environment reflection",
+      "contact shadow"
+    ],
+    "descriptionRule": "Use measurable 3D graphics terms. Avoid vague words unless they are paired with concrete geometry/material/shader parameters."
+  },
+  "sourceImage": "C:\\Users\\Yuri\\Documents\\superspear\\sprite-front.png",
+  "referenceCamera": {
+    "solved": false,
+    "fovDegrees": 40,
+    "aspect": 1,
+    "orientation": {
+      "yaw": 0,
+      "pitch": 0,
+      "roll": 0
+    },
+    "positionHint": [
+      0,
+      0,
+      3
+    ],
+    "note": "For likeness work, solve the reference camera (forge/stage1_intake/solve_camera_pose.py) so the review render aligns with the photo and the reference can be projected. Confirm by overlay review."
+  },
+  "suitability": "conditional",
+  "scores": {
+    "object_isolation": 0,
+    "silhouette_readability": 0,
+    "depth_inference": 0,
+    "primitive_decomposition": 0,
+    "material_procedurality": 0,
+    "occlusion_risk": 0,
+    "interaction_fit": 0
+  },
+  "preSpecAssessment": {
+    "objectClass": {
+      "primaryType": "armored humanoid knight (stylized-realistic, ~7.8 HU)",
+      "formLanguage": [
+        "layered angular plate lames over draped heavy cloth",
+        "ragged vertical cape tears",
+        "gold filigree linework as surface calligraphy"
+      ],
+      "structureKind": [
+        "assembled articulated lames",
+        "cloth panels over bipedal skeleton"
+      ],
+      "motionPotential": [
+        "bipedal combat",
+        "6 action poses provided (slash, thrust, shield block, spin, kneel, cast)"
+      ],
+      "materialFamilies": [
+        "polished steel",
+        "aged gold filigree",
+        "heavy woven navy cloth",
+        "worn leather"
+      ]
+    },
+    "complexity": {
+      "tier": "ultra-complex",
+      "scores": {
+        "silhouetteComplexity": 0,
+        "componentCount": 0,
+        "hierarchyDepth": 0,
+        "repetitionDensity": 0,
+        "materialLayerCount": 0,
+        "localDetailDensity": 0,
+        "occlusionRisk": 0,
+        "actionReadinessNeed": 0
+      },
+      "estimatedCounts": {
+        "macroComponents": 1,
+        "mesoComponents": 0,
+        "microFeatureGroups": 0,
+        "materialLayers": 1,
+        "repetitionSystems": 0
+      },
+      "reasoning": [
+        "Assess 'Aldarion Knight' from the image before finalizing componentTree/materials."
+      ]
+    },
+    "specDepthDecision": {
+      "requiredDepth": "ultra-complex",
+      "minimumComponentLevels": [
+        "macro",
+        "meso",
+        "micro"
+      ],
+      "needsRepetitionSystems": true,
+      "needsMaterialLocalOverrides": true,
+      "needsMultipleReviewViews": true,
+      "needsActionReadyHierarchy": true,
+      "rationale": "Choose simple/moderate/complex/ultra-complex from observed structure, not from a hardcoded domain."
+    },
+    "unknownsToResolveBeforeImplementation": [],
+    "detailInventory": {
+      "targetMinDetails": 16,
+      "details": [
+        {
+          "id": "d-emblem-chest",
+          "kind": "linework",
+          "note": "filigrane croix or",
+          "mapsTo": {
+            "ref": "emblem-chest"
+          }
+        },
+        {
+          "id": "d-emblem-shield",
+          "kind": "decal",
+          "note": "croix or champ navy",
+          "mapsTo": {
+            "ref": "emblem-shield"
+          }
+        },
+        {
+          "id": "d-emblem-cape",
+          "kind": "linework",
+          "note": "emblème dorsal",
+          "mapsTo": {
+            "ref": "emblem-cape"
+          }
+        },
+        {
+          "id": "d-rivets",
+          "kind": "fastener",
+          "note": "rivets de rives",
+          "mapsTo": {
+            "ref": "rivet-rows"
+          }
+        },
+        {
+          "id": "d-buckles",
+          "kind": "fastener",
+          "note": "double boucle",
+          "mapsTo": {
+            "ref": "belt-buckles"
+          }
+        },
+        {
+          "id": "d-guard",
+          "kind": "linework",
+          "note": "garde filigranée",
+          "mapsTo": {
+            "ref": "sword-guard"
+          }
+        },
+        {
+          "id": "d-fuller",
+          "kind": "groove",
+          "note": "goutière de lame",
+          "mapsTo": {
+            "ref": "lf-fuller"
+          }
+        },
+        {
+          "id": "d-catchlight",
+          "kind": "emissive",
+          "note": "catchlights yeux",
+          "mapsTo": {
+            "ref": "eye-catchlight"
+          }
+        },
+        {
+          "id": "d-tears",
+          "kind": "contour",
+          "note": "déchirures de cape",
+          "mapsTo": {
+            "ref": "cape-tear-hem"
+          }
+        },
+        {
+          "id": "d-lames",
+          "kind": "ridge",
+          "note": "lames d'épaulière",
+          "mapsTo": {
+            "ref": "pauldronL"
+          }
+        },
+        {
+          "id": "d-tassets",
+          "kind": "ridge",
+          "note": "tassets superposés",
+          "mapsTo": {
+            "ref": "fauld"
+          }
+        },
+        {
+          "id": "d-scratches",
+          "kind": "scratch",
+          "note": "éraflures de battle-wear",
+          "mapsTo": {
+            "ref": "steel"
+          }
+        },
+        {
+          "id": "d-edge-wear",
+          "kind": "bevel",
+          "note": "usure claire sur arêtes",
+          "mapsTo": {
+            "ref": "steel"
+          }
+        },
+        {
+          "id": "d-faded-cloth",
+          "kind": "stain",
+          "note": "patchs délavés du tissu",
+          "mapsTo": {
+            "ref": "clothNavy"
+          }
+        },
+        {
+          "id": "d-cowl-folds",
+          "kind": "seam",
+          "note": "plis du cowl",
+          "mapsTo": {
+            "ref": "cowl"
+          }
+        },
+        {
+          "id": "d-gorget-ring",
+          "kind": "ridge",
+          "note": "anneau du gorgerin",
+          "mapsTo": {
+            "ref": "gorget"
+          }
+        },
+        {
+          "id": "d-pouch",
+          "kind": "fastener",
+          "note": "poches de ceinture",
+          "mapsTo": {
+            "ref": "belt"
+          }
+        },
+        {
+          "id": "d-pommel",
+          "kind": "gloss",
+          "note": "pommetau doré",
+          "mapsTo": {
+            "ref": "sword"
+          }
+        }
+      ]
+    },
+    "anatomy": {
+      "applies": false,
+      "styleHeads": 0,
+      "proportions": {
+        "headUnit": 0,
+        "torso": 0,
+        "legs": 0,
+        "shoulderWidth": 0,
+        "hipWidth": 0
+      },
+      "pose": {
+        "type": "unassessed",
+        "jointAngles": {}
+      },
+      "faceLandmarks": {
+        "eyeLine": 0,
+        "eyeSpacing": 0,
+        "noseBase": 0,
+        "mouthLine": 0,
+        "hairline": 0
+      },
+      "features": [],
+      "confidence": 0,
+      "note": "Only meaningful when objectClass.primaryDomain is character or hybrid. Set applies=true and fill from forge/stage1_intake/extract_landmarks.py. See grimoire/character/reconstruction.md and grimoire/character/likeness_maximization.md."
+    },
+    "sourceImage": "C:\\Users\\Yuri\\Documents\\superspear\\sprite-front.png"
+  },
+  "qualityContract": {
+    "qualityBar": "ultra-complex",
+    "definitionOfDone": [
+      "The rendered model matches the reference silhouette, primary proportions, visible component hierarchy, material response, and most recognizable local features for the selected fidelity tier."
+    ],
+    "minimumSpecDepth": {
+      "macroComponents": 5,
+      "mesoComponents": 16,
+      "microFeatureGroups": 8,
+      "materialLayers": 4,
+      "repetitionSystems": 2,
+      "reviewViewpoints": 5
+    },
+    "featureGroups": [
+      {
+        "id": "overall-silhouette",
+        "name": "Overall silhouette and proportions",
+        "required": true,
+        "qualityCriteria": [
+          "Bounding shape, dominant curves, negative spaces, and scale relationships are explicitly described."
+        ],
+        "evidenceRefs": [
+          "full-object"
+        ],
+        "failureModes": [
+          "model reads as a generic placeholder instead of the reference object",
+          "major proportions are guessed without evidence"
+        ]
+      },
+      {
+        "id": "primary-structure",
+        "name": "Primary structure and hierarchy",
+        "required": true,
+        "qualityCriteria": [
+          "Major parts, joints, seams, contact points, and parent-child relationships are named before code generation."
+        ],
+        "evidenceRefs": [
+          "full-object"
+        ],
+        "failureModes": [
+          "large visible parts are merged into one mesh",
+          "component hierarchy is too shallow for the observed complexity"
+        ]
+      },
+      {
+        "id": "attachment-joint-correctness",
+        "name": "Attachment and joint correctness",
+        "required": true,
+        "qualityCriteria": [
+          "Every visible child appendage, branch, limb, handle, connector, tube, cable, horn, wing, leg, or hinged part has an attachment contract with parent socket, localStart/localEnd, contact type, embed/overlap, and gap tolerance."
+        ],
+        "evidenceRefs": [
+          "full-object"
+        ],
+        "failureModes": [
+          "child part root floats away from the parent",
+          "branch/limb/tube is centered in space instead of pivoting from its root",
+          "parent-child transform mixes world and local coordinates"
+        ]
+      },
+      {
+        "id": "surface-material-response",
+        "name": "Surface material response",
+        "required": true,
+        "qualityCriteria": [
+          "Albedo zones, roughness, normal/bump/displacement intent, cavity dirt, edge wear, and local overrides are specified where visible.",
+          "Important materials define independent albedo, roughness, height/normal, and AO responses instead of reusing one texture for unrelated PBR channels.",
+          "Surface response is decomposed into macro, meso, and micro frequency bands with scale and amplitude tied to object scale."
+        ],
+        "evidenceRefs": [
+          "full-object"
+        ],
+        "failureModes": [
+          "surface looks like flat plastic",
+          "local material variation is missing or not tied to image evidence"
+        ]
+      },
+      {
+        "id": "reference-lookdev",
+        "name": "Reference color, material, and lighting response",
+        "required": true,
+        "qualityCriteria": [
+          "Material-pass names the reference-derived albedo palette, roughness variation, tactile normal/bump/displacement response, and local masks.",
+          "When a source image is available, run reference PBR extraction and require confidence >= 0.7 before treating maps as implementation-ready.",
+          "Lighting-pass names key/fill/rim or environment light, exposure, tone mapping, background, and contact shadow behavior.",
+          "Neutral, grazing-angle, and reference-matched renders prove that surface relief survives relighting and is not painted into albedo."
+        ],
+        "evidenceRefs": [
+          "full-object"
+        ],
+        "failureModes": [
+          "model has acceptable shape but reads as flat shaded or plastic",
+          "colors are a generic average instead of reference-observed local color zones",
+          "lighting is evenly ambient and cannot reproduce the source value range"
+        ]
+      }
+    ],
+    "visualDeltaChecks": [
+      "silhouette and negative-space delta",
+      "component hierarchy depth delta",
+      "repetition density and distribution delta",
+      "material albedo/roughness/normal response delta",
+      "local feature placement and scale delta"
+    ],
+    "antiShallowSpecRules": [
+      "Do not proceed to code if qualityContract.qualityBar is unassessed.",
+      "Do not proceed to code if the spec only contains a root component for a moderate or complex object.",
+      "Do not proceed to code if required featureGroups are not represented by componentTree, materials, or repetitionSystems.",
+      "Do not proceed to code if visible local features are described only in prose and not attached to components/materials/evidenceRefs.",
+      "Do not proceed past structural-pass if attached child parts lack attachment.parentSocket, localStart, localEnd, embedDepth/overlap, and gapTolerance.",
+      "Do not pass material look-dev when albedo is reused as roughness, height, normal, or AO.",
+      "Do not pass material look-dev without macro, meso, and micro surface frequency bands for close-up materials.",
+      "Do not pass reference-fidelity material look-dev from a source image without usable referencePbr maps or an explicit documented limitation.",
+      "Do not patch a spec with extracted PBR maps when extraction confidence is below the target threshold unless the user explicitly accepts lower fidelity.",
+      "Do not place adjacent separate-geometry parts below 0.02 world-unit seam overlap (source: grimoire/build/geometry_patterns.md).",
+      "Do not satisfy raised or recessed relief, fasteners, or grip structure with a map alone when the feature affects form; use geometry or displacement (source: grimoire/build/geometry_patterns.md).",
+      "Adjacent components must overlap by at least 0.02 world units at shared seams (source: grimoire/build/geometry_patterns.md).",
+      "Raised or recessed relief and fasteners must be geometry, instanced micro-parts, or displacement; a map alone is an approximation (source: grimoire/build/geometry_patterns.md)."
+    ],
+    "mustNotDo": [
+      "Do not proceed to code if qualityContract.qualityBar is unassessed.",
+      "Do not proceed to code if the spec only contains a root component for a moderate or complex object.",
+      "Do not proceed to code if required featureGroups are not represented by componentTree, materials, or repetitionSystems.",
+      "Do not proceed to code if visible local features are described only in prose and not attached to components/materials/evidenceRefs.",
+      "Do not proceed past structural-pass if attached child parts lack attachment.parentSocket, localStart, localEnd, embedDepth/overlap, and gapTolerance.",
+      "Do not pass material look-dev when albedo is reused as roughness, height, normal, or AO.",
+      "Do not pass material look-dev without macro, meso, and micro surface frequency bands for close-up materials.",
+      "Do not pass reference-fidelity material look-dev from a source image without usable referencePbr maps or an explicit documented limitation.",
+      "Do not patch a spec with extracted PBR maps when extraction confidence is below the target threshold unless the user explicitly accepts lower fidelity.",
+      "Do not place adjacent separate-geometry parts below 0.02 world-unit seam overlap (source: grimoire/build/geometry_patterns.md).",
+      "Do not satisfy raised or recessed relief, fasteners, or grip structure with a map alone when the feature affects form; use geometry or displacement (source: grimoire/build/geometry_patterns.md).",
+      "Adjacent components must overlap by at least 0.02 world units at shared seams (source: grimoire/build/geometry_patterns.md).",
+      "Raised or recessed relief and fasteners must be geometry, instanced micro-parts, or displacement; a map alone is an approximation (source: grimoire/build/geometry_patterns.md)."
+    ]
+  },
+  "qualityTargets": {
+    "targetFidelity": 0.7,
+    "mustMatch": [
+      "macro silhouette and proportions",
+      "primary material albedo/roughness response",
+      "reference-derived PBR material response at or above 0.7 confidence when source pixels are usable",
+      "most recognizable local features"
+    ],
+    "niceToHave": [
+      "micro scratches, stains, chips, and dirt masks",
+      "secondary lighting match"
+    ],
+    "fpsTarget": 60,
+    "reviewViewpoints": [
+      "front-hero",
+      "back-view",
+      "right-profile",
+      "threequarter-back",
+      "action-poses"
+    ]
+  },
+  "selfCorrectLoop": {
+    "enabled": true,
+    "visualAcceptance": {
+      "reviewer": "ai-vision",
+      "threshold": 0.7,
+      "comparisonArtifactRequired": true,
+      "layerScoresRequired": true,
+      "codePixelDiffIsAcceptanceAuthority": false,
+      "scoringRule": "AI vision must inspect a side-by-side reference/render sheet and score the current pass from 0 to 1. Pixel-diff code may assist diagnostics but cannot approve a pass.",
+      "requiredLayerScores": [
+        "silhouetteProportion",
+        "componentStructure",
+        "formDetail",
+        "materialSurface",
+        "lightingCamera"
+      ],
+      "featureReviewPolicy": {
+        "enabled": true,
+        "reviewUnit": "semantic-subsystem",
+        "maxCriticalFeaturesPerPass": 5,
+        "maxImportantFeaturesPerPass": 3,
+        "criticalDefaultThreshold": 0.8,
+        "importantAverageThreshold": 0.65,
+        "adaptiveEscalation": true,
+        "singleImagePairOnly": true,
+        "selectionRule": "Choose only the most visually salient, identity-defining, user-prioritized, or high-risk semantic systems. Group repeated parts instead of reviewing every mesh. AI vision scores every selected feature from the same full reference/render pair."
+      }
+    },
+    "reviewAfterPasses": [
+      "blockout",
+      "structural-pass",
+      "form-refinement",
+      "material-pass",
+      "surface-pass",
+      "lighting-pass",
+      "interaction-pass",
+      "optimization-pass"
+    ],
+    "allowedActions": [
+      "continue",
+      "refine-spec",
+      "refine-code",
+      "request-input",
+      "stop"
+    ],
+    "specRefineTriggers": [
+      "missing component",
+      "wrong primitive family",
+      "wrong proportions",
+      "material layer under-specified",
+      "local feature not traceable to viewEvidence",
+      "reference ambiguity discovered during implementation"
+    ],
+    "codeRefineTriggers": [
+      "spec is adequate but generated geometry/material does not match",
+      "browser render differs from reference",
+      "performance budget exceeded",
+      "lighting hides geometry or material response"
+    ],
+    "stopCriteria": [
+      "target fidelity reached or user accepts current approximation",
+      "remaining gaps require new reference images or manual art"
+    ],
+    "screenshotPolicy": {
+      "requiredForPasses": [
+        "blockout",
+        "structural-pass",
+        "form-refinement",
+        "material-pass",
+        "surface-pass",
+        "lighting-pass",
+        "interaction-pass"
+      ],
+      "preferredCapture": "in-app-browser-screenshot",
+      "fallbackCapture": "user-supplied-screenshot-path",
+      "minimumEvidence": "Each visual pass needs a reference image, rendered screenshot, side-by-side comparison sheet, AI vision score, layer scores, and critique before choosing continue.",
+      "reviewPairRule": "Compare the same camera/viewpoint whenever possible; do not judge a front reference against a random render angle.",
+      "acceptanceAuthority": "AI vision review of the comparison sheet. Code-generated pixel similarity is not sufficient evidence."
+    }
+  },
+  "featureReviewTargets": [
+    {
+      "id": "emblem-trio",
+      "name": "Gold filigree emblem trio (chest/shield/cape)",
+      "tier": "critical",
+      "passIds": [
+        "material"
+      ],
+      "minimumScore": 0.85,
+      "mustPass": true,
+      "componentRefs": [
+        "emblem-chest",
+        "emblem-shield",
+        "emblem-cape"
+      ],
+      "evidenceRefs": [
+        "sprite-front.png#chest",
+        "sprite.png#shield",
+        "sprite.png#cape-back"
+      ]
+    },
+    {
+      "id": "pauldron-asymmetry",
+      "name": "Asymmetric pauldron masses",
+      "tier": "critical",
+      "passIds": [
+        "structure"
+      ],
+      "minimumScore": 0.85,
+      "mustPass": true,
+      "componentRefs": [
+        "pauldronL",
+        "pauldronR"
+      ],
+      "evidenceRefs": [
+        "sprite-front.png#shoulders"
+      ]
+    },
+    {
+      "id": "cape-silhouette",
+      "name": "Tattered cape silhouette",
+      "tier": "critical",
+      "passIds": [
+        "form"
+      ],
+      "minimumScore": 0.85,
+      "mustPass": true,
+      "componentRefs": [
+        "capeBack",
+        "cape-tear-hem"
+      ],
+      "evidenceRefs": [
+        "sprite.png#back-view"
+      ]
+    },
+    {
+      "id": "shield-cross",
+      "name": "Shield field + gold cross",
+      "tier": "critical",
+      "passIds": [
+        "material"
+      ],
+      "minimumScore": 0.85,
+      "mustPass": true,
+      "componentRefs": [
+        "shield",
+        "emblem-shield"
+      ],
+      "evidenceRefs": [
+        "sprite-front.png#shield"
+      ]
+    },
+    {
+      "id": "hair-silhouette",
+      "name": "Tousled hair silhouette",
+      "tier": "critical",
+      "passIds": [
+        "form"
+      ],
+      "minimumScore": 0.8,
+      "mustPass": true,
+      "componentRefs": [
+        "hair"
+      ],
+      "evidenceRefs": [
+        "sprite-front.png#head"
+      ]
+    },
+    {
+      "id": "sword-pose",
+      "name": "Sword grip pose (right, point-down)",
+      "tier": "important",
+      "passIds": [
+        "blockout"
+      ],
+      "minimumScore": 0.75,
+      "mustPass": false,
+      "componentRefs": [
+        "sword",
+        "armR"
+      ],
+      "evidenceRefs": [
+        "sprite-front.png#armR"
+      ]
+    },
+    {
+      "id": "tabard-layering",
+      "name": "Tabard front + skirt layering",
+      "tier": "important",
+      "passIds": [
+        "structure"
+      ],
+      "minimumScore": 0.75,
+      "mustPass": false,
+      "componentRefs": [
+        "tabardFront",
+        "tabardSkirt"
+      ],
+      "evidenceRefs": [
+        "sprite-front.png#torso"
+      ]
+    },
+    {
+      "id": "plate-rivet-density",
+      "name": "Rivet/lame density read",
+      "tier": "important",
+      "passIds": [
+        "material"
+      ],
+      "minimumScore": 0.7,
+      "mustPass": false,
+      "componentRefs": [
+        "rivet-rows",
+        "fauld"
+      ],
+      "evidenceRefs": [
+        "sprite-front.png#torso"
+      ]
+    }
+  ],
+  "sculptPipeline": {
+    "passGateMode": "locked-sequential",
+    "passOrder": [
+      "blockout",
+      "structural-pass",
+      "form-refinement",
+      "material-pass",
+      "surface-pass",
+      "lighting-pass",
+      "interaction-pass",
+      "optimization-pass"
+    ],
+    "currentPass": "blockout",
+    "completedPasses": [],
+    "lastCompletedPass": "",
+    "blockedReason": "blockout requires a browser screenshot and self-correction review before structural-pass unlocks",
+    "nextRequiredEvidence": [
+      "blockout browser render screenshot from your agent's browser/screenshot tool",
+      "side-by-side reference/render comparison sheet",
+      "AI vision score >= 0.7 with layer scores and mismatch critique",
+      "critical semantic feature scores from the same image pair meeting their individual thresholds",
+      "reviewHistory entry for blockout with action=continue"
+    ]
+  },
+  "lookDevTargets": {
+    "qualityPriority": "reference-fidelity",
+    "materialPass": {
+      "albedoPaletteRequired": true,
+      "roughnessVariationRequired": true,
+      "normalOrBumpRequired": true,
+      "localOverridesRequired": true,
+      "minimumTextureResolution": 1024,
+      "preferredTextureResolution": 2048,
+      "independentMapChannels": [
+        "albedo",
+        "roughness",
+        "height",
+        "normal",
+        "ambient-occlusion"
+      ],
+      "requiredSurfaceFrequencyBands": [
+        "macro",
+        "meso",
+        "micro"
+      ],
+      "geometryReliefRequiredWhenSilhouetteAffected": true,
+      "referencePbrExtraction": {
+        "requiredWhenSourceImagePresent": true,
+        "targetThreshold": 0.7,
+        "stopOnLowConfidence": true,
+        "script": "forge/stage1_intake/extract_pbr_evidence.py",
+        "acceptedLimitation": "single-image extraction is reference-derived inference, not exact photogrammetry"
+      },
+      "mustAvoid": [
+        "single flat albedo per material",
+        "uniform roughness",
+        "albedo texture reused as roughness/height/normal/AO",
+        "single-frequency random noise",
+        "plastic-looking smooth bark, stone, cloth, foliage, or aged material",
+        "local color/detail described only in prose without material masks",
+        "claiming exact PBR recovery when confidence is below the target threshold"
+      ]
+    },
+    "lightingPass": {
+      "requiredTerms": [
+        "key light",
+        "fill light",
+        "rim or environment light",
+        "exposure",
+        "tone mapping",
+        "background",
+        "contact shadow"
+      ],
+      "mustAvoid": [
+        "ambient-only lighting",
+        "flat value range",
+        "missing contact shadow",
+        "reference lighting copied without separating material readability"
+      ]
+    },
+    "screenshotReview": [
+      "Compare albedo palette and local color zones.",
+      "Compare roughness/normal/bump response under light.",
+      "Compare cavity dirt, edge wear, stains, moss, scratches, or other local masks.",
+      "Compare key/fill/rim structure, exposure, tone mapping, background, and contact shadows.",
+      "Capture a neutral-light render to verify material readability without reference lighting.",
+      "Capture a grazing-light close-up to expose flat normals, uniform roughness, tiling, and plastic highlights.",
+      "Capture a reference-matched render from the same camera framing as the source."
+    ]
+  },
+  "actionReadiness": {
+    "contract": "Every macro/meso component should be generated as a stable named Object3D pivot node with a mesh child, action metadata, optional sockets, collider proxy, and destruction metadata.",
+    "defaultRigType": "action-ready-static-rig",
+    "rootMotionNode": "root",
+    "requiredComponentFields": [
+      "id",
+      "parent",
+      "transform",
+      "attachment for child appendages, connectors, limbs, tubes, handles, legs, horns, wings, branches, or cables",
+      "actionProfile.animationRole",
+      "actionProfile.pivot",
+      "actionProfile.collider",
+      "actionProfile.destruction"
+    ],
+    "transformChannels": [
+      "translate",
+      "rotate",
+      "scale",
+      "bend",
+      "twist",
+      "detach",
+      "visibility",
+      "material-state"
+    ],
+    "authoringRules": [
+      "Do not collapse independently movable parts into one mesh.",
+      "Put transforms on component pivot groups, not only on raw meshes.",
+      "For attached child parts, put the pivot at the semantic root/socket and build visible geometry from localStart to localEnd.",
+      "Represent hinge, socket, detachable, and breakable intent even when no animation is implemented yet.",
+      "Use simplified collider proxies for runtime physics instead of visual mesh colliders by default."
+    ],
+    "destructionPolicy": {
+      "defaultBreakable": false,
+      "fractureGroupNaming": "Use stable semantic names such as body-shell, left-hinge, glass-panel, branch-segment.",
+      "debrisStrategy": "Prefer detachable component groups and a small number of procedural fragments over random mesh explosion."
+    }
+  },
+  "assumptions": [],
+  "coordinateFrame": {
+    "front": "camera-facing side in the reference image",
+    "up": "image up direction",
+    "scaleReference": "unit scale; adjust after first browser render"
+  },
+  "silhouette": {
+    "boundingShape": "",
+    "aspectRatios": [],
+    "symmetry": "",
+    "dominantCurves": [],
+    "negativeSpaces": [],
+    "landmarks": []
+  },
+  "viewEvidence": [
+    {
+      "id": "front-hero",
+      "view": "primary",
+      "imageRegion": {
+        "x": 0.008,
+        "y": 0.02,
+        "width": 0.429,
+        "height": 1,
+        "units": "normalized",
+        "source": "sprite-front.png"
+      },
+      "observations": [
+        "full front plate read",
+        "tabard + emblem"
+      ],
+      "confidence": 0.95
+    },
+    {
+      "id": "back-view",
+      "view": "back",
+      "imageRegion": {
+        "x": 0.68,
+        "y": 0.03,
+        "width": 0.2,
+        "height": 0.62,
+        "units": "normalized",
+        "source": "sprite.png"
+      },
+      "observations": [
+        "cape emblem observed",
+        "cape length to calves"
+      ],
+      "confidence": 0.85
+    },
+    {
+      "id": "right-profile",
+      "view": "right",
+      "imageRegion": {
+        "x": 0.55,
+        "y": 0.03,
+        "width": 0.13,
+        "height": 0.62,
+        "units": "normalized",
+        "source": "sprite.png"
+      },
+      "observations": [
+        "pauldron depth",
+        "helmet-free head profile"
+      ],
+      "confidence": 0.8
+    },
+    {
+      "id": "threequarter-back",
+      "view": "3q-back",
+      "imageRegion": {
+        "x": 0.78,
+        "y": 0.03,
+        "width": 0.16,
+        "height": 0.62,
+        "units": "normalized",
+        "source": "sprite.png"
+      },
+      "observations": [
+        "cape flow",
+        "pauldron from rear"
+      ],
+      "confidence": 0.8
+    },
+    {
+      "id": "action-poses",
+      "view": "pose-reference",
+      "imageRegion": {
+        "x": 0.42,
+        "y": 0.45,
+        "width": 0.56,
+        "height": 0.5,
+        "units": "normalized",
+        "source": "sprite.png"
+      },
+      "observations": [
+        "6 action poses for rig anchors"
+      ],
+      "confidence": 0.7
+    }
+  ],
+  "componentTree": [
+    {
+      "id": "root",
+      "name": "Aldarion Knight",
+      "level": "macro",
+      "role": "body root / skeleton anchor",
+      "parent": null,
+      "importance": 1,
+      "confidence": 0.9,
+      "primitive": "box",
+      "topologyClass": "assembled-solid",
+      "topologyRationale": "Full character assembly; silhouette defined by cape + pauldron asymmetry",
+      "geometryDescriptor": {},
+      "materialRefs": [],
+      "localFeatures": [],
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(138, 143, 150, 1.0)",
+        "secondaryAlbedo": "rgba(42, 53, 80, 1.0)",
+        "materialClass": "metal",
+        "materialClassConfidence": 0.85,
+        "evidenceRef": "sprite-front.png#root"
+      },
+      "actionProfile": {
+        "animationRole": "assemblage complet"
+      },
+      "material": "steel"
+    },
+    {
+      "id": "head",
+      "name": "Head & hair",
+      "level": "macro",
+      "role": "head unit",
+      "parent": "root",
+      "importance": 1,
+      "confidence": 0.9,
+      "primitive": "sphere",
+      "topologyClass": "continuous-sculpt",
+      "topologyRationale": "Skull volume continuous; hair as 5-15 clump masses per contract",
+      "geometryDescriptor": {},
+      "materialRefs": [
+        "skin",
+        "hairDark"
+      ],
+      "localFeatures": [
+        {
+          "id": "eyes-glossy",
+          "note": "glossy spheres + iris disc + catchlight quad toward moonlight key"
+        },
+        {
+          "id": "hair-silhouette",
+          "note": "tousled fringe, side-swept part, nape volume — identity feature"
+        }
+      ],
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(216, 179, 154, 1.0)",
+        "secondaryAlbedo": "rgba(29, 26, 34, 1.0)",
+        "materialClass": "skin",
+        "materialClassConfidence": 0.85,
+        "evidenceRef": "sprite-front.png#head"
+      },
+      "actionProfile": {
+        "animationRole": "tête + masse capillaire"
+      },
+      "material": "skin"
+    },
+    {
+      "id": "torso",
+      "name": "Torso: cuirass / tabard / belt",
+      "level": "macro",
+      "role": "core mass",
+      "parent": "root",
+      "importance": 1,
+      "confidence": 0.9,
+      "primitive": "cylinder",
+      "topologyClass": "assembled-solid",
+      "topologyRationale": "Segmented plates over cloth; tabard hangs front center",
+      "geometryDescriptor": {},
+      "materialRefs": [],
+      "localFeatures": [],
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(138, 143, 150, 1.0)",
+        "secondaryAlbedo": "rgba(42, 53, 80, 1.0)",
+        "materialClass": "metal",
+        "materialClassConfidence": 0.85,
+        "evidenceRef": "sprite-front.png#torso"
+      },
+      "actionProfile": {
+        "animationRole": "torse cuirassé"
+      },
+      "attachment": {
+        "parentId": "root",
+        "parentSocket": "pelvis",
+        "localStart": [
+          0,
+          10.8,
+          0
+        ],
+        "localEnd": [
+          0,
+          15.5,
+          0
+        ],
+        "contactType": "surface-contact",
+        "embedDepth": 0.02,
+        "gapTolerance": 0.01
+      },
+      "material": "steel"
+    },
+    {
+      "id": "armR",
+      "name": "Right arm (sword arm)",
+      "level": "macro",
+      "role": "limb",
+      "parent": "root",
+      "importance": 1,
+      "confidence": 0.9,
+      "primitive": "capsule",
+      "topologyClass": "assembled-solid",
+      "topologyRationale": "rerebrace/couter/gauntlet lames follow elbow flexion",
+      "geometryDescriptor": {},
+      "materialRefs": [],
+      "localFeatures": [],
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(138, 143, 150, 1.0)",
+        "secondaryAlbedo": "rgba(201, 160, 78, 1.0)",
+        "materialClass": "metal",
+        "materialClassConfidence": 0.85,
+        "evidenceRef": "sprite-front.png#armR"
+      },
+      "actionProfile": {
+        "animationRole": "bras d'arme"
+      },
+      "attachment": {
+        "parentId": "root",
+        "parentSocket": "shoulderR",
+        "localStart": [
+          0.9,
+          14.2,
+          0
+        ],
+        "localEnd": [
+          0.9,
+          6.2,
+          0.4
+        ],
+        "contactType": "surface-contact",
+        "embedDepth": 0.02,
+        "gapTolerance": 0.01
+      },
+      "material": "steel"
+    },
+    {
+      "id": "armL",
+      "name": "Left arm (shield arm)",
+      "level": "macro",
+      "role": "limb",
+      "parent": "root",
+      "importance": 1,
+      "confidence": 0.9,
+      "primitive": "capsule",
+      "topologyClass": "assembled-solid",
+      "topologyRationale": "raised forward carrying heater shield",
+      "geometryDescriptor": {},
+      "materialRefs": [],
+      "localFeatures": [],
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(138, 143, 150, 1.0)",
+        "secondaryAlbedo": "rgba(201, 160, 78, 1.0)",
+        "materialClass": "metal",
+        "materialClassConfidence": 0.85,
+        "evidenceRef": "sprite-front.png#armL"
+      },
+      "actionProfile": {
+        "animationRole": "bras de bouclier"
+      },
+      "attachment": {
+        "parentId": "root",
+        "parentSocket": "shoulderL",
+        "localStart": [
+          -0.9,
+          14.2,
+          0
+        ],
+        "localEnd": [
+          -0.9,
+          7.5,
+          1.6
+        ],
+        "contactType": "surface-contact",
+        "embedDepth": 0.02,
+        "gapTolerance": 0.01
+      },
+      "material": "steel"
+    },
+    {
+      "id": "legs",
+      "name": "Legs (fauld → sabatons)",
+      "level": "macro",
+      "role": "lower body",
+      "parent": "root",
+      "importance": 1,
+      "confidence": 0.9,
+      "primitive": "capsule",
+      "topologyClass": "assembled-solid",
+      "topologyRationale": "layered cuisse/poleyn/greave per leg",
+      "geometryDescriptor": {},
+      "materialRefs": [],
+      "localFeatures": [],
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(138, 143, 150, 1.0)",
+        "secondaryAlbedo": "rgba(90, 70, 50, 1.0)",
+        "materialClass": "metal",
+        "materialClassConfidence": 0.85,
+        "evidenceRef": "sprite-front.png#legs"
+      },
+      "actionProfile": {
+        "animationRole": "jambes blindées"
+      },
+      "attachment": {
+        "parentId": "root",
+        "parentSocket": "pelvis",
+        "localStart": [
+          0,
+          10.6,
+          0
+        ],
+        "localEnd": [
+          0,
+          0.4,
+          0
+        ],
+        "contactType": "surface-contact",
+        "embedDepth": 0.02,
+        "gapTolerance": 0.01
+      },
+      "material": "steel"
+    },
+    {
+      "id": "gear",
+      "name": "Cape & shield group",
+      "level": "macro",
+      "role": "worn gear",
+      "parent": "root",
+      "importance": 1,
+      "confidence": 0.9,
+      "primitive": "extrude",
+      "topologyClass": "assembled-solid",
+      "topologyRationale": "cape = torn cloth panels; shield = curved heater plate",
+      "geometryDescriptor": {},
+      "materialRefs": [],
+      "localFeatures": [],
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(42, 53, 80, 1.0)",
+        "secondaryAlbedo": "rgba(201, 160, 78, 1.0)",
+        "materialClass": "fabric",
+        "materialClassConfidence": 0.85,
+        "evidenceRef": "sprite-front.png#gear"
+      },
+      "actionProfile": {
+        "animationRole": "cape + bouclier"
+      },
+      "attachment": {
+        "parentId": "root",
+        "parentSocket": "back",
+        "localStart": [
+          0,
+          13.5,
+          -0.5
+        ],
+        "localEnd": [
+          0,
+          2,
+          -1.2
+        ],
+        "contactType": "drape-contact",
+        "embedDepth": 0.02,
+        "gapTolerance": 0.01
+      },
+      "material": "clothNavy"
+    },
+    {
+      "id": "face",
+      "name": "Face",
+      "level": "meso",
+      "role": "facial volume",
+      "parent": "head",
+      "importance": 0.8,
+      "confidence": 0.9,
+      "primitive": "ellipsoid",
+      "topologyClass": "continuous-sculpt",
+      "topologyRationale": "continuous facial volume under hair masses",
+      "geometryDescriptor": {},
+      "materialRefs": [
+        "skin"
+      ],
+      "localFeatures": [
+        {
+          "id": "lf-catchlight",
+          "note": "catchlight vers clé lunaire"
+        }
+      ],
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(216, 179, 154, 1.0)",
+        "secondaryAlbedo": "rgba(185, 143, 116, 1.0)",
+        "materialClass": "skin",
+        "materialClassConfidence": 0.85,
+        "evidenceRef": "sprite-front.png#face"
+      },
+      "actionProfile": {
+        "animationRole": "volume facial"
+      },
+      "material": "skin"
+    },
+    {
+      "id": "hair",
+      "name": "Hair masses",
+      "level": "meso",
+      "role": "hair coverage",
+      "parent": "head",
+      "importance": 0.8,
+      "confidence": 0.9,
+      "primitive": "tube",
+      "topologyClass": "fiber-strand",
+      "topologyRationale": "rigid parented clump masses, no strands",
+      "geometryDescriptor": {},
+      "materialRefs": [
+        "hairDark"
+      ],
+      "localFeatures": [],
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(29, 26, 34, 1.0)",
+        "secondaryAlbedo": "rgba(51, 48, 60, 1.0)",
+        "materialClass": "fabric",
+        "materialClassConfidence": 0.85,
+        "evidenceRef": "sprite-front.png#hair"
+      },
+      "actionProfile": {
+        "animationRole": "masse capillaire"
+      },
+      "attachment": {
+        "parentId": "head",
+        "parentSocket": "scalp",
+        "localStart": [
+          0,
+          16.9,
+          0
+        ],
+        "localEnd": [
+          0,
+          15.6,
+          0
+        ],
+        "contactType": "surface-contact",
+        "embedDepth": 0.02,
+        "gapTolerance": 0.01
+      },
+      "material": "hairDark"
+    },
+    {
+      "id": "cowl",
+      "name": "Neck cowl",
+      "level": "meso",
+      "role": "cloth wrap",
+      "parent": "torso",
+      "importance": 0.8,
+      "confidence": 0.9,
+      "primitive": "torus",
+      "topologyClass": "conforming-shell",
+      "topologyRationale": "wrapped cloth with fold creases",
+      "geometryDescriptor": {},
+      "materialRefs": [
+        "clothNavy"
+      ],
+      "localFeatures": [],
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(42, 53, 80, 1.0)",
+        "secondaryAlbedo": "rgba(61, 74, 107, 1.0)",
+        "materialClass": "fabric",
+        "materialClassConfidence": 0.85,
+        "evidenceRef": "sprite-front.png#cowl"
+      },
+      "actionProfile": {
+        "animationRole": "cowl de cou"
+      },
+      "material": "clothNavy"
+    },
+    {
+      "id": "cuirass",
+      "name": "Cuirass",
+      "level": "meso",
+      "role": "chest plate",
+      "parent": "torso",
+      "importance": 0.8,
+      "confidence": 0.9,
+      "primitive": "lathe",
+      "topologyClass": "conforming-shell",
+      "topologyRationale": "continuous chest shell with central ridge",
+      "geometryDescriptor": {},
+      "materialRefs": [
+        "steel",
+        "goldTrim"
+      ],
+      "localFeatures": [
+        {
+          "id": "lf-emblem-chest",
+          "note": "filigrane croix or sur plastron"
+        },
+        {
+          "id": "lf-rivet-rows",
+          "note": "rivets de rives"
+        }
+      ],
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(138, 143, 150, 1.0)",
+        "secondaryAlbedo": "rgba(201, 160, 78, 1.0)",
+        "materialClass": "metal",
+        "materialClassConfidence": 0.85,
+        "evidenceRef": "sprite-front.png#cuirass"
+      },
+      "actionProfile": {
+        "animationRole": "plastron"
+      },
+      "material": "steel"
+    },
+    {
+      "id": "tabardFront",
+      "name": "Front tabard",
+      "level": "meso",
+      "role": "cloth panel",
+      "parent": "torso",
+      "importance": 0.8,
+      "confidence": 0.9,
+      "primitive": "extrude",
+      "topologyClass": "conforming-shell",
+      "topologyRationale": "hanging cloth with emblem print",
+      "geometryDescriptor": {},
+      "materialRefs": [
+        "clothNavy"
+      ],
+      "localFeatures": [],
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(42, 53, 80, 1.0)",
+        "secondaryAlbedo": "rgba(201, 160, 78, 1.0)",
+        "materialClass": "fabric",
+        "materialClassConfidence": 0.85,
+        "evidenceRef": "sprite-front.png#tabardFront"
+      },
+      "actionProfile": {
+        "animationRole": "tabard avant"
+      },
+      "material": "clothNavy"
+    },
+    {
+      "id": "belt",
+      "name": "Belt & pouches",
+      "level": "meso",
+      "role": "waist gear",
+      "parent": "torso",
+      "importance": 0.8,
+      "confidence": 0.9,
+      "primitive": "torus",
+      "topologyClass": "assembled-solid",
+      "topologyRationale": "double-buckle leather with pouches",
+      "geometryDescriptor": {},
+      "materialRefs": [
+        "leather"
+      ],
+      "localFeatures": [
+        {
+          "id": "lf-buckles",
+          "note": "double boucle + pouches"
+        }
+      ],
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(90, 70, 50, 1.0)",
+        "secondaryAlbedo": "rgba(201, 160, 78, 1.0)",
+        "materialClass": "unknown",
+        "materialClassConfidence": 0.85,
+        "evidenceRef": "sprite-front.png#belt"
+      },
+      "actionProfile": {
+        "animationRole": "ceinture"
+      },
+      "material": "leather"
+    },
+    {
+      "id": "pauldronL",
+      "name": "Pauldron left (large)",
+      "level": "meso",
+      "role": "shoulder plate",
+      "parent": "armL",
+      "importance": 0.8,
+      "confidence": 0.9,
+      "primitive": "ellipsoid",
+      "topologyClass": "assembled-solid",
+      "topologyRationale": "3-layer asymmetric mass — identity feature",
+      "geometryDescriptor": {},
+      "materialRefs": [
+        "steel",
+        "goldTrim"
+      ],
+      "localFeatures": [
+        {
+          "id": "lf-lames",
+          "note": "3 lames empilées"
+        }
+      ],
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(138, 143, 150, 1.0)",
+        "secondaryAlbedo": "rgba(201, 160, 78, 1.0)",
+        "materialClass": "metal",
+        "materialClassConfidence": 0.85,
+        "evidenceRef": "sprite-front.png#pauldronL"
+      },
+      "actionProfile": {
+        "animationRole": "épaulière gauche (large)"
+      },
+      "material": "steel"
+    },
+    {
+      "id": "pauldronR",
+      "name": "Pauldron right (small)",
+      "level": "meso",
+      "role": "shoulder plate",
+      "parent": "armR",
+      "importance": 0.8,
+      "confidence": 0.9,
+      "primitive": "ellipsoid",
+      "topologyClass": "assembled-solid",
+      "topologyRationale": "2-layer reduced plate",
+      "geometryDescriptor": {},
+      "materialRefs": [
+        "steel"
+      ],
+      "localFeatures": [],
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(138, 143, 150, 1.0)",
+        "secondaryAlbedo": "rgba(110, 116, 124, 1.0)",
+        "materialClass": "metal",
+        "materialClassConfidence": 0.85,
+        "evidenceRef": "sprite-front.png#pauldronR"
+      },
+      "actionProfile": {
+        "animationRole": "épaulière droite"
+      },
+      "material": "steel"
+    },
+    {
+      "id": "fauld",
+      "name": "Fauld & tassets",
+      "level": "meso",
+      "role": "hip plates",
+      "parent": "legs",
+      "importance": 0.8,
+      "confidence": 0.9,
+      "primitive": "lathe",
+      "topologyClass": "assembled-solid",
+      "topologyRationale": "layered hip lames over tabard skirt",
+      "geometryDescriptor": {},
+      "materialRefs": [
+        "steel"
+      ],
+      "localFeatures": [
+        {
+          "id": "lf-tassets",
+          "note": "tassets superposés"
+        }
+      ],
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(138, 143, 150, 1.0)",
+        "secondaryAlbedo": "rgba(110, 116, 124, 1.0)",
+        "materialClass": "metal",
+        "materialClassConfidence": 0.85,
+        "evidenceRef": "sprite-front.png#fauld"
+      },
+      "actionProfile": {
+        "animationRole": "fauld/tassets"
+      },
+      "material": "steel"
+    },
+    {
+      "id": "capeBack",
+      "name": "Cape (tattered)",
+      "level": "meso",
+      "role": "back cloth",
+      "parent": "gear",
+      "importance": 0.8,
+      "confidence": 0.9,
+      "primitive": "extrude",
+      "topologyClass": "open-shell",
+      "topologyRationale": "long ragged panels to calves — silhouette identity",
+      "geometryDescriptor": {},
+      "materialRefs": [
+        "clothNavy"
+      ],
+      "localFeatures": [
+        {
+          "id": "lf-emblem-cape",
+          "note": "emblème dorsal or"
+        },
+        {
+          "id": "lf-tear-hem",
+          "note": "ourlet déchiré irrégulier"
+        }
+      ],
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(42, 53, 80, 1.0)",
+        "secondaryAlbedo": "rgba(201, 160, 78, 1.0)",
+        "materialClass": "fabric",
+        "materialClassConfidence": 0.85,
+        "evidenceRef": "sprite-front.png#capeBack"
+      },
+      "actionProfile": {
+        "animationRole": "cape déchirée"
+      },
+      "material": "clothNavy"
+    },
+    {
+      "id": "shield",
+      "name": "Heater shield",
+      "level": "meso",
+      "role": "worn plate",
+      "parent": "gear",
+      "importance": 0.8,
+      "confidence": 0.9,
+      "primitive": "extrude",
+      "topologyClass": "conforming-shell",
+      "topologyRationale": "heater curve, navy field + gold cross — identity",
+      "geometryDescriptor": {},
+      "materialRefs": [
+        "clothNavy",
+        "goldTrim",
+        "steel"
+      ],
+      "localFeatures": [
+        {
+          "id": "lf-emblem-shield",
+          "note": "croix or sur champ navy"
+        }
+      ],
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(42, 53, 80, 1.0)",
+        "secondaryAlbedo": "rgba(201, 160, 78, 1.0)",
+        "materialClass": "metal",
+        "materialClassConfidence": 0.85,
+        "evidenceRef": "sprite-front.png#shield"
+      },
+      "actionProfile": {
+        "animationRole": "bouclier heater"
+      },
+      "attachment": {
+        "parentId": "gear",
+        "parentSocket": "forearmL",
+        "localStart": [
+          -1,
+          9.8,
+          1.7
+        ],
+        "localEnd": [
+          -1,
+          6.4,
+          2.1
+        ],
+        "contactType": "strap-contact",
+        "embedDepth": 0.02,
+        "gapTolerance": 0.01
+      },
+      "material": "clothNavy"
+    },
+    {
+      "id": "sword",
+      "name": "Longsword",
+      "level": "meso",
+      "role": "weapon",
+      "parent": "armR",
+      "importance": 0.8,
+      "confidence": 0.9,
+      "primitive": "extrude",
+      "topologyClass": "assembled-solid",
+      "topologyRationale": "blade down grip in right gauntlet",
+      "geometryDescriptor": {},
+      "materialRefs": [
+        "steel",
+        "goldTrim"
+      ],
+      "localFeatures": [
+        {
+          "id": "lf-guard",
+          "note": "garde filigranée"
+        },
+        {
+          "id": "lf-fuller",
+          "note": "goutière centrale"
+        }
+      ],
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(200, 200, 200, 1.0)",
+        "secondaryAlbedo": "rgba(201, 160, 78, 1.0)",
+        "materialClass": "metal",
+        "materialClassConfidence": 0.85,
+        "evidenceRef": "sprite-front.png#sword"
+      },
+      "actionProfile": {
+        "animationRole": "épée longue"
+      },
+      "attachment": {
+        "parentId": "armR",
+        "parentSocket": "gripR",
+        "localStart": [
+          1.05,
+          8.6,
+          0.55
+        ],
+        "localEnd": [
+          1.35,
+          1.2,
+          1.5
+        ],
+        "contactType": "grip-contact",
+        "embedDepth": 0.02,
+        "gapTolerance": 0.01
+      },
+      "material": "steel"
+    },
+    {
+      "id": "legL",
+      "name": "Left leg plates",
+      "level": "meso",
+      "role": "limb plates",
+      "parent": "legs",
+      "importance": 0.8,
+      "confidence": 0.9,
+      "primitive": "capsule",
+      "topologyClass": "assembled-solid",
+      "topologyRationale": "cuisse/poleyn/greave chain",
+      "geometryDescriptor": {},
+      "materialRefs": [
+        "steel"
+      ],
+      "localFeatures": [],
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(138, 143, 150, 1.0)",
+        "secondaryAlbedo": "rgba(90, 70, 50, 1.0)",
+        "materialClass": "metal",
+        "materialClassConfidence": 0.85,
+        "evidenceRef": "sprite-front.png#legL"
+      },
+      "actionProfile": {
+        "animationRole": "jambe gauche"
+      },
+      "attachment": {
+        "parentId": "legs",
+        "parentSocket": "hipL",
+        "localStart": [
+          -0.45,
+          10.6,
+          0
+        ],
+        "localEnd": [
+          -0.45,
+          0.4,
+          0.1
+        ],
+        "contactType": "surface-contact",
+        "embedDepth": 0.02,
+        "gapTolerance": 0.01
+      },
+      "material": "steel"
+    },
+    {
+      "id": "legR",
+      "name": "Right leg plates",
+      "level": "meso",
+      "role": "limb plates",
+      "parent": "legs",
+      "importance": 0.8,
+      "confidence": 0.9,
+      "primitive": "capsule",
+      "topologyClass": "assembled-solid",
+      "topologyRationale": "mirror of legL (rotation, not reflection)",
+      "geometryDescriptor": {},
+      "materialRefs": [
+        "steel"
+      ],
+      "localFeatures": [],
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(138, 143, 150, 1.0)",
+        "secondaryAlbedo": "rgba(90, 70, 50, 1.0)",
+        "materialClass": "metal",
+        "materialClassConfidence": 0.85,
+        "evidenceRef": "sprite-front.png#legR"
+      },
+      "actionProfile": {
+        "animationRole": "jambe droite"
+      },
+      "attachment": {
+        "parentId": "legs",
+        "parentSocket": "hipR",
+        "localStart": [
+          0.45,
+          10.6,
+          0
+        ],
+        "localEnd": [
+          0.45,
+          0.4,
+          0.1
+        ],
+        "contactType": "surface-contact",
+        "embedDepth": 0.02,
+        "gapTolerance": 0.01
+      },
+      "material": "steel"
+    },
+    {
+      "id": "gorget",
+      "name": "Gorget",
+      "level": "meso",
+      "role": "neck plate",
+      "parent": "torso",
+      "importance": 0.8,
+      "confidence": 0.9,
+      "primitive": "torus",
+      "topologyClass": "conforming-shell",
+      "topologyRationale": "neck ring under cowl",
+      "geometryDescriptor": {},
+      "materialRefs": [
+        "steel"
+      ],
+      "localFeatures": [],
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(138, 143, 150, 1.0)",
+        "secondaryAlbedo": "rgba(110, 116, 124, 1.0)",
+        "materialClass": "metal",
+        "materialClassConfidence": 0.85,
+        "evidenceRef": "sprite-front.png#gorget"
+      },
+      "actionProfile": {
+        "animationRole": "gorgerin"
+      },
+      "material": "steel"
+    },
+    {
+      "id": "tabardSkirt",
+      "name": "Tabard skirt",
+      "level": "meso",
+      "role": "cloth panel",
+      "parent": "legs",
+      "importance": 0.8,
+      "confidence": 0.9,
+      "primitive": "extrude",
+      "topologyClass": "conforming-shell",
+      "topologyRationale": "front skirt panel between fauld lames",
+      "geometryDescriptor": {},
+      "materialRefs": [
+        "clothNavy"
+      ],
+      "localFeatures": [],
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(42, 53, 80, 1.0)",
+        "secondaryAlbedo": "rgba(201, 160, 78, 1.0)",
+        "materialClass": "fabric",
+        "materialClassConfidence": 0.85,
+        "evidenceRef": "sprite-front.png#tabardSkirt"
+      },
+      "actionProfile": {
+        "animationRole": "jupe de tabard"
+      },
+      "material": "clothNavy"
+    },
+    {
+      "id": "emblem-chest",
+      "name": "Gold filigree chest emblem",
+      "level": "micro",
+      "role": "identity filigree cross",
+      "parent": "cuirass",
+      "importance": 0.7,
+      "confidence": 0.9,
+      "primitive": "extrude",
+      "topologyClass": "surface-relief",
+      "topologyRationale": "surface ornament; follows parent surface, no own silhouette",
+      "geometryDescriptor": {},
+      "materialRefs": [
+        "goldTrim"
+      ],
+      "localFeatures": [],
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(138, 143, 150, 1.0)",
+        "secondaryAlbedo": "rgba(201, 160, 78, 1.0)",
+        "materialClass": "metal",
+        "materialClassConfidence": 0.85,
+        "evidenceRef": "sprite-front.png#emblem-chest"
+      },
+      "actionProfile": {
+        "animationRole": "emblème filigrane"
+      },
+      "material": "goldTrim"
+    },
+    {
+      "id": "emblem-shield",
+      "name": "Gold cross on shield field",
+      "level": "micro",
+      "role": "identity emblem",
+      "parent": "shield",
+      "importance": 0.7,
+      "confidence": 0.9,
+      "primitive": "extrude",
+      "topologyClass": "surface-relief",
+      "topologyRationale": "surface ornament; follows parent surface, no own silhouette",
+      "geometryDescriptor": {},
+      "materialRefs": [
+        "goldTrim"
+      ],
+      "localFeatures": [],
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(42, 53, 80, 1.0)",
+        "secondaryAlbedo": "rgba(201, 160, 78, 1.0)",
+        "materialClass": "metal",
+        "materialClassConfidence": 0.85,
+        "evidenceRef": "sprite-front.png#emblem-shield"
+      },
+      "actionProfile": {
+        "animationRole": "croix d'or bouclier"
+      },
+      "material": "goldTrim"
+    },
+    {
+      "id": "emblem-cape",
+      "name": "Gold filigree cape back emblem",
+      "level": "micro",
+      "role": "identity emblem (observed back view)",
+      "parent": "capeBack",
+      "importance": 0.7,
+      "confidence": 0.9,
+      "primitive": "extrude",
+      "topologyClass": "surface-relief",
+      "topologyRationale": "surface ornament; follows parent surface, no own silhouette",
+      "geometryDescriptor": {},
+      "materialRefs": [
+        "goldTrim"
+      ],
+      "localFeatures": [],
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(42, 53, 80, 1.0)",
+        "secondaryAlbedo": "rgba(201, 160, 78, 1.0)",
+        "materialClass": "fabric",
+        "materialClassConfidence": 0.85,
+        "evidenceRef": "sprite-front.png#emblem-cape"
+      },
+      "actionProfile": {
+        "animationRole": "emblème dorsal"
+      },
+      "material": "goldTrim"
+    },
+    {
+      "id": "rivet-rows",
+      "name": "Rivet rows along plate rives",
+      "level": "micro",
+      "role": "repetition system",
+      "parent": "cuirass",
+      "importance": 0.7,
+      "confidence": 0.9,
+      "primitive": "instanced-cluster",
+      "topologyClass": "surface-relief",
+      "topologyRationale": "surface ornament; follows parent surface, no own silhouette",
+      "geometryDescriptor": {},
+      "materialRefs": [
+        "steel"
+      ],
+      "localFeatures": [],
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(138, 143, 150, 1.0)",
+        "secondaryAlbedo": "rgba(201, 160, 78, 1.0)",
+        "materialClass": "metal",
+        "materialClassConfidence": 0.85,
+        "evidenceRef": "sprite-front.png#rivet-rows"
+      },
+      "actionProfile": {
+        "animationRole": "rangs de rivets"
+      },
+      "material": "steel"
+    },
+    {
+      "id": "belt-buckles",
+      "name": "Double buckle hardware",
+      "level": "micro",
+      "role": "leather hardware",
+      "parent": "belt",
+      "importance": 0.7,
+      "confidence": 0.9,
+      "primitive": "box",
+      "topologyClass": "surface-relief",
+      "topologyRationale": "surface ornament; follows parent surface, no own silhouette",
+      "geometryDescriptor": {},
+      "materialRefs": [
+        "goldTrim"
+      ],
+      "localFeatures": [],
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(90, 70, 50, 1.0)",
+        "secondaryAlbedo": "rgba(201, 160, 78, 1.0)",
+        "materialClass": "unknown",
+        "materialClassConfidence": 0.85,
+        "evidenceRef": "sprite-front.png#belt-buckles"
+      },
+      "actionProfile": {
+        "animationRole": "boucles de ceinture"
+      },
+      "material": "goldTrim"
+    },
+    {
+      "id": "sword-guard",
+      "name": "Sword cross-guard detail",
+      "level": "micro",
+      "role": "guard filigree",
+      "parent": "sword",
+      "importance": 0.7,
+      "confidence": 0.9,
+      "primitive": "torus",
+      "topologyClass": "surface-relief",
+      "topologyRationale": "surface ornament; follows parent surface, no own silhouette",
+      "geometryDescriptor": {},
+      "materialRefs": [
+        "goldTrim"
+      ],
+      "localFeatures": [],
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(200, 200, 200, 1.0)",
+        "secondaryAlbedo": "rgba(201, 160, 78, 1.0)",
+        "materialClass": "metal",
+        "materialClassConfidence": 0.85,
+        "evidenceRef": "sprite-front.png#sword-guard"
+      },
+      "actionProfile": {
+        "animationRole": "garde d'épée"
+      },
+      "material": "goldTrim"
+    },
+    {
+      "id": "eye-catchlight",
+      "name": "Eye catchlight quads",
+      "level": "micro",
+      "role": "alive-read catchlights",
+      "parent": "face",
+      "importance": 0.7,
+      "confidence": 0.9,
+      "primitive": "plane-card",
+      "topologyClass": "surface-relief",
+      "topologyRationale": "surface ornament; follows parent surface, no own silhouette",
+      "geometryDescriptor": {},
+      "materialRefs": [
+        "skin"
+      ],
+      "localFeatures": [],
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(216, 179, 154, 1.0)",
+        "secondaryAlbedo": "rgba(185, 143, 116, 1.0)",
+        "materialClass": "skin",
+        "materialClassConfidence": 0.85,
+        "evidenceRef": "sprite-front.png#eye-catchlight"
+      },
+      "actionProfile": {
+        "animationRole": "catchlights des yeux"
+      },
+      "material": "skin"
+    },
+    {
+      "id": "cape-tear-hem",
+      "name": "Tattered tear hem",
+      "level": "micro",
+      "role": "silhouette raggedness",
+      "parent": "capeBack",
+      "importance": 0.7,
+      "confidence": 0.9,
+      "primitive": "extrude",
+      "topologyClass": "surface-relief",
+      "topologyRationale": "surface ornament; follows parent surface, no own silhouette",
+      "geometryDescriptor": {},
+      "materialRefs": [
+        "clothNavy"
+      ],
+      "localFeatures": [],
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(42, 53, 80, 1.0)",
+        "secondaryAlbedo": "rgba(201, 160, 78, 1.0)",
+        "materialClass": "fabric",
+        "materialClassConfidence": 0.85,
+        "evidenceRef": "sprite-front.png#cape-tear-hem"
+      },
+      "actionProfile": {
+        "animationRole": "ourlet déchiré"
+      },
+      "material": "clothNavy"
+    }
+  ],
+  "materials": [
+    {
+      "id": "steel",
+      "name": "Armour steel",
+      "type": "standard",
+      "shaderModel": "MeshStandardMaterial / PBR",
+      "baseColor": "#8a8f96",
+      "metalness": 1,
+      "roughness": {
+        "base": 0.42,
+        "map": "edge wear lowers roughness on bevels; cavities and rivet lines raise it (visual analysis of sprite-front.png)"
+      },
+      "albedo": {
+        "dominant": "#8a8f96",
+        "secondary": [
+          "#6e747c",
+          "#a7adb4"
+        ],
+        "samplingNotes": "warm-grey plate with battle scuffs"
+      },
+      "localOverrides": [
+        {
+          "region": "plate edges",
+          "color": "#b9bec5",
+          "note": "worn highlights on bevels"
+        }
+      ],
+      "textureResolution": 2048,
+      "textureProjection": {
+        "mode": "triplanar-procedural",
+        "texelDensity": "2048px/m — plate seams at 8px/cm equivalent",
+        "note": "front-view crop projection reserved for face + chest emblem per projection-route.md"
+      },
+      "surfaceFrequency": {
+        "macro": "plate segmentation & bevel wear",
+        "meso": "brushed grinding marks along lames",
+        "micro": "fine scratches + dust in recesses"
+      },
+      "roughnessMap": {
+        "independent": true,
+        "base": 0.42,
+        "variation": "edge wear lowers roughness; cavities raise it",
+        "source": "visual-analysis of sprite-front.png"
+      },
+      "aoResponse": {
+        "independent": true,
+        "note": "cavity darkening in recesses, under lames, cape folds"
+      },
+      "referencePbr": {
+        "source": "agent-vision analysis of sprite-front.png (per-crop)",
+        "metalness": 1,
+        "roughness": 0.42,
+        "confidence": 0.86,
+        "note": "inference from stylized reference, not inverse rendering",
+        "usable": true,
+        "maps": {
+          "albedo": {
+            "url": "img2threejs/pbr-evidence/steel/steel_albedo.png",
+            "note": "extracted from sprite-front.png crop"
+          },
+          "roughness": {
+            "url": "img2threejs/pbr-evidence/steel/steel_roughness.png",
+            "note": "extracted from sprite-front.png crop"
+          },
+          "height": {
+            "url": "img2threejs/pbr-evidence/steel/steel_height.png",
+            "note": "extracted from sprite-front.png crop"
+          },
+          "normal": {
+            "url": "img2threejs/pbr-evidence/steel/steel_normal.png",
+            "note": "extracted from sprite-front.png crop"
+          },
+          "ao": {
+            "url": "img2threejs/pbr-evidence/steel/steel_ao.png",
+            "note": "extracted from sprite-front.png crop"
+          }
+        }
+      },
+      "ambientOcclusion": {
+        "response": "cavity darkening under lames and along rivet rives"
+      },
+      "surfaceFrequencyBands": [
+        {
+          "id": "macro",
+          "frequency": 1.2,
+          "amplitude": 0.5
+        },
+        {
+          "id": "meso",
+          "frequency": 6,
+          "amplitude": 0.3
+        },
+        {
+          "id": "micro",
+          "frequency": 24,
+          "amplitude": 0.15
+        }
+      ]
+    },
+    {
+      "id": "goldTrim",
+      "name": "Gold filigree & trim",
+      "type": "standard",
+      "shaderModel": "MeshStandardMaterial / PBR",
+      "baseColor": "#c9a04e",
+      "metalness": 1,
+      "roughness": {
+        "base": 0.3,
+        "map": "polished highs on relief tops; engraving recesses rougher"
+      },
+      "albedo": {
+        "dominant": "#c9a04e",
+        "secondary": [
+          "#e0c27a",
+          "#8a6a2e"
+        ],
+        "samplingNotes": "ochre-gold filigree linework"
+      },
+      "textureResolution": 2048,
+      "textureProjection": {
+        "mode": "triplanar-procedural",
+        "texelDensity": "2048px/m — plate seams at 8px/cm equivalent",
+        "note": "front-view crop projection reserved for face + chest emblem per projection-route.md"
+      },
+      "surfaceFrequency": {
+        "macro": "plate segmentation & bevel wear",
+        "meso": "brushed grinding marks along lames",
+        "micro": "filigree engraving lines"
+      },
+      "roughnessMap": {
+        "independent": true,
+        "base": 0.3,
+        "variation": "edge wear lowers roughness; cavities raise it",
+        "source": "visual-analysis of sprite-front.png"
+      },
+      "aoResponse": {
+        "independent": true,
+        "note": "cavity darkening in recesses, under lames, cape folds"
+      },
+      "referencePbr": {
+        "source": "agent-vision analysis of sprite-front.png (per-crop)",
+        "metalness": 1,
+        "roughness": 0.3,
+        "confidence": 0.86,
+        "note": "inference from stylized reference, not inverse rendering",
+        "usable": true,
+        "maps": {
+          "albedo": {
+            "url": "img2threejs/pbr-evidence/goldTrim/goldTrim_albedo.png",
+            "note": "extracted from sprite-front.png crop"
+          },
+          "roughness": {
+            "url": "img2threejs/pbr-evidence/goldTrim/goldTrim_roughness.png",
+            "note": "extracted from sprite-front.png crop"
+          },
+          "height": {
+            "url": "img2threejs/pbr-evidence/goldTrim/goldTrim_height.png",
+            "note": "extracted from sprite-front.png crop"
+          },
+          "normal": {
+            "url": "img2threejs/pbr-evidence/goldTrim/goldTrim_normal.png",
+            "note": "extracted from sprite-front.png crop"
+          },
+          "ao": {
+            "url": "img2threejs/pbr-evidence/goldTrim/goldTrim_ao.png",
+            "note": "extracted from sprite-front.png crop"
+          }
+        }
+      },
+      "ambientOcclusion": {
+        "response": "recess darkening inside filigree engraving lines"
+      },
+      "surfaceFrequencyBands": [
+        {
+          "id": "macro",
+          "frequency": 2,
+          "amplitude": 0.5
+        },
+        {
+          "id": "meso",
+          "frequency": 9,
+          "amplitude": 0.3
+        },
+        {
+          "id": "micro",
+          "frequency": 40,
+          "amplitude": 0.15
+        }
+      ]
+    },
+    {
+      "id": "clothNavy",
+      "name": "Navy cloth (cape/tabard/cowl)",
+      "type": "standard",
+      "shaderModel": "MeshStandardMaterial / PBR",
+      "baseColor": "#2a3550",
+      "metalness": 0,
+      "roughness": {
+        "base": 0.85,
+        "map": "weave keeps uniform high roughness; faded patches slightly smoother"
+      },
+      "albedo": {
+        "dominant": "#2a3550",
+        "secondary": [
+          "#1d2540",
+          "#3d4a6b"
+        ],
+        "samplingNotes": "dark navy with faded patches"
+      },
+      "textureResolution": 2048,
+      "textureProjection": {
+        "mode": "triplanar-procedural",
+        "texelDensity": "2048px/m — plate seams at 8px/cm equivalent",
+        "note": "front-view crop projection reserved for face + chest emblem per projection-route.md"
+      },
+      "surfaceFrequency": {
+        "macro": "drape folds + tear edges",
+        "meso": "weave grain",
+        "micro": "fine scratches + dust in recesses"
+      },
+      "roughnessMap": {
+        "independent": true,
+        "base": 0.85,
+        "variation": "edge wear lowers roughness; cavities raise it",
+        "source": "visual-analysis of sprite-front.png"
+      },
+      "aoResponse": {
+        "independent": true,
+        "note": "cavity darkening in recesses, under lames, cape folds"
+      },
+      "referencePbr": {
+        "source": "agent-vision analysis of sprite-front.png (per-crop)",
+        "metalness": 0,
+        "roughness": 0.85,
+        "confidence": 0.86,
+        "note": "inference from stylized reference, not inverse rendering",
+        "usable": true,
+        "maps": {
+          "albedo": {
+            "url": "img2threejs/pbr-evidence/clothNavy/clothNavy_albedo.png",
+            "note": "extracted from sprite-front.png crop"
+          },
+          "roughness": {
+            "url": "img2threejs/pbr-evidence/clothNavy/clothNavy_roughness.png",
+            "note": "extracted from sprite-front.png crop"
+          },
+          "height": {
+            "url": "img2threejs/pbr-evidence/clothNavy/clothNavy_height.png",
+            "note": "extracted from sprite-front.png crop"
+          },
+          "normal": {
+            "url": "img2threejs/pbr-evidence/clothNavy/clothNavy_normal.png",
+            "note": "extracted from sprite-front.png crop"
+          },
+          "ao": {
+            "url": "img2threejs/pbr-evidence/clothNavy/clothNavy_ao.png",
+            "note": "extracted from sprite-front.png crop"
+          }
+        }
+      },
+      "ambientOcclusion": {
+        "response": "fold-shadow pooling in drape creases and tear edges"
+      },
+      "surfaceFrequencyBands": [
+        {
+          "id": "macro",
+          "frequency": 0.8,
+          "amplitude": 0.5
+        },
+        {
+          "id": "meso",
+          "frequency": 5,
+          "amplitude": 0.3
+        },
+        {
+          "id": "micro",
+          "frequency": 18,
+          "amplitude": 0.15
+        }
+      ],
+      "doubleSided": true
+    },
+    {
+      "id": "leather",
+      "name": "Leather belt & straps",
+      "type": "standard",
+      "shaderModel": "MeshStandardMaterial / PBR",
+      "baseColor": "#5a4632",
+      "metalness": 0,
+      "roughness": {
+        "base": 0.7,
+        "map": "creased zones rougher; buckle-adjacent polish"
+      },
+      "albedo": {
+        "dominant": "#5a4632",
+        "secondary": [
+          "#3f2f20",
+          "#7a5f42"
+        ]
+      },
+      "textureResolution": 2048,
+      "textureProjection": {
+        "mode": "triplanar-procedural",
+        "texelDensity": "2048px/m — plate seams at 8px/cm equivalent",
+        "note": "front-view crop projection reserved for face + chest emblem per projection-route.md"
+      },
+      "surfaceFrequency": {
+        "macro": "plate segmentation & bevel wear",
+        "meso": "brushed grinding marks along lames",
+        "micro": "fine scratches + dust in recesses"
+      },
+      "roughnessMap": {
+        "independent": true,
+        "base": 0.7,
+        "variation": "edge wear lowers roughness; cavities raise it",
+        "source": "visual-analysis of sprite-front.png"
+      },
+      "aoResponse": {
+        "independent": true,
+        "note": "cavity darkening in recesses, under lames, cape folds"
+      },
+      "referencePbr": {
+        "source": "agent-vision analysis of sprite-front.png (per-crop)",
+        "metalness": 0,
+        "roughness": 0.7,
+        "confidence": 0.86,
+        "note": "inference from stylized reference, not inverse rendering",
+        "usable": true,
+        "maps": {
+          "albedo": {
+            "url": "img2threejs/pbr-evidence/leather/leather_albedo.png",
+            "note": "extracted from sprite-front.png crop"
+          },
+          "roughness": {
+            "url": "img2threejs/pbr-evidence/leather/leather_roughness.png",
+            "note": "extracted from sprite-front.png crop"
+          },
+          "height": {
+            "url": "img2threejs/pbr-evidence/leather/leather_height.png",
+            "note": "extracted from sprite-front.png crop"
+          },
+          "normal": {
+            "url": "img2threejs/pbr-evidence/leather/leather_normal.png",
+            "note": "extracted from sprite-front.png crop"
+          },
+          "ao": {
+            "url": "img2threejs/pbr-evidence/leather/leather_ao.png",
+            "note": "extracted from sprite-front.png crop"
+          }
+        }
+      },
+      "ambientOcclusion": {
+        "response": "grain darkening around buckles and stitch lines"
+      },
+      "surfaceFrequencyBands": [
+        {
+          "id": "macro",
+          "frequency": 1,
+          "amplitude": 0.5
+        },
+        {
+          "id": "meso",
+          "frequency": 7,
+          "amplitude": 0.3
+        },
+        {
+          "id": "micro",
+          "frequency": 22,
+          "amplitude": 0.15
+        }
+      ]
+    },
+    {
+      "id": "skin",
+      "name": "Skin",
+      "type": "standard",
+      "shaderModel": "MeshStandardMaterial / PBR (rim-SSS approximation)",
+      "baseColor": "#d8b39a",
+      "metalness": 0,
+      "roughness": {
+        "base": 0.6,
+        "map": "uniform mid roughness; slight sheen on forehead/nose"
+      },
+      "albedo": {
+        "dominant": "#d8b39a",
+        "secondary": [
+          "#b98f74"
+        ],
+        "samplingNotes": "soft rim/backlight term instead of true SSS"
+      },
+      "textureResolution": 2048,
+      "textureProjection": {
+        "mode": "triplanar-procedural",
+        "texelDensity": "2048px/m — plate seams at 8px/cm equivalent",
+        "note": "front-view crop projection reserved for face + chest emblem per projection-route.md"
+      },
+      "surfaceFrequency": {
+        "macro": "plate segmentation & bevel wear",
+        "meso": "brushed grinding marks along lames",
+        "micro": "fine scratches + dust in recesses"
+      },
+      "roughnessMap": {
+        "independent": true,
+        "base": 0.6,
+        "variation": "edge wear lowers roughness; cavities raise it",
+        "source": "visual-analysis of sprite-front.png"
+      },
+      "aoResponse": {
+        "independent": true,
+        "note": "cavity darkening in recesses, under lames, cape folds"
+      },
+      "referencePbr": {
+        "source": "agent-vision analysis of sprite-front.png (per-crop)",
+        "metalness": 0,
+        "roughness": 0.6,
+        "confidence": 0.86,
+        "note": "inference from stylized reference, not inverse rendering",
+        "usable": true,
+        "maps": {
+          "albedo": {
+            "url": "img2threejs/pbr-evidence/skin/skin_albedo.png",
+            "note": "extracted from sprite-front.png crop"
+          },
+          "roughness": {
+            "url": "img2threejs/pbr-evidence/skin/skin_roughness.png",
+            "note": "extracted from sprite-front.png crop"
+          },
+          "height": {
+            "url": "img2threejs/pbr-evidence/skin/skin_height.png",
+            "note": "extracted from sprite-front.png crop"
+          },
+          "normal": {
+            "url": "img2threejs/pbr-evidence/skin/skin_normal.png",
+            "note": "extracted from sprite-front.png crop"
+          },
+          "ao": {
+            "url": "img2threejs/pbr-evidence/skin/skin_ao.png",
+            "note": "extracted from sprite-front.png crop"
+          }
+        }
+      },
+      "ambientOcclusion": {
+        "response": "soft ambient falloff at neck, under cowl and pauldrons"
+      },
+      "surfaceFrequencyBands": [
+        {
+          "id": "macro",
+          "frequency": 0.6,
+          "amplitude": 0.5
+        },
+        {
+          "id": "meso",
+          "frequency": 4,
+          "amplitude": 0.3
+        },
+        {
+          "id": "micro",
+          "frequency": 16,
+          "amplitude": 0.15
+        }
+      ]
+    },
+    {
+      "id": "hairDark",
+      "name": "Hair (stylized clump masses)",
+      "type": "standard",
+      "shaderModel": "MeshStandardMaterial / PBR",
+      "baseColor": "#1d1a22",
+      "metalness": 0,
+      "roughness": {
+        "base": 0.55,
+        "map": "clump tops slightly glossier than roots"
+      },
+      "albedo": {
+        "dominant": "#1d1a22",
+        "secondary": [
+          "#33303c"
+        ],
+        "samplingNotes": "5-15 clump masses, no strands"
+      },
+      "textureResolution": 2048,
+      "textureProjection": {
+        "mode": "triplanar-procedural",
+        "texelDensity": "2048px/m — plate seams at 8px/cm equivalent",
+        "note": "front-view crop projection reserved for face + chest emblem per projection-route.md"
+      },
+      "surfaceFrequency": {
+        "macro": "plate segmentation & bevel wear",
+        "meso": "brushed grinding marks along lames",
+        "micro": "fine scratches + dust in recesses"
+      },
+      "roughnessMap": {
+        "independent": true,
+        "base": 0.55,
+        "variation": "edge wear lowers roughness; cavities raise it",
+        "source": "visual-analysis of sprite-front.png"
+      },
+      "aoResponse": {
+        "independent": true,
+        "note": "cavity darkening in recesses, under lames, cape folds"
+      },
+      "referencePbr": {
+        "source": "agent-vision analysis of sprite-front.png (per-crop)",
+        "metalness": 0,
+        "roughness": 0.55,
+        "confidence": 0.86,
+        "note": "inference from stylized reference, not inverse rendering",
+        "usable": true,
+        "maps": {
+          "albedo": {
+            "url": "img2threejs/pbr-evidence/hairDark/hairDark_albedo.png",
+            "note": "extracted from sprite-front.png crop"
+          },
+          "roughness": {
+            "url": "img2threejs/pbr-evidence/hairDark/hairDark_roughness.png",
+            "note": "extracted from sprite-front.png crop"
+          },
+          "height": {
+            "url": "img2threejs/pbr-evidence/hairDark/hairDark_height.png",
+            "note": "extracted from sprite-front.png crop"
+          },
+          "normal": {
+            "url": "img2threejs/pbr-evidence/hairDark/hairDark_normal.png",
+            "note": "extracted from sprite-front.png crop"
+          },
+          "ao": {
+            "url": "img2threejs/pbr-evidence/hairDark/hairDark_ao.png",
+            "note": "extracted from sprite-front.png crop"
+          }
+        }
+      },
+      "ambientOcclusion": {
+        "response": "mass-to-mass occlusion between clump layers"
+      },
+      "surfaceFrequencyBands": [
+        {
+          "id": "macro",
+          "frequency": 2.5,
+          "amplitude": 0.5
+        },
+        {
+          "id": "meso",
+          "frequency": 8,
+          "amplitude": 0.3
+        },
+        {
+          "id": "micro",
+          "frequency": 30,
+          "amplitude": 0.15
+        }
+      ]
+    }
+  ],
+  "repetitionSystems": [
+    {
+      "id": "rivet-repetition",
+      "name": "Rivet rows",
+      "pattern": "linear along plate rives",
+      "componentRefs": [
+        "rivet-rows",
+        "pauldronL",
+        "fauld"
+      ],
+      "count": "12-20 per edge"
+    },
+    {
+      "id": "tear-repetition",
+      "name": "Cape tear panels",
+      "pattern": "irregular vertical tears along hem",
+      "componentRefs": [
+        "cape-tear-hem"
+      ],
+      "count": "7-9 panels"
+    }
+  ],
+  "buildPasses": [
+    {
+      "id": "blockout",
+      "goal": "Match macro silhouette and proportions.",
+      "componentRefs": [
+        "root"
+      ],
+      "acceptance": [
+        "Silhouette reads correctly without materials.",
+        "Quality contract has named all required macro feature groups before code generation.",
+        "AI vision comparison score meets selfCorrectLoop.visualAcceptance.threshold."
+      ]
+    },
+    {
+      "id": "structural-pass",
+      "goal": "Build the component hierarchy implied by the pre-spec complexity assessment.",
+      "componentRefs": [
+        "root"
+      ],
+      "acceptance": [
+        "Macro, meso, and repeated structures meet qualityContract.minimumSpecDepth.",
+        "Parent-child relations, joints, seams, sockets, and contact points are explicit.",
+        "Every attached child appendage/connector has parentSocket, localStart/localEnd, contactType, embedDepth or overlap, and gapTolerance.",
+        "AI vision comparison score meets selfCorrectLoop.visualAcceptance.threshold."
+      ]
+    },
+    {
+      "id": "form-refinement",
+      "goal": "Refine shape, deformation, bevels, tapers, curves, asymmetry, and visible local geometry.",
+      "componentRefs": [
+        "root"
+      ],
+      "acceptance": [
+        "Important visible forms are represented in component geometryDescriptor, deformations, localFeatures, or repetitionSystems.",
+        "Endpoint-based child parts are rooted at their attachment sockets and do not visibly float away from parents.",
+        "AI vision comparison score meets selfCorrectLoop.visualAcceptance.threshold."
+      ]
+    },
+    {
+      "id": "material-pass",
+      "goal": "Match material color, roughness, bump, and local variation.",
+      "componentRefs": [
+        "root"
+      ],
+      "acceptance": [
+        "Reference-derived albedo palette records dominant, secondary, and accent colors per visible material.",
+        "Each important material defines roughness variation and at least one normal/bump/displacement response.",
+        "Local material overrides, dirt/wear/stains/moss/chips/scratches or equivalent masks are tied to evidenceRefs.",
+        "Thin, transparent, reflective, wet, or fibrous materials document alpha/transmission/clearcoat/metalness/fiber response when relevant.",
+        "Generated preview uses procedural albedo/roughness/bump texture or vertex color variation instead of one flat color.",
+        "Generated preview uses independent PBR maps at 1024px or higher for the quality-first tier.",
+        "If source pixels are available, referencePbr extraction passed at confidence >= 0.7 or the pass is stopped/requesting better references.",
+        "Macro, meso, and micro surface frequency bands are visible at the intended review distance without obvious tiling.",
+        "AI vision comparison score meets selfCorrectLoop.visualAcceptance.threshold."
+      ]
+    },
+    {
+      "id": "surface-pass",
+      "goal": "Add procedural surface locality such as normal/bump/displacement, AO, dirt, stains, chips, grain, moss, scratches, and wear.",
+      "componentRefs": [
+        "root"
+      ],
+      "acceptance": [
+        "Every required material feature group has local overrides or surfaceDetail tied to evidenceRefs.",
+        "A grazing-angle close-up proves that normal/height detail breaks highlights naturally and does not read as smooth plastic.",
+        "AI vision comparison score meets selfCorrectLoop.visualAcceptance.threshold."
+      ]
+    },
+    {
+      "id": "lighting-pass",
+      "goal": "Make material and form readable under neutral turntable lighting plus optional reference lighting.",
+      "componentRefs": [
+        "root"
+      ],
+      "acceptance": [
+        "lightingFromPhoto identifies key light direction/color/intensity, fill light, rim or environment light, and ambient color.",
+        "Exposure, tone mapping, background color/gradient, shadow softness, and contact shadow behavior are specified.",
+        "Lighting does not hide geometry/material gaps and screenshots can be compared fairly to the reference.",
+        "Neutral, grazing, and reference-matched lighting checks distinguish material errors from lighting errors.",
+        "AI vision comparison score meets selfCorrectLoop.visualAcceptance.threshold."
+      ]
+    },
+    {
+      "id": "interaction-pass",
+      "goal": "Make the model ready for future animation, transformation, physics, or destruction.",
+      "componentRefs": [
+        "root"
+      ],
+      "acceptance": [
+        "Macro and movable meso components have stable pivot nodes.",
+        "Sockets, collider proxies, and destruction metadata are present for future runtime actions.",
+        "AI vision comparison score meets selfCorrectLoop.visualAcceptance.threshold."
+      ]
+    },
+    {
+      "id": "optimization-pass",
+      "goal": "Protect runtime performance after visual fidelity is accepted.",
+      "componentRefs": [
+        "root"
+      ],
+      "acceptance": [
+        "Triangle count, draw calls, instancing, LOD strategy, and FPS target are documented or verified.",
+        "Repeated detail is instanced or simplified where possible without breaking silhouette/material believability."
+      ]
+    }
+  ],
+  "visualEvidence": [],
+  "reviewHistory": [],
+  "lodPlan": [
+    {
+      "tier": "near",
+      "distance": 0,
+      "strategy": "full component tree and material layers"
+    },
+    {
+      "tier": "far",
+      "distance": 30,
+      "strategy": "merge static components and reduce local feature geometry"
+    }
+  ],
+  "performanceBudget": {
+    "qualityPriority": "reference-fidelity",
+    "targetTriangles": 250000,
+    "maxDrawCalls": 160,
+    "textureSize": 2048,
+    "fpsTarget": 30,
+    "optimizationPolicy": "Reach accepted visual fidelity first, then optimize without removing reference-critical geometry or surface layers."
+  },
+  "lightingFromPhoto": [
+    {
+      "role": "key",
+      "note": "cool moonlight key from upper-left (moon disc position), exposure anchored so steel highlights sit near 0.9"
+    },
+    {
+      "role": "fill",
+      "note": "warm bounce from below-right (torch line), low intensity, tone kept filmic"
+    },
+    {
+      "role": "rim",
+      "note": "violet rim from sky dome opposite the key, separates cape from background"
+    },
+    {
+      "toneMapping": "uncharted2 filmic grade via evolved SPEAR kernel (uncharted2_tonemap fast slot)"
+    },
+    {
+      "contactShadow": "contact shadow under sabatons and shield bottom edge"
+    }
+  ],
+  "proceduralStrategy": [
+    "Block out macro silhouette first.",
+    "Add component hierarchy and joints.",
+    "Create stable pivot groups, sockets, collider proxies, and destruction metadata before visual polish.",
+    "Refine forms with bevels, tapers, bends, and procedural noise.",
+    "Run reference PBR extraction for important source-image materials and stop when confidence is below the target threshold.",
+    "Add material variation before adding expensive micro-geometry."
+  ],
+  "animationAnchors": [
+    "root pivot node supports whole-object translation, rotation, scale, and visibility changes",
+    "component pivot groups support later local transforms without rebuilding geometry"
+  ],
+  "destructionAnchors": [
+    "actionProfile.destruction.fractureGroup marks detachable or breakable component sets",
+    "component seams and sockets define plausible break points instead of random explosions"
+  ],
+  "risks": [],
+  "localSpecSearch": {
+    "collection": "core_3d",
+    "query": "Aldarion Knight",
+    "index": {
+      "status": "rebuilt",
+      "reason": "missing",
+      "fingerprint": "ac4f0bc9028e34083dbb5d5531ae3df7699c8e7641d5f8e6d42e7492ea1be1d0"
+    },
+    "matches": []
+  },
+  "anatomy": {
+    "styleAxis": "stylized-realistic",
+    "headUnit": {
+      "value": 7.8,
+      "evidenceRef": "sprite-front.png#figure-height/head-crop"
+    },
+    "torso": {
+      "value": 3.1,
+      "evidenceRef": "sprite-front.png#crown-to-hip"
+    },
+    "legs": {
+      "value": 4.4,
+      "evidenceRef": "sprite-front.png#hip-to-floor"
+    },
+    "shoulderWidth": {
+      "value": 2.3,
+      "evidenceRef": "sprite-front.png#pauldron-outer-edges",
+      "note": "heroic armored build"
+    },
+    "hipWidth": {
+      "value": 1.4,
+      "evidenceRef": "sprite-front.png#fauld-width"
+    },
+    "faceLandmarks": {
+      "hairline": 0.06,
+      "eyeLine": 0.48,
+      "eyeSpacing": 0.24,
+      "noseBase": 0.62,
+      "mouthLine": 0.78,
+      "earTop": 0.46,
+      "earBottom": 0.66,
+      "evidenceRef": "anatomy.json#overlay"
+    },
+    "pose": {
+      "stance": "near-symmetric, slight weight on character-right",
+      "armR": "down along body, sword grip, blade point-down forward",
+      "armL": "raised forward holding heater shield",
+      "confidence": {
+        "armR": 0.9,
+        "armL": 0.85,
+        "legs": 0.95,
+        "head": 0.95
+      }
+    }
+  }
+}
