@@ -45,6 +45,6 @@ const rows = Object.entries(ledger)
   });
 
 const js = `window.SPEAR_KERNELS=${JSON.stringify(rows)};\n`;
-const out = join(root, "docs", "kernels.js");
+const out = join(root, "docs", "kernel-data.js");
 writeFileSync(out, js, "utf8");
-console.log(`kernels.js: ${rows.length} kernels, ${js.length} bytes`);
+console.log(`kernel-data.js: ${rows.length} kernels`);
