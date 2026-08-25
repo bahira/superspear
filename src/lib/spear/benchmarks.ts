@@ -3003,6 +3003,31 @@ export function buildTasks(): TaskDef[] {
       varNames: ["t"],
       build: dampedOscillationData,
       trueLaw: (v, i) => Math.exp(-v.t[i] / 4) * Math.cos(3 * v.t[i]),
+      // ALU-only munitions: Padé envelopes for the exp decay + generic pole
+      // rationals (poles are how algebra creates alternations without trig).
+      // Shape-only, constants tunable.
+      extraSeeds: (() => {
+        const t = V("t");
+        const env = makeNode("pdiv", {
+          children: [C(1), makeNode("add", { children: [C(1), makeNode("mul", { children: [C(0.25), t] })] })],
+        });
+        return [
+          env,
+          makeNode("sq", { children: [env] }),
+          makeNode("pdiv", {
+            children: [
+              makeNode("sub", { children: [makeNode("mul", { children: [C(0.5), makeNode("sq", { children: [t] })] }), C(1)] }),
+              makeNode("add", { children: [makeNode("sq", { children: [t] }), C(1)] }),
+            ],
+          }),
+          makeNode("pdiv", {
+            children: [
+              makeNode("mul", { children: [t, makeNode("sub", { children: [C(2), t] })] }),
+              makeNode("add", { children: [C(1), makeNode("sq", { children: [t] })] }),
+            ],
+          }),
+        ];
+      })(),
       verify: (node) => {
         const y0 = evaluateScalar(node, { t: 0 });
         if (!Number.isFinite(y0)) return null;
