@@ -1,8 +1,13 @@
 // SPEAR Hall of Fame — agrège tous les runs et sort le meilleur par tâche.
 // Mode 1 (rebuild): npx tsx scripts/hall-of-fame.ts            → parse les logs run*.txt
 // Mode 2 (live):    npx tsx scripts/hall-of-fame.ts <seed> <budget> [deadlineMs]
+//
+// Live mode runs the FULL publication chain automatically after merging:
+//   backfill-fast → price-fast → gen-site-data
+// so no record ever lands unpriced or invisible (SPEAR_NO_POSTCHAIN=1 skips).
 import { readFileSync, writeFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
+import { execFileSync } from "node:child_process";
 import { runGroundedLoop } from "../src/lib/spear/loop";
 
 interface Finding {
@@ -161,6 +166,20 @@ async function main() {
   }
 
   writeFileSync(OUT, JSON.stringify(ledger, null, 2));
+
+  // ---- unified post-chain: fast slots resurrected, solver multipliers
+  // priced, site dataset regenerated. One command = publishable state.
+  if (live && process.env.SPEAR_NO_POSTCHAIN !== "1") {
+    const tsxCli = join(process.cwd(), "node_modules", "tsx", "dist", "cli.mjs");
+    for (const step of ["backfill-fast.ts", "price-fast.ts", "gen-site-data.ts"]) {
+      try {
+        execFileSync(process.execPath, [tsxCli, join(import.meta.dirname ?? ".", step)], { stdio: ["ignore", "pipe", "pipe"] });
+        console.log(`post-chain ✓ ${step}`);
+      } catch {
+        console.warn(`post-chain ✗ ${step} — relancez-le à la main`);
+      }
+    }
+  }
 
   // ---- affichage
   const rows = Object.values(ledger).sort((a, b) => a.taskId.localeCompare(b.taskId));

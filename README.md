@@ -339,6 +339,15 @@ npx tsx scripts/test-simplify.ts
 # Resurrect cheap validated forms from git history into the `fast` slot
 npx tsx scripts/backfill-fast.ts
 
+# Live mode runs the full publication chain automatically:
+#   merge → backfill-fast → price-fast → gen-site-data  (skip: SPEAR_NO_POSTCHAIN=1)
+
+# Primitive-landing audit — when a NodeOp lands, find tasks carrying obsolete
+# "hard mode" premises (the grover_amplitude pattern) + open-wall candidates.
+# Commit .spear-primitives.json; CI can gate on --strict.
+npx tsx scripts/audit-scaffolds.ts            # report
+npx tsx scripts/audit-scaffolds.ts --update   # snapshot current primitives after auditing
+
 # Op-by-op WASM parity smoke test
 npx tsx wasm-smoke.test.ts
 ```

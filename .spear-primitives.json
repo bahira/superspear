@@ -1,0 +1,23 @@
+{
+  "ops": [
+    "abs",
+    "add",
+    "asin",
+    "atan",
+    "cos",
+    "cube",
+    "exp",
+    "log",
+    "max",
+    "min",
+    "mul",
+    "neg",
+    "pdiv",
+    "relu",
+    "sin",
+    "sq",
+    "sqrt",
+    "sub"
+  ],
+  "updatedAt": "2026-08-25T00:23:25.594Z"
+}

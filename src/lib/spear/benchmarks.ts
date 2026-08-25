@@ -2115,7 +2115,7 @@ export function buildTasks(): TaskDef[] {
         return { vars: { k: kv, m: mv, n: nv }, y };
       },
       trueLaw: (v, i) => groverSuccess(v.k[i], v.m[i], v.n[i]),
-      // asin is SERVED now — the "hard mode" premise is obsolete. Shape-only
+      // asin is SERVED now — the pre-asin premise is obsolete. Shape-only
       // scaffolds of the amplification law (constants stay tunable), same
       // doctrine that cracked ik_reach/eigen when atan got served.
       extraSeeds: (() => {
