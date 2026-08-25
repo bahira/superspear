@@ -121,6 +121,9 @@ interface TaskRuntime {
   def: TaskDef;
   population: SpearNode[];
   cache: Map<string, { metric: number; secondary?: number; violation?: number }>;
+  /** UCB bandits over child-producing operators (heritage / exploration zones) */
+  banditH: OperatorBandit;
+  banditE: OperatorBandit;
   iterations: number;
   evals: number;
   cacheHits: number;
@@ -165,6 +168,37 @@ function levelOf(t: TaskDef, metric: number): number {
 }
 
 const PARSIMONY_BASE = 0.0014;
+
+/**
+ * UCB1 bandit over the child-producing operators of one task. Rewards are
+ * signed relative improvements vs the parent (clipped to ±1); the child's
+ * evaluation is paid at breeding time through the memo, so the next
+ * generation's pass becomes a cache hit — near-zero extra evals.
+ */
+class OperatorBandit {
+  private s: Map<string, { n: number; v: number }> = new Map();
+  constructor(public readonly arms: string[]) {
+    for (const a of arms) this.s.set(a, { n: 0, v: 0 });
+  }
+  pick(): string {
+    const arr = [...this.s.entries()];
+    const untried = arr.find(([, x]) => x.n === 0);
+    if (untried) return untried[0];
+    const tot = arr.reduce((acc, [, x]) => acc + x.n, 0);
+    let best = this.arms[0];
+    let bestScore = -Infinity;
+    for (const [a, x] of arr) {
+      const score = x.v / x.n + UCB_C * Math.sqrt(Math.log(tot) / x.n);
+      if (score > bestScore) { bestScore = score; best = a; }
+    }
+    return best;
+  }
+  report(arm: string, reward: number): void {
+    const x = this.s.get(arm)!;
+    x.n++;
+    x.v += Math.max(-1, Math.min(1, reward));
+  }
+}
 
 function parsimony(iterationsUsed: number, budget: number): number {
   const progress = Math.min(1, iterationsUsed / budget);
@@ -419,6 +453,8 @@ export async function runGroundedLoop(opts: GroundedLoopOptions = {}): Promise<L
       return simplify(randomTree(def.gpConfig, def.gpConfig.maxDepth));
     }),
     cache: new Map(),
+    banditH: new OperatorBandit(["polish", "cross"]),
+    banditE: new OperatorBandit(["cross", "mutate", "cross+mutate"]),
     iterations: 0,
     evals: 0,
     cacheHits: 0,
@@ -769,6 +805,7 @@ export async function runGroundedLoop(opts: GroundedLoopOptions = {}): Promise<L
     if (herPool.length === 0) for (let i = 0; i < HERITAGE; i++) herPool.push(i);
     if (expPool.length === 0) for (let i = HERITAGE; i < POP; i++) expPool.push(i);
     const next: SpearNode[] = [rt.population[eliteIdx]];
+    const dirSign = t.metricDirection === "min" ? 1 : -1;
     while (next.length < POP) {
       const slot = next.length;
       // slot 0 holds the elite; heritage regime fills [1, HERITAGE)
@@ -777,23 +814,41 @@ export async function runGroundedLoop(opts: GroundedLoopOptions = {}): Promise<L
       const idxA = pool[tournamentSelect(pool.map((i) => objs[i]))];
       const p1 = rt.population[idxA];
       let child: SpearNode;
+      let arm: string;
       if (heritageSlot) {
-        // population B — local search around inherited shapes (polish-heavy,
-        // occasional crossover within the zone). Never aggressive mutation:
-        // its job is to specialise constants, not to wander.
-        child = rand01() < 0.5
-          ? mutatePolish(p1, [0.05, 0.12, 0.3][randInt(3)])
-          : crossover(p1, rt.population[pool[tournamentSelect(pool.map((i) => objs[i]))]], t.gpConfig.maxDepth);
+        // population B — bandit arbitrates polish vs crossover
+        arm = rt.banditH.pick();
+        if (arm === "polish") {
+          child = mutatePolish(p1, [0.05, 0.12, 0.3][randInt(3)]);
+        } else {
+          child = crossover(p1, rt.population[pool[tournamentSelect(pool.map((i) => objs[i]))]], t.gpConfig.maxDepth);
+        }
       } else {
-        // population A — unchanged aggressive exploration
-        child = rand01() < 0.8
-          ? crossover(p1, rt.population[pool[tournamentSelect(pool.map((i) => objs[i]))]], t.gpConfig.maxDepth)
-          : p1;
-        if (rand01() < 0.4) child = mutate(child, t.gpConfig);
+        // population A — bandit arbitrates the aggressive mix
+        arm = rt.banditE.pick();
+        if (arm === "mutate") {
+          child = mutate(p1, t.gpConfig);
+        } else {
+          child = crossover(p1, rt.population[pool[tournamentSelect(pool.map((i) => objs[i]))]], t.gpConfig.maxDepth);
+          if (arm === "cross+mutate") child = mutate(child, t.gpConfig);
+        }
       }
       child = simplify(child);
-      if (child.depth <= t.gpConfig.maxDepth) next.push(child);
-      else next.push(p1);
+      if (child.depth <= t.gpConfig.maxDepth) {
+        // pay the eval now through the memo and credit the operator: signed
+        // relative metric move vs its parent, clipped ±1
+        const resC = cachedEval(rt, child);
+        const resP = cachedEval(rt, p1);
+        let reward = -1;
+        if (Number.isFinite(resC.metric) && Number.isFinite(resP.metric) && resP.metric !== 0) {
+          reward = (dirSign * (resP.metric - resC.metric)) / Math.abs(resP.metric);
+        }
+        (heritageSlot ? rt.banditH : rt.banditE).report(arm, reward);
+        next.push(child);
+      } else {
+        next.push(p1);
+        (heritageSlot ? rt.banditH : rt.banditE).report(arm, -1); // depth-reject punishes the arm
+      }
     }
     rt.population = next;
     rt.iterations++;
