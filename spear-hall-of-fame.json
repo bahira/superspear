@@ -4698,6 +4698,31 @@
       "formulaCost": 12,
       "exactCost": 26,
       "speedup": 2.1666666666666665
+    },
+    "fast": {
+      "formula": "sin(sin(atan(x)))",
+      "metric": 0.0004494300213900222,
+      "level": 2,
+      "formulaCost": 60
+    },
+    "fastTree": {
+      "o": "sin",
+      "c": [
+        {
+          "o": "sin",
+          "c": [
+            {
+              "o": "atan",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "x"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   },
   "huber_loss": {
@@ -7265,62 +7290,41 @@
     "taskId": "grover_amplitude",
     "title": "Amplification de Grover (recherche quantique)",
     "direction": "min",
-    "metric": 0.10609082949960358,
-    "level": 0,
-    "formula": "((-0.908403 * (min(k, ((1.924223 / k) + (k / k))) * -0.387345)) + 0.074351)",
-    "seed": 910502,
-    "iteration": 801,
+    "metric": 8.312261599931228e-32,
+    "level": 2,
+    "formula": "(sin((asin(sqrt(|(m / n)|)) + (2 * (k * asin(sqrt(|(m / n)|)))))))²",
+    "seed": 920605,
+    "iteration": 1600,
     "speed": {
-      "formulaCost": 13,
+      "formulaCost": 76,
       "exactCost": 48,
-      "speedup": 3.6923076923076925
+      "speedup": 0.631578947368421
     },
     "tree": {
-      "o": "add",
+      "o": "sq",
       "c": [
         {
-          "o": "mul",
+          "o": "sin",
           "c": [
             {
-              "o": "const",
-              "v": -0.9084030522924049
-            },
-            {
-              "o": "mul",
+              "o": "add",
               "c": [
                 {
-                  "o": "min",
+                  "o": "asin",
                   "c": [
                     {
-                      "o": "var",
-                      "n": "k"
-                    },
-                    {
-                      "o": "add",
+                      "o": "sqrt",
                       "c": [
                         {
                           "o": "pdiv",
                           "c": [
                             {
-                              "o": "const",
-                              "v": 1.924223
+                              "o": "var",
+                              "n": "m"
                             },
                             {
                               "o": "var",
-                              "n": "k"
-                            }
-                          ]
-                        },
-                        {
-                          "o": "pdiv",
-                          "c": [
-                            {
-                              "o": "var",
-                              "n": "k"
-                            },
-                            {
-                              "o": "var",
-                              "n": "k"
+                              "n": "n"
                             }
                           ]
                         }
@@ -7329,16 +7333,134 @@
                   ]
                 },
                 {
-                  "o": "const",
-                  "v": -0.38734452474957204
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 2
+                    },
+                    {
+                      "o": "mul",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "k"
+                        },
+                        {
+                          "o": "asin",
+                          "c": [
+                            {
+                              "o": "sqrt",
+                              "c": [
+                                {
+                                  "o": "pdiv",
+                                  "c": [
+                                    {
+                                      "o": "var",
+                                      "n": "m"
+                                    },
+                                    {
+                                      "o": "var",
+                                      "n": "n"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
                 }
               ]
             }
           ]
-        },
+        }
+      ]
+    },
+    "fast": {
+      "formula": "(sin((asin(sqrt(|(m / n)|)) + (2 * (k * asin(sqrt(|(m / n)|)))))))²",
+      "metric": 8.312261599931228e-32,
+      "level": 2,
+      "formulaCost": 76
+    },
+    "fastTree": {
+      "o": "sq",
+      "c": [
         {
-          "o": "const",
-          "v": 0.07435079907199241
+          "o": "sin",
+          "c": [
+            {
+              "o": "add",
+              "c": [
+                {
+                  "o": "asin",
+                  "c": [
+                    {
+                      "o": "sqrt",
+                      "c": [
+                        {
+                          "o": "pdiv",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "m"
+                            },
+                            {
+                              "o": "var",
+                              "n": "n"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 2
+                    },
+                    {
+                      "o": "mul",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "k"
+                        },
+                        {
+                          "o": "asin",
+                          "c": [
+                            {
+                              "o": "sqrt",
+                              "c": [
+                                {
+                                  "o": "pdiv",
+                                  "c": [
+                                    {
+                                      "o": "var",
+                                      "n": "m"
+                                    },
+                                    {
+                                      "o": "var",
+                                      "n": "n"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         }
       ]
     }
@@ -8269,11 +8391,16 @@
     "taskId": "kepler_solver",
     "title": "Solveur de Kepler O(1) (mécanique orbitale)",
     "direction": "min",
-    "metric": 0.025907227034892635,
+    "metric": 0.006134991867434414,
     "level": 1,
-    "formula": "((1.899188 * (relu(log(max((e + M), 1e-30))) - 4.88761)) + 9.923214)",
-    "seed": 20260825,
-    "iteration": 6,
+    "formula": "((0.249945 * (((M + (M + e)) + (0.749715 * (M + e))) + min(3.875643, (2.049437 * (M + e))))) + -0.213787)",
+    "seed": 920601,
+    "iteration": 320,
+    "speed": {
+      "formulaCost": 11,
+      "exactCost": 32,
+      "speedup": 2.909090909090909
+    },
     "tree": {
       "o": "add",
       "c": [
@@ -8282,27 +8409,53 @@
           "c": [
             {
               "o": "const",
-              "v": 1.8991880781575727
+              "v": 0.2499447407678102
             },
             {
-              "o": "sub",
+              "o": "add",
               "c": [
                 {
-                  "o": "relu",
+                  "o": "add",
                   "c": [
                     {
-                      "o": "log",
+                      "o": "add",
                       "c": [
+                        {
+                          "o": "var",
+                          "n": "M"
+                        },
                         {
                           "o": "add",
                           "c": [
                             {
                               "o": "var",
-                              "n": "e"
+                              "n": "M"
                             },
                             {
                               "o": "var",
+                              "n": "e"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "o": "mul",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 0.749715
+                        },
+                        {
+                          "o": "add",
+                          "c": [
+                            {
+                              "o": "var",
                               "n": "M"
+                            },
+                            {
+                              "o": "var",
+                              "n": "e"
                             }
                           ]
                         }
@@ -8311,8 +8464,35 @@
                   ]
                 },
                 {
-                  "o": "const",
-                  "v": 4.88761
+                  "o": "min",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 3.875643
+                    },
+                    {
+                      "o": "mul",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 2.049437
+                        },
+                        {
+                          "o": "add",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "M"
+                            },
+                            {
+                              "o": "var",
+                              "n": "e"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
                 }
               ]
             }
@@ -8320,14 +8500,9 @@
         },
         {
           "o": "const",
-          "v": 9.923214341619618
+          "v": -0.21378713578869088
         }
       ]
-    },
-    "speed": {
-      "formulaCost": 25,
-      "exactCost": 32,
-      "speedup": 1.28
     }
   },
   "fast_exp_alu": {

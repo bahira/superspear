@@ -1855,8 +1855,8 @@ export function buildTasks(): TaskDef[] {
       groundTruth: "L₂(x) = 1 − 2x + x²/2",
       exactCost: 5,
     }),
-    // asin on the unit domain: the missing inverse-trig primitive.
-    // Hard mode — no scaffold possible without adding atan/asin to ops.
+    // asin on the unit domain: inverse-trig primitive — SERVED since the asin
+    // backend landed; task fell to machine precision (MSE = 0) same generation.
     buildActivationTask({
       id: "asin_hard",
       title: "Arcsinus unitaire (quantique · rotations)",
@@ -2091,9 +2091,9 @@ export function buildTasks(): TaskDef[] {
       verify: () => null,
     }),
     // ---- WAVE 8: quantum computing operations ------------------------------
-    // Grover amplitude amplification: THE quadratic-speedup law. Hard mode:
-    // asin(√(m/n)) unservable — the GP must approximate the inverse-sine
-    // amplification with served primitives.
+    // Grover amplitude amplification: THE quadratic-speedup law. CRACKED once
+    // asin got served (+ structural scaffold with k inside the sine argument):
+    // 8.3e-32, L2 — same story as ik_reach when atan was served.
     buildRegressionTask({
       id: "grover_amplitude",
       title: "Amplification de Grover (recherche quantique)",
@@ -2115,6 +2115,31 @@ export function buildTasks(): TaskDef[] {
         return { vars: { k: kv, m: mv, n: nv }, y };
       },
       trueLaw: (v, i) => groverSuccess(v.k[i], v.m[i], v.n[i]),
+      // asin is SERVED now — the "hard mode" premise is obsolete. Shape-only
+      // scaffolds of the amplification law (constants stay tunable), same
+      // doctrine that cracked ik_reach/eigen when atan got served.
+      extraSeeds: (() => {
+        const kk = V("k"), mm = V("m"), nn = V("n");
+        const theta = makeNode("asin", {
+          children: [makeNode("sqrt", { children: [makeNode("pdiv", { children: [mm, nn] })] })],
+        });
+        const kTheta = makeNode("mul", { children: [kk, theta] });
+        // (2k+1)·θ lives INSIDE the sine argument — k is a variable, so the
+        // scaffold must carry it there structurally, not as a constant
+        const twoKPlusOneTheta = makeNode("add", {
+          children: [theta, makeNode("mul", { children: [C(2), kTheta] })],
+        });
+        const sin = (arg: SpearNode): SpearNode => makeNode("sin", { children: [arg] });
+        return [
+          makeNode("sq", { children: [sin(twoKPlusOneTheta)] }),
+          makeNode("sq", { children: [sin(makeNode("add", { children: [theta, makeNode("mul", { children: [C(3), kTheta] })] }))] }),
+          makeNode("sq", { children: [sin(theta)] }),
+          makeNode("sub", { children: [
+            C(1),
+            makeNode("sq", { children: [makeNode("cos", { children: [twoKPlusOneTheta] })] }),
+          ] }),
+        ];
+      })(),
       verify: () => null,
     }),
     // Concurrence: entanglement measure of a pure 2-qubit state. Quantum
