@@ -417,6 +417,24 @@ export function parseFormula(src: string): SpearNode {
   // input like "sin(x) * exp(-x / 3)".
   const term = (): SpearNode => {
     let left = atom();
+    // caret power: ^2/^3 map to sq/cube; ANY other exponent expands to
+    // exp(k·ln(x)) — engine rails (log floor 1e-30, exp clamp ±50) keep it
+    // total on positive-ish domains. Documented behaviour for target formulas.
+    while (peek() === "^") {
+      eat();
+      const e = atom();
+      if (e.op === "const" && e.value === 2) {
+        left = makeNode("sq", { children: [left] });
+        continue;
+      }
+      if (e.op === "const" && e.value === 3) {
+        left = makeNode("cube", { children: [left] });
+        continue;
+      }
+      left = makeNode("exp", {
+        children: [makeNode("mul", { children: [e, makeNode("log", { children: [left] })] })],
+      });
+    }
     while (peek() === "*" || peek() === "/") {
       const op = BIN[eat()];
       left = makeNode(op, { children: [left, atom()] });

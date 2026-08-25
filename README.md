@@ -14,7 +14,21 @@ No neural networks, no black boxes: what comes out is a formula you can read, au
 
 ## 🏆 Hall of Fame
 
-Best discoveries across all seeds (full ledger: [`spear-hall-of-fame.json`](./spear-hall-of-fame.json), aggregated by [`scripts/hall-of-fame.ts`](./scripts/hall-of-fame.ts)).
+Best discoveries across all seeds (full ledger: [`ledger/*.json`](./ledger) — one file per task; [`spear-hall-of-fame.json`](./spear-hall-of-fame.json) is the generated bundle).
+
+### Campaign 2026-08 — systematic wall assault
+
+Five breakthroughs from three grounded-loop rounds. The pattern that worked: tasks whose exact laws are fully expressible in **already-served ops** but whose skeletons were missing from every seed pool fell in one pass each once scaffolded (`grover_amplitude`, `logit_ml`, `qfi_dephasing`, `amp_damp_fid`).
+
+| Task | Before | After | How |
+|---|---|---|---|
+| **grover_amplitude** | 1.1e-1, L0 | **8.3e-32, L2** | `asin` served + variable-aware `(2k+1)·θ` scaffold |
+| **logit_ml** | 1.7e-2, L0 | **EXACT, L5 @25u** | `ln(x/(1−x))` is three served ops — seeded, fell instantly |
+| **amp_damp_fid** | 2.1e-2, L2 | **EXACT, L5 @90u** | true ~30u-form basin unreachable by slimming, reached by scaffold |
+| **qfi_dephasing** | 1.47, L0 | **1.7e-31, L2 @28u** | `N²t²·e^(−N²γt)` skeleton seeded |
+| **kepler_solver** | 2.6e-2 | **6.1e-3 (−76 %)** | heritage loop, deep pass |
+
+Honest walls still standing: `implied_vol` (Newton inversion has no servable skeleton), `pendulum_hybrid`. Every record replayable from its seed.
 
 **⚡ Speed column**: `cost(exact reference kernel) / cost(discovered formula)` in GPU ALU/SFU units (`mul/add` = 1, `div` = 4, `sqrt` = 2, `exp/sin/cos/log` ≈ 20).
 

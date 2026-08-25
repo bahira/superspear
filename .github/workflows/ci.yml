@@ -29,3 +29,23 @@ jobs:
       # opcode swaps — across every ledger champion with an AST.
       - name: WASM↔JS parity (all ledger champions)
         run: npx tsx scripts/test-wasm-parity.ts
+
+      # Blocks obsolete "hard mode / unservable" premises: when a marker claims
+      # a primitive is missing but the engine serves it (the grover_amplitude
+      # pattern), CI fails until the task is re-scaffolded and audited.
+      - name: Scaffold audit (stale hard-mode markers)
+        run: npx tsx scripts/audit-scaffolds.ts --strict
+
+      # End-to-end loop smoke: dual-population breeding, OOD gate, asin op,
+      # per-task ledger writes + bundle rebuild.
+      - name: Heritage loop smoke
+        run: npx tsx scripts/test-heritage.ts
+
+      # price-fast must be idempotent: second run prices nothing new and the
+      # bundle must stay byte-stable (guards the unified post-run chain).
+      - name: Ledger I/O idempotency
+        run: |
+          npx tsx scripts/price-fast.ts > /dev/null
+          cp spear-hall-of-fame.json /tmp/ledger-a.json
+          npx tsx scripts/price-fast.ts > /dev/null
+          cmp spear-hall-of-fame.json /tmp/ledger-a.json
