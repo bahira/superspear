@@ -415,6 +415,14 @@ ledger/           # source of truth — one JSON per task (granular edits/diffs)
 spear-hall-of-fame.json   # GENERATED bundle rebuilt on every write — read API
 src/lib/spear/
   engine.ts       # AST, seeded RNG, simplify, NSGA-II, GP operators, codegen (torch/C/MISRA-C)
+  ledger.ts       # ledger I/O — the single write door (per-task files + bundle)
+  benchmarks.ts   # compatibility facade → tasks/
+  tasks/
+    types.ts      # TaskDef contract
+    shared.ts     # helpers, EXACT_LAWS, data builders, KV world
+    factories.ts  # buildActivationTask / buildRegressionTask
+    domains/*.ts  # ONE FILE PER DOMAIN — add a task here
+    index.ts      # registry assembly + SPEAR_TASKS filter
   benchmarks.ts   # benchmark tasks + exact-law ASTs for the cost model
   loop.ts         # grounded loop: UCB, warm-up, anti-stagnation, light/full snapshots
   presets.ts      # single-task labs (activation, KV-cache, custom CSV)
