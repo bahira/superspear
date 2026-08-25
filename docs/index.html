@@ -264,10 +264,10 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;font-family:var
 <!-- STATS -->
 <div class="stats" style="padding:0">
   <div class="wrap">
-    <div class="stat"><div class="n" data-count="73">0</div><div class="l">evolved kernels in the registry — activations, physics, finance, quantum, shaders</div></div>
-    <div class="stat"><div class="n" data-count="52">0</div><div class="l">ship a second, cheaper <b>fast slot</b> — two validated operating points per law</div></div>
-    <div class="stat"><div class="n">≤1e-6</div><div class="l">machine-checked C ↔ WASM numeric parity on every exported kernel</div></div>
-    <div class="stat"><div class="n" data-count="1840" data-prefix="×">0</div><div class="l">vs Monte-Carlo on the Gaussian CDF — loops replaced by O(1) formulas</div></div>
+    <div class="stat"><div class="n" data-count="74">0</div><div class="l">evolved kernels in the registry — activations, physics, finance, quantum, shaders</div></div>
+    <div class="stat"><div class="n" data-count="65">0</div><div class="l">ship a second, cheaper <b>fast slot</b> — two validated operating points per law</div></div>
+    <div class="stat"><div class="n" data-count="25" data-suffix="">0</div><div class="l">laws solved to <b>machine precision</b> — MSE ≤ 1e-12, many at exactly zero</div></div>
+    <div class="stat"><div class="n" data-count="5111" data-prefix="×">0</div><div class="l">fast slot vs Monte-Carlo on the Gaussian CDF — loops replaced by O(1) formulas</div></div>
   </div>
 </div>
 
@@ -381,8 +381,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;font-family:var
       <p>Where practitioners normally run an iterative solver, SPEAR finds a closed form. Solver bills counted fully, in the same ALU/SFU units — slower results reported as measured, never hidden.</p>
     </div>
     <div class="grid2">
-      <div class="card bracket"><div class="top"><h3>Gaussian CDF</h3><div class="mult">×1840<small>&nbsp;vs Monte-Carlo</small></div></div><p>1000 Box–Muller draws → one clamped rational. The protected-div rails double as free saturation.</p><div class="f"><span class="o">9 units</span> · 46,000 → 9</div></div>
-      <div class="card bracket"><div class="top"><h3>Kerr deflection + spin</h3><div class="mult">×480<small>&nbsp;fast vs RK4</small></div></div><p>RK4 geodesic integration, 200 steps → a 5-unit rational. Precise slot still ×133.</p><div class="f"><span class="o">10.49/(s+b)</span> · 5 units</div></div>
+      <div class="card bracket"><div class="top"><h3>Gaussian CDF</h3><div class="mult">×5111<small>&nbsp;fast slot vs Monte-Carlo</small></div></div><p>1000 Box–Muller draws → one clamped rational at 9 units. The protected-div rails double as free saturation.</p><div class="f"><span class="o">46,000 → 9 units</span></div></div>
+      <div class="card bracket"><div class="top"><h3>Kerr deflection + spin</h3><div class="mult">×600<small>&nbsp;fast slot vs RK4</small></div></div><p>RK4 geodesic integration, 200 steps → a 4-unit rational. Precise slot still ×133.</p><div class="f"><span class="o">10.49/(s+b)</span> · 4 units</div></div>
       <div class="card bracket"><div class="top"><h3>Damped oscillation</h3><div class="mult">×200<small>&nbsp;vs RKF45</small></div></div><p>Adaptive 300-step solve → polynomial envelope × carrier.</p><div class="f"><span class="o">(t−16.4)(t−8.3)·cos(2.996t)</span></div></div>
       <div class="card bracket"><div class="top"><h3>2-link IK elbow</h3><div class="mult">×20<small>&nbsp;vs Newton-DLS</small></div></div><p>8 damped least-squares iterations → the analytic inverse, exact to 1.1e-13.</p><div class="f"><span class="o">atan identity</span> · 52 units</div></div>
     </div>

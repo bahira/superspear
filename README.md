@@ -8,7 +8,7 @@
 npm install spear-kernels
 ```
 
-Now shipping **64+ verified kernels on npm** (`spear-kernels@latest`) — including the **SPEAR Quant Pack**: Kelly criterion, RSI, implied volatility, Gaussian CDF, probit — all parity-audited across JS/WASM/C/PyTorch. that discovers **closed-form mathematical laws** from data — then compiles them to **verified WebAssembly** and **MISRA-C:2012 C99**, with machine-checked parity.
+Now shipping **74 verified kernels on npm** (`spear-kernels@latest`) — **65 fast slots**, **25 exact solves** — including the **SPEAR Quant Pack**: Kelly criterion, RSI, implied volatility, Gaussian CDF, probit — all parity-audited across JS/WASM/C/PyTorch. that discovers **closed-form mathematical laws** from data — then compiles them to **verified WebAssembly** and **MISRA-C:2012 C99**, with machine-checked parity.
 
 No neural networks, no black boxes: what comes out is a formula you can read, audit, and deploy on a microcontroller.
 
@@ -361,6 +361,17 @@ npx tsx scripts/backfill-fast.ts
 # Commit .spear-primitives.json; CI can gate on --strict.
 npx tsx scripts/audit-scaffolds.ts            # report
 npx tsx scripts/audit-scaffolds.ts --update   # snapshot current primitives after auditing
+
+# One-shot discovery: any target formula → evolved kernel + exports
+npx tsx scripts/discover.ts "x^(1/2.2)" 0 1 --alu     # pure-ALU hunt
+npx tsx scripts/discover.ts "sin(x) * exp(-x / 3)" -2 8
+
+# Transcendental-free evolution across the whole registry — hunts hyper-cheap
+# validated forms (fast slots) with a reduced search space:
+SPEAR_ALU_ONLY=1 npx tsx scripts/run-farm.ts <seed> <budget> <workers> [ids]
+
+# Operator-arm telemetry for the UCB bandits (breeding operators)
+SPEAR_BANDIT_DEBUG=1 npx tsx scripts/hall-of-fame.ts <seed> <budget>
 
 # Op-by-op WASM parity smoke test
 npx tsx wasm-smoke.test.ts
