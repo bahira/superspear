@@ -1831,6 +1831,19 @@ export function buildTasks(): TaskDef[] {
       hi: 0.999,
       groundTruth: "logit(x) = ln(x/(1−x))",
       exactCost: 27,
+      // the law is THREE served ops (log/pdiv/sub) yet stayed L0 for lack of
+      // any rational-log shape in the pool — same obsolete-premise pattern as
+      // grover. Shapes only; constants stay tunable.
+      extraSeeds: (() => {
+        const x = V("x");
+        const lg = (num: SpearNode, den: SpearNode): SpearNode =>
+          makeNode("log", { children: [makeNode("pdiv", { children: [num, den] })] });
+        return [
+          lg(x, makeNode("sub", { children: [C(1), x] })),                    // ln(x/(1−x))
+          lg(makeNode("add", { children: [C(1), x] }), makeNode("sub", { children: [C(1), x] })), // ln((1+x)/(1−x)) — atanh bridge
+          lg(makeNode("mul", { children: [C(1), x] }), makeNode("add", { children: [C(1), x] })), // softsign-log cousin
+        ];
+      })(),
     }),
     // ---- WAVE 8b: quantum special functions for SR discovery ---------------
     // Legendre P₂(x): THE quantum angular eigenfunction. Exact polynomial.
@@ -2322,6 +2335,21 @@ export function buildTasks(): TaskDef[] {
         return { vars: { c: cv, s: sv, k: kv, t: tv }, y };
       },
       trueLaw: (v, i) => impliedVol(v.c[i], v.s[i], v.k[i], v.t[i]),
+      // no closed form exists, but the HUMAN art is seedable: Brenner–
+      // Subrahmanyam ATMF skeleton and its Corrado–Miller-style corrections,
+      // shapes only (generic constants).
+      extraSeeds: (() => {
+        const c = V("c"), s = V("s"), k = V("k"), t = V("t");
+        const cs = makeNode("pdiv", { children: [c, s] });
+        const sqrtInvT = makeNode("sqrt", { children: [makeNode("pdiv", { children: [C(1), t] })] });
+        const bs = makeNode("mul", { children: [C(2.5), makeNode("mul", { children: [cs, sqrtInvT] })] }); // √(2π)·(c/s)/√t
+        const ksTerm = makeNode("mul", { children: [makeNode("pdiv", { children: [k, s] }), sqrtInvT] });
+        return [
+          bs,
+          simplify(makeNode("add", { children: [bs, makeNode("mul", { children: [C(1), ksTerm] })] })),
+          makeNode("mul", { children: [bs, makeNode("add", { children: [C(1), makeNode("pdiv", { children: [makeNode("sq", { children: [cs] }), t] })] })] }),
+        ];
+      })(),
       verify: (node) => {
         const iv = evaluateScalar(node, { c: bsCall(100, 100, 0.5, 0.35), s: 100, k: 100, t: 0.5 });
         if (!Number.isFinite(iv)) return null;
@@ -2454,6 +2482,20 @@ export function buildTasks(): TaskDef[] {
         const nn = v.n[i], gg = v.g[i];
         return nn * nn * v.t[i] * v.t[i] * Math.exp(-nn * nn * gg * v.t[i]);
       },
+      // every op of N²t²·e^(−N²γt) is SERVED (sq/mul/exp/neg) yet the search
+      // sat at L0 — the exact skeleton was never in any pool. Shape-only seed,
+      // constants tunable.
+      extraSeeds: (() => {
+        const n = V("n"), g = V("g"), t = V("t");
+        const n2 = makeNode("sq", { children: [n] });
+        const decay = makeNode("exp", {
+          children: [makeNode("neg", { children: [makeNode("mul", { children: [n2, makeNode("mul", { children: [g, t] })] })] })],
+        });
+        return [
+          makeNode("mul", { children: [n2, makeNode("mul", { children: [makeNode("sq", { children: [t] }), decay] })] }),
+          makeNode("mul", { children: [makeNode("sq", { children: [t] }), decay] }), // N² absorbed by affine rescale
+        ];
+      })(),
       verify: () => null,
     }),
     // Amplitude damping channel fidelity for a qubit at angle θ from |0⟩:
@@ -2480,6 +2522,22 @@ export function buildTasks(): TaskDef[] {
         }
         return { vars: { th: thv, g: gv, t: tv }, y };
       },
+      // the TRUE 30-unit form cos²θ·E + sin²θ·(2−E), E = e^(−γt): every op
+      // served. Champion sits at 124u in a different basin — slimming can't
+      // jump basins, scaffolds can.
+      extraSeeds: (() => {
+        const th = V("th"), g = V("g"), t = V("t");
+        const E = makeNode("exp", { children: [makeNode("neg", { children: [makeNode("mul", { children: [g, t] })] })] });
+        const c2 = makeNode("sq", { children: [makeNode("cos", { children: [th] })] });
+        const s2 = makeNode("sq", { children: [makeNode("sin", { children: [th] })] });
+        return [
+          makeNode("add", { children: [
+            makeNode("mul", { children: [c2, E] }),
+            makeNode("mul", { children: [s2, makeNode("sub", { children: [C(2), E] })] }),
+          ] }),
+          makeNode("add", { children: [s2, makeNode("mul", { children: [makeNode("sub", { children: [c2, s2] }), E] })] }), // sin²θ + cos2θ·E identity
+        ];
+      })(),
       trueLaw: (v, i) => {
         const decay = Math.exp(-v.g[i] * v.t[i]);
         return Math.cos(v.th[i]) ** 2 * decay + Math.sin(v.th[i]) ** 2 * (2 - decay);
