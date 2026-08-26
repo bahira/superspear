@@ -462,7 +462,7 @@ SPEAR tourne grâce au temps GPU de la ferme d'évolution. Si les kernels vous f
 
 ₿ **bc1q54n9x2894rr43f7nkaqywtegn8aufxwlnnkh5r**
 
-L'adresse est aussi déclarée dans le champ unding de [spear-kernels](https://www.npmjs.com/package/spear-kernels) (pm fund). Chaque satoshi retourne en heures de GPU.
+L'adresse est aussi déclarée dans le champ `funding` de [spear-kernels](https://www.npmjs.com/package/spear-kernels) (`npm fund`). Chaque satoshi retourne en heures de GPU.
 
 ## License
 
