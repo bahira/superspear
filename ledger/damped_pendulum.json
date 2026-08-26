@@ -90,7 +90,7 @@
     "speed": {
       "formulaCost": 21,
       "vsIterative": {
-        "label": "Euler-Cromer Â· 60 pas",
+        "label": "Euler-Cromer · 60 pas",
         "speedup": 71.42857142857143
       }
     },

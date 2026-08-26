@@ -111,7 +111,7 @@
       "exactCost": 21,
       "speedup": 5.25,
       "vsIterative": {
-        "label": "RK4 gÃ©odÃ©sique Â· 200 pas",
+        "label": "RK4 gÃ©odÃ©sique · 200 pas",
         "speedup": 600
       }
     },

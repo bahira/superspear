@@ -582,7 +582,7 @@
       "speed": {
         "formulaCost": 21,
         "vsIterative": {
-          "label": "Euler-Cromer Â· 60 pas",
+          "label": "Euler-Cromer · 60 pas",
           "speedup": 71.42857142857143
         }
       },
@@ -1383,7 +1383,7 @@
         "exactCost": 17,
         "speedup": 3.4,
         "vsIterative": {
-          "label": "RK4 gÃ©odÃ©sique Â· 200 pas",
+          "label": "RK4 gÃ©odÃ©sique · 200 pas",
           "speedup": 480
         }
       },
@@ -2190,7 +2190,7 @@
         "exactCost": 21,
         "speedup": 5.25,
         "vsIterative": {
-          "label": "RK4 gÃ©odÃ©sique Â· 200 pas",
+          "label": "RK4 gÃ©odÃ©sique · 200 pas",
           "speedup": 600
         }
       },
