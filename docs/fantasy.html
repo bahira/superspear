@@ -3,28 +3,40 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SPEAR — Royaume d'Aldarion · monde fantasy propulsé par noyaux évolués</title>
+<title>SPEAR — Royaume d'Aldarion · arène vivante à évolution génétique</title>
 <style>
-  :root{ --amber:#f4c170; --panel:rgba(11,13,15,.82); --line:#232a31; }
+  :root{ --amber:#f4c170; --teal:#5fb7b2; --red:#c0554a; --panel:rgba(11,13,15,.82); --line:#232a31; }
   *{margin:0;padding:0;box-sizing:border-box}
   body{overflow:hidden;background:#05060a;font-family:'Segoe UI',system-ui,sans-serif;color:#e6e9ec}
   canvas{display:block}
-  #hud{position:fixed;top:18px;left:18px;max-width:340px;background:var(--panel);border:1px solid var(--line);
+  #hud{position:fixed;top:18px;left:18px;max-width:360px;background:var(--panel);border:1px solid var(--line);
        border-radius:6px;padding:16px 18px;backdrop-filter:blur(8px);z-index:10}
   #hud h1{font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);font-weight:600}
   #hud p{font-size:12px;color:#98a1ab;margin-top:6px;line-height:1.55}
   #hud .kernels{margin-top:10px;display:flex;flex-wrap:wrap;gap:6px}
   #hud .k{font-family:ui-monospace,monospace;font-size:.62rem;padding:3px 8px;border:1px solid var(--line);
-          border-radius:999px;color:#5fb7b2}
+          border-radius:999px;color:var(--teal)}
   #hud .k.fast{color:var(--amber);border-color:#8a6423}
+  #sim{position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:10;text-align:center;
+       background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:10px 22px;backdrop-filter:blur(8px);
+       font-family:ui-monospace,monospace;min-width:420px}
+  #sim .row{display:flex;justify-content:space-between;gap:26px;font-size:12px;color:#98a1ab}
+  #sim .row b{color:var(--amber);font-weight:600}
+  #sim .row b.t{color:var(--teal)}
+  #nexusbar{margin-top:7px;height:7px;border-radius:4px;background:#1a1410;overflow:hidden;border:1px solid var(--line)}
+  #nexusfill{height:100%;width:100%;background:linear-gradient(90deg,#2fb8ff,#7fd4ff);transition:width .3s}
+  #evo{margin-top:6px;font-size:11px;color:#98a1ab}
+  #evo b{color:var(--teal)}
   #fps{position:fixed;top:18px;right:18px;z-index:10;font-family:ui-monospace,monospace;font-size:11px;
        color:#98a1ab;background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:6px 10px}
   #back{position:fixed;bottom:18px;left:18px;z-index:10}
   #back a{color:var(--amber);font-family:ui-monospace,monospace;font-size:11px;text-decoration:none;
           border:1px solid var(--line);border-radius:4px;padding:7px 12px;background:var(--panel)}
+  #banner{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:20;pointer-events:none;
+          font-family:ui-monospace,monospace;font-size:26px;letter-spacing:.3em;color:var(--amber);
+          text-shadow:0 0 24px rgba(233,162,59,.5);opacity:0;transition:opacity .5s}
   #loading{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:50;
            background:#05060a;color:var(--amber);font-family:ui-monospace,monospace;letter-spacing:.3em}
-  /* grade cinéma : vignette + grain statique (zero coût GPU shader) */
   #vignette{position:fixed;inset:0;z-index:5;pointer-events:none;
             background:radial-gradient(ellipse at 50% 40%, transparent 52%, rgba(2,3,6,.52) 100%)}
   #grain{position:fixed;inset:0;z-index:6;pointer-events:none;opacity:.045;
@@ -35,13 +47,21 @@
 <div id="loading">INVOCATION DES NOYAUX…</div>
 <div id="hud">
   <h1>Royaume d'Aldarion</h1>
-  <p>Chaque courbe visuelle de cette scène — brouillard, liseré de Fresnel, étalonnage filmic,
-     flicker des torches, pouls des cristaux, easing de caméra — est calculée par un
-     <b>noyau algébrique évolué</b> de SPEAR, exécuté en WebAssembly.</p>
+  <p>Arène vivante : les <b style="color:var(--teal)">gardiens</b> défendent le Nexus contre les
+     <b style="color:var(--red)">spectres</b>. Chaque spectre porte un génome
+     (vitesse · agression · anticipation · esquive) <b>sélectionné par évolution génétique en direct</b> —
+     ils apprennent à viser pendant que vous regardez. Toutes les courbes (tirs, pouls, flicker,
+     easings, brouillard, tonemap) sont des <b>noyaux SPEAR en WebAssembly</b>.</p>
   <div class="kernels" id="klist"></div>
+</div>
+<div id="sim">
+  <div class="row"><span>Vague <b id="wave">1</b></span><span>Génération <b id="gen">0</b></span><span>Gardiens <b class="t" id="guards">3/3</b></span><span>Spectres <b style="color:var(--red)" id="foes">0</b></span></div>
+  <div id="nexusbar"><div id="nexusfill"></div></div>
+  <div id="evo">fitness max <b id="fit">—</b> · apprentissage du tir <b id="lead">—</b></div>
 </div>
 <div id="fps">— fps</div>
 <div id="back"><a href="./index.html">← retour au laboratoire</a></div>
+<div id="banner"></div>
 <div id="vignette"></div>
 <div id="grain"></div>
 
@@ -61,19 +81,21 @@ import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js"
 import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
 
 const $ = s => document.querySelector(s);
+const rand = (a,b)=>a+Math.random()*(b-a);
+const clamp = (v,a,b)=>Math.min(b,Math.max(a,v));
 
-/* ---------- 1. instantiation WASM des noyaux évolués ---------- */
+/* ---------- 1. instantiation WASM — 10 noyaux évolués ---------- */
+function erf(x){const s=x<0?-1:1;const ax=Math.abs(x);const t=1/(1+0.3275911*ax);
+  return s*(1-((((1.061405429*t-1.453152027)*t+1.421413741)*t-0.284496736)*t+0.254829592)*t*Math.exp(-ax*ax));}
 async function instantiate(b64){
   const bytes = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
   const env = { env: { exp:Math.exp, sin:Math.sin, cos:Math.cos, atan:Math.atan,
-    asin:v=>Math.asin(Math.max(-1,Math.min(1,v))), log:v=>Math.log(v>1e-30?v:1e-30) } };
+    asin:v=>Math.asin(Math.max(-1,Math.min(1,v))), log:v=>Math.log(v>1e-30?v:1e-30), erf } };
   const { instance } = await WebAssembly.instantiate(bytes, env);
   return instance.exports["spear"];
 }
 const K = {};
 for (const [id, {b64}] of Object.entries(window.SPEAR_WASM)) K[id] = await instantiate(b64);
-
-// liste HUD
 for (const id of Object.keys(K)) {
   const el = document.createElement("span");
   el.className = "k" + (id !== "damped_oscillation" ? " fast" : "");
@@ -81,34 +103,31 @@ for (const id of Object.keys(K)) {
   $("#klist").appendChild(el);
 }
 
-/* ---------- 2. renderer / scène / caméra ---------- */
+/* ---------- 2. renderer / scène / caméra / post-fx ---------- */
 const renderer = new THREE.WebGLRenderer({ antialias:true });
 renderer.setSize(innerWidth, innerHeight);
 renderer.setPixelRatio(Math.min(1.75, devicePixelRatio));
-// pipeline linéaire : le tonemap filmic EST le noyau évolué, appliqué en passe finale
-renderer.toneMapping = THREE.NoToneMapping;
+renderer.toneMapping = THREE.NoToneMapping;      // tonemap = noyau, en passe finale
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 document.body.appendChild(renderer.domElement);
 
 const scene  = new THREE.Scene();
 scene.background = new THREE.Color(0x070811);
-scene.fog    = new THREE.Fog(0x181330, 22, 105);   // déclenche USE_FOG ; la COURBE vient du kernel
+scene.fog    = new THREE.Fog(0x181330, 22, 105);
 
 const camera = new THREE.PerspectiveCamera(55, innerWidth/innerHeight, 0.5, 600);
-camera.position.set(0, 44, 118);
+camera.position.set(0, 24, 112);
 
 const controls = new OrbitControls(camera, renderer.domElement);
-controls.target.set(0, 11, 0);
-controls.enableDamping = true;
-controls.dampingFactor = 0.06;
+controls.target.set(0, 3.5, 0);
+controls.enableDamping = true; controls.dampingFactor = 0.06;
 controls.enablePan = false;
-controls.minDistance = 26; controls.maxDistance = 150;
-controls.maxPolarAngle = Math.PI * 0.49;   // jamais sous les îles
-controls.addEventListener("start", () => { userMoved = true; });
+controls.minDistance = 24; controls.maxDistance = 150;
+controls.maxPolarAngle = Math.PI * 0.49;
 let userMoved = false;
+controls.addEventListener("start", () => { userMoved = true; });
 
-/* ---------- 3. LUTs : chaque courbe = son noyau WASM échantillonné ---------- */
 function makeLUT(kernelFn, lo, hi){
   const N = 256, data = new Float32Array(N*4);
   for (let i = 0; i < N; i++) {
@@ -121,12 +140,11 @@ function makeLUT(kernelFn, lo, hi){
   tex.needsUpdate = true; tex.minFilter = tex.magFilter = THREE.LinearFilter;
   return tex;
 }
-// le kernel fog_exp2 sature à x≈1.7 : son entrée = profondeur NORMALISÉE (0→1)
-const lutFog     = makeLUT(K.fog_exp2, 0, 1.7);
-const lutFresnel = makeLUT(K.fresnel_schlick,   0, 1);      // ndv -> réflexion
-const lutTone    = makeLUT(K.uncharted2_tonemap,0, 1.6);   // linéaire -> filmic
+const lutFog     = makeLUT(K.fog_exp2, 0, 1.7);            // profondeur normalisée
+const lutFresnel = makeKernelsFresnel();
+function makeKernelsFresnel(){ return makeLUT(K.fresnel_schlick, 0, 1); }
+const lutTone    = makeLUT(K.uncharted2_tonemap,0, 1.6);
 
-/* ---------- 4. injection du brouillard évolué dans les chunks three ---------- */
 THREE.ShaderChunk.fog_fragment = `
 #ifdef USE_FOG
   float fd = clamp((vFogDepth - fogNear) / max(fogFar - fogNear, 0.001), 0.0, 1.0);
@@ -142,7 +160,6 @@ THREE.ShaderChunk.fog_pars_fragment = `
   uniform sampler2D uFogLUT;
 #endif`;
 
-// helper : fournit les uniforms LUT à chaque matériau compilé
 function useKernels(mat, { fresnel = 0 } = {}){
   mat.onBeforeCompile = (shader) => {
     shader.uniforms.uFogLUT     = { value: lutFog };
@@ -161,62 +178,53 @@ function useKernels(mat, { fresnel = 0 } = {}){
   return mat;
 }
 
-/* ---------- 5. post-process : bloom + grade filmic PAR LE NOYAU ---------- */
-// NoToneMapping partout : la scène rend en linéaire HDR (buffer half-float),
-// puis notre passe finale applique uncharted2_tonemap (WASM->LUT) + sRGB.
 const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
-const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.85, 0.55, 0.55);
+const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.9, 0.55, 0.5);
 composer.addPass(bloom);
-const FilmicKernelPass = {
+composer.addPass(new ShaderPass({
   uniforms: { tDiffuse:{ value:null }, uTone:{ value:lutTone } },
   vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix*modelViewMatrix*vec4(position,1.0); }`,
   fragmentShader: `
-    uniform sampler2D tDiffuse;
-    uniform sampler2D uTone;
-    varying vec2 vUv;
+    uniform sampler2D tDiffuse; uniform sampler2D uTone; varying vec2 vUv;
     void main(){
       vec4 c = texture2D(tDiffuse, vUv);
       c.rgb = vec3(
-        texture2D(uTone, vec2(clamp(c.r, 0.0, 1.0), 0.5)).r,
-        texture2D(uTone, vec2(clamp(c.g, 0.0, 1.0), 0.5)).g,
-        texture2D(uTone, vec2(clamp(c.b, 0.0, 1.0), 0.5)).b );
-      c.rgb = pow(c.rgb, vec3(0.4545));   // linéaire -> sRGB approx
+        texture2D(uTone, vec2(clamp(c.r,0.,1.), .5)).r,
+        texture2D(uTone, vec2(clamp(c.g,0.,1.), .5)).g,
+        texture2D(uTone, vec2(clamp(c.b,0.,1.), .5)).b );
+      c.rgb = pow(c.rgb, vec3(0.4545));
       gl_FragColor = c;
     }`
-};
-composer.addPass(new ShaderPass(FilmicKernelPass));
+}));
 
-/* ---------- 6. lumière : clé froide face caméra + chauds ponctuels ---------- */
+/* ---------- 3. lumière ---------- */
 scene.add(new THREE.HemisphereLight(0x36426e, 0x100c1c, 0.6));
-const moonlight = new THREE.DirectionalLight(0xa4b8ff, 3.6);   // clé 3/4 avant : modelé visible
+const moonlight = new THREE.DirectionalLight(0xa4b8ff, 3.4);
 moonlight.position.set(34, 58, 42);
 moonlight.castShadow = true;
 moonlight.shadow.mapSize.set(2048, 2048);
 moonlight.shadow.camera.left = -60; moonlight.shadow.camera.right = 60;
 moonlight.shadow.camera.top  =  60; moonlight.shadow.camera.bottom = -60;
-moonlight.shadow.bias = -0.0004;
-moonlight.shadow.normalBias = 0.03;
+moonlight.shadow.bias = -0.0004; moonlight.shadow.normalBias = 0.03;
 scene.add(moonlight);
 
-/* ---------- 7. ASSETS — royaume procédural ---------- */
+/* ---------- 4. environnement + arène ---------- */
+const ARENA_Y = 1.3;            // surface de l'île principale
+const ARENA_R = 13.5;           // rayon jouable
 const world = new THREE.Group(); scene.add(world);
 const rockMat   = useKernels(new THREE.MeshStandardMaterial({ color:0x4e4760, roughness:.95 }));
 const grassMat  = useKernels(new THREE.MeshStandardMaterial({ color:0x457049, roughness:.88 }));
 const stoneMat  = useKernels(new THREE.MeshStandardMaterial({ color:0x5f5a6e, roughness:.92 }));
 const woodMat   = useKernels(new THREE.MeshStandardMaterial({ color:0x5a3d28, roughness:.82 }));
-const crystalM  = () => useKernels(new THREE.MeshStandardMaterial({
-  color:0x9fe0ff, roughness:.18, metalness:.05, emissive:0x2fb8ff, emissiveIntensity:2.4 }), { fresnel:1.0 });
 const goldMat   = useKernels(new THREE.MeshStandardMaterial({ color:0xe0aa4a, roughness:.3, metalness:.85 }));
 
 function shadowify(g){ g.traverse(o=>{ if(o.isMesh){ o.castShadow = true; o.receiveShadow = true; } }); return g; }
 
-// --- île flottante principale ---
 function floatingIsland(radius, seedRot){
   const g = new THREE.Group();
   const top = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius*.92, radius*.16, 9), grassMat);
-  const under = new THREE.Mesh(new THREE.ConeGeometry(radius*.92, radius*1.5, 9),
-    rockMat);
+  const under = new THREE.Mesh(new THREE.ConeGeometry(radius*.92, radius*1.5, 9), rockMat);
   under.rotation.x = Math.PI; under.position.y = -radius*.78;
   g.add(top, under);
   for (let i = 0; i < 5; i++) {
@@ -230,12 +238,30 @@ function floatingIsland(radius, seedRot){
   g.rotation.y = seedRot;
   return shadowify(g);
 }
+world.add(floatingIsland(16, 0.4));
+for (const [x,y,z,r,a] of [[-34,6,-18,7,1.2],[30,2,-30,9,2.9],[-24,-4,26,6,4.1],[38,14,18,5,5.3],
+                            [-70,-8,-52,4,0.7],[64,-12,-66,5,2.2],[-84,4,30,4.5,3.6],[76,8,52,3.5,4.8]]){
+  const isl = floatingIsland(r, a); isl.position.set(x,y,z); world.add(isl);
+}
 
-// --- tour de mage ---
-function wizardTower(){
+// cercle de pierres
+{
+  const g = new THREE.Group();
+  for (let i = 0; i < 7; i++){
+    const a = i/7*Math.PI*2;
+    const p = new THREE.Mesh(new THREE.BoxGeometry(1.6,4.6+((i*37)%3)*.5,1.1), stoneMat);
+    p.position.set(Math.cos(a)*13, ARENA_Y+2.2, Math.sin(a)*13);
+    p.rotation.y = a; p.rotation.z = ((i*53)%17)/17*.14-.07;
+    g.add(p);
+  }
+  shadowify(g); world.add(g);
+}
+
+// tour du mage (décor hors arène)
+{
   const g = new THREE.Group();
   const levels = [[3.2,7],[2.6,5.5],[2.0,4.2]];
-  let y = 3.5;
+  let y = 0;
   for (const [r,h] of levels){
     const seg = new THREE.Mesh(new THREE.CylinderGeometry(r*.86, r, h, 10), stoneMat);
     seg.position.y = y + h/2; y += h; g.add(seg);
@@ -243,46 +269,26 @@ function wizardTower(){
   const roof = new THREE.Mesh(new THREE.ConeGeometry(2.5, 4.4, 10),
     useKernels(new THREE.MeshStandardMaterial({ color:0x33477a, roughness:.6 })));
   roof.position.y = y + 2.2; g.add(roof);
-  const spire = new THREE.Mesh(new THREE.SphereGeometry(.34, 10, 8), goldMat);
-  spire.position.y = y + 4.7; g.add(spire);
-  // fenêtres incandescentes — posées PAR NIVEAU (l'ancien calcul enfouissait
-  // la moitié des fenêtres dans les maçonsneries) + couleur HDR pour le bloom
   const winMat = new THREE.MeshBasicMaterial({ color:0xffcf7a });
   winMat.color.setRGB(2.6, 1.7, 0.85);
   levels.forEach(([r,h], li) => {
-    const yBase = 3.5 + levels.slice(0, li).reduce((s,[,hh])=>s+hh,0);
+    const yBase = levels.slice(0,li).reduce((s,[,hh])=>s+hh,0);
     for (const a of [li*2.1+.5, li*2.1+.5+Math.PI]) {
       const w = new THREE.Mesh(new THREE.PlaneGeometry(.5,.9), winMat);
       w.position.set(Math.cos(a)*(r*.87+.06), yBase + h*.55, Math.sin(a)*(r*.87+.06));
       w.lookAt(w.position.clone().multiplyScalar(2).setY(w.position.y));
       g.add(w);
-      if (li === 0){ const pl = new THREE.PointLight(0xffb45e, 8, 11, 2); pl.position.copy(w.position); g.add(pl); }
     }
   });
-  g.position.set(-6, 10.2, -4);
-  return shadowify(g);
+  g.position.set(-24, ARENA_Y-0.1, -10);
+  shadowify(g); world.add(g);
+  const pl = new THREE.PointLight(0xffb45e, 9, 14, 2); pl.position.set(-22, ARENA_Y+4, -8); world.add(pl);
 }
 
-// --- cristaux pulsants (Fresnel évolué) ---
-const crystals = [];
-function crystalCluster(x,y,z,scale,n=5){
-  const g = new THREE.Group();
-  for (let i = 0; i < n; i++){
-    const m = new THREE.Mesh(new THREE.OctahedronGeometry(scale*(0.5+0.5*Math.random()), 0), crystalM());
-    const a = Math.random()*6.28;
-    m.position.set(Math.cos(a)*scale*.42, (Math.random()-.2)*scale*.9, Math.sin(a)*scale*.42);
-    m.rotation.set(Math.random(),Math.random(),Math.random());
-    m.scale.y = 1.6 + Math.random();
-    g.add(m); crystals.push(m);
-  }
-  g.position.set(x,y,z);
-  return shadowify(g);
-}
-
-// --- torches ---
+// torches
 const flames = [];
 const flameMat = new THREE.MeshBasicMaterial({ color:0xffb54d });
-flameMat.color.setRGB(2.4, 1.4, 0.5);   // HDR -> capte le bloom
+flameMat.color.setRGB(2.4, 1.4, 0.5);
 function torch(x,y,z,h=2.6){
   const g = new THREE.Group();
   const pole = new THREE.Mesh(new THREE.CylinderGeometry(.09,.13,h,6), woodMat);
@@ -291,44 +297,53 @@ function torch(x,y,z,h=2.6){
   bowl.position.y = h;
   const flame = new THREE.Mesh(new THREE.ConeGeometry(.2,.75,7), flameMat);
   flame.position.y = h + .48;
-  const glow = new THREE.PointLight(0xff9a3a, 12, 15, 2);
+  const glow = new THREE.PointLight(0xff9a3a, 11, 14, 2);
   glow.position.y = h + .6;
   g.add(pole,bowl,flame,glow); g.position.set(x,y,z);
-  flames.push({ flame, glow, base:h });
+  flames.push({ flame, glow });
   return shadowify(g);
 }
+world.add(torch(-4.5, ARENA_Y-0.05, 8.5));
+world.add(torch( 4.8, ARENA_Y-0.05, 9.2));
+world.add(torch( 9.5, ARENA_Y-0.05, -6.0));
+world.add(torch(-9.0, ARENA_Y-0.05, -7.5));
 
-// --- cercle de pierres antique ---
-function stoneCircle(cx,cy,cz,R=13,n=7){
+// NEXUS — grand cristal à défendre
+const nexus = { hp: 100, maxHp: 100, core: null };
+{
   const g = new THREE.Group();
-  for (let i = 0; i < n; i++){
-    const a = i/n*Math.PI*2;
-    const p = new THREE.Mesh(new THREE.BoxGeometry(1.6,4.6+((i*37)%3)*.5,1.1), stoneMat);
-    p.position.set(cx+Math.cos(a)*R, cy+2.4, cz+Math.sin(a)*R);
-    p.rotation.y = a; p.rotation.z = ((i*53)%17)/17*.14-.07;
-    g.add(p);
+  const base = new THREE.Mesh(new THREE.CylinderGeometry(2.6, 3.1, .7, 8), stoneMat);
+  base.position.y = .35; g.add(base);
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(2.4, .12, 8, 32), goldMat);
+  ring.rotation.x = Math.PI/2; ring.position.y = .85; g.add(ring);
+  const core = new THREE.Mesh(new THREE.OctahedronGeometry(1.5, 0),
+    useKernels(new THREE.MeshStandardMaterial({ color:0x9fe0ff, roughness:.15, emissive:0x2fb8ff, emissiveIntensity:2.6 }), { fresnel:1.0 }));
+  core.position.y = 3.1; g.add(core);
+  nexus.core = core;
+  const l = new THREE.PointLight(0x4fc3ff, 26, 30, 2); l.position.y = 3.4; g.add(l);
+  g.position.set(0, ARENA_Y, 0);
+  shadowify(g); world.add(g);
+}
+
+// PORTAILS d'apparition
+const portals = [];
+{
+  const pMat = new THREE.MeshBasicMaterial({ color:0xb04aff });
+  pMat.color.setRGB(1.6, 0.4, 2.2);
+  for (const a of [0.4, 2.5, 4.6]) {
+    const g = new THREE.Group();
+    const torus = new THREE.Mesh(new THREE.TorusGeometry(1.5, .14, 8, 24), pMat);
+    torus.position.y = 2.2; g.add(torus);
+    const inner = new THREE.Mesh(new THREE.CircleGeometry(1.28, 24),
+      new THREE.MeshBasicMaterial({ color:0x2a0a3e, transparent:true, opacity:.85, side:THREE.DoubleSide }));
+    inner.position.y = 2.2; g.add(inner);
+    const l = new THREE.PointLight(0x8a3aff, 9, 12, 2); l.position.y = 2.4; g.add(l);
+    g.position.set(Math.cos(a)*14.5, ARENA_Y, Math.sin(a)*14.5);
+    g.lookAt(0, ARENA_Y+2.2, 0);
+    world.add(g); portals.push(g);
   }
-  return shadowify(g);
 }
 
-world.add(floatingIsland(16, 0.4));
-world.add(wizardTower());
-world.add(crystalCluster( 8.5, 12.6,  6.5, 1.9));
-world.add(crystalCluster(-12 , 12.2,  9  , 1.4, 4));
-world.add(torch(-2.5, 12.9,  9.5)); world.add(torch( 2.8, 12.9, 10.2));
-world.add(torch( 9.5, 12.4, -6.0));
-world.add(stoneCircle(0, 11.6, 0));
-
-// îles satellites + couronne lointaine (profondeur de plan)
-for (const [x,y,z,r,a] of [[-34,6,-18,7,1.2],[30,2,-30,9,2.9],[-24,-4,26,6,4.1],[38,14,18,5,5.3]]){
-  const isl = floatingIsland(r, a); isl.position.set(x,y,z); world.add(isl);
-  if (r > 6){ const t = torch(x, y+r*.16+2.4, z, 2.2); world.add(t); flames[flames.length-1].group = t; }
-}
-for (const [x,y,z,r,a] of [[-70,-8,-52,4,0.7],[64,-12,-66,5,2.2],[-84,4,30,4.5,3.6],[76,8,52,3.5,4.8],[-40,18,-84,3,5.5]]){
-  const isl = floatingIsland(r, a); isl.position.set(x,y,z); world.add(isl);
-}
-
-/* ---------- 8. ciel : dôme recomposé + lune auréolée + étoiles rondes ---------- */
 function glowSprite(inner, outer){
   const cv = document.createElement("canvas"); cv.width = cv.height = 64;
   const g = cv.getContext("2d");
@@ -337,49 +352,12 @@ function glowSprite(inner, outer){
   g.fillStyle = gr; g.fillRect(0,0,64,64);
   return new THREE.CanvasTexture(cv);
 }
+
+// lucioles
 {
-  const skyGeo = new THREE.SphereGeometry(300, 24, 16);
-  const skyMat = new THREE.ShaderMaterial({
-    side: THREE.BackSide,
-    uniforms: { top:{value:new THREE.Color(0x05060f)}, mid:{value:new THREE.Color(0x131a38)}, bot:{value:new THREE.Color(0x241b38)}, ember:{value:new THREE.Color(0x8a4520)} },
-    vertexShader: `varying vec3 vP; void main(){ vP = position; gl_Position = projectionMatrix*modelViewMatrix*vec4(position,1.0); }`,
-    fragmentShader: `varying vec3 vP; uniform vec3 top,mid,bot,ember;
-      void main(){ float h = normalize(vP).y;
-        vec3 c = h > 0.05 ? mix(mid, top, smoothstep(.05, .62, h))
-                          : mix(bot, mid, smoothstep(-.18, .05, h));
-        // braise résiduelle très fine à l'horizon, noyée dans le crépuscule
-        c += ember * exp(-abs(h)*26.0) * 0.55;
-        gl_FragColor = vec4(c, 1.0); }`
-  });
-  scene.add(new THREE.Mesh(skyGeo, skyMat));
-
-  const starPos = [];
-  for (let i = 0; i < 900; i++){
-    const th = Math.random()*6.283, ph = Math.acos(Math.random()*.9);
-    const r = 280;
-    starPos.push(r*Math.sin(ph)*Math.cos(th), r*Math.cos(ph)+10, r*Math.sin(ph)*Math.sin(th));
-  }
-  const starGeo = new THREE.BufferGeometry();
-  starGeo.setAttribute("position", new THREE.Float32BufferAttribute(starPos, 3));
-  scene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({
-    color:0xcdd6ff, size:1.5, sizeAttenuation:false, map:glowSprite("rgba(255,255,255,1)","rgba(255,255,255,0)"),
-    transparent:true, opacity:.85, depthWrite:false, blending:THREE.AdditiveBlending })));
-
-  const moonGlow = new THREE.Sprite(new THREE.SpriteMaterial({
-    map:glowSprite("rgba(214,205,255,.9)","rgba(120,110,220,0)"),
-    blending:THREE.AdditiveBlending, depthWrite:false }));
-  moonGlow.scale.setScalar(90);
-  moonGlow.position.set(-120, 72, -185); scene.add(moonGlow);
-  const moon = new THREE.Mesh(new THREE.CircleGeometry(9, 40),
-    new THREE.MeshBasicMaterial({ color:0xdcd4ff, fog:false }));
-  moon.position.set(-120, 72, -184); moon.lookAt(0,0,0); scene.add(moon);
-}
-
-// lucioles — sprites ronds additifs (fini les carrés)
-{
-  const N = 90, pos = new Float32Array(N*3), seeds = [];
+  const N = 80, pos = new Float32Array(N*3), seeds = [];
   for (let i = 0; i < N; i++){
-    pos[i*3]=(Math.random()-.5)*70; pos[i*3+1]=12+Math.random()*16; pos[i*3+2]=(Math.random()-.5)*70;
+    pos[i*3]=(Math.random()-.5)*60; pos[i*3+1]=ARENA_Y+3+Math.random()*12; pos[i*3+2]=(Math.random()-.5)*60;
     seeds.push(Math.random()*6.28);
   }
   const geo = new THREE.BufferGeometry();
@@ -396,7 +374,487 @@ function glowSprite(inner, outer){
   };
 }
 
-/* ---------- 9. uniforms LUT pour TOUS les matériaux compilés ---------- */
+// ciel + étoiles + lune
+{
+  const skyMat = new THREE.ShaderMaterial({
+    side: THREE.BackSide,
+    uniforms: { top:{value:new THREE.Color(0x05060f)}, mid:{value:new THREE.Color(0x131a38)}, bot:{value:new THREE.Color(0x241b38)}, ember:{value:new THREE.Color(0x8a4520)} },
+    vertexShader: `varying vec3 vP; void main(){ vP = position; gl_Position = projectionMatrix*modelViewMatrix*vec4(position,1.0); }`,
+    fragmentShader: `varying vec3 vP; uniform vec3 top,mid,bot,ember;
+      void main(){ float h = normalize(vP).y;
+        vec3 c = h > 0.05 ? mix(mid, top, smoothstep(.05, .62, h))
+                          : mix(bot, mid, smoothstep(-.18, .05, h));
+        c += ember * exp(-abs(h)*26.0) * 0.55;
+        gl_FragColor = vec4(c, 1.0); }`
+  });
+  scene.add(new THREE.Mesh(new THREE.SphereGeometry(300, 24, 16), skyMat));
+  const starPos = [];
+  for (let i = 0; i < 900; i++){
+    const th = Math.random()*6.283, ph = Math.acos(Math.random()*.9);
+    starPos.push(280*Math.sin(ph)*Math.cos(th), 280*Math.cos(ph)+10, 280*Math.sin(ph)*Math.sin(th));
+  }
+  const starGeo = new THREE.BufferGeometry();
+  starGeo.setAttribute("position", new THREE.Float32BufferAttribute(starPos, 3));
+  scene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({
+    color:0xcdd6ff, size:1.5, sizeAttenuation:false, map:glowSprite("rgba(255,255,255,1)","rgba(255,255,255,0)"),
+    transparent:true, opacity:.85, depthWrite:false, blending:THREE.AdditiveBlending })));
+  const moonGlow = new THREE.Sprite(new THREE.SpriteMaterial({
+    map:glowSprite("rgba(214,205,255,.9)","rgba(120,110,220,0)"),
+    blending:THREE.AdditiveBlending, depthWrite:false }));
+  moonGlow.scale.setScalar(90); moonGlow.position.set(-120, 72, -185); scene.add(moonGlow);
+}
+
+/* ---------- 5. PARTICULES (pool unique) ---------- */
+const P_MAX = 500;
+const pGeo = new THREE.BufferGeometry();
+const pPos = new Float32Array(P_MAX*3);
+pGeo.setAttribute("position", new THREE.BufferAttribute(pPos, 3));
+const pColAttr = new THREE.BufferAttribute(new Float32Array(P_MAX*3), 3);
+pGeo.setAttribute("color", pColAttr);
+const pVel = new Float32Array(P_MAX*3), pLife = new Float32Array(P_MAX);
+const particles = new THREE.Points(pGeo, new THREE.PointsMaterial({
+  size:.55, vertexColors:true, map:glowSprite("rgba(255,255,255,1)","rgba(255,255,255,0)"),
+  transparent:true, depthWrite:false, blending:THREE.AdditiveBlending }));
+particles.frustumCulled = false;
+scene.add(particles);
+let pHead = 0;
+function burst(x,y,z, n, col, speed, up=1){
+  for (let i = 0; i < n; i++){
+    const j = pHead = (pHead+1) % P_MAX;
+    pPos[j*3]=x; pPos[j*3+1]=y; pPos[j*3+2]=z;
+    const a = Math.random()*6.283, r = Math.random()*speed;
+    pVel[j*3]=Math.cos(a)*r; pVel[j*3+1]=rand(.3,1)*speed*up; pVel[j*3+2]=Math.sin(a)*r;
+    pLife[j] = rand(.4,.9);
+    pColAttr.array[j*3]=col[0]; pColAttr.array[j*3+1]=col[1]; pColAttr.array[j*3+2]=col[2];
+  }
+  pColAttr.needsUpdate = true;
+}
+function stepParticles(dt){
+  for (let j = 0; j < P_MAX; j++){
+    if (pLife[j] <= 0){ pPos[j*3+1] = -999; continue; }
+    pLife[j] -= dt;
+    pVel[j*3+1] -= 9*dt;
+    pPos[j*3]+=pVel[j*3]*dt; pPos[j*3+1]+=pVel[j*3+1]*dt; pPos[j*3+2]+=pVel[j*3+2]*dt;
+    if (pPos[j*3+1] < ARENA_Y) pLife[j] = 0;
+  }
+  pGeo.attributes.position.needsUpdate = true;
+}
+pPos.fill(-999);
+
+/* ---------- 6. PERSONNAGES ---------- */
+const golemBody = useKernels(new THREE.MeshStandardMaterial({ color:0x5a6b8a, roughness:.55, metalness:.25 }));
+const golemJoint = useKernels(new THREE.MeshStandardMaterial({ color:0x3a4258, roughness:.7 }));
+const wraithBody = new THREE.MeshStandardMaterial({ color:0x241a30, roughness:.9, transparent:true, opacity:.92 });
+const wraithEye  = new THREE.MeshBasicMaterial({ color:0xff5030 }); wraithEye.color.setRGB(2.5,.5,.25);
+const coreMatG   = useKernels(new THREE.MeshStandardMaterial({ color:0x9fe0ff, roughness:.2, emissive:0x2fb8ff, emissiveIntensity:2.2 }), { fresnel:.8 });
+
+function hpBar(h, color){
+  const g = new THREE.Group();
+  const bg = new THREE.Mesh(new THREE.PlaneGeometry(1.3,.14), new THREE.MeshBasicMaterial({ color:0x14161c }));
+  const fg = new THREE.Mesh(new THREE.PlaneGeometry(1.26,.1), new THREE.MeshBasicMaterial({ color }));
+  fg.position.z = .01; g.add(bg, fg);
+  g.userData.fg = fg; g.position.y = h;
+  return g;
+}
+
+function makeGolem(){
+  const g = new THREE.Group();
+  const torso = new THREE.Mesh(new THREE.CylinderGeometry(.55,.72,1.5,7), golemBody);
+  torso.position.y = 1.5;
+  const head = new THREE.Mesh(new THREE.IcosahedronGeometry(.42,0), golemJoint);
+  head.position.y = 2.55;
+  const core = new THREE.Mesh(new THREE.OctahedronGeometry(.34,0), coreMatG);
+  core.position.set(0,1.7,.5);
+  const shL = new THREE.Mesh(new THREE.SphereGeometry(.34,7,6), golemJoint); shL.position.set(-.85,2.15,0);
+  const shR = shL.clone(); shR.position.x = .85;
+  const staff = new THREE.Group();
+  const rod = new THREE.Mesh(new THREE.CylinderGeometry(.06,.06,2.6,5), woodMat);
+  const tip = new THREE.Mesh(new THREE.OctahedronGeometry(.22,0), coreMatG);
+  tip.position.y = 1.45; staff.add(rod, tip); staff.position.set(1.0,1.5,0); staff.rotation.z = -.12;
+  const base = new THREE.Mesh(new THREE.ConeGeometry(.62,.9,7), golemBody);
+  base.position.y = .35; base.rotation.x = Math.PI;
+  g.add(torso, head, core, shL, shR, staff, base);
+  const bar = hpBar(3.4, 0x5fb7b2); g.add(bar);
+  g.traverse(o=>{ if(o.isMesh){ o.castShadow = true; } });
+  return { g, core, bar, staff };
+}
+function makeWraith(){
+  const g = new THREE.Group();
+  const body = new THREE.Mesh(new THREE.ConeGeometry(.62,2.1,7), wraithBody);
+  body.position.y = 1.25;
+  const head = new THREE.Mesh(new THREE.SphereGeometry(.4,8,6), wraithBody);
+  head.position.y = 2.45;
+  const eL = new THREE.Mesh(new THREE.SphereGeometry(.09,6,5), wraithEye); eL.position.set(-.16,2.5,.32);
+  const eR = eL.clone(); eR.position.x = .16;
+  const tail = new THREE.Mesh(new THREE.ConeGeometry(.5,1.4,6), wraithBody);
+  tail.position.y = .25; tail.rotation.x = Math.PI;
+  g.add(body, head, eL, eR, tail);
+  const bar = hpBar(3.2, 0xc0554a); g.add(bar);
+  g.traverse(o=>{ if(o.isMesh){ o.castShadow = true; } });
+  return { g, bar };
+}
+
+/* ---------- 7. ÉTAT DE SIMULATION ---------- */
+const heroes = [], wraiths = [], fireballs = [];
+const G = 22;
+let wave = 0, generation = 0, simT = 0, waveState = "spawn", stateT = 0;
+let nexusFlash = 0, screenshake = 0, bannerT = 0;
+const evo = { best: 0, leadBest: 0 };
+
+function spawnHero(i){
+  const parts = makeGolem();
+  const a = i/3*6.283 + .5;
+  const h = {
+    ...parts, hp: 100, maxHp: 100, alive: true, respawn: 0,
+    pos: new THREE.Vector3(Math.cos(a)*6.5, ARENA_Y, Math.sin(a)*6.5),
+    vel: new THREE.Vector3(), home: i/3*6.283 + .5,
+    atkCd: 0, windup: -1, flash: 0, wob: Math.random()*6, patrolA: a,
+  };
+  h.g.position.copy(h.pos);
+  world.add(h.g); heroes.push(h);
+}
+for (let i = 0; i < 3; i++) spawnHero(i);
+
+const GENE_RANGES = { speed:[2.2,5.2], aggr:[0,1], lead:[0,1], dodge:[0,1] };
+function randomGenome(){ return { speed:rand(...GENE_RANGES.speed), aggr:Math.random(), lead:Math.random()*0.3, dodge:Math.random()*.5 }; }
+function spawnWraith(genome){
+  const parts = makeWraith();
+  const p = portals[Math.floor(Math.random()*portals.length)].position;
+  const w = {
+    ...parts, hp: 60 + generation*6, maxHp: 60 + generation*6, alive: true,
+    pos: new THREE.Vector3(p.x + rand(-1,1), ARENA_Y, p.z + rand(-1,1)),
+    vel: new THREE.Vector3(), gene: genome || randomGenome(),
+    fitness: 0, atkCd: rand(1,2.5), flash: 0, wob: Math.random()*6, meleeCd: 0,
+  };
+  w.g.position.copy(w.pos);
+  world.add(w.g); wraiths.push(w);
+  burst(w.pos.x, w.pos.y+1.5, w.pos.z, 14, [1.4,.4,2.2], 3);
+}
+
+/* ---------- 8. BOULES DE FEU (balistique réelle) ---------- */
+const fbGeo = new THREE.SphereGeometry(.28, 8, 6);
+const fbMat = new THREE.MeshBasicMaterial({ color:0xff8030 }); fbMat.color.setRGB(2.6,1.1,.3);
+function shootFireball(owner, from, targetPos, leadVel, lead){
+  const m = new THREE.Mesh(fbGeo, fbMat);
+  m.position.copy(from);
+  const aim = targetPos.clone().addScaledVector(leadVel, lead);       // anticipation apprise
+  aim.x += rand(-1,1)*(1-lead)*2.2; aim.z += rand(-1,1)*(1-lead)*2.2; // dispersion ↓ quand il apprend
+  const T = 0.9;
+  const v = aim.clone().sub(from).multiplyScalar(1/T);
+  v.y = (aim.y - from.y)/T + 0.5*G*T;
+  world.add(m);
+  fireballs.push({ m, v, t: 0, owner, dmg: 14 + generation*1.5 });
+  burst(from.x, from.y, from.z, 6, [2.2,1,.3], 2);
+}
+
+/* ---------- 9. ÉVOLUTION GÉNÉTIQUE ---------- */
+function mutate(g, sigma){
+  const out = {};
+  for (const k of Object.keys(GENE_RANGES)){
+    const [lo,hi] = GENE_RANGES[k];
+    out[k] = clamp(g[k] + rand(-1,1)*sigma*(hi-lo), lo, hi);
+  }
+  return out;
+}
+function crossover(a, b){
+  const out = {};
+  for (const k of Object.keys(GENE_RANGES)) out[k] = Math.random()<.5 ? a[k] : b[k];
+  return out;
+}
+function evolve(){
+  const scored = [...wraiths].sort((a,b)=>b.fitness-a.fitness);
+  const elites = scored.slice(0, Math.max(2, Math.ceil(scored.length/2))).map(w=>w.gene);
+  generation++;
+  const sigma = 0.25 * Math.pow(0.96, generation);
+  const next = elites.slice();
+  while (next.length < Math.min(3+generation, 9)){
+    next.push(mutate(crossover(elites[Math.floor(Math.random()*elites.length)],
+                               elites[Math.floor(Math.random()*elites.length)]), sigma));
+  }
+  evo.best = scored[0] ? scored[0].fitness : 0;
+  evo.leadBest = scored[0] ? scored[0].gene.lead : 0;
+  return next;
+}
+
+/* ---------- 10. VAGUES ---------- */
+let pendingGenomes = null;
+function banner(txt){ $("#banner").textContent = txt; $("#banner").style.opacity = 1; bannerT = 2.4; }
+function startWave(){
+  wave++;
+  const genomes = pendingGenomes || Array.from({length:Math.min(3+generation,9)}, randomGenome);
+  pendingGenomes = null;
+  for (let i = 0; i < genomes.length; i++) spawnWraith(genomes[i]);
+  waveState = "fight"; stateT = 0;
+  banner(`VAGUE ${wave}`);
+}
+function endWave(){
+  waveState = "evolve"; stateT = 0;
+  pendingGenomes = evolve();
+  banner(`GÉNÉRATION ${generation} — ILS ONT APPRIS`);
+}
+
+/* ---------- 11. COMBAT / IA / PHYSIQUE ---------- */
+const tmpV = new THREE.Vector3();
+function damageHero(h, dmg, fromDir){
+  h.hp -= dmg; h.flash = 1;
+  h.vel.x += fromDir.x*7; h.vel.z += fromDir.z*7;
+  burst(h.pos.x, h.pos.y+1.6, h.pos.z, 10, [2.4,.6,.3], 3.5);
+  if (h.hp <= 0 && h.alive){
+    h.alive = false; h.respawn = 6;
+    burst(h.pos.x, h.pos.y+1.5, h.pos.z, 26, [.6,.8,2.2], 4.5);
+    h.g.visible = false;
+  }
+}
+function damageWraith(w, dmg, fromDir){
+  w.hp -= dmg; w.flash = 1; w.fitness -= dmg*0.02;
+  w.vel.x += fromDir.x*6; w.vel.z += fromDir.z*6;
+  burst(w.pos.x, w.pos.y+1.6, w.pos.z, 10, [1.6,.4,2], 3.5);
+  if (w.hp <= 0 && w.alive){
+    w.alive = false;
+    burst(w.pos.x, w.pos.y+1.5, w.pos.z, 24, [.9,.3,1.8], 4);
+    w.g.visible = false;
+  }
+}
+function damageNexus(dmg){
+  nexus.hp -= dmg; nexusFlash = 1; screenshake = Math.min(1, screenshake+.5);
+  burst(0, ARENA_Y+3, 0, 12, [.5,1.6,2.4], 4);
+}
+
+function stepSim(dt){
+  simT += dt; stateT += dt;
+  if (bannerT > 0){ bannerT -= dt; if (bannerT <= 0) $("#banner").style.opacity = 0; }
+
+  /* --- golems gardiens --- */
+  for (const h of heroes){
+    if (!h.alive){
+      h.respawn -= dt;
+      if (h.respawn <= 0){
+        h.alive = true; h.hp = h.maxHp; h.g.visible = true;
+        h.pos.set(Math.cos(h.home)*6.5, ARENA_Y, Math.sin(h.home)*6.5); h.vel.set(0,0,0);
+        burst(h.pos.x, h.pos.y+1.5, h.pos.z, 18, [.5,1.4,2.2], 3);
+      }
+      continue;
+    }
+    h.atkCd -= dt; h.flash = Math.max(0, h.flash - dt*3);
+    let best = null, bd = 1e9;
+    for (const w of wraiths){ if (!w.alive) continue;
+      const d = h.pos.distanceTo(w.pos); if (d < bd){ bd = d; best = w; } }
+    let mvx = 0, mvz = 0;
+    if (best && bd < 11){
+      if (bd > 2.4){
+        tmpV.copy(best.pos).sub(h.pos).normalize();
+        mvx = tmpV.x*3.2; mvz = tmpV.z*3.2;
+      }
+      if (bd < 2.6 && h.atkCd <= 0 && h.windup < 0) h.windup = 0;
+      if (h.windup >= 0){
+        h.windup += dt;
+        const p = clamp(h.windup/0.38, 0, 1);
+        h.staff.rotation.x = -K.smootherstep(p)*1.9;      // easing du noyau
+        if (p >= 1){
+          h.windup = -1; h.atkCd = 1.15; h.staff.rotation.x = 0;
+          if (best && best.alive && best.pos.distanceTo(h.pos) < 3.0){
+            tmpV.copy(best.pos).sub(h.pos).normalize();
+            damageWraith(best, 26, tmpV);
+          }
+        }
+      }
+    } else {
+      h.patrolA += dt*0.25;
+      const wob = K.damped_oscillation(simT*.8 + h.wob)*.8;
+      const tx = Math.cos(h.patrolA)*(6.5+wob), tz = Math.sin(h.patrolA)*(6.5+wob);
+      mvx = (tx-h.pos.x)*.8; mvz = (tz-h.pos.z)*.8;
+    }
+    h.vel.x += (mvx - h.vel.x)*Math.min(1, dt*6);
+    h.vel.z += (mvz - h.vel.z)*Math.min(1, dt*6);
+    h.pos.x += h.vel.x*dt; h.pos.z += h.vel.z*dt;
+    const rr = Math.hypot(h.pos.x, h.pos.z);
+    if (rr > ARENA_R){ h.pos.x *= ARENA_R/rr; h.pos.z *= ARENA_R/rr; }
+    h.pos.y = ARENA_Y + .55 + K.damped_oscillation(simT*2.2 + h.wob)*.14;
+    h.g.position.copy(h.pos);
+    if (mvx||mvz) h.g.rotation.y = Math.atan2(mvx, mvz);
+    const f = clamp(h.hp/h.maxHp, 0, 1);
+    h.bar.userData.fg.scale.x = Math.max(.001, f); h.bar.userData.fg.position.x = -(1-f)*.63;
+    h.bar.quaternion.copy(camera.quaternion);
+    h.core.material.emissiveIntensity = 2.2 + K.tanh_sat(h.flash*2)*3;
+  }
+
+  /* --- spectres (génome pilote) --- */
+  for (const w of wraiths){
+    if (!w.alive) continue;
+    w.atkCd -= dt; w.meleeCd -= dt; w.flash = Math.max(0, w.flash - dt*3);
+    w.fitness += dt*0.05;
+    let best = null, bd = 1e9;
+    for (const h of heroes){ if (!h.alive) continue;
+      const d = w.pos.distanceTo(h.pos); if (d < bd){ bd = d; best = h; } }
+    const goNexus = !best || (bd > 9 && w.gene.aggr < 0.5);
+    let mvx = 0, mvz = 0;
+    if (goNexus){
+      const dN = Math.hypot(w.pos.x, w.pos.z);
+      if (dN > 4.2){ mvx = -w.pos.x/dN*w.gene.speed; mvz = -w.pos.z/dN*w.gene.speed; }
+      else if (w.meleeCd <= 0){
+        w.meleeCd = 1.6;
+        damageNexus(6 + generation*1.2);
+        w.fitness += 3;   // frapper le nexus rapporte en fitness
+      }
+    } else if (best){
+      if (bd < 12 && w.atkCd <= 0){
+        w.atkCd = rand(2.2, 3.4) - w.gene.aggr;
+        const from = w.pos.clone(); from.y += 2.2;
+        shootFireball(w, from, best.pos.clone().setY(ARENA_Y+1.2), best.vel, w.gene.lead*1.1);
+      }
+      if (bd < 5){ tmpV.copy(w.pos).sub(best.pos).normalize(); mvx = tmpV.x*w.gene.speed; mvz = tmpV.z*w.gene.speed; }
+      else if (bd > 9){ tmpV.copy(best.pos).sub(w.pos).normalize(); mvx = tmpV.x*w.gene.speed; mvz = tmpV.z*w.gene.speed; }
+    }
+    // esquive : P = gaussian_cdf((d - d0)/s) · gène dodge — les balles ennemies sont celles d'AUTRES spectres
+    for (const fb of fireballs){
+      if (fb.owner === w) continue;
+      const d = Math.hypot(fb.m.position.x - w.pos.x, fb.m.position.z - w.pos.z);
+      if (d < 4 && Math.random() < K.gaussian_cdf((4-d)/2)*w.gene.dodge*dt*8){
+        mvx += rand(-1,1)*6; mvz += rand(-1,1)*6;
+        break;
+      }
+    }
+    w.vel.x += (mvx - w.vel.x)*Math.min(1, dt*5);
+    w.vel.z += (mvz - w.vel.z)*Math.min(1, dt*5);
+    w.pos.x += w.vel.x*dt; w.pos.z += w.vel.z*dt;
+    const rr = Math.hypot(w.pos.x, w.pos.z);
+    if (rr > ARENA_R+1){ w.pos.x *= (ARENA_R+1)/rr; w.pos.z *= (ARENA_R+1)/rr; }
+    w.pos.y = ARENA_Y + .3 + K.damped_oscillation(simT*2.6 + w.wob)*.18;
+    w.g.position.copy(w.pos);
+    const fx = goNexus ? -w.pos.x : (best ? best.pos.x - w.pos.x : mvx);
+    const fz = goNexus ? -w.pos.z : (best ? best.pos.z - w.pos.z : mvz);
+    if (fx||fz) w.g.rotation.y = Math.atan2(fx, fz);
+    const f = clamp(w.hp/w.maxHp, 0, 1);
+    w.bar.userData.fg.scale.x = Math.max(.001, f); w.bar.userData.fg.position.x = -(1-f)*.63;
+    w.bar.quaternion.copy(camera.quaternion);
+  }
+
+  /* --- boules de feu : balistique + impacts --- */
+  for (let i = fireballs.length-1; i >= 0; i--){
+    const fb = fireballs[i];
+    fb.v.y -= G*dt;
+    fb.m.position.addScaledVector(fb.v, dt);
+    fb.m.rotation.x += dt*9; fb.m.rotation.z += dt*7;
+    let boom = fb.m.position.y <= ARENA_Y + .3;
+    if (!boom){
+      for (const h of heroes){
+        if (h.alive && fb.m.position.distanceTo(tmpV.set(h.pos.x, h.pos.y+1.5, h.pos.z)) < 1.1){
+          damageHero(h, fb.dmg, tmpV.copy(fb.v).setY(0).normalize());
+          boom = true; break;
+        }
+      }
+    }
+    if (boom){
+      burst(fb.m.position.x, fb.m.position.y, fb.m.position.z, 16, [2.4,1,.3], 4);
+      if (fb.m.position.y <= ARENA_Y + .5){
+        for (const h of heroes){
+          if (h.alive && Math.hypot(h.pos.x-fb.m.position.x, h.pos.z-fb.m.position.z) < 2.2){
+            damageHero(h, fb.dmg*.5, tmpV.copy(h.pos).sub(fb.m.position).setY(0).normalize());
+          }
+        }
+      }
+      world.remove(fb.m);
+      fireballs.splice(i,1);
+    } else if ((fb.t += dt) > 6){
+      world.remove(fb.m); fireballs.splice(i,1);
+    }
+  }
+
+  stepParticles(dt);
+
+  /* --- transitions de vague --- */
+  const aliveFoes = wraiths.filter(w=>w.alive).length;
+  $("#foes").textContent = aliveFoes;
+  if (waveState === "fight"){
+    if (aliveFoes === 0 && fireballs.length === 0) endWave();
+    else if (nexus.hp <= 0){
+      nexus.hp = nexus.maxHp;
+      for (const w of wraiths) if (w.alive) damageWraith(w, 1e9, tmpV.set(0,0,1));
+      banner("LE NEXUS EST TOMBÉ — ILS REVIENNENT PLUS FORTS");
+      endWave();     // l'évolution persiste à travers la défaite
+    }
+  } else if (waveState === "evolve" && stateT > 3.5){
+    for (const w of wraiths) world.remove(w.g);
+    wraiths.length = 0;
+    startWave();
+  }
+
+  // nexus vivant
+  nexusFlash = Math.max(0, nexusFlash - dt*2);
+  nexus.core.rotation.y += dt*.8;
+  nexus.core.position.y = 3.1 + K.damped_oscillation(simT*1.6)*.22;
+  nexus.core.material.emissiveIntensity = 2.6 + K.tanh_sat(nexusFlash*2)*4;
+  $("#nexusfill").style.width = clamp(nexus.hp/nexus.maxHp*100, 0, 100) + "%";
+
+  // torches (flicker = tanh_sat)
+  const flick = K.tanh_sat(Math.sin(simT*9.1) + .6*Math.sin(simT*13.7));
+  for (const f of flames){
+    f.flame.scale.y = 1 + .38*flick;
+    f.glow.intensity = 11 + 5*flick;
+  }
+
+  // HUD
+  $("#wave").textContent = wave;
+  $("#gen").textContent = generation;
+  $("#guards").textContent = heroes.filter(h=>h.alive).length + "/3";
+  $("#fit").textContent = evo.best ? evo.best.toFixed(1) : "—";
+  $("#lead").textContent = evo.leadBest ? Math.round(evo.leadBest*100) + "%" : "—";
+
+  screenshake = Math.max(0, screenshake - dt*2);
+}
+
+/* ---------- 12. BOUCLE ---------- */
+const clock = new THREE.Clock();
+let frames = 0, fpsT = performance.now();
+const introFrom = { r: 122, h: 26 };
+const homeTarget = new THREE.Vector3(0, 3.5, 0);
+
+function tick(){
+  requestAnimationFrame(tick);
+  const dt = Math.min(clock.getDelta(), .25);   // cap large : la sim avance même en dessous de 4 fps
+  const t  = clock.elapsedTime;
+
+  // intro caméra : back_ease_out + smootherstep (noyaux)
+  const k = Math.min(1, t/3.6);
+  const ease = K.back_ease_out(k);
+  const rad  = introFrom.r + (48-introFrom.r)*ease;
+  const hei  = introFrom.h + (12-introFrom.h)*K.smootherstep(k);
+  if (t < 4.6 && !userMoved){ camera.position.set(0, hei, Math.max(34,rad)); }
+
+  stepSim(dt);
+
+  // la caméra respire vers le centre de l'action
+  if (!userMoved && t > 4.6){
+    tmpV.set(0,0,0); let n = 0;
+    for (const w of wraiths) if (w.alive){ tmpV.add(w.pos); n++; }
+    if (n){ tmpV.divideScalar(n).multiplyScalar(.3).setY(3.5); controls.target.lerp(tmpV, .015); }
+    else controls.target.lerp(homeTarget, .01);
+  }
+  controls.update();
+
+  // screenshake sur les impacts nexus
+  if (screenshake > 0){
+    camera.position.x += rand(-1,1)*screenshake*.35;
+    camera.position.y += rand(-1,1)*screenshake*.22;
+  }
+
+  composer.render();
+
+  frames++;
+  const now = performance.now();
+  if (now - fpsT > 500){
+    $("#fps").textContent = Math.round(frames*1000/(now-fpsT)) + " fps · 10 noyaux WASM";
+    frames = 0; fpsT = now;
+  }
+}
+
+addEventListener("resize", ()=>{
+  camera.aspect = innerWidth/innerHeight; camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+  composer.setSize(innerWidth, innerHeight);
+});
+
+// wireLUTs : uniforms LUT pour tout matériau standard compilé
 function wireLUTs(root){
   root.traverse((o)=>{
     const m = o.material;
@@ -411,61 +869,12 @@ function wireLUTs(root){
     };
   });
 }
-wireLUTs(world); wireLUTs(scene);
+wireLUTs(world);
 
-/* ---------- 10. boucle : chaque animation passe par un noyau ---------- */
-const clock = new THREE.Clock();
-let frames = 0, fpsT = performance.now();
-const introFrom = { r: 122, h: 46 };
-
-function tick(){
-  requestAnimationFrame(tick);
-  const dt = Math.min(clock.getDelta(), .05);
-  const t  = clock.elapsedTime;
-
-  // intro caméra : back_ease_out (noyau) pilote l'overshoot d'éloignement
-  const k = Math.min(1, t/3.6);
-  const ease = K.back_ease_out(k);                       // overshoot signé
-  const rad  = introFrom.r + (58-introFrom.r)*ease;
-  const hei  = introFrom.h + (21-introFrom.h)*K.smootherstep(k);
-  if (t < 4.6 && !userMoved){ camera.position.set(0, hei, Math.max(30,rad)); controls.update(); }
-
-  // flammes : flicker = tanh_sat(battement composé)
-  const flick = K.tanh_sat(Math.sin(t*9.1) + .6*Math.sin(t*13.7));
-  for (const f of flames){
-    f.flame.scale.y = 1 + .38*flick;
-    f.flame.scale.x = f.flame.scale.z = 1 + .18*flick;
-    f.glow.intensity = 12 + 6*flick;
-  }
-
-  // cristaux : pouls = oscillation amortie évoluée
-  const pulse = .5 + .5*K.damped_oscillation(t*.7);
-  crystals.forEach((m,i)=>{
-    m.material.emissiveIntensity = 1.6 + 1.6*pulse + .25*Math.sin(t*2+i);
-    m.rotation.y += dt*(.2+.1*((i%3)));
-  });
-
-  // dérive douce du monde (vie permanente)
-  world.rotation.y += dt*0.008;
-
-  controls.update();
-  composer.render();
-
-  frames++;
-  const now = performance.now();
-  if (now - fpsT > 500){
-    $("#fps").textContent = Math.round(frames*1000/(now-fpsT)) + " fps · 7 noyaux WASM";
-    frames = 0; fpsT = now;
-  }
-}
 $("#loading").style.display = "none";
+banner("VAGUE 1 — ILS ARRIVENT");
+startWave();
 tick();
-
-addEventListener("resize", ()=>{
-  camera.aspect = innerWidth/innerHeight; camera.updateProjectionMatrix();
-  renderer.setSize(innerWidth, innerHeight);
-  composer.setSize(innerWidth, innerHeight);
-});
 </script>
 </body>
 </html>
