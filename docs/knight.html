@@ -13,7 +13,8 @@
 <div id="bar">blockout pass — tourne auto · <button id="shot">📸 capture review</button></div>
 <script type="importmap">
 { "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-               "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }
+               "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/",
+               "three/examples/jsm/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }
 </script>
 <script type="module">
 import * as THREE from "three";
@@ -21,6 +22,7 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import {
   createAldarionKnightModel,
   createAldarionKnightLookDevLights,
+  createAldarionKnightEnvironment,
   frameAldarionKnightCamera,
   configureAldarionKnightRenderer,
 } from "./createAldarionKnight.js";
@@ -36,16 +38,33 @@ scene.background = new THREE.Color(0x3a3d42); // gris neutre de la planche
 
 const model = createAldarionKnightModel();
 scene.add(model);
-scene.add(...createAldarionKnightLookDevLights());
+scene.add(createAldarionKnightLookDevLights());
+scene.environment = createAldarionKnightEnvironment(renderer);
+renderer.toneMappingExposure = 3.0; // ponytail: lumières LookDev calibrées court-courant; exposure compense l'échelle 16u
+const keyLight = new THREE.DirectionalLight(0xffffff, 2.2);
+keyLight.position.set(8, 18, 12);
+scene.add(keyLight);
 
 const camera = new THREE.PerspectiveCamera(40, innerWidth / innerHeight, 0.1, 100);
-frameAldarionKnightCamera(camera);
+frameAldarionKnightCamera(camera, model);
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.autoRotate = true;
 controls.autoRotateSpeed = 1.2;
 
-$("#shot").onclick = () => {
+// mode déterministe pour les gates : ?pose=front|left|right|back
+const poseParam = new URLSearchParams(location.search).get("pose");
+if (poseParam) {
+  controls.autoRotate = false;
+  const R = 34, H = 9;
+  const angles = { front: 0, right: -Math.PI / 2, back: Math.PI, left: Math.PI / 2 };
+  const a = angles[poseParam] ?? 0;
+  camera.position.set(Math.sin(a) * R, H, Math.cos(a) * R);
+  controls.target.set(0, 8.5, 0);
+  controls.update();
+}
+
+document.getElementById("shot").onclick = () => {
   renderer.render(scene, camera);
   const a = document.createElement("a");
   a.download = "knight-blockout.png";

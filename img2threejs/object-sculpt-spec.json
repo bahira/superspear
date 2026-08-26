@@ -939,7 +939,7 @@
       "parent": "root",
       "importance": 1,
       "confidence": 0.9,
-      "primitive": "sphere",
+      "primitive": "capsule",
       "topologyClass": "continuous-sculpt",
       "topologyRationale": "Skull volume continuous; hair as 5-15 clump masses per contract",
       "geometryDescriptor": {},
@@ -967,7 +967,26 @@
       "actionProfile": {
         "animationRole": "tête + masse capillaire"
       },
-      "material": "skin"
+      "material": "skin",
+      "attachment": {
+        "localStart": [
+          0,
+          15.4,
+          0
+        ],
+        "localEnd": [
+          0,
+          17.2,
+          0
+        ],
+        "baseRadius": 0.95,
+        "endRadius": 0.72,
+        "parentId": "root",
+        "parentSocket": "neck",
+        "contactType": "surface-contact",
+        "embedDepth": 0.02,
+        "gapTolerance": 0.01
+      }
     },
     {
       "id": "torso",
@@ -1008,7 +1027,9 @@
         ],
         "contactType": "surface-contact",
         "embedDepth": 0.02,
-        "gapTolerance": 0.01
+        "gapTolerance": 0.01,
+        "baseRadius": 1.38,
+        "endRadius": 1.12
       },
       "material": "steel"
     },
@@ -1051,7 +1072,9 @@
         ],
         "contactType": "surface-contact",
         "embedDepth": 0.02,
-        "gapTolerance": 0.01
+        "gapTolerance": 0.01,
+        "baseRadius": 0.45,
+        "endRadius": 0.3
       },
       "material": "steel"
     },
@@ -1094,7 +1117,9 @@
         ],
         "contactType": "surface-contact",
         "embedDepth": 0.02,
-        "gapTolerance": 0.01
+        "gapTolerance": 0.01,
+        "baseRadius": 0.48,
+        "endRadius": 0.34
       },
       "material": "steel"
     },
@@ -1137,7 +1162,9 @@
         ],
         "contactType": "surface-contact",
         "embedDepth": 0.02,
-        "gapTolerance": 0.01
+        "gapTolerance": 0.01,
+        "baseRadius": 0.65,
+        "endRadius": 0.42
       },
       "material": "steel"
     },
@@ -1149,7 +1176,7 @@
       "parent": "root",
       "importance": 1,
       "confidence": 0.9,
-      "primitive": "extrude",
+      "primitive": "capsule",
       "topologyClass": "assembled-solid",
       "topologyRationale": "cape = torn cloth panels; shield = curved heater plate",
       "geometryDescriptor": {},
@@ -1180,7 +1207,9 @@
         ],
         "contactType": "drape-contact",
         "embedDepth": 0.02,
-        "gapTolerance": 0.01
+        "gapTolerance": 0.01,
+        "baseRadius": 0.48,
+        "endRadius": 0.34
       },
       "material": "clothNavy"
     },

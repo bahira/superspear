@@ -144,51 +144,6 @@ function buildWatertightCapsule(
   return geometry;
 }
 
-// bevelEnabled defaults to true on THREE.ExtrudeGeometry and rounds every
-// corner — sharp/pointed profiles (blades, fork tines, spikes) need
-// bevelEnabled: false plus lineTo()-only path segments near the tip, since a
-// curve command cannot produce a true converging point.
-function buildExtrudeShape(points: [number, number][], holes?: [number, number][][]): THREE.Shape {
-  const shape = new THREE.Shape();
-  if (points.length > 0) {
-    shape.moveTo(points[0][0], points[0][1]);
-    for (let i = 1; i < points.length; i += 1) {
-      shape.lineTo(points[i][0], points[i][1]);
-    }
-  }
-  // Cutouts (e.g. an oval wire-cutter hole) as THREE.Path added to shape.holes —
-  // dep-free boolean subtraction via the tessellator, no CSG library needed.
-  for (const loop of holes ?? []) {
-    if (loop.length < 3) continue;
-    const path = new THREE.Path();
-    path.moveTo(loop[0][0], loop[0][1]);
-    for (let i = 1; i < loop.length; i += 1) path.lineTo(loop[i][0], loop[i][1]);
-    path.closePath();
-    shape.holes.push(path);
-  }
-  return shape;
-}
-
-// Build an N-gon oval loop (for hole authoring from a compact {cx,cy,rx,ry} descriptor).
-function ovalLoop(cx: number, cy: number, rx: number, ry: number, seg = 24): [number, number][] {
-  const loop: [number, number][] = [];
-  for (let i = 0; i < seg; i += 1) {
-    const a = (i / seg) * Math.PI * 2;
-    loop.push([cx + Math.cos(a) * rx, cy + Math.sin(a) * ry]);
-  }
-  return loop;
-}
-
-function buildExtrudeGeometry(profile: { points: [number, number][]; depth: number; holes?: [number, number][][]; ovalHoles?: { cx: number; cy: number; rx: number; ry: number }[] }): THREE.ExtrudeGeometry {
-  const holes = [...(profile.holes ?? []), ...((profile.ovalHoles ?? []).map((o) => ovalLoop(o.cx, o.cy, o.rx, o.ry)))];
-  const shape = buildExtrudeShape(profile.points, holes);
-  return new THREE.ExtrudeGeometry(shape, {
-    depth: profile.depth,
-    bevelEnabled: false,
-    steps: 1,
-  });
-}
-
 function hashString(value: string): number {
   let hash = 2166136261;
   for (let index = 0; index < value.length; index += 1) {
@@ -815,7 +770,8 @@ export function createAldarionKnightModel(options: ProceduralModelOptions = {}):
   meshes["root"] = mesh_root_0;
   colliders["root"] = {};
 
-  const endpoint_head_1 = makeAttachmentEndpoint(null);
+  const attachment_head_1 = {"localStart": [0, 15.4, 0], "localEnd": [0, 17.2, 0], "baseRadius": 0.95, "endRadius": 0.72, "parentId": "root", "parentSocket": "neck", "contactType": "surface-contact", "embedDepth": 0.02, "gapTolerance": 0.01};
+  const endpoint_head_1 = makeAttachmentEndpoint(attachment_head_1);
   const node_head_1 = new THREE.Group();
   node_head_1.name = "Head & hair__pivot";
   node_head_1.scale.set(1, 1, 1);
@@ -826,13 +782,13 @@ export function createAldarionKnightModel(options: ProceduralModelOptions = {}):
     node_head_1.position.set(0, 0, 0);
     node_head_1.rotation.set(0, 0, 0);
   }
-  node_head_1.userData.sculptComponent = {"id": "head", "name": "Head & hair", "level": "macro", "role": "head unit", "parent": "root", "importance": 1, "confidence": 0.9, "primitive": "sphere", "topologyClass": "continuous-sculpt", "topologyRationale": "Skull volume continuous; hair as 5-15 clump masses per contract", "geometryDescriptor": {}, "materialRefs": ["skin", "hairDark"], "localFeatures": [{"id": "eyes-glossy", "note": "glossy spheres + iris disc + catchlight quad toward moonlight key"}, {"id": "hair-silhouette", "note": "tousled fringe, side-swept part, nape volume — identity feature"}], "colorMaterialRecipe": {"dominantAlbedo": "rgba(216, 179, 154, 1.0)", "secondaryAlbedo": "rgba(29, 26, 34, 1.0)", "materialClass": "skin", "materialClassConfidence": 0.85, "evidenceRef": "sprite-front.png#head"}, "actionProfile": {"animationRole": "tête + masse capillaire"}, "material": "skin"};
+  node_head_1.userData.sculptComponent = {"id": "head", "name": "Head & hair", "level": "macro", "role": "head unit", "parent": "root", "importance": 1, "confidence": 0.9, "primitive": "capsule", "topologyClass": "continuous-sculpt", "topologyRationale": "Skull volume continuous; hair as 5-15 clump masses per contract", "geometryDescriptor": {}, "materialRefs": ["skin", "hairDark"], "localFeatures": [{"id": "eyes-glossy", "note": "glossy spheres + iris disc + catchlight quad toward moonlight key"}, {"id": "hair-silhouette", "note": "tousled fringe, side-swept part, nape volume — identity feature"}], "colorMaterialRecipe": {"dominantAlbedo": "rgba(216, 179, 154, 1.0)", "secondaryAlbedo": "rgba(29, 26, 34, 1.0)", "materialClass": "skin", "materialClassConfidence": 0.85, "evidenceRef": "sprite-front.png#head"}, "actionProfile": {"animationRole": "tête + masse capillaire"}, "material": "skin", "attachment": {"localStart": [0, 15.4, 0], "localEnd": [0, 17.2, 0], "baseRadius": 0.95, "endRadius": 0.72, "parentId": "root", "parentSocket": "neck", "contactType": "surface-contact", "embedDepth": 0.02, "gapTolerance": 0.01}};
   node_head_1.userData.actionProfile = {"animationRole": "tête + masse capillaire"};
   (nodes["root"] ?? root).add(node_head_1);
   nodes["head"] = node_head_1;
   const mesh_head_1Geometry = endpoint_head_1
     ? new THREE.CylinderGeometry(endpoint_head_1.endRadius, endpoint_head_1.baseRadius, endpoint_head_1.length, 32, 12)
-    : new THREE.SphereGeometry(0.5, 64, 40);
+    : buildWatertightCapsule(0.35, 0.7, 16, 32, 1);
   if (!endpoint_head_1) {
     mesh_head_1Geometry.scale(1, 1, 1);
   }
@@ -847,12 +803,12 @@ export function createAldarionKnightModel(options: ProceduralModelOptions = {}):
   }
   mesh_head_1.castShadow = options.castShadow ?? true;
   mesh_head_1.receiveShadow = options.receiveShadow ?? true;
-  mesh_head_1.userData.sculptComponent = {"id": "head", "name": "Head & hair", "level": "macro", "role": "head unit", "parent": "root", "importance": 1, "confidence": 0.9, "primitive": "sphere", "topologyClass": "continuous-sculpt", "topologyRationale": "Skull volume continuous; hair as 5-15 clump masses per contract", "geometryDescriptor": {}, "materialRefs": ["skin", "hairDark"], "localFeatures": [{"id": "eyes-glossy", "note": "glossy spheres + iris disc + catchlight quad toward moonlight key"}, {"id": "hair-silhouette", "note": "tousled fringe, side-swept part, nape volume — identity feature"}], "colorMaterialRecipe": {"dominantAlbedo": "rgba(216, 179, 154, 1.0)", "secondaryAlbedo": "rgba(29, 26, 34, 1.0)", "materialClass": "skin", "materialClassConfidence": 0.85, "evidenceRef": "sprite-front.png#head"}, "actionProfile": {"animationRole": "tête + masse capillaire"}, "material": "skin"};
+  mesh_head_1.userData.sculptComponent = {"id": "head", "name": "Head & hair", "level": "macro", "role": "head unit", "parent": "root", "importance": 1, "confidence": 0.9, "primitive": "capsule", "topologyClass": "continuous-sculpt", "topologyRationale": "Skull volume continuous; hair as 5-15 clump masses per contract", "geometryDescriptor": {}, "materialRefs": ["skin", "hairDark"], "localFeatures": [{"id": "eyes-glossy", "note": "glossy spheres + iris disc + catchlight quad toward moonlight key"}, {"id": "hair-silhouette", "note": "tousled fringe, side-swept part, nape volume — identity feature"}], "colorMaterialRecipe": {"dominantAlbedo": "rgba(216, 179, 154, 1.0)", "secondaryAlbedo": "rgba(29, 26, 34, 1.0)", "materialClass": "skin", "materialClassConfidence": 0.85, "evidenceRef": "sprite-front.png#head"}, "actionProfile": {"animationRole": "tête + masse capillaire"}, "material": "skin", "attachment": {"localStart": [0, 15.4, 0], "localEnd": [0, 17.2, 0], "baseRadius": 0.95, "endRadius": 0.72, "parentId": "root", "parentSocket": "neck", "contactType": "surface-contact", "embedDepth": 0.02, "gapTolerance": 0.01}};
   node_head_1.add(mesh_head_1);
   meshes["head"] = mesh_head_1;
   colliders["head"] = {};
 
-  const attachment_torso_2 = {"parentId": "root", "parentSocket": "pelvis", "localStart": [0, 10.8, 0], "localEnd": [0, 15.5, 0], "contactType": "surface-contact", "embedDepth": 0.02, "gapTolerance": 0.01};
+  const attachment_torso_2 = {"parentId": "root", "parentSocket": "pelvis", "localStart": [0, 10.8, 0], "localEnd": [0, 15.5, 0], "contactType": "surface-contact", "embedDepth": 0.02, "gapTolerance": 0.01, "baseRadius": 1.38, "endRadius": 1.12};
   const endpoint_torso_2 = makeAttachmentEndpoint(attachment_torso_2);
   const node_torso_2 = new THREE.Group();
   node_torso_2.name = "Torso: cuirass / tabard / belt__pivot";
@@ -864,7 +820,7 @@ export function createAldarionKnightModel(options: ProceduralModelOptions = {}):
     node_torso_2.position.set(0, 0, 0);
     node_torso_2.rotation.set(0, 0, 0);
   }
-  node_torso_2.userData.sculptComponent = {"id": "torso", "name": "Torso: cuirass / tabard / belt", "level": "macro", "role": "core mass", "parent": "root", "importance": 1, "confidence": 0.9, "primitive": "cylinder", "topologyClass": "assembled-solid", "topologyRationale": "Segmented plates over cloth; tabard hangs front center", "geometryDescriptor": {}, "materialRefs": [], "localFeatures": [], "colorMaterialRecipe": {"dominantAlbedo": "rgba(138, 143, 150, 1.0)", "secondaryAlbedo": "rgba(42, 53, 80, 1.0)", "materialClass": "metal", "materialClassConfidence": 0.85, "evidenceRef": "sprite-front.png#torso"}, "actionProfile": {"animationRole": "torse cuirassé"}, "attachment": {"parentId": "root", "parentSocket": "pelvis", "localStart": [0, 10.8, 0], "localEnd": [0, 15.5, 0], "contactType": "surface-contact", "embedDepth": 0.02, "gapTolerance": 0.01}, "material": "steel"};
+  node_torso_2.userData.sculptComponent = {"id": "torso", "name": "Torso: cuirass / tabard / belt", "level": "macro", "role": "core mass", "parent": "root", "importance": 1, "confidence": 0.9, "primitive": "cylinder", "topologyClass": "assembled-solid", "topologyRationale": "Segmented plates over cloth; tabard hangs front center", "geometryDescriptor": {}, "materialRefs": [], "localFeatures": [], "colorMaterialRecipe": {"dominantAlbedo": "rgba(138, 143, 150, 1.0)", "secondaryAlbedo": "rgba(42, 53, 80, 1.0)", "materialClass": "metal", "materialClassConfidence": 0.85, "evidenceRef": "sprite-front.png#torso"}, "actionProfile": {"animationRole": "torse cuirassé"}, "attachment": {"parentId": "root", "parentSocket": "pelvis", "localStart": [0, 10.8, 0], "localEnd": [0, 15.5, 0], "contactType": "surface-contact", "embedDepth": 0.02, "gapTolerance": 0.01, "baseRadius": 1.38, "endRadius": 1.12}, "material": "steel"};
   node_torso_2.userData.actionProfile = {"animationRole": "torse cuirassé"};
   (nodes["root"] ?? root).add(node_torso_2);
   nodes["torso"] = node_torso_2;
@@ -885,12 +841,12 @@ export function createAldarionKnightModel(options: ProceduralModelOptions = {}):
   }
   mesh_torso_2.castShadow = options.castShadow ?? true;
   mesh_torso_2.receiveShadow = options.receiveShadow ?? true;
-  mesh_torso_2.userData.sculptComponent = {"id": "torso", "name": "Torso: cuirass / tabard / belt", "level": "macro", "role": "core mass", "parent": "root", "importance": 1, "confidence": 0.9, "primitive": "cylinder", "topologyClass": "assembled-solid", "topologyRationale": "Segmented plates over cloth; tabard hangs front center", "geometryDescriptor": {}, "materialRefs": [], "localFeatures": [], "colorMaterialRecipe": {"dominantAlbedo": "rgba(138, 143, 150, 1.0)", "secondaryAlbedo": "rgba(42, 53, 80, 1.0)", "materialClass": "metal", "materialClassConfidence": 0.85, "evidenceRef": "sprite-front.png#torso"}, "actionProfile": {"animationRole": "torse cuirassé"}, "attachment": {"parentId": "root", "parentSocket": "pelvis", "localStart": [0, 10.8, 0], "localEnd": [0, 15.5, 0], "contactType": "surface-contact", "embedDepth": 0.02, "gapTolerance": 0.01}, "material": "steel"};
+  mesh_torso_2.userData.sculptComponent = {"id": "torso", "name": "Torso: cuirass / tabard / belt", "level": "macro", "role": "core mass", "parent": "root", "importance": 1, "confidence": 0.9, "primitive": "cylinder", "topologyClass": "assembled-solid", "topologyRationale": "Segmented plates over cloth; tabard hangs front center", "geometryDescriptor": {}, "materialRefs": [], "localFeatures": [], "colorMaterialRecipe": {"dominantAlbedo": "rgba(138, 143, 150, 1.0)", "secondaryAlbedo": "rgba(42, 53, 80, 1.0)", "materialClass": "metal", "materialClassConfidence": 0.85, "evidenceRef": "sprite-front.png#torso"}, "actionProfile": {"animationRole": "torse cuirassé"}, "attachment": {"parentId": "root", "parentSocket": "pelvis", "localStart": [0, 10.8, 0], "localEnd": [0, 15.5, 0], "contactType": "surface-contact", "embedDepth": 0.02, "gapTolerance": 0.01, "baseRadius": 1.38, "endRadius": 1.12}, "material": "steel"};
   node_torso_2.add(mesh_torso_2);
   meshes["torso"] = mesh_torso_2;
   colliders["torso"] = {};
 
-  const attachment_armR_3 = {"parentId": "root", "parentSocket": "shoulderR", "localStart": [0.9, 14.2, 0], "localEnd": [0.9, 6.2, 0.4], "contactType": "surface-contact", "embedDepth": 0.02, "gapTolerance": 0.01};
+  const attachment_armR_3 = {"parentId": "root", "parentSocket": "shoulderR", "localStart": [0.9, 14.2, 0], "localEnd": [0.9, 6.2, 0.4], "contactType": "surface-contact", "embedDepth": 0.02, "gapTolerance": 0.01, "baseRadius": 0.45, "endRadius": 0.3};
   const endpoint_armR_3 = makeAttachmentEndpoint(attachment_armR_3);
   const node_armR_3 = new THREE.Group();
   node_armR_3.name = "Right arm (sword arm)__pivot";
@@ -902,7 +858,7 @@ export function createAldarionKnightModel(options: ProceduralModelOptions = {}):
     node_armR_3.position.set(0, 0, 0);
     node_armR_3.rotation.set(0, 0, 0);
   }
-  node_armR_3.userData.sculptComponent = {"id": "armR", "name": "Right arm (sword arm)", "level": "macro", "role": "limb", "parent": "root", "importance": 1, "confidence": 0.9, "primitive": "capsule", "topologyClass": "assembled-solid", "topologyRationale": "rerebrace/couter/gauntlet lames follow elbow flexion", "geometryDescriptor": {}, "materialRefs": [], "localFeatures": [], "colorMaterialRecipe": {"dominantAlbedo": "rgba(138, 143, 150, 1.0)", "secondaryAlbedo": "rgba(201, 160, 78, 1.0)", "materialClass": "metal", "materialClassConfidence": 0.85, "evidenceRef": "sprite-front.png#armR"}, "actionProfile": {"animationRole": "bras d'arme"}, "attachment": {"parentId": "root", "parentSocket": "shoulderR", "localStart": [0.9, 14.2, 0], "localEnd": [0.9, 6.2, 0.4], "contactType": "surface-contact", "embedDepth": 0.02, "gapTolerance": 0.01}, "material": "steel"};
+  node_armR_3.userData.sculptComponent = {"id": "armR", "name": "Right arm (sword arm)", "level": "macro", "role": "limb", "parent": "root", "importance": 1, "confidence": 0.9, "primitive": "capsule", "topologyClass": "assembled-solid", "topologyRationale": "rerebrace/couter/gauntlet lames follow elbow flexion", "geometryDescriptor": {}, "materialRefs": [], "localFeatures": [], "colorMaterialRecipe": {"dominantAlbedo": "rgba(138, 143, 150, 1.0)", "secondaryAlbedo": "rgba(201, 160, 78, 1.0)", "materialClass": "metal", "materialClassConfidence": 0.85, "evidenceRef": "sprite-front.png#armR"}, "actionProfile": {"animationRole": "bras d'arme"}, "attachment": {"parentId": "root", "parentSocket": "shoulderR", "localStart": [0.9, 14.2, 0], "localEnd": [0.9, 6.2, 0.4], "contactType": "surface-contact", "embedDepth": 0.02, "gapTolerance": 0.01, "baseRadius": 0.45, "endRadius": 0.3}, "material": "steel"};
   node_armR_3.userData.actionProfile = {"animationRole": "bras d'arme"};
   (nodes["root"] ?? root).add(node_armR_3);
   nodes["armR"] = node_armR_3;
@@ -923,12 +879,12 @@ export function createAldarionKnightModel(options: ProceduralModelOptions = {}):
   }
   mesh_armR_3.castShadow = options.castShadow ?? true;
   mesh_armR_3.receiveShadow = options.receiveShadow ?? true;
-  mesh_armR_3.userData.sculptComponent = {"id": "armR", "name": "Right arm (sword arm)", "level": "macro", "role": "limb", "parent": "root", "importance": 1, "confidence": 0.9, "primitive": "capsule", "topologyClass": "assembled-solid", "topologyRationale": "rerebrace/couter/gauntlet lames follow elbow flexion", "geometryDescriptor": {}, "materialRefs": [], "localFeatures": [], "colorMaterialRecipe": {"dominantAlbedo": "rgba(138, 143, 150, 1.0)", "secondaryAlbedo": "rgba(201, 160, 78, 1.0)", "materialClass": "metal", "materialClassConfidence": 0.85, "evidenceRef": "sprite-front.png#armR"}, "actionProfile": {"animationRole": "bras d'arme"}, "attachment": {"parentId": "root", "parentSocket": "shoulderR", "localStart": [0.9, 14.2, 0], "localEnd": [0.9, 6.2, 0.4], "contactType": "surface-contact", "embedDepth": 0.02, "gapTolerance": 0.01}, "material": "steel"};
+  mesh_armR_3.userData.sculptComponent = {"id": "armR", "name": "Right arm (sword arm)", "level": "macro", "role": "limb", "parent": "root", "importance": 1, "confidence": 0.9, "primitive": "capsule", "topologyClass": "assembled-solid", "topologyRationale": "rerebrace/couter/gauntlet lames follow elbow flexion", "geometryDescriptor": {}, "materialRefs": [], "localFeatures": [], "colorMaterialRecipe": {"dominantAlbedo": "rgba(138, 143, 150, 1.0)", "secondaryAlbedo": "rgba(201, 160, 78, 1.0)", "materialClass": "metal", "materialClassConfidence": 0.85, "evidenceRef": "sprite-front.png#armR"}, "actionProfile": {"animationRole": "bras d'arme"}, "attachment": {"parentId": "root", "parentSocket": "shoulderR", "localStart": [0.9, 14.2, 0], "localEnd": [0.9, 6.2, 0.4], "contactType": "surface-contact", "embedDepth": 0.02, "gapTolerance": 0.01, "baseRadius": 0.45, "endRadius": 0.3}, "material": "steel"};
   node_armR_3.add(mesh_armR_3);
   meshes["armR"] = mesh_armR_3;
   colliders["armR"] = {};
 
-  const attachment_armL_4 = {"parentId": "root", "parentSocket": "shoulderL", "localStart": [-0.9, 14.2, 0], "localEnd": [-0.9, 7.5, 1.6], "contactType": "surface-contact", "embedDepth": 0.02, "gapTolerance": 0.01};
+  const attachment_armL_4 = {"parentId": "root", "parentSocket": "shoulderL", "localStart": [-0.9, 14.2, 0], "localEnd": [-0.9, 7.5, 1.6], "contactType": "surface-contact", "embedDepth": 0.02, "gapTolerance": 0.01, "baseRadius": 0.48, "endRadius": 0.34};
   const endpoint_armL_4 = makeAttachmentEndpoint(attachment_armL_4);
   const node_armL_4 = new THREE.Group();
   node_armL_4.name = "Left arm (shield arm)__pivot";
@@ -940,7 +896,7 @@ export function createAldarionKnightModel(options: ProceduralModelOptions = {}):
     node_armL_4.position.set(0, 0, 0);
     node_armL_4.rotation.set(0, 0, 0);
   }
-  node_armL_4.userData.sculptComponent = {"id": "armL", "name": "Left arm (shield arm)", "level": "macro", "role": "limb", "parent": "root", "importance": 1, "confidence": 0.9, "primitive": "capsule", "topologyClass": "assembled-solid", "topologyRationale": "raised forward carrying heater shield", "geometryDescriptor": {}, "materialRefs": [], "localFeatures": [], "colorMaterialRecipe": {"dominantAlbedo": "rgba(138, 143, 150, 1.0)", "secondaryAlbedo": "rgba(201, 160, 78, 1.0)", "materialClass": "metal", "materialClassConfidence": 0.85, "evidenceRef": "sprite-front.png#armL"}, "actionProfile": {"animationRole": "bras de bouclier"}, "attachment": {"parentId": "root", "parentSocket": "shoulderL", "localStart": [-0.9, 14.2, 0], "localEnd": [-0.9, 7.5, 1.6], "contactType": "surface-contact", "embedDepth": 0.02, "gapTolerance": 0.01}, "material": "steel"};
+  node_armL_4.userData.sculptComponent = {"id": "armL", "name": "Left arm (shield arm)", "level": "macro", "role": "limb", "parent": "root", "importance": 1, "confidence": 0.9, "primitive": "capsule", "topologyClass": "assembled-solid", "topologyRationale": "raised forward carrying heater shield", "geometryDescriptor": {}, "materialRefs": [], "localFeatures": [], "colorMaterialRecipe": {"dominantAlbedo": "rgba(138, 143, 150, 1.0)", "secondaryAlbedo": "rgba(201, 160, 78, 1.0)", "materialClass": "metal", "materialClassConfidence": 0.85, "evidenceRef": "sprite-front.png#armL"}, "actionProfile": {"animationRole": "bras de bouclier"}, "attachment": {"parentId": "root", "parentSocket": "shoulderL", "localStart": [-0.9, 14.2, 0], "localEnd": [-0.9, 7.5, 1.6], "contactType": "surface-contact", "embedDepth": 0.02, "gapTolerance": 0.01, "baseRadius": 0.48, "endRadius": 0.34}, "material": "steel"};
   node_armL_4.userData.actionProfile = {"animationRole": "bras de bouclier"};
   (nodes["root"] ?? root).add(node_armL_4);
   nodes["armL"] = node_armL_4;
@@ -961,12 +917,12 @@ export function createAldarionKnightModel(options: ProceduralModelOptions = {}):
   }
   mesh_armL_4.castShadow = options.castShadow ?? true;
   mesh_armL_4.receiveShadow = options.receiveShadow ?? true;
-  mesh_armL_4.userData.sculptComponent = {"id": "armL", "name": "Left arm (shield arm)", "level": "macro", "role": "limb", "parent": "root", "importance": 1, "confidence": 0.9, "primitive": "capsule", "topologyClass": "assembled-solid", "topologyRationale": "raised forward carrying heater shield", "geometryDescriptor": {}, "materialRefs": [], "localFeatures": [], "colorMaterialRecipe": {"dominantAlbedo": "rgba(138, 143, 150, 1.0)", "secondaryAlbedo": "rgba(201, 160, 78, 1.0)", "materialClass": "metal", "materialClassConfidence": 0.85, "evidenceRef": "sprite-front.png#armL"}, "actionProfile": {"animationRole": "bras de bouclier"}, "attachment": {"parentId": "root", "parentSocket": "shoulderL", "localStart": [-0.9, 14.2, 0], "localEnd": [-0.9, 7.5, 1.6], "contactType": "surface-contact", "embedDepth": 0.02, "gapTolerance": 0.01}, "material": "steel"};
+  mesh_armL_4.userData.sculptComponent = {"id": "armL", "name": "Left arm (shield arm)", "level": "macro", "role": "limb", "parent": "root", "importance": 1, "confidence": 0.9, "primitive": "capsule", "topologyClass": "assembled-solid", "topologyRationale": "raised forward carrying heater shield", "geometryDescriptor": {}, "materialRefs": [], "localFeatures": [], "colorMaterialRecipe": {"dominantAlbedo": "rgba(138, 143, 150, 1.0)", "secondaryAlbedo": "rgba(201, 160, 78, 1.0)", "materialClass": "metal", "materialClassConfidence": 0.85, "evidenceRef": "sprite-front.png#armL"}, "actionProfile": {"animationRole": "bras de bouclier"}, "attachment": {"parentId": "root", "parentSocket": "shoulderL", "localStart": [-0.9, 14.2, 0], "localEnd": [-0.9, 7.5, 1.6], "contactType": "surface-contact", "embedDepth": 0.02, "gapTolerance": 0.01, "baseRadius": 0.48, "endRadius": 0.34}, "material": "steel"};
   node_armL_4.add(mesh_armL_4);
   meshes["armL"] = mesh_armL_4;
   colliders["armL"] = {};
 
-  const attachment_legs_5 = {"parentId": "root", "parentSocket": "pelvis", "localStart": [0, 10.6, 0], "localEnd": [0, 0.4, 0], "contactType": "surface-contact", "embedDepth": 0.02, "gapTolerance": 0.01};
+  const attachment_legs_5 = {"parentId": "root", "parentSocket": "pelvis", "localStart": [0, 10.6, 0], "localEnd": [0, 0.4, 0], "contactType": "surface-contact", "embedDepth": 0.02, "gapTolerance": 0.01, "baseRadius": 0.65, "endRadius": 0.42};
   const endpoint_legs_5 = makeAttachmentEndpoint(attachment_legs_5);
   const node_legs_5 = new THREE.Group();
   node_legs_5.name = "Legs (fauld \u2192 sabatons)__pivot";
@@ -978,7 +934,7 @@ export function createAldarionKnightModel(options: ProceduralModelOptions = {}):
     node_legs_5.position.set(0, 0, 0);
     node_legs_5.rotation.set(0, 0, 0);
   }
-  node_legs_5.userData.sculptComponent = {"id": "legs", "name": "Legs (fauld → sabatons)", "level": "macro", "role": "lower body", "parent": "root", "importance": 1, "confidence": 0.9, "primitive": "capsule", "topologyClass": "assembled-solid", "topologyRationale": "layered cuisse/poleyn/greave per leg", "geometryDescriptor": {}, "materialRefs": [], "localFeatures": [], "colorMaterialRecipe": {"dominantAlbedo": "rgba(138, 143, 150, 1.0)", "secondaryAlbedo": "rgba(90, 70, 50, 1.0)", "materialClass": "metal", "materialClassConfidence": 0.85, "evidenceRef": "sprite-front.png#legs"}, "actionProfile": {"animationRole": "jambes blindées"}, "attachment": {"parentId": "root", "parentSocket": "pelvis", "localStart": [0, 10.6, 0], "localEnd": [0, 0.4, 0], "contactType": "surface-contact", "embedDepth": 0.02, "gapTolerance": 0.01}, "material": "steel"};
+  node_legs_5.userData.sculptComponent = {"id": "legs", "name": "Legs (fauld → sabatons)", "level": "macro", "role": "lower body", "parent": "root", "importance": 1, "confidence": 0.9, "primitive": "capsule", "topologyClass": "assembled-solid", "topologyRationale": "layered cuisse/poleyn/greave per leg", "geometryDescriptor": {}, "materialRefs": [], "localFeatures": [], "colorMaterialRecipe": {"dominantAlbedo": "rgba(138, 143, 150, 1.0)", "secondaryAlbedo": "rgba(90, 70, 50, 1.0)", "materialClass": "metal", "materialClassConfidence": 0.85, "evidenceRef": "sprite-front.png#legs"}, "actionProfile": {"animationRole": "jambes blindées"}, "attachment": {"parentId": "root", "parentSocket": "pelvis", "localStart": [0, 10.6, 0], "localEnd": [0, 0.4, 0], "contactType": "surface-contact", "embedDepth": 0.02, "gapTolerance": 0.01, "baseRadius": 0.65, "endRadius": 0.42}, "material": "steel"};
   node_legs_5.userData.actionProfile = {"animationRole": "jambes blindées"};
   (nodes["root"] ?? root).add(node_legs_5);
   nodes["legs"] = node_legs_5;
@@ -999,12 +955,13 @@ export function createAldarionKnightModel(options: ProceduralModelOptions = {}):
   }
   mesh_legs_5.castShadow = options.castShadow ?? true;
   mesh_legs_5.receiveShadow = options.receiveShadow ?? true;
-  mesh_legs_5.userData.sculptComponent = {"id": "legs", "name": "Legs (fauld → sabatons)", "level": "macro", "role": "lower body", "parent": "root", "importance": 1, "confidence": 0.9, "primitive": "capsule", "topologyClass": "assembled-solid", "topologyRationale": "layered cuisse/poleyn/greave per leg", "geometryDescriptor": {}, "materialRefs": [], "localFeatures": [], "colorMaterialRecipe": {"dominantAlbedo": "rgba(138, 143, 150, 1.0)", "secondaryAlbedo": "rgba(90, 70, 50, 1.0)", "materialClass": "metal", "materialClassConfidence": 0.85, "evidenceRef": "sprite-front.png#legs"}, "actionProfile": {"animationRole": "jambes blindées"}, "attachment": {"parentId": "root", "parentSocket": "pelvis", "localStart": [0, 10.6, 0], "localEnd": [0, 0.4, 0], "contactType": "surface-contact", "embedDepth": 0.02, "gapTolerance": 0.01}, "material": "steel"};
+  mesh_legs_5.userData.sculptComponent = {"id": "legs", "name": "Legs (fauld → sabatons)", "level": "macro", "role": "lower body", "parent": "root", "importance": 1, "confidence": 0.9, "primitive": "capsule", "topologyClass": "assembled-solid", "topologyRationale": "layered cuisse/poleyn/greave per leg", "geometryDescriptor": {}, "materialRefs": [], "localFeatures": [], "colorMaterialRecipe": {"dominantAlbedo": "rgba(138, 143, 150, 1.0)", "secondaryAlbedo": "rgba(90, 70, 50, 1.0)", "materialClass": "metal", "materialClassConfidence": 0.85, "evidenceRef": "sprite-front.png#legs"}, "actionProfile": {"animationRole": "jambes blindées"}, "attachment": {"parentId": "root", "parentSocket": "pelvis", "localStart": [0, 10.6, 0], "localEnd": [0, 0.4, 0], "contactType": "surface-contact", "embedDepth": 0.02, "gapTolerance": 0.01, "baseRadius": 0.65, "endRadius": 0.42}, "material": "steel"};
   node_legs_5.add(mesh_legs_5);
   meshes["legs"] = mesh_legs_5;
   colliders["legs"] = {};
 
-  const endpoint_gear_6 = makeAttachmentEndpoint(null);
+  const attachment_gear_6 = {"parentId": "root", "parentSocket": "back", "localStart": [0, 13.5, -0.5], "localEnd": [0, 2, -1.2], "contactType": "drape-contact", "embedDepth": 0.02, "gapTolerance": 0.01, "baseRadius": 0.48, "endRadius": 0.34};
+  const endpoint_gear_6 = makeAttachmentEndpoint(attachment_gear_6);
   const node_gear_6 = new THREE.Group();
   node_gear_6.name = "Cape & shield group__pivot";
   node_gear_6.scale.set(1, 1, 1);
@@ -1015,13 +972,13 @@ export function createAldarionKnightModel(options: ProceduralModelOptions = {}):
     node_gear_6.position.set(0, 0, 0);
     node_gear_6.rotation.set(0, 0, 0);
   }
-  node_gear_6.userData.sculptComponent = {"id": "gear", "name": "Cape & shield group", "level": "macro", "role": "worn gear", "parent": "root", "importance": 1, "confidence": 0.9, "primitive": "extrude", "topologyClass": "assembled-solid", "topologyRationale": "cape = torn cloth panels; shield = curved heater plate", "geometryDescriptor": {}, "materialRefs": [], "localFeatures": [], "colorMaterialRecipe": {"dominantAlbedo": "rgba(42, 53, 80, 1.0)", "secondaryAlbedo": "rgba(201, 160, 78, 1.0)", "materialClass": "fabric", "materialClassConfidence": 0.85, "evidenceRef": "sprite-front.png#gear"}, "actionProfile": {"animationRole": "cape + bouclier"}, "attachment": {"parentId": "root", "parentSocket": "back", "localStart": [0, 13.5, -0.5], "localEnd": [0, 2, -1.2], "contactType": "drape-contact", "embedDepth": 0.02, "gapTolerance": 0.01}, "material": "clothNavy"};
+  node_gear_6.userData.sculptComponent = {"id": "gear", "name": "Cape & shield group", "level": "macro", "role": "worn gear", "parent": "root", "importance": 1, "confidence": 0.9, "primitive": "capsule", "topologyClass": "assembled-solid", "topologyRationale": "cape = torn cloth panels; shield = curved heater plate", "geometryDescriptor": {}, "materialRefs": [], "localFeatures": [], "colorMaterialRecipe": {"dominantAlbedo": "rgba(42, 53, 80, 1.0)", "secondaryAlbedo": "rgba(201, 160, 78, 1.0)", "materialClass": "fabric", "materialClassConfidence": 0.85, "evidenceRef": "sprite-front.png#gear"}, "actionProfile": {"animationRole": "cape + bouclier"}, "attachment": {"parentId": "root", "parentSocket": "back", "localStart": [0, 13.5, -0.5], "localEnd": [0, 2, -1.2], "contactType": "drape-contact", "embedDepth": 0.02, "gapTolerance": 0.01, "baseRadius": 0.48, "endRadius": 0.34}, "material": "clothNavy"};
   node_gear_6.userData.actionProfile = {"animationRole": "cape + bouclier"};
   (nodes["root"] ?? root).add(node_gear_6);
   nodes["gear"] = node_gear_6;
   const mesh_gear_6Geometry = endpoint_gear_6
     ? new THREE.CylinderGeometry(endpoint_gear_6.endRadius, endpoint_gear_6.baseRadius, endpoint_gear_6.length, 32, 12)
-    : buildExtrudeGeometry({"points": [[-0.3, -0.3], [0.3, -0.3], [0.3, 0.3], [-0.3, 0.3]], "depth": 0.1});
+    : buildWatertightCapsule(0.35, 0.7, 16, 32, 1);
   if (!endpoint_gear_6) {
     mesh_gear_6Geometry.scale(1, 1, 1);
   }
@@ -1036,7 +993,7 @@ export function createAldarionKnightModel(options: ProceduralModelOptions = {}):
   }
   mesh_gear_6.castShadow = options.castShadow ?? true;
   mesh_gear_6.receiveShadow = options.receiveShadow ?? true;
-  mesh_gear_6.userData.sculptComponent = {"id": "gear", "name": "Cape & shield group", "level": "macro", "role": "worn gear", "parent": "root", "importance": 1, "confidence": 0.9, "primitive": "extrude", "topologyClass": "assembled-solid", "topologyRationale": "cape = torn cloth panels; shield = curved heater plate", "geometryDescriptor": {}, "materialRefs": [], "localFeatures": [], "colorMaterialRecipe": {"dominantAlbedo": "rgba(42, 53, 80, 1.0)", "secondaryAlbedo": "rgba(201, 160, 78, 1.0)", "materialClass": "fabric", "materialClassConfidence": 0.85, "evidenceRef": "sprite-front.png#gear"}, "actionProfile": {"animationRole": "cape + bouclier"}, "attachment": {"parentId": "root", "parentSocket": "back", "localStart": [0, 13.5, -0.5], "localEnd": [0, 2, -1.2], "contactType": "drape-contact", "embedDepth": 0.02, "gapTolerance": 0.01}, "material": "clothNavy"};
+  mesh_gear_6.userData.sculptComponent = {"id": "gear", "name": "Cape & shield group", "level": "macro", "role": "worn gear", "parent": "root", "importance": 1, "confidence": 0.9, "primitive": "capsule", "topologyClass": "assembled-solid", "topologyRationale": "cape = torn cloth panels; shield = curved heater plate", "geometryDescriptor": {}, "materialRefs": [], "localFeatures": [], "colorMaterialRecipe": {"dominantAlbedo": "rgba(42, 53, 80, 1.0)", "secondaryAlbedo": "rgba(201, 160, 78, 1.0)", "materialClass": "fabric", "materialClassConfidence": 0.85, "evidenceRef": "sprite-front.png#gear"}, "actionProfile": {"animationRole": "cape + bouclier"}, "attachment": {"parentId": "root", "parentSocket": "back", "localStart": [0, 13.5, -0.5], "localEnd": [0, 2, -1.2], "contactType": "drape-contact", "embedDepth": 0.02, "gapTolerance": 0.01, "baseRadius": 0.48, "endRadius": 0.34}, "material": "clothNavy"};
   node_gear_6.add(mesh_gear_6);
   meshes["gear"] = mesh_gear_6;
   colliders["gear"] = {};
