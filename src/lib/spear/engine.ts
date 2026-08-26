@@ -3,12 +3,14 @@
 // refinement (coordinate descent), full NSGA-II (non-dominated sort +
 // crowding distance), Pareto archive and code generation.
 
+import { erf } from "./math-utils";
+
 export type NodeOp =
   | "var" | "const"
   | "add" | "sub" | "mul" | "pdiv"
   | "relu" | "abs" | "neg" | "sq" | "sqrt" | "cube"
   | "max" | "min"
-  | "exp" | "sin" | "cos" | "log" | "atan" | "asin" | "tanh" | "acos";
+  | "exp" | "sin" | "cos" | "log" | "atan" | "asin" | "tanh" | "acos" | "erf";
 
 export interface SpearNode {
   op: NodeOp;
@@ -20,10 +22,10 @@ export interface SpearNode {
 }
 
 const BINARY = new Set<NodeOp>(["add", "sub", "mul", "pdiv", "max", "min"]);
-const UNARY = new Set<NodeOp>(["relu", "abs", "neg", "sq", "sqrt", "cube", "exp", "atan", "asin", "sin", "cos", "log", "tanh", "acos"]);
+const UNARY = new Set<NodeOp>(["relu", "abs", "neg", "sq", "sqrt", "cube", "exp", "atan", "asin", "sin", "cos", "log", "tanh", "acos", "erf"]);
 
 export const ALL_OPS: NodeOp[] = [
-  "add", "sub", "mul", "pdiv", "relu", "abs", "neg", "sq", "sqrt", "cube", "max", "atan", "min", "exp", "sin", "cos", "log", "asin", "tanh", "acos",
+  "add", "sub", "mul", "pdiv", "relu", "abs", "neg", "sq", "sqrt", "cube", "max", "atan", "min", "exp", "sin", "cos", "log", "asin", "tanh", "acos", "erf",
 ];
 
 /** Ops that a GPU/TPU executes as plain algebra (no transcendental unit). */
@@ -70,11 +72,11 @@ export const OP_COST: Record<NodeOp, number> = {
   var: 0, const: 0,
   add: 1, sub: 1, mul: 1,
   pdiv: 4, relu: 1, abs: 1, neg: 1, sq: 1, cube: 2, sqrt: 2, max: 1, min: 1,
-  exp: 20, sin: 20, cos: 20, atan: 20, log: 20, asin: 20, tanh: 20, acos: 20,
+  exp: 20, sin: 20, cos: 20, atan: 20, log: 20, asin: 20, tanh: 20, acos: 20, erf: 20,
 };
 
 /** Ops whose cost the GPU profile reprices (SFU instructions, free when bandwidth-bound). */
-const TRANSCENDENTAL_OPS: NodeOp[] = ["exp", "sin", "cos", "atan", "log", "asin", "tanh", "acos"];
+const TRANSCENDENTAL_OPS: NodeOp[] = ["exp", "sin", "cos", "atan", "log", "asin", "tanh", "acos", "erf"];
 const DEFAULT_TRANSCENDENTAL_COST = 20;
 
 /**
@@ -265,6 +267,7 @@ export function evaluateNode(
       case "asin": r = Math.asin(Math.max(-1, Math.min(1, av))); break;
       case "tanh": r = Math.tanh(av); break;
       case "acos": r = Math.acos(Math.max(-1, Math.min(1, av))); break;
+      case "erf": r = erf(av); break;
       case "log": r = Math.log(av > 1e-30 ? av : 1e-30); break;
       default: break;
     }
@@ -305,6 +308,7 @@ export function evaluateScalar(node: SpearNode, scope: Record<string, number>): 
       case "asin": return Math.asin(Math.max(-1, Math.min(1, a[0])));
       case "tanh": return Math.tanh(a[0]);
       case "acos": return Math.acos(Math.max(-1, Math.min(1, a[0])));
+      case "erf": return erf(a[0]);
       case "log": return Math.log(a[0] > 1e-30 ? a[0] : 1e-30);
     default: return 0;
   }
@@ -331,7 +335,8 @@ export function nodeToString(node: SpearNode): string {
     case "cos": return `cos(${nodeToString(node.children[0])})`;
     case "atan": return `atan(${nodeToString(node.children[0])})`;
     case "asin": return `asin(${nodeToString(node.children[0])})`;
-    case "tanh": return `tanh(${nodeToString(node.children[0])})`;
+      case "tanh": return `tanh(${nodeToString(node.children[0])})`;
+      case "erf": return `erf(${nodeToString(node.children[0])})`;
     case "acos": return `acos(${nodeToString(node.children[0])})`;
     case "log": return `log(max(${nodeToString(node.children[0])}, 1e-30))`;
     case "max": return `max(${nodeToString(node.children[0])}, ${nodeToString(node.children[1])})`;
@@ -387,7 +392,7 @@ export function parseFormula(src: string): SpearNode {
   };
 
   const BIN: Record<string, NodeOp> = { "+": "add", "-": "sub", "*": "mul", "/": "pdiv" };
-  const FUNCS = new Set(["relu", "sqrt", "exp", "sin", "cos", "log", "atan", "asin", "tanh", "acos", "max", "min"]);
+  const FUNCS = new Set(["relu", "sqrt", "exp", "sin", "cos", "log", "atan", "asin", "tanh", "acos", "erf", "max", "min"]);
 
   const atom = (): SpearNode => {
     const t = peek();
@@ -490,6 +495,7 @@ const PY: Record<NodeOp, string> = {
     atan: "torch.atan({a})",
     asin: "torch.asin(torch.clamp({a}, -1.0, 1.0))",
     tanh: "torch.tanh({a})",
+  erf: "torch.erf({a})",
     acos: "torch.acos(torch.clamp({a}, -1.0, 1.0))",
 };
 
@@ -527,8 +533,9 @@ export function toC(node: SpearNode, fnName = "spear_fn", varDecl = "const float
       case "cos": return `cosf(${walk(nd.children[0])})`;
       case "atan": return `atanf(${walk(nd.children[0])})`;
       case "asin": return `asinf(fmaxf(-1.0f, fminf(1.0f, ${walk(nd.children[0])})))`;
-      case "tanh": return `tanhf(${walk(nd.children[0])})`;
       case "acos": return `acosf(fmaxf(-1.0f, fminf(1.0f, ${walk(nd.children[0])})))`;
+      case "tanh": return `tanhf(${walk(nd.children[0])})`;
+      case "erf": return `erff(${walk(nd.children[0])})`;
       case "log": return `logf(fmaxf(1.0e-30f, ${walk(nd.children[0])}))`;
       case "max": return `fmaxf(${walk(nd.children[0])}, ${walk(nd.children[1])})`;
       case "min": return `fminf(${walk(nd.children[0])}, ${walk(nd.children[1])})`;
@@ -571,6 +578,7 @@ export function toMisraC(node: SpearNode, fnName = "spear_fn", params = "const f
       case "asin": return `asinf(fminf(fmaxf(${walk(nd.children[0])}, -1.0F), 1.0F))`;
       case "tanh": return `tanhf(${walk(nd.children[0])})`;
       case "acos": return `acosf(fminf(fmaxf(${walk(nd.children[0])}, -1.0F), 1.0F))`;
+      case "erf": return `erff(${walk(nd.children[0])})`;
       case "log": return `logf(fmaxf(1.0e-30F, ${walk(nd.children[0])}))`;
       case "max": return `fmaxf(${walk(nd.children[0])}, ${walk(nd.children[1])})`;
       case "min": return `fminf(${walk(nd.children[0])}, ${walk(nd.children[1])})`;

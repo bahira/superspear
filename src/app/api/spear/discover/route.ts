@@ -79,26 +79,29 @@ export async function POST(req: NextRequest) {
   if (!vars.includes(varName)) {
     return NextResponse.json({ error: `Variable '${varName}' absente de la formule.` }, { status: 400 });
   }
-  if (vars.length > 1) {
-    return NextResponse.json(
-      { error: `Multi-variables détecté (${vars.join(",")}) — v1 du service supporte une seule variable.` },
-      { status: 400 },
-    );
-  }
 
-  // dataset: quasi-uniform grid over [lo,hi], target evaluated from the law
-  const x = new Float64Array(rows);
+  // dataset: quasi-uniform grids per variable over [lo,hi]. Multi-var safe:
+  // each variable gets its own irrational multiplier (phase-shifted low
+  // discrepancy) so regressors aren't correlated on the diagonal.
+  const PHIS = [0.6180339887, 0.7548776662, 0.5698402909, 0.4543574345, 0.3786891456];
+  const xsMap: Record<string, Float64Array> = {};
+  vars.forEach((v, vi) => {
+    const arr = new Float64Array(rows);
+    for (let i = 0; i < rows; i++) arr[i] = lo + ((hi - lo) * ((i * PHIS[vi % PHIS.length]) % 1));
+    xsMap[v] = arr;
+  });
   const y = new Float64Array(rows);
   for (let i = 0; i < rows; i++) {
-    x[i] = lo + ((hi - lo) * ((i * 0.6180339887) % 1));
-    y[i] = evaluateScalar(targetNode, { [varName]: x[i] });
+    const pt: Record<string, number> = {};
+    for (const v of vars) pt[v] = xsMap[v][i];
+    y[i] = evaluateScalar(targetNode, pt);
     if (!Number.isFinite(y[i])) {
-      return NextResponse.json({ error: `La formule produit une valeur non finie à x=${x[i]}.` }, { status: 400 });
+      return NextResponse.json({ error: `La formule produit une valeur non finie à ${JSON.stringify(pt)}.` }, { status: 400 });
     }
   }
 
   const gpCfg: EvolveConfig = {
-    variables: [varName],
+    variables: vars,
     constRange: [-5, 5],
     ops: [
       ...(body.transcendentals === false ? [] : TRASC_OPS),
@@ -109,10 +112,9 @@ export async function POST(req: NextRequest) {
     generations: clamp(num(body.generations, 60), 5, 200),
   };
 
-  const varsMap: Record<string, Float64Array> = { [varName]: x };
   const fitnessFn = (node: SpearNode) => {
     try {
-      const pred = evaluateNode(node, varsMap, rows);
+      const pred = evaluateNode(node, xsMap, rows);
       for (let i = 0; i < rows; i++) if (!Number.isFinite(pred[i])) return { fitness: -1e9, size: node.size };
       const m = mse(pred, y);
       if (!Number.isFinite(m)) return { fitness: -1e9, size: node.size };
@@ -132,7 +134,7 @@ export async function POST(req: NextRequest) {
   }
   const best = result.best;
 
-  const predFinal = evaluateNode(best, varsMap, rows);
+  const predFinal = evaluateNode(best, xsMap, rows);
   const finalMse = mse(predFinal, y);
   const finalLinf = linfError(predFinal, y);
   const finalR2 = r2Score(predFinal, y);
@@ -142,7 +144,7 @@ export async function POST(req: NextRequest) {
 
   // verified exports
   const fnId = "spear_discovered";
-  const params = `const float ${varName}`;
+  const params = `const float ${vars.join(", const float ")}`;
   const c99 = toMisraC(best, fnId, params);
   const wasmBase64 = Buffer.from(toWasmBytes(best)).toString("base64");
 

@@ -88,99 +88,58 @@
     "taskId": "gelu",
     "title": "GELU (GPT · BERT — GEGLU)",
     "direction": "min",
-    "metric": 3.55135869310835e-8,
+    "metric": 1.5455587803707568e-34,
     "level": 5,
-    "formula": "((0.999993 * ((0.5 * x) * (1 + tanh((0.797885 * (x + (0.044715 * (x)³))))))) + -0.000058)",
+    "formula": "((0.5 * x) * (1 + erf((x * 0.707107))))",
     "seed": 4242,
     "iteration": 400,
     "speed": {
-      "formulaCost": 11,
+      "formulaCost": 5,
       "exactCost": 46,
-      "speedup": 4.181818181818182
+      "speedup": 9.2
     },
     "tree": {
-      "o": "add",
+      "o": "mul",
       "c": [
         {
           "o": "mul",
           "c": [
             {
               "o": "const",
-              "v": 0.999993
+              "v": 0.5
             },
             {
-              "o": "mul",
+              "o": "var",
+              "n": "x"
+            }
+          ]
+        },
+        {
+          "o": "add",
+          "c": [
+            {
+              "o": "const",
+              "v": 1
+            },
+            {
+              "o": "erf",
               "c": [
                 {
                   "o": "mul",
                   "c": [
                     {
-                      "o": "const",
-                      "v": 0.5
-                    },
-                    {
                       "o": "var",
                       "n": "x"
-                    }
-                  ]
-                },
-                {
-                  "o": "add",
-                  "c": [
-                    {
-                      "o": "const",
-                      "v": 1
                     },
                     {
-                      "o": "tanh",
-                      "c": [
-                        {
-                          "o": "mul",
-                          "c": [
-                            {
-                              "o": "const",
-                              "v": 0.797885
-                            },
-                            {
-                              "o": "add",
-                              "c": [
-                                {
-                                  "o": "var",
-                                  "n": "x"
-                                },
-                                {
-                                  "o": "mul",
-                                  "c": [
-                                    {
-                                      "o": "const",
-                                      "v": 0.044715
-                                    },
-                                    {
-                                      "o": "cube",
-                                      "c": [
-                                        {
-                                          "o": "var",
-                                          "n": "x"
-                                        }
-                                      ]
-                                    }
-                                  ]
-                                }
-                              ]
-                            }
-                          ]
-                        }
-                      ]
+                      "o": "const",
+                      "v": 0.7071067811865475
                     }
                   ]
                 }
               ]
             }
           ]
-        },
-        {
-          "o": "const",
-          "v": -0.000058
         }
       ]
     },
@@ -4417,93 +4376,33 @@
     "taskId": "erf_prob",
     "title": "Erf probabiliste (noyaux de probabilité · GELU-exact)",
     "direction": "min",
-    "metric": 0.00004650870031371604,
-    "level": 3,
-    "formula": "(1.106774 * ((x + (0.034298 * (x)³)) / (0.995 + (0.378089 * (x)²))))",
-    "seed": 20260825,
-    "iteration": 5,
+    "metric": 0,
+    "level": 5,
+    "formula": "erf(x)",
+    "seed": 4242,
+    "iteration": 400,
+    "speed": {
+      "formulaCost": 1,
+      "exactCost": 26,
+      "speedup": 26
+    },
     "tree": {
-      "o": "mul",
+      "o": "erf",
       "c": [
         {
-          "o": "const",
-          "v": 1.106774
-        },
-        {
-          "o": "pdiv",
-          "c": [
-            {
-              "o": "add",
-              "c": [
-                {
-                  "o": "var",
-                  "n": "x"
-                },
-                {
-                  "o": "mul",
-                  "c": [
-                    {
-                      "o": "const",
-                      "v": 0.034298
-                    },
-                    {
-                      "o": "cube",
-                      "c": [
-                        {
-                          "o": "var",
-                          "n": "x"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "o": "add",
-              "c": [
-                {
-                  "o": "const",
-                  "v": 0.995
-                },
-                {
-                  "o": "mul",
-                  "c": [
-                    {
-                      "o": "const",
-                      "v": 0.378089
-                    },
-                    {
-                      "o": "sq",
-                      "c": [
-                        {
-                          "o": "var",
-                          "n": "x"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
+          "o": "var",
+          "n": "x"
         }
       ]
     },
-    "speed": {
-      "formulaCost": 12,
-      "exactCost": 26,
-      "speedup": 2.1666666666666665
-    },
     "fast": {
-      "formula": "atan(x)",
-      "metric": 0.007793223822465828,
-      "level": 2,
-      "formulaCost": 1,
-      "deploy": true
+      "formula": "erf(x)",
+      "metric": 0,
+      "level": 5,
+      "formulaCost": 1
     },
     "fastTree": {
-      "o": "atan",
+      "o": "erf",
       "c": [
         {
           "o": "var",

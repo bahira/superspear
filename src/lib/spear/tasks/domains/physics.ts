@@ -31,6 +31,8 @@ buildActivationTask({
       hi: 3,
       groundTruth: "erf(x)",
       exactCost: 26,
+      // l'op erf est servi depuis la v1.8 — la loi exacte est dans le pool
+      extraSeeds: [makeNode("erf", { children: [S.V("x")] })],
     }),
 
     // Huber loss δ=1: the elegant trick is huber(x) = max(x²/2, |x| − 1/2) —

@@ -67,7 +67,7 @@ server.tool(
     rows: z.number().optional().describe("Number of sample points (default: 400)"),
     generations: z.number().optional().describe("Evolution generations (default: 60, range 5–200)"),
     populationSize: z.number().optional().describe("Population size (default: 120)"),
-    transcendentals: z.boolean().optional().describe("Allow exp/sin/cos/log/atan/asin/tanh/acos in search (default true)"),
+    transcendentals: z.boolean().optional().describe("Allow exp/sin/cos/log/atan/asin/tanh/acos/erf in search (default true)"),
     transcendentalCost: z.number().optional().describe("Cost in ALU/SFU units per transcendental op (default 20). Set to 1 for bandwidth-bound GPUs where SFU ops are effectively free — removes the anti-transcendental bias."),
   },
   async ({ formula, varName, lo, hi, rows: rowsIn, generations, populationSize, transcendentals, transcendentalCost }) => {
@@ -75,7 +75,6 @@ server.tool(
       const target = parseFormula(formula);
       const vars = [...new Set(collectVarNames(target))];
       if (vars.length === 0) return err("La formule doit contenir au moins une variable.");
-      if (vars.length > 1) return err(`Multi-variables (${vars.join(",")}) non supporté en v1.`);
 
       const vName = varName ?? vars[0];
       if (!vars.includes(vName)) return err(`Variable '${vName}' absente.`);
@@ -86,27 +85,35 @@ server.tool(
       const gens = clampInt(generations ?? 60, 5, 200);
       const pop = clampInt(populationSize ?? 120, 20, 300);
 
-      // generate dataset
-      const xs = new Float64Array(rows);
+      // dataset: quasi-uniform grids per variable over [lo,hi]; each variable
+      // gets its own irrational multiplier so multi-var regressors aren't
+      // correlated on the diagonal (single-var stays bit-identical to before).
+      const PHIS = [0.6180339887, 0.7548776662, 0.5698402909, 0.4543574345, 0.3786891456];
+      const varsMap: Record<string, Float64Array> = {};
+      vars.forEach((v, vi) => {
+        const arr = new Float64Array(rows);
+        for (let i = 0; i < rows; i++) arr[i] = loV + ((hiV - loV) * ((i * PHIS[vi % PHIS.length]) % 1));
+        varsMap[v] = arr;
+      });
       const ys = new Float64Array(rows);
       for (let i = 0; i < rows; i++) {
-        xs[i] = loV + ((hiV - loV) * ((i * 0.6180339887) % 1));
-        ys[i] = evaluateScalar(target, { [vName]: xs[i] });
-        if (!Number.isFinite(ys[i])) return err(`Non-finite à x=${xs[i].toFixed(3)}.`);
+        const pt: Record<string, number> = {};
+        for (const v of vars) pt[v] = varsMap[v][i];
+        ys[i] = evaluateScalar(target, pt);
+        if (!Number.isFinite(ys[i])) return err(`Non-finite à ${JSON.stringify(pt)}.`);
       }
 
       // evolve
       const { evolve } = await import("../lib/spear/engine.js");
       const { mse, linfError, r2Score } = await import("../lib/spear/math-utils.js");
-      const varsMap: Record<string, Float64Array> = { [vName]: xs };
       setTranscendentalCost(num(transcendentalCost, 20));
       let result;
       try {
         result = evolve({
-          variables: [vName],
+          variables: vars,
           constRange: [-5, 5],
           ops: transcendentals !== false
-            ? ["add", "sub", "mul", "pdiv", "relu", "abs", "neg", "sq", "cube", "sqrt", "max", "min", "exp", "sin", "cos", "log", "atan", "asin", "tanh", "acos"]
+            ? ["add", "sub", "mul", "pdiv", "relu", "abs", "neg", "sq", "cube", "sqrt", "max", "min", "exp", "sin", "cos", "log", "atan", "asin", "tanh", "acos", "erf"]
             : ["add", "sub", "mul", "pdiv", "relu", "abs", "neg", "sq", "cube", "sqrt", "max", "min"],
           maxDepth: 5,
           populationSize: pop,
@@ -143,7 +150,7 @@ server.tool(
         speedup_vs_target: +(targetCost / Math.max(1, bestCost)).toFixed(2),
         generations_used: result.history.length,
         duration_ms: result.durationMs,
-        misra_c: toMisraC(best, fnId("discovered"), `const float ${vName}`),
+        misra_c: toMisraC(best, fnId("discovered"), `const float ${vars.join(", const float ")}`),
         python: toPython(best, fnId("discovered")),
         wasm_base64: Buffer.from(toWasmBytes(best)).toString("base64"),
       });

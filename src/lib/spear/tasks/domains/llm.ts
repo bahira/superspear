@@ -29,7 +29,14 @@ buildActivationTask({ id: "gelu", title: "GELU (GPT · BERT — GEGLU)", fn: (x)
       extraSeeds: (() => {
         const x = S.V("x");
         return [
-          // GELU-tanh exact: 0.5x(1+tanh(√(2/π)·(x+0.044715x³))) — borne de précision erf
+          // pont erf exact: 0.5x(1+erf(x/√2)) — la loi même du ground truth
+          makeNode("mul", { children: [
+            makeNode("mul", { children: [S.C(0.5), x] }),
+            makeNode("add", { children: [S.C(1), makeNode("erf", { children: [
+              makeNode("pdiv", { children: [x, S.C(Math.SQRT2)] }),
+            ] })] })],
+          }),
+          // GELU-tanh: 0.5x(1+tanh(√(2/π)·(x+0.044715x³))) — borne de précision erf
           makeNode("mul", { children: [
             makeNode("mul", { children: [S.C(0.5), x] }),
             makeNode("add", { children: [S.C(1), makeNode("tanh", { children: [
