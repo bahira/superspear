@@ -44,3 +44,12 @@ instance.exports.spear(2); // same protected-division semantics as the JS backen
 Division is **protected** exactly like the engine: denominators floored at
 ±1e-4 (sign-preserving), results clamped to ±1e4. Discovered formulas rely on
 these rails — do not swap in bare `/`.
+
+## Support
+
+If SPEAR kernels save you compute time, consider tipping the lab:
+
+₿ **bc1q54n9x2894rr43f7nkaqywtegn8aufxwlnnkh5r**
+
+`npm fund` also surfaces this address (declared in the `funding` field).
+Every satoshi goes back into GPU time for the evolution farm.

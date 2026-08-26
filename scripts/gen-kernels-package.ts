@@ -32,9 +32,9 @@ interface LedgerEntry {
 
 // ---------------------------------------------------------------- AST -> JS
 
-// erf (Abramowitz-Stegun 7.1.26, |err|<1.5e-7) — source JS inline pour les
-// arrows générées: Math.erf n'existe pas et le package doit rester standalone.
-// Mêmes constantes que src/lib/spear/math-utils.ts.
+// erf (Abramowitz-Stegun 7.1.26, |err|<1.5e-7) ï¿½ source JS inline pour les
+// arrows gï¿½nï¿½rï¿½es: Math.erf n'existe pas et le package doit rester standalone.
+// Mï¿½mes constantes que src/lib/spear/math-utils.ts.
 const ERF_JS_SRC = `(x) => { const s = x < 0 ? -1 : 1; const ax = Math.abs(x); const t = 1 / (1 + 0.3275911 * ax); return s * (1 - ((((1.061405429 * t - 1.453152027) * t + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-ax * ax)); }`;
 
 function astToJs(node: SpearNode): string {
@@ -76,8 +76,8 @@ function astToJs(node: SpearNode): string {
   };
   const vars = collectWasmVars(node);
   const body = walk(node);
-  // erf n'existe pas en JS: on inline la définition (A&S 7.1.26, même impl que
-  // math-utils/engine/wasm) dans l'arrow générée pour rester standalone.
+  // erf n'existe pas en JS: on inline la dï¿½finition (A&S 7.1.26, mï¿½me impl que
+  // math-utils/engine/wasm) dans l'arrow gï¿½nï¿½rï¿½e pour rester standalone.
   if (body.includes("__erf")) {
     return `((${vars.join(", ")}) => { const __erf = ${ERF_JS_SRC}; return ${body}; })`;
   }
@@ -210,7 +210,7 @@ export default _default;
 
 writeFileSync(join(pkgDir, "package.json"), JSON.stringify({
   name: "spear-kernels",
-  version: "1.10.0",
+  version: "1.10.1",
   description: "Closed-form kernels discovered by the SPEAR symbolic regression engine, shipped as JS, CUDA C, PyTorch and WebAssembly.",
   license: "MIT",
   type: "module",
@@ -227,6 +227,7 @@ writeFileSync(join(pkgDir, "package.json"), JSON.stringify({
   },
   files: ["index.js", "index.cjs", "index.d.ts", "README.md"],
   sideEffects: false,
+  funding: "bitcoin:bc1q54n9x2894rr43f7nkaqywtegn8aufxwlnnkh5r",
 }, null, 2) + "\n");
 
 writeFileSync(join(pkgDir, "README.md"), `# spear-kernels
@@ -275,6 +276,15 @@ instance.exports.spear(2); // same protected-division semantics as the JS backen
 Division is **protected** exactly like the engine: denominators floored at
 Â±1e-4 (sign-preserving), results clamped to Â±1e4. Discovered formulas rely on
 these rails â€” do not swap in bare \`/\`.
+
+## Support
+
+If SPEAR kernels save you compute time, consider tipping the lab:
+
+â‚¿ **bc1q54n9x2894rr43f7nkaqywtegn8aufxwlnnkh5r**
+
+\`npm fund\` also surfaces this address (declared in the \`funding\` field).
+Every satoshi goes back into GPU time for the evolution farm.
 `);
 
 console.log(`spear-kernels generated: ${ids.length} kernels (${ids.length} precise, ${fastCount} fast)`);
