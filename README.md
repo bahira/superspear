@@ -455,6 +455,15 @@ scripts/          # hall-of-fame ledger, export audit, parallel farm
 
 The benchmark portfolio draws inspiration from the GROUNDED-SPEAR paper series (V600 → V1200): Padé [3/2] distillation shapes (BT10), Kerr geodesic deflection incl. spin (BT24/BT35), KdV solitons (BT36) and hybrid Lyapunov control laws (§4). Everything else — the engine, the audits, the numbers above — is generated and measured by this repository.
 
+
+## Support
+
+SPEAR tourne grâce au temps GPU de la ferme d'évolution. Si les kernels vous font gagner du temps de calcul :
+
+₿ **bc1q54n9x2894rr43f7nkaqywtegn8aufxwlnnkh5r**
+
+L'adresse est aussi déclarée dans le champ unding de [spear-kernels](https://www.npmjs.com/package/spear-kernels) (pm fund). Chaque satoshi retourne en heures de GPU.
+
 ## License
 
 [MIT](./LICENSE) — free to use, modify, and ship; the discovered formulas are yours too.
