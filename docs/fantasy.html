@@ -7,7 +7,7 @@
 <style>
   :root{ --amber:#f4c170; --panel:rgba(11,13,15,.82); --line:#232a31; }
   *{margin:0;padding:0;box-sizing:border-box}
-  body{overflow:hidden;background:#07080c;font-family:'Segoe UI',system-ui,sans-serif;color:#e6e9ec}
+  body{overflow:hidden;background:#05060a;font-family:'Segoe UI',system-ui,sans-serif;color:#e6e9ec}
   canvas{display:block}
   #hud{position:fixed;top:18px;left:18px;max-width:340px;background:var(--panel);border:1px solid var(--line);
        border-radius:6px;padding:16px 18px;backdrop-filter:blur(8px);z-index:10}
@@ -23,7 +23,12 @@
   #back a{color:var(--amber);font-family:ui-monospace,monospace;font-size:11px;text-decoration:none;
           border:1px solid var(--line);border-radius:4px;padding:7px 12px;background:var(--panel)}
   #loading{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:50;
-           background:#07080c;color:var(--amber);font-family:ui-monospace,monospace;letter-spacing:.3em}
+           background:#05060a;color:var(--amber);font-family:ui-monospace,monospace;letter-spacing:.3em}
+  /* grade cinéma : vignette + grain statique (zero coût GPU shader) */
+  #vignette{position:fixed;inset:0;z-index:5;pointer-events:none;
+            background:radial-gradient(ellipse at 50% 40%, transparent 52%, rgba(2,3,6,.52) 100%)}
+  #grain{position:fixed;inset:0;z-index:6;pointer-events:none;opacity:.045;
+         background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E")}
 </style>
 </head>
 <body>
@@ -37,6 +42,8 @@
 </div>
 <div id="fps">— fps</div>
 <div id="back"><a href="./index.html">← retour au laboratoire</a></div>
+<div id="vignette"></div>
+<div id="grain"></div>
 
 <script src="./spear-wasm.js"></script>
 <script type="importmap">
@@ -48,6 +55,10 @@
 <script type="module">
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
+import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
+import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
 
 const $ = s => document.querySelector(s);
 
@@ -73,23 +84,29 @@ for (const id of Object.keys(K)) {
 /* ---------- 2. renderer / scène / caméra ---------- */
 const renderer = new THREE.WebGLRenderer({ antialias:true });
 renderer.setSize(innerWidth, innerHeight);
-renderer.setPixelRatio(Math.min(2, devicePixelRatio));
+renderer.setPixelRatio(Math.min(1.75, devicePixelRatio));
+// pipeline linéaire : le tonemap filmic EST le noyau évolué, appliqué en passe finale
+renderer.toneMapping = THREE.NoToneMapping;
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 document.body.appendChild(renderer.domElement);
 
 const scene  = new THREE.Scene();
-scene.background = new THREE.Color(0x0b0d1a);
-scene.fog    = new THREE.Fog(0x241a3e, 14, 110);   // déclenche USE_FOG ; la COURBE vient du kernel
+scene.background = new THREE.Color(0x070811);
+scene.fog    = new THREE.Fog(0x181330, 22, 105);   // déclenche USE_FOG ; la COURBE vient du kernel
 
-const camera = new THREE.PerspectiveCamera(55, innerWidth/innerHeight, 0.1, 400);
-camera.position.set(0, 26, 74);
+const camera = new THREE.PerspectiveCamera(55, innerWidth/innerHeight, 0.5, 600);
+camera.position.set(0, 44, 118);
 
 const controls = new OrbitControls(camera, renderer.domElement);
-controls.target.set(0, 12, 0);
+controls.target.set(0, 11, 0);
 controls.enableDamping = true;
-let userMoved = false;
+controls.dampingFactor = 0.06;
+controls.enablePan = false;
+controls.minDistance = 26; controls.maxDistance = 150;
+controls.maxPolarAngle = Math.PI * 0.49;   // jamais sous les îles
 controls.addEventListener("start", () => { userMoved = true; });
+let userMoved = false;
 
 /* ---------- 3. LUTs : chaque courbe = son noyau WASM échantillonné ---------- */
 function makeLUT(kernelFn, lo, hi){
@@ -104,12 +121,12 @@ function makeLUT(kernelFn, lo, hi){
   tex.needsUpdate = true; tex.minFilter = tex.magFilter = THREE.LinearFilter;
   return tex;
 }
-const lutFog     = makeLUT(K.fog_exp2,          0, 110);   // profondeur -> facteur
+// le kernel fog_exp2 sature à x≈1.7 : son entrée = profondeur NORMALISÉE (0→1)
+const lutFog     = makeLUT(K.fog_exp2, 0, 1.7);
 const lutFresnel = makeLUT(K.fresnel_schlick,   0, 1);      // ndv -> réflexion
-const lutTone    = makeLUT(K.uncharted2_tonemap,0, 1.6);   // couleur -> filmic
+const lutTone    = makeLUT(K.uncharted2_tonemap,0, 1.6);   // linéaire -> filmic
 
-/* ---------- 4. injection des noyaux dans les shaders three.js ---------- */
-// 4a. FOG : la courbe d'extinction n'est plus exp() mais notre formule évoluée (LUT)
+/* ---------- 4. injection du brouillard évolué dans les chunks three ---------- */
 THREE.ShaderChunk.fog_fragment = `
 #ifdef USE_FOG
   float fd = clamp((vFogDepth - fogNear) / max(fogFar - fogNear, 0.001), 0.0, 1.0);
@@ -125,27 +142,10 @@ THREE.ShaderChunk.fog_pars_fragment = `
   uniform sampler2D uFogLUT;
 #endif`;
 
-// 4b. TONEMAP : Uncharted2 évolué appliqué par canal via LUT.
-// PATCH CIBLÉ : on ne remplace QUE la fonction identité CustomToneMapping.
-// (Écraser le chunk entier casse la compilation : WebGLProgram injecte encore
-//  `toneMapping() -> CustomToneMapping()` et référence toneMappingExposure.)
-THREE.ShaderChunk.tonemapping_pars_fragment = THREE.ShaderChunk.tonemapping_pars_fragment.replace(
-  "vec3 CustomToneMapping( vec3 color ) { return color; }",
-  `uniform sampler2D uToneLUT;
-vec3 CustomToneMapping( vec3 color ) {
-  return vec3(
-    texture2D( uToneLUT, vec2( clamp( color.r, 0.0, 1.0 ), 0.5 ) ).r,
-    texture2D( uToneLUT, vec2( clamp( color.g, 0.0, 1.0 ), 0.5 ) ).g,
-    texture2D( uToneLUT, vec2( clamp( color.b, 0.0, 1.0 ), 0.5 ) ).b );
-}`
-);
-renderer.toneMapping = THREE.CustomToneMapping;
-
 // helper : fournit les uniforms LUT à chaque matériau compilé
 function useKernels(mat, { fresnel = 0 } = {}){
   mat.onBeforeCompile = (shader) => {
     shader.uniforms.uFogLUT     = { value: lutFog };
-    shader.uniforms.uToneLUT    = { value: lutTone };
     shader.uniforms.uFresnelLUT = { value: lutFresnel };
     shader.uniforms.uRim        = { value: fresnel };
     if (fresnel > 0) {
@@ -161,27 +161,53 @@ function useKernels(mat, { fresnel = 0 } = {}){
   return mat;
 }
 
-/* ---------- 5. lumière ---------- */
-scene.add(new THREE.HemisphereLight(0x4a3f7a, 0x120a20, 0.85));
-const moonlight = new THREE.DirectionalLight(0xbfa7ff, 1.35);
-moonlight.position.set(-38, 52, -22);
+/* ---------- 5. post-process : bloom + grade filmic PAR LE NOYAU ---------- */
+// NoToneMapping partout : la scène rend en linéaire HDR (buffer half-float),
+// puis notre passe finale applique uncharted2_tonemap (WASM->LUT) + sRGB.
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.85, 0.55, 0.55);
+composer.addPass(bloom);
+const FilmicKernelPass = {
+  uniforms: { tDiffuse:{ value:null }, uTone:{ value:lutTone } },
+  vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix*modelViewMatrix*vec4(position,1.0); }`,
+  fragmentShader: `
+    uniform sampler2D tDiffuse;
+    uniform sampler2D uTone;
+    varying vec2 vUv;
+    void main(){
+      vec4 c = texture2D(tDiffuse, vUv);
+      c.rgb = vec3(
+        texture2D(uTone, vec2(clamp(c.r, 0.0, 1.0), 0.5)).r,
+        texture2D(uTone, vec2(clamp(c.g, 0.0, 1.0), 0.5)).g,
+        texture2D(uTone, vec2(clamp(c.b, 0.0, 1.0), 0.5)).b );
+      c.rgb = pow(c.rgb, vec3(0.4545));   // linéaire -> sRGB approx
+      gl_FragColor = c;
+    }`
+};
+composer.addPass(new ShaderPass(FilmicKernelPass));
+
+/* ---------- 6. lumière : clé froide face caméra + chauds ponctuels ---------- */
+scene.add(new THREE.HemisphereLight(0x36426e, 0x100c1c, 0.6));
+const moonlight = new THREE.DirectionalLight(0xa4b8ff, 3.6);   // clé 3/4 avant : modelé visible
+moonlight.position.set(34, 58, 42);
 moonlight.castShadow = true;
 moonlight.shadow.mapSize.set(2048, 2048);
 moonlight.shadow.camera.left = -60; moonlight.shadow.camera.right = 60;
 moonlight.shadow.camera.top  =  60; moonlight.shadow.camera.bottom = -60;
+moonlight.shadow.bias = -0.0004;
+moonlight.shadow.normalBias = 0.03;
 scene.add(moonlight);
-const torchWarm = new THREE.PointLight(0xffa03c, 40, 46, 1.9);
-torchWarm.position.set(0, 10, 14); scene.add(torchWarm);
 
-/* ---------- 6. ASSETS — royaume procédural ---------- */
+/* ---------- 7. ASSETS — royaume procédural ---------- */
 const world = new THREE.Group(); scene.add(world);
-const rockMat   = useKernels(new THREE.MeshStandardMaterial({ color:0x4a4258, roughness:.95 }));
-const grassMat  = useKernels(new THREE.MeshStandardMaterial({ color:0x3f6b45, roughness:.85 }));
-const stoneMat  = useKernels(new THREE.MeshStandardMaterial({ color:0x565064, roughness:.9 }));
-const woodMat   = useKernels(new THREE.MeshStandardMaterial({ color:0x4a3020, roughness:.8 }));
+const rockMat   = useKernels(new THREE.MeshStandardMaterial({ color:0x4e4760, roughness:.95 }));
+const grassMat  = useKernels(new THREE.MeshStandardMaterial({ color:0x457049, roughness:.88 }));
+const stoneMat  = useKernels(new THREE.MeshStandardMaterial({ color:0x5f5a6e, roughness:.92 }));
+const woodMat   = useKernels(new THREE.MeshStandardMaterial({ color:0x5a3d28, roughness:.82 }));
 const crystalM  = () => useKernels(new THREE.MeshStandardMaterial({
-  color:0x7fd4ff, roughness:.12, metalness:.1, emissive:0x2a6a9f, emissiveIntensity:1.2 }), { fresnel:0.85 });
-const goldMat   = useKernels(new THREE.MeshStandardMaterial({ color:0xd9a441, roughness:.35, metalness:.85 }));
+  color:0x9fe0ff, roughness:.18, metalness:.05, emissive:0x2fb8ff, emissiveIntensity:2.4 }), { fresnel:1.0 });
+const goldMat   = useKernels(new THREE.MeshStandardMaterial({ color:0xe0aa4a, roughness:.3, metalness:.85 }));
 
 function shadowify(g){ g.traverse(o=>{ if(o.isMesh){ o.castShadow = true; o.receiveShadow = true; } }); return g; }
 
@@ -215,20 +241,24 @@ function wizardTower(){
     seg.position.y = y + h/2; y += h; g.add(seg);
   }
   const roof = new THREE.Mesh(new THREE.ConeGeometry(2.5, 4.4, 10),
-    useKernels(new THREE.MeshStandardMaterial({ color:0x2a3f66, roughness:.6 })));
+    useKernels(new THREE.MeshStandardMaterial({ color:0x33477a, roughness:.6 })));
   roof.position.y = y + 2.2; g.add(roof);
   const spire = new THREE.Mesh(new THREE.SphereGeometry(.34, 10, 8), goldMat);
   spire.position.y = y + 4.7; g.add(spire);
-  // fenêtres incandescentes
-  for (let i = 0; i < 6; i++){
-    const w = new THREE.Mesh(new THREE.PlaneGeometry(.5,.9),
-      new THREE.MeshBasicMaterial({ color:0xffc36b }));
-    const a = i*1.05+.4, lvl = levels[i % 3];
-    w.position.set(Math.cos(a)*(lvl[0]*.87), 5.2 + (i%3)*4.4, Math.sin(a)*(lvl[0]*.87));
-    w.lookAt(w.position.clone().multiplyScalar(2).setY(w.position.y));
-    g.add(w);
-    const pl = new THREE.PointLight(0xffb45e, 6, 9, 2); pl.position.copy(w.position); g.add(pl);
-  }
+  // fenêtres incandescentes — posées PAR NIVEAU (l'ancien calcul enfouissait
+  // la moitié des fenêtres dans les maçonsneries) + couleur HDR pour le bloom
+  const winMat = new THREE.MeshBasicMaterial({ color:0xffcf7a });
+  winMat.color.setRGB(2.6, 1.7, 0.85);
+  levels.forEach(([r,h], li) => {
+    const yBase = 3.5 + levels.slice(0, li).reduce((s,[,hh])=>s+hh,0);
+    for (const a of [li*2.1+.5, li*2.1+.5+Math.PI]) {
+      const w = new THREE.Mesh(new THREE.PlaneGeometry(.5,.9), winMat);
+      w.position.set(Math.cos(a)*(r*.87+.06), yBase + h*.55, Math.sin(a)*(r*.87+.06));
+      w.lookAt(w.position.clone().multiplyScalar(2).setY(w.position.y));
+      g.add(w);
+      if (li === 0){ const pl = new THREE.PointLight(0xffb45e, 8, 11, 2); pl.position.copy(w.position); g.add(pl); }
+    }
+  });
   g.position.set(-6, 10.2, -4);
   return shadowify(g);
 }
@@ -251,16 +281,17 @@ function crystalCluster(x,y,z,scale,n=5){
 
 // --- torches ---
 const flames = [];
+const flameMat = new THREE.MeshBasicMaterial({ color:0xffb54d });
+flameMat.color.setRGB(2.4, 1.4, 0.5);   // HDR -> capte le bloom
 function torch(x,y,z,h=2.6){
   const g = new THREE.Group();
   const pole = new THREE.Mesh(new THREE.CylinderGeometry(.09,.13,h,6), woodMat);
   pole.position.y = h/2;
   const bowl = new THREE.Mesh(new THREE.CylinderGeometry(.26,.14,.3,7), goldMat);
   bowl.position.y = h;
-  const flame = new THREE.Mesh(new THREE.ConeGeometry(.2,.75,7),
-    new THREE.MeshBasicMaterial({ color:0xffb042 }));
+  const flame = new THREE.Mesh(new THREE.ConeGeometry(.2,.75,7), flameMat);
   flame.position.y = h + .48;
-  const glow = new THREE.PointLight(0xff9a3a, 9, 13, 2);
+  const glow = new THREE.PointLight(0xff9a3a, 12, 15, 2);
   glow.position.y = h + .6;
   g.add(pole,bowl,flame,glow); g.position.set(x,y,z);
   flames.push({ flame, glow, base:h });
@@ -285,26 +316,39 @@ world.add(wizardTower());
 world.add(crystalCluster( 8.5, 12.6,  6.5, 1.9));
 world.add(crystalCluster(-12 , 12.2,  9  , 1.4, 4));
 world.add(torch(-2.5, 12.9,  9.5)); world.add(torch( 2.8, 12.9, 10.2));
-world.add(torch( 9.5, 12.4, -6.0)); 
+world.add(torch( 9.5, 12.4, -6.0));
 world.add(stoneCircle(0, 11.6, 0));
 
-// îles satellites
+// îles satellites + couronne lointaine (profondeur de plan)
 for (const [x,y,z,r,a] of [[-34,6,-18,7,1.2],[30,2,-30,9,2.9],[-24,-4,26,6,4.1],[38,14,18,5,5.3]]){
   const isl = floatingIsland(r, a); isl.position.set(x,y,z); world.add(isl);
   if (r > 6){ const t = torch(x, y+r*.16+2.4, z, 2.2); world.add(t); flames[flames.length-1].group = t; }
 }
+for (const [x,y,z,r,a] of [[-70,-8,-52,4,0.7],[64,-12,-66,5,2.2],[-84,4,30,4.5,3.6],[76,8,52,3.5,4.8],[-40,18,-84,3,5.5]]){
+  const isl = floatingIsland(r, a); isl.position.set(x,y,z); world.add(isl);
+}
 
-// --- ciel : dôme dégradé + étoiles + lune ---
+/* ---------- 8. ciel : dôme recomposé + lune auréolée + étoiles rondes ---------- */
+function glowSprite(inner, outer){
+  const cv = document.createElement("canvas"); cv.width = cv.height = 64;
+  const g = cv.getContext("2d");
+  const gr = g.createRadialGradient(32,32,0,32,32,32);
+  gr.addColorStop(0, inner); gr.addColorStop(1, outer);
+  g.fillStyle = gr; g.fillRect(0,0,64,64);
+  return new THREE.CanvasTexture(cv);
+}
 {
   const skyGeo = new THREE.SphereGeometry(300, 24, 16);
   const skyMat = new THREE.ShaderMaterial({
     side: THREE.BackSide,
-    uniforms: { top:{value:new THREE.Color(0x141033)}, mid:{value:new THREE.Color(0x3a2455)}, bot:{value:new THREE.Color(0xc2743f)} },
+    uniforms: { top:{value:new THREE.Color(0x05060f)}, mid:{value:new THREE.Color(0x131a38)}, bot:{value:new THREE.Color(0x241b38)}, ember:{value:new THREE.Color(0x8a4520)} },
     vertexShader: `varying vec3 vP; void main(){ vP = position; gl_Position = projectionMatrix*modelViewMatrix*vec4(position,1.0); }`,
-    fragmentShader: `varying vec3 vP; uniform vec3 top,mid,bot;
+    fragmentShader: `varying vec3 vP; uniform vec3 top,mid,bot,ember;
       void main(){ float h = normalize(vP).y;
-        vec3 c = h > 0.08 ? mix(mid, top, smoothstep(.08, .7, h))
-                          : mix(bot, mid, smoothstep(-.25, .08, h));
+        vec3 c = h > 0.05 ? mix(mid, top, smoothstep(.05, .62, h))
+                          : mix(bot, mid, smoothstep(-.18, .05, h));
+        // braise résiduelle très fine à l'horizon, noyée dans le crépuscule
+        c += ember * exp(-abs(h)*26.0) * 0.55;
         gl_FragColor = vec4(c, 1.0); }`
   });
   scene.add(new THREE.Mesh(skyGeo, skyMat));
@@ -317,23 +361,32 @@ for (const [x,y,z,r,a] of [[-34,6,-18,7,1.2],[30,2,-30,9,2.9],[-24,-4,26,6,4.1],
   }
   const starGeo = new THREE.BufferGeometry();
   starGeo.setAttribute("position", new THREE.Float32BufferAttribute(starPos, 3));
-  scene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({ color:0xcdd6ff, size:.7, sizeAttenuation:false })));
+  scene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({
+    color:0xcdd6ff, size:1.5, sizeAttenuation:false, map:glowSprite("rgba(255,255,255,1)","rgba(255,255,255,0)"),
+    transparent:true, opacity:.85, depthWrite:false, blending:THREE.AdditiveBlending })));
 
+  const moonGlow = new THREE.Sprite(new THREE.SpriteMaterial({
+    map:glowSprite("rgba(214,205,255,.9)","rgba(120,110,220,0)"),
+    blending:THREE.AdditiveBlending, depthWrite:false }));
+  moonGlow.scale.setScalar(90);
+  moonGlow.position.set(-120, 72, -185); scene.add(moonGlow);
   const moon = new THREE.Mesh(new THREE.CircleGeometry(9, 40),
-    new THREE.MeshBasicMaterial({ color:0xdcd4ff }));
-  moon.position.set(-150, 130, -220); moon.lookAt(0,0,0); scene.add(moon);
+    new THREE.MeshBasicMaterial({ color:0xdcd4ff, fog:false }));
+  moon.position.set(-120, 72, -184); moon.lookAt(0,0,0); scene.add(moon);
 }
 
-// lucioles
+// lucioles — sprites ronds additifs (fini les carrés)
 {
-  const N = 140, pos = new Float32Array(N*3), seeds = [];
+  const N = 90, pos = new Float32Array(N*3), seeds = [];
   for (let i = 0; i < N; i++){
     pos[i*3]=(Math.random()-.5)*70; pos[i*3+1]=12+Math.random()*16; pos[i*3+2]=(Math.random()-.5)*70;
     seeds.push(Math.random()*6.28);
   }
   const geo = new THREE.BufferGeometry();
   geo.setAttribute("position", new THREE.Float32BufferAttribute(pos,3));
-  const pts = new THREE.Points(geo, new THREE.PointsMaterial({ color:0xaef2c0, size:.28, transparent:true, opacity:.9 }));
+  const pts = new THREE.Points(geo, new THREE.PointsMaterial({
+    color:0xaef2c0, size:0.85, map:glowSprite("rgba(190,255,210,1)","rgba(90,200,130,0)"),
+    transparent:true, opacity:.75, depthWrite:false, blending:THREE.AdditiveBlending }));
   scene.add(pts);
   pts.onBeforeRender = () => {
     const t = performance.now()/1000;
@@ -343,10 +396,7 @@ for (const [x,y,z,r,a] of [[-34,6,-18,7,1.2],[30,2,-30,9,2.9],[-24,-4,26,6,4.1],
   };
 }
 
-/* ---------- 6bis. uniforms LUT pour TOUS les matériaux compilés ---------- */
-// Les MeshBasic/Points (fenêtres, flammes, étoiles, lucioles, lune) compilent
-// eux-aussi USE_FOG et référencent uFogLUT : sans uniforms fournis, sampler
-// non lié -> brouillard mort sur ces objets.
+/* ---------- 9. uniforms LUT pour TOUS les matériaux compilés ---------- */
 function wireLUTs(root){
   root.traverse((o)=>{
     const m = o.material;
@@ -356,7 +406,6 @@ function wireLUTs(root){
     m.onBeforeCompile = (shader) => {
       if (prev) prev(shader);
       shader.uniforms.uFogLUT     = { value: lutFog };
-      shader.uniforms.uToneLUT    = { value: lutTone };
       shader.uniforms.uFresnelLUT = { value: lutFresnel };
       if (shader.uniforms.uRim === undefined) shader.uniforms.uRim = { value: 0 };
     };
@@ -364,10 +413,10 @@ function wireLUTs(root){
 }
 wireLUTs(world); wireLUTs(scene);
 
-/* ---------- 7. boucle : chaque animation passe par un noyau ---------- */
+/* ---------- 10. boucle : chaque animation passe par un noyau ---------- */
 const clock = new THREE.Clock();
 let frames = 0, fpsT = performance.now();
-const introFrom = { r: 118, h: 44 };
+const introFrom = { r: 122, h: 46 };
 
 function tick(){
   requestAnimationFrame(tick);
@@ -375,39 +424,32 @@ function tick(){
   const t  = clock.elapsedTime;
 
   // intro caméra : back_ease_out (noyau) pilote l'overshoot d'éloignement
-  const k = Math.min(1, t/3.2);
+  const k = Math.min(1, t/3.6);
   const ease = K.back_ease_out(k);                       // overshoot signé
-  const rad  = introFrom.r + (74-introFrom.r)*ease;
-  const hei  = introFrom.h + (26-introFrom.h)*K.smootherstep(k);
-  if (t < 4.2 && !userMoved){ camera.position.set(0, hei, Math.max(40,rad)); controls.update(); }
+  const rad  = introFrom.r + (58-introFrom.r)*ease;
+  const hei  = introFrom.h + (21-introFrom.h)*K.smootherstep(k);
+  if (t < 4.6 && !userMoved){ camera.position.set(0, hei, Math.max(30,rad)); controls.update(); }
 
   // flammes : flicker = tanh_sat(battement composé)
   const flick = K.tanh_sat(Math.sin(t*9.1) + .6*Math.sin(t*13.7));
   for (const f of flames){
     f.flame.scale.y = 1 + .38*flick;
     f.flame.scale.x = f.flame.scale.z = 1 + .18*flick;
-    f.glow.intensity = 9 + 5*flick;
+    f.glow.intensity = 12 + 6*flick;
   }
 
   // cristaux : pouls = oscillation amortie évoluée
   const pulse = .5 + .5*K.damped_oscillation(t*.7);
   crystals.forEach((m,i)=>{
-    m.material.emissiveIntensity = .9 + 1.1*pulse + .2*Math.sin(t*2+i);
+    m.material.emissiveIntensity = 1.6 + 1.6*pulse + .25*Math.sin(t*2+i);
     m.rotation.y += dt*(.2+.1*((i%3)));
   });
 
-  // îles : lévitation douce (sin pur CPU, pas de kernel nécessaire)
-  world.children.forEach((c,i)=>{ if(c.userData.bob===undefined)c.userData.bob=Math.random()*6.28; });
-  let bi = 0;
-  for (const c of world.children){
-    if (c.type === "Group" && c.children.some(m=>m.geometry&&m.geometry.type==="CylinderGeometry")){
-      c.position.y += Math.sin(t*.6+c.userData.bob)*.006;
-      bi++;
-    }
-  }
+  // dérive douce du monde (vie permanente)
+  world.rotation.y += dt*0.008;
 
   controls.update();
-  renderer.render(scene, camera);
+  composer.render();
 
   frames++;
   const now = performance.now();
@@ -422,6 +464,7 @@ tick();
 addEventListener("resize", ()=>{
   camera.aspect = innerWidth/innerHeight; camera.updateProjectionMatrix();
   renderer.setSize(innerWidth, innerHeight);
+  composer.setSize(innerWidth, innerHeight);
 });
 </script>
 </body>
