@@ -125,15 +125,20 @@ THREE.ShaderChunk.fog_pars_fragment = `
   uniform sampler2D uFogLUT;
 #endif`;
 
-// 4b. TONEMAP : Uncharted2 évolué appliqué par canal via LUT
-THREE.ShaderChunk.tonemapping_pars_fragment = `
-uniform sampler2D uToneLUT;
-vec3 customToneMapping(vec3 c){
+// 4b. TONEMAP : Uncharted2 évolué appliqué par canal via LUT.
+// PATCH CIBLÉ : on ne remplace QUE la fonction identité CustomToneMapping.
+// (Écraser le chunk entier casse la compilation : WebGLProgram injecte encore
+//  `toneMapping() -> CustomToneMapping()` et référence toneMappingExposure.)
+THREE.ShaderChunk.tonemapping_pars_fragment = THREE.ShaderChunk.tonemapping_pars_fragment.replace(
+  "vec3 CustomToneMapping( vec3 color ) { return color; }",
+  `uniform sampler2D uToneLUT;
+vec3 CustomToneMapping( vec3 color ) {
   return vec3(
-    texture2D(uToneLUT, vec2(clamp(c.r, 0.0, 1.0), 0.5)).r,
-    texture2D(uToneLUT, vec2(clamp(c.g, 0.0, 1.0), 0.5)).g,
-    texture2D(uToneLUT, vec2(clamp(c.b, 0.0, 1.0), 0.5)).b );
-}`;
+    texture2D( uToneLUT, vec2( clamp( color.r, 0.0, 1.0 ), 0.5 ) ).r,
+    texture2D( uToneLUT, vec2( clamp( color.g, 0.0, 1.0 ), 0.5 ) ).g,
+    texture2D( uToneLUT, vec2( clamp( color.b, 0.0, 1.0 ), 0.5 ) ).b );
+}`
+);
 renderer.toneMapping = THREE.CustomToneMapping;
 
 // helper : fournit les uniforms LUT à chaque matériau compilé
@@ -337,6 +342,27 @@ for (const [x,y,z,r,a] of [[-34,6,-18,7,1.2],[30,2,-30,9,2.9],[-24,-4,26,6,4.1],
     geo.attributes.position.needsUpdate = true;
   };
 }
+
+/* ---------- 6bis. uniforms LUT pour TOUS les matériaux compilés ---------- */
+// Les MeshBasic/Points (fenêtres, flammes, étoiles, lucioles, lune) compilent
+// eux-aussi USE_FOG et référencent uFogLUT : sans uniforms fournis, sampler
+// non lié -> brouillard mort sur ces objets.
+function wireLUTs(root){
+  root.traverse((o)=>{
+    const m = o.material;
+    if (!m || m.isShaderMaterial || m.userData.lutsWired) return;
+    m.userData.lutsWired = true;
+    const prev = m.onBeforeCompile;
+    m.onBeforeCompile = (shader) => {
+      if (prev) prev(shader);
+      shader.uniforms.uFogLUT     = { value: lutFog };
+      shader.uniforms.uToneLUT    = { value: lutTone };
+      shader.uniforms.uFresnelLUT = { value: lutFresnel };
+      if (shader.uniforms.uRim === undefined) shader.uniforms.uRim = { value: 0 };
+    };
+  });
+}
+wireLUTs(world); wireLUTs(scene);
 
 /* ---------- 7. boucle : chaque animation passe par un noyau ---------- */
 const clock = new THREE.Clock();
