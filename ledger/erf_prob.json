@@ -81,27 +81,18 @@
     "speedup": 2.1666666666666665
   },
   "fast": {
-    "formula": "sin(sin(atan(x)))",
-    "metric": 0.0004494300213900222,
+    "formula": "atan(x)",
+    "metric": 0.007793223822465828,
     "level": 2,
-    "formulaCost": 60
+    "formulaCost": 1,
+    "deploy": true
   },
   "fastTree": {
-    "o": "sin",
+    "o": "atan",
     "c": [
       {
-        "o": "sin",
-        "c": [
-          {
-            "o": "atan",
-            "c": [
-              {
-                "o": "var",
-                "n": "x"
-              }
-            ]
-          }
-        ]
+        "o": "var",
+        "n": "x"
       }
     ]
   }

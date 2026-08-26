@@ -3,7 +3,7 @@ import { loadLedger, saveLedger } from "../src/lib/spear/ledger";
 // benchmark tasks concurrently (one process per slice). Merges all partials
 // into the hall-of-fame ledger.
 //
-// Usage: npx tsx scripts/run-farm.ts [seed] [budget] [workers] [onlyIds]
+// Usage: npx tsx scripts/run-farm.ts [seed] [budget] [workers] [onlyIds] [tcost]
 import { execFileSync } from "node:child_process";
 import { readFileSync, writeFileSync, existsSync, mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -37,6 +37,7 @@ async function main() {
   const budget = Number(process.argv[3] ?? 1000);
   const workers = Number(process.argv[4] ?? 4);
   const only = process.argv[5] ? new Set(process.argv[5].split(",")) : null;
+  const tcost = Number(process.argv[6] ?? 0);
 
   // single-writer guard: concurrent farms would load the same ledger and
   // last-writer-wins over each other's records
@@ -47,13 +48,13 @@ async function main() {
   }
   writeFileSync(lockPath, String(process.pid));
   try {
-    await farmInner(seed, budget, workers, only);
+    await farmInner(seed, budget, workers, only, tcost);
   } finally {
     rmSync(lockPath, { force: true });
   }
 }
 
-async function farmInner(seed: number, budget: number, workers: number, only: Set<string> | null): Promise<void> {
+async function farmInner(seed: number, budget: number, workers: number, only: Set<string> | null, tcost: number): Promise<void> {
 
   // list all task ids (env unset here)
   delete process.env.SPEAR_TASKS;
@@ -75,7 +76,7 @@ async function farmInner(seed: number, budget: number, workers: number, only: Se
     new Promise<string>((resolve, reject) => {
       const out = join(dir, `w${w}.json`);
       try {
-        execFileSync(process.execPath, [tsxCli, childScript, out, String(seed), String(budget), slice.join(",")], { stdio: ["ignore", "pipe", "pipe"] });
+        execFileSync(process.execPath, [tsxCli, childScript, out, String(seed), String(budget), slice.join(","), ...(tcost > 0 ? [String(tcost)] : [])], { stdio: ["ignore", "pipe", "pipe"] });
         resolve(out);
       } catch (e) { reject(e); }
     }),

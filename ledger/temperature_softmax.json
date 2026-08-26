@@ -57,7 +57,7 @@
     "formula": "(1 / (1 + exp((-(da / t)))))",
     "metric": 7.439476402624881e-47,
     "level": 2,
-    "formulaCost": 30
+    "formulaCost": 11
   },
   "fastTree": {
     "o": "pdiv",

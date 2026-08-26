@@ -1,45 +1,30 @@
 {
-  "taskId": "sigmoid",
-  "title": "Sigmoid (routage MoE · portes d'attention)",
+  "taskId": "mish",
+  "title": "Mish (DetectoRS · YOLO — activation lisse auto-gated)",
   "direction": "min",
-  "metric": 4.790511494175498e-33,
+  "metric": 0,
   "level": 5,
-  "formula": "((-(1 / (1 + exp(x)))) + 1)",
-  "seed": 987654,
-  "iteration": 270,
+  "formula": "(x * tanh(log(max((1 + exp(x)), 1e-30))))",
+  "seed": 4242,
+  "iteration": 400,
   "speed": {
-    "formulaCost": 27,
-    "exactCost": 34,
-    "speedup": 1.2592592592592593
+    "formulaCost": 5,
+    "exactCost": 62,
+    "speedup": 12.4
   },
-  "fast": {
-    "formula": "atan(x)",
-    "metric": 0.00035539673000201734,
-    "level": 2,
-    "formulaCost": 1
-  },
-  "fastTree": {
-    "o": "atan",
+  "tree": {
+    "o": "mul",
     "c": [
       {
         "o": "var",
         "n": "x"
-      }
-    ]
-  },
-  "tree": {
-    "o": "add",
-    "c": [
+      },
       {
-        "o": "neg",
+        "o": "tanh",
         "c": [
           {
-            "o": "pdiv",
+            "o": "log",
             "c": [
-              {
-                "o": "const",
-                "v": 1
-              },
               {
                 "o": "add",
                 "c": [
@@ -61,10 +46,22 @@
             ]
           }
         ]
-      },
+      }
+    ]
+  },
+  "fast": {
+    "formula": "relu(x)",
+    "metric": 0.005653078807284052,
+    "level": 2,
+    "formulaCost": 1,
+    "deploy": true
+  },
+  "fastTree": {
+    "o": "relu",
+    "c": [
       {
-        "o": "const",
-        "v": 1
+        "o": "var",
+        "n": "x"
       }
     ]
   }

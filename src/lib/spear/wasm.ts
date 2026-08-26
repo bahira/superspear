@@ -53,12 +53,14 @@ const IMPORTABLE: { op: string; name: string }[] = [
   { op: "atan", name: "atan" },
   { op: "asin", name: "asin" },
   { op: "log", name: "log" },
+  { op: "tanh", name: "tanh" },
+  { op: "acos", name: "acos" },
 ];
 
 function neededImports(node: SpearNode): { op: string; name: string }[] {
   const used = new Set<string>();
   const walk = (n: SpearNode) => {
-    if (n.op === "exp" || n.op === "sin" || n.op === "cos" || n.op === "log" || n.op === "atan" || n.op === "asin") used.add(n.op);
+    if (n.op === "exp" || n.op === "sin" || n.op === "cos" || n.op === "log" || n.op === "atan" || n.op === "asin" || n.op === "tanh" || n.op === "acos") used.add(n.op);
     n.children.forEach(walk);
   };
   walk(node);
@@ -108,6 +110,9 @@ function emitNode(node: SpearNode, vars: string[], importIdx: Record<string, num
     // clamp to [-1,1] then call env.asin — matches engine Math.asin(clamp(x,-1,1))
     case "asin": return [...emitNode(node.children[0], vars, importIdx), 0x44, ...f64Const(-1), 0xa5, 0x44, ...f64Const(1), 0xa4, 0x10, ...u32(importIdx.asin)];
     case "cos": return [...emitNode(node.children[0], vars, importIdx), 0x10, ...u32(importIdx.cos)];
+    case "tanh": return [...emitNode(node.children[0], vars, importIdx), 0x10, ...u32(importIdx.tanh)];
+    // clamp to [-1,1] then call env.acos — matches engine Math.acos(clamp(x,-1,1))
+    case "acos": return [...emitNode(node.children[0], vars, importIdx), 0x44, ...f64Const(-1), 0xa5, 0x44, ...f64Const(1), 0xa4, 0x10, ...u32(importIdx.acos)];
     // clamp low bound then call env.log â€” matches engine Math.log(max(x, 1e-30))
     case "log": return [...emitNode(node.children[0], vars, importIdx), 0x44, ...f64Const(1e-30), 0xa5, 0x10, ...u32(importIdx.log)];
     default: return [];
@@ -169,7 +174,7 @@ export async function instantiateSpearWasm(
   b64: string,
 ): Promise<(args: number[]) => number> {
   const bytes = wasmBytesFromB64(b64);
-  const importObject = { env: { exp: Math.exp, sin: Math.sin, cos: Math.cos, atan: Math.atan, asin: (v: number) => Math.asin(Math.max(-1, Math.min(1, v))), log: (v: number) => Math.log(v > 1e-30 ? v : 1e-30) } };
+  const importObject = { env: { exp: Math.exp, sin: Math.sin, cos: Math.cos, atan: Math.atan, asin: (v: number) => Math.asin(Math.max(-1, Math.min(1, v))), log: (v: number) => Math.log(v > 1e-30 ? v : 1e-30), tanh: Math.tanh, acos: (v: number) => Math.acos(Math.max(-1, Math.min(1, v))) } };
   const result = await WebAssembly.instantiate(bytes, importObject);
   // Node returns { module, instance }; browsers return the Instance directly.
   const wrapped = result as unknown as { instance: WebAssembly.Instance };

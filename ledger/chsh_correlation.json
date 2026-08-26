@@ -128,7 +128,7 @@
     "formula": "|(((-cos((a - b))) + (-cos((ap - b)))) - ((-cos((a - bp))) - (-cos((ap - bp)))))|",
     "metric": 2.1055469858256505e-32,
     "level": 2,
-    "formulaCost": 92
+    "formulaCost": 16
   },
   "fastTree": {
     "o": "abs",

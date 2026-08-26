@@ -7,6 +7,12 @@ async function main() {
   const budget = Number(process.argv[4]);
   process.env.SPEAR_TASKS = process.argv[5];
 
+  // optional GPU cost profile: transcendental ops priced at ~1 ALU unit
+  if (process.argv[6]) {
+    const { setTranscendentalCost } = await import("../src/lib/spear/engine");
+    setTranscendentalCost(Number(process.argv[6]));
+  }
+
   const { runGroundedLoop } = await import("../src/lib/spear/loop");
   const progress = await runGroundedLoop({ seed, budget, deadlineMs: 45_000 });
   const partial = progress.tasks

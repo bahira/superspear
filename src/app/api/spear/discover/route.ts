@@ -8,6 +8,8 @@ import {
   toMisraC,
   toPython,
   collectVarNames,
+  setTranscendentalCost,
+  resetTranscendentalCost,
   type SpearNode,
 } from "@/lib/spear/engine";
 import { mse, linfError, r2Score } from "@/lib/spear/math-utils";
@@ -29,6 +31,8 @@ interface DiscoverBody {
   maxDepth?: number;
   /** allow transcendental ops in the search (default true) */
   transcendentals?: boolean;
+  /** cost per transcendental op in ALU/SFU units (default 20; set 1 for bandwidth-bound GPUs) */
+  transcendentalCost?: number;
 }
 
 function num(v: unknown, fallback: number): number {
@@ -41,7 +45,7 @@ function clamp(v: number, lo: number, hi: number): number {
 }
 
 const BASE_OPS = ["add", "sub", "mul", "pdiv", "relu", "abs", "neg", "sq", "cube", "sqrt", "max", "min"] as const;
-const TRASC_OPS = ["exp", "sin", "cos", "log", "atan"] as const;
+const TRASC_OPS = ["exp", "sin", "cos", "log", "atan", "asin", "tanh", "acos"] as const;
 
 export async function POST(req: NextRequest) {
   let body: DiscoverBody;
@@ -119,7 +123,13 @@ export async function POST(req: NextRequest) {
     }
   };
 
-  const result = evolve(gpCfg, fitnessFn);
+  setTranscendentalCost(num(body.transcendentalCost, 20));
+  let result;
+  try {
+    result = evolve(gpCfg, fitnessFn);
+  } finally {
+    resetTranscendentalCost();
+  }
   const best = result.best;
 
   const predFinal = evaluateNode(best, varsMap, rows);

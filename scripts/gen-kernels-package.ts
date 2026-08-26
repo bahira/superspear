@@ -61,6 +61,8 @@ function astToJs(node: SpearNode): string {
       case "cos": return `Math.cos(${walk(nd.children[0])})`;
       case "atan": return `Math.atan(${walk(nd.children[0])})`;
       case "asin": return `Math.asin(Math.max(-1, Math.min(1, ${walk(nd.children[0])})))`;
+      case "tanh": return `Math.tanh(${walk(nd.children[0])})`;
+      case "acos": return `Math.acos(Math.max(-1, Math.min(1, ${walk(nd.children[0])})))`;
       case "log": return `Math.log(Math.max(1e-30, ${walk(nd.children[0])}))`;
       default: throw new Error(`astToJs: op inconnu "${nd.op}"`);
     }
@@ -195,7 +197,7 @@ export default _default;
 
 writeFileSync(join(pkgDir, "package.json"), JSON.stringify({
   name: "spear-kernels",
-  version: "1.6.0",
+  version: "1.7.0",
   description: "Closed-form kernels discovered by the SPEAR symbolic regression engine, shipped as JS, CUDA C, PyTorch and WebAssembly.",
   license: "MIT",
   type: "module",

@@ -71,35 +71,21 @@
     ]
   },
   "fast": {
-    "formula": "(317.901286 + (vs + vo))",
-    "metric": 11.408687912051366,
+    "formula": "(vo + vs)",
+    "metric": 11.408687912051402,
     "level": 2,
-    "formulaCost": 2,
-    "speed": {
-      "formulaCost": 2,
-      "exactCost": 5,
-      "speedup": 2.5
-    }
+    "formulaCost": 1
   },
   "fastTree": {
     "o": "add",
     "c": [
       {
-        "o": "const",
-        "v": 317.901286
+        "o": "var",
+        "n": "vo"
       },
       {
-        "o": "add",
-        "c": [
-          {
-            "o": "var",
-            "n": "vs"
-          },
-          {
-            "o": "var",
-            "n": "vo"
-          }
-        ]
+        "o": "var",
+        "n": "vs"
       }
     ]
   }

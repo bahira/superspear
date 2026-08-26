@@ -80,35 +80,17 @@
     ]
   },
   "fast": {
-    "formula": "((1.449627 / (x)²) * 0.237626)",
-    "metric": 0.000022254134884792464,
+    "formula": "tanh(x)",
+    "metric": 0.012176285393349298,
     "level": 2,
-    "formulaCost": 6
+    "formulaCost": 1
   },
   "fastTree": {
-    "o": "mul",
+    "o": "tanh",
     "c": [
       {
-        "o": "pdiv",
-        "c": [
-          {
-            "o": "const",
-            "v": 1.449627
-          },
-          {
-            "o": "sq",
-            "c": [
-              {
-                "o": "var",
-                "n": "x"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "o": "const",
-        "v": 0.237626
+        "o": "var",
+        "n": "x"
       }
     ]
   }

@@ -2,99 +2,83 @@
   "taskId": "silu",
   "title": "SiLU / Swish (LLaMA · Mistral · Qwen — SwiGLU)",
   "direction": "min",
-  "metric": 0.0007795906249592223,
-  "level": 2,
-  "formula": "((0.997587 * (x * (0.501 + (0.587 * (x / (0.815 + sqrt(|(0.909361 + (x)²)|))))))) + -0.005749)",
-  "seed": 910001,
-  "iteration": 199,
+  "metric": 0,
+  "level": 5,
+  "formula": "(x / (1 + exp((-x))))",
+  "seed": 4242,
+  "iteration": 400,
   "speed": {
-    "formulaCost": 14,
+    "formulaCost": 7,
     "exactCost": 34,
-    "speedup": 2.4285714285714284
+    "speedup": 4.857142857142857
   },
   "tree": {
-    "o": "add",
+    "o": "pdiv",
     "c": [
       {
-        "o": "mul",
+        "o": "var",
+        "n": "x"
+      },
+      {
+        "o": "add",
         "c": [
           {
             "o": "const",
-            "v": 0.997587
+            "v": 1
           },
           {
-            "o": "mul",
+            "o": "exp",
             "c": [
               {
-                "o": "var",
-                "n": "x"
-              },
-              {
-                "o": "add",
+                "o": "neg",
                 "c": [
                   {
-                    "o": "const",
-                    "v": 0.501
-                  },
-                  {
-                    "o": "mul",
-                    "c": [
-                      {
-                        "o": "const",
-                        "v": 0.587
-                      },
-                      {
-                        "o": "pdiv",
-                        "c": [
-                          {
-                            "o": "var",
-                            "n": "x"
-                          },
-                          {
-                            "o": "add",
-                            "c": [
-                              {
-                                "o": "const",
-                                "v": 0.815
-                              },
-                              {
-                                "o": "sqrt",
-                                "c": [
-                                  {
-                                    "o": "add",
-                                    "c": [
-                                      {
-                                        "o": "const",
-                                        "v": 0.909361
-                                      },
-                                      {
-                                        "o": "sq",
-                                        "c": [
-                                          {
-                                            "o": "var",
-                                            "n": "x"
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
+                    "o": "var",
+                    "n": "x"
                   }
                 ]
               }
             ]
           }
         ]
+      }
+    ]
+  },
+  "fast": {
+    "formula": "(x / (1 + exp((-x))))",
+    "metric": 0,
+    "level": 5,
+    "formulaCost": 7
+  },
+  "fastTree": {
+    "o": "pdiv",
+    "c": [
+      {
+        "o": "var",
+        "n": "x"
       },
       {
-        "o": "const",
-        "v": -0.005749
+        "o": "add",
+        "c": [
+          {
+            "o": "const",
+            "v": 1
+          },
+          {
+            "o": "exp",
+            "c": [
+              {
+                "o": "neg",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "x"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
       }
     ]
   }

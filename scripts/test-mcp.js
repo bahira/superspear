@@ -2,11 +2,10 @@
 const { spawn } = require("child_process");
 const path = require("path");
 
-const tsx = path.resolve(__dirname, "..", "node_modules", ".bin", "tsx.cmd");
-const p = spawn(tsx, ["src/mcp/server.ts"], {
+const tsxCli = path.resolve(__dirname, "..", "node_modules", "tsx", "dist", "cli.mjs");
+const p = spawn(process.execPath, [tsxCli, "src/mcp/server.ts"], {
   cwd: path.resolve(__dirname, ".."),
   stdio: ["pipe", "pipe", "pipe"],
-  shell: true,
 });
 
 let buf = "";

@@ -21,6 +21,8 @@ import {
   toPython,
   toC,
   toMisraC,
+  setTranscendentalCost,
+  resetTranscendentalCost,
 } from "../lib/spear/engine.js";
 import { toWasmBytes } from "../lib/spear/wasm.js";
 import { buildTasks } from "../lib/spear/benchmarks.js";
@@ -47,7 +49,7 @@ function loadLedger(): Record<string, any> {
 
 const server = new McpServer({
   name: "spear-kernels",
-  version: "1.2.0",
+  version: "1.3.0",
 });
 
 // ---------------------------------------------------------------------------
@@ -65,9 +67,10 @@ server.tool(
     rows: z.number().optional().describe("Number of sample points (default: 400)"),
     generations: z.number().optional().describe("Evolution generations (default: 60, range 5–200)"),
     populationSize: z.number().optional().describe("Population size (default: 120)"),
-    transcendentals: z.boolean().optional().describe("Allow exp/sin/cos/log in search (default true)"),
+    transcendentals: z.boolean().optional().describe("Allow exp/sin/cos/log/atan/asin/tanh/acos in search (default true)"),
+    transcendentalCost: z.number().optional().describe("Cost in ALU/SFU units per transcendental op (default 20). Set to 1 for bandwidth-bound GPUs where SFU ops are effectively free — removes the anti-transcendental bias."),
   },
-  async ({ formula, varName, lo, hi, rows: rowsIn, generations, populationSize, transcendentals }) => {
+  async ({ formula, varName, lo, hi, rows: rowsIn, generations, populationSize, transcendentals, transcendentalCost }) => {
     try {
       const target = parseFormula(formula);
       const vars = [...new Set(collectVarNames(target))];
@@ -96,27 +99,33 @@ server.tool(
       const { evolve } = await import("../lib/spear/engine.js");
       const { mse, linfError, r2Score } = await import("../lib/spear/math-utils.js");
       const varsMap: Record<string, Float64Array> = { [vName]: xs };
-      const result = evolve({
-        variables: [vName],
-        constRange: [-5, 5],
-        ops: transcendentals !== false
-          ? ["add", "sub", "mul", "pdiv", "relu", "abs", "neg", "sq", "cube", "sqrt", "max", "min", "exp", "sin", "cos", "log", "atan"]
-          : ["add", "sub", "mul", "pdiv", "relu", "abs", "neg", "sq", "cube", "sqrt", "max", "min"],
-        maxDepth: 5,
-        populationSize: pop,
-        generations: gens,
-      }, (node) => {
-        try {
-          const pred = evaluateNode(node, varsMap, rows);
-          for (let i = 0; i < rows; i++) if (!Number.isFinite(pred[i])) return { fitness: -1e9, size: node.size };
-          const m = mse(pred, ys);
-          if (!Number.isFinite(m)) return { fitness: -1e9, size: node.size };
-          const li = linfError(pred, ys);
-          return { fitness: -(m + 0.05 * li), size: node.size, extra: li };
-        } catch {
-          return { fitness: -1e9, size: node.size };
-        }
-      });
+      setTranscendentalCost(num(transcendentalCost, 20));
+      let result;
+      try {
+        result = evolve({
+          variables: [vName],
+          constRange: [-5, 5],
+          ops: transcendentals !== false
+            ? ["add", "sub", "mul", "pdiv", "relu", "abs", "neg", "sq", "cube", "sqrt", "max", "min", "exp", "sin", "cos", "log", "atan", "asin", "tanh", "acos"]
+            : ["add", "sub", "mul", "pdiv", "relu", "abs", "neg", "sq", "cube", "sqrt", "max", "min"],
+          maxDepth: 5,
+          populationSize: pop,
+          generations: gens,
+        }, (node) => {
+          try {
+            const pred = evaluateNode(node, varsMap, rows);
+            for (let i = 0; i < rows; i++) if (!Number.isFinite(pred[i])) return { fitness: -1e9, size: node.size };
+            const m = mse(pred, ys);
+            if (!Number.isFinite(m)) return { fitness: -1e9, size: node.size };
+            const li = linfError(pred, ys);
+            return { fitness: -(m + 0.05 * li), size: node.size, extra: li };
+          } catch {
+            return { fitness: -1e9, size: node.size };
+          }
+        });
+      } finally {
+        resetTranscendentalCost();
+      }
 
       const best = result.best;
       const predFinal = evaluateNode(best, varsMap, rows);

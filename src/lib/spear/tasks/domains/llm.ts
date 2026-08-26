@@ -14,9 +14,52 @@ buildActivationTask({
       lo: -6,
       hi: 6,
       groundTruth: "SiLU(x) = x·σ(x) = x / (1 + e⁻ˣ)",
+      // formes exactes transcendantes (profil GPU: SFU ~gratuit) — constants tunés par mutatePolish
+      extraSeeds: (() => {
+        const x = S.V("x");
+        return [
+          // pont σ: x/(1+e⁻ˣ) — la loi exacte
+          makeNode("pdiv", { children: [x, makeNode("add", { children: [S.C(1), makeNode("exp", { children: [makeNode("neg", { children: [x] })] })] })] }),
+          // pont softplus: x·tanh(ln(1+eˣ))
+          makeNode("mul", { children: [x, makeNode("tanh", { children: [makeNode("log", { children: [makeNode("add", { children: [S.C(1), makeNode("exp", { children: [x] })] })] })] })] }),
+        ];
+      })(),
     }),
-buildActivationTask({ id: "gelu", title: "GELU (GPT · BERT — GEGLU)", fn: (x) => 0.5 * x * (1 + erf(x / Math.SQRT2)), lo: -6, hi: 6, groundTruth: "GELU(x) = 0.5x(1 + erf(x/√2))" }),
+buildActivationTask({ id: "gelu", title: "GELU (GPT · BERT — GEGLU)", fn: (x) => 0.5 * x * (1 + erf(x / Math.SQRT2)), lo: -6, hi: 6, groundTruth: "GELU(x) = 0.5x(1 + erf(x/√2))",
+      extraSeeds: (() => {
+        const x = S.V("x");
+        return [
+          // GELU-tanh exact: 0.5x(1+tanh(√(2/π)·(x+0.044715x³))) — borne de précision erf
+          makeNode("mul", { children: [
+            makeNode("mul", { children: [S.C(0.5), x] }),
+            makeNode("add", { children: [S.C(1), makeNode("tanh", { children: [
+              makeNode("mul", { children: [S.C(0.7978845608), makeNode("add", { children: [
+                x, makeNode("mul", { children: [S.C(0.044715), makeNode("cube", { children: [x] })] }),
+              ] })] }),
+            ] })] })],
+          }),
+        ];
+      })(),
+    }),
 buildActivationTask({ id: "sigmoid", title: "Sigmoid (routage MoE · portes d'attention)", fn: (x) => 1 / (1 + Math.exp(-x)), lo: -8, hi: 8, groundTruth: "σ(x) = 1 / (1 + e⁻ˣ)" }),
+buildActivationTask({
+      id: "mish",
+      title: "Mish (DetectoRS · YOLO — activation lisse auto-gated)",
+      fn: (x) => x * Math.tanh(Math.log(1 + Math.exp(x))),
+      lo: -6,
+      hi: 6,
+      groundTruth: "Mish(x) = x·tanh(softplus(x)) = x·tanh(ln(1+eˣ))",
+      exactCost: 62,
+      extraSeeds: (() => {
+        const x = S.V("x");
+        return [
+          // loi exacte: x·tanh(ln(1+eˣ))
+          makeNode("mul", { children: [x, makeNode("tanh", { children: [
+            makeNode("log", { children: [makeNode("add", { children: [S.C(1), makeNode("exp", { children: [x] })] })] }),
+          ] })] }),
+        ];
+      })(),
+    }),
 
     // logit: probabilities <-> logits glue, present in every classifier head
 buildActivationTask({

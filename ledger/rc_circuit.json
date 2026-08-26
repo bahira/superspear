@@ -59,29 +59,20 @@
     ]
   },
   "fast": {
-    "formula": "(((6.643258 - t))³)²",
-    "metric": 0.0001796143439852678,
-    "level": 3,
-    "formulaCost": 4
+    "formula": "exp((-t))",
+    "metric": 0.00009652787283384027,
+    "level": 5,
+    "formulaCost": 2
   },
   "fastTree": {
-    "o": "sq",
+    "o": "exp",
     "c": [
       {
-        "o": "cube",
+        "o": "neg",
         "c": [
           {
-            "o": "sub",
-            "c": [
-              {
-                "o": "const",
-                "v": 6.643258
-              },
-              {
-                "o": "var",
-                "n": "t"
-              }
-            ]
+            "o": "var",
+            "n": "t"
           }
         ]
       }

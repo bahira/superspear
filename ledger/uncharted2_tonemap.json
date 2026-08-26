@@ -62,28 +62,20 @@
     ]
   },
   "fast": {
-    "formula": "(x / (x + 1.032428))",
-    "metric": 0.0006828435291863329,
+    "formula": "(atan(x))²",
+    "metric": 0.0005938769229777217,
     "level": 2,
-    "formulaCost": 5
+    "formulaCost": 2
   },
   "fastTree": {
-    "o": "pdiv",
+    "o": "sq",
     "c": [
       {
-        "o": "var",
-        "n": "x"
-      },
-      {
-        "o": "add",
+        "o": "atan",
         "c": [
           {
             "o": "var",
             "n": "x"
-          },
-          {
-            "o": "const",
-            "v": 1.032428
           }
         ]
       }

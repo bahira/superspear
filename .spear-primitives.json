@@ -1,6 +1,7 @@
 {
   "ops": [
     "abs",
+    "acos",
     "add",
     "asin",
     "atan",
@@ -17,7 +18,8 @@
     "sin",
     "sq",
     "sqrt",
-    "sub"
+    "sub",
+    "tanh"
   ],
-  "updatedAt": "2026-08-25T00:23:25.594Z"
+  "updatedAt": "2026-08-26T03:07:07.405Z"
 }

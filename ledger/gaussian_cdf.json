@@ -71,67 +71,17 @@
     ]
   },
   "fast": {
-    "formula": "((0.543518 * (x / max(1.559472, (0.337459 + |x|)))) + 0.5)",
-    "metric": 0.000140774362370438,
+    "formula": "tanh(x)",
+    "metric": 0.0002549921352995084,
     "level": 2,
-    "formulaCost": 9,
-    "seed": 990303,
-    "vsIterative": {
-      "label": "Monte-Carlo · 1000 tirages",
-      "speedup": 5111.1
-    }
+    "formulaCost": 1
   },
   "fastTree": {
-    "o": "add",
+    "o": "tanh",
     "c": [
       {
-        "o": "mul",
-        "c": [
-          {
-            "o": "const",
-            "v": 0.543518
-          },
-          {
-            "o": "pdiv",
-            "c": [
-              {
-                "o": "var",
-                "n": "x"
-              },
-              {
-                "o": "max",
-                "c": [
-                  {
-                    "o": "const",
-                    "v": 1.559472
-                  },
-                  {
-                    "o": "add",
-                    "c": [
-                      {
-                        "o": "const",
-                        "v": 0.337459
-                      },
-                      {
-                        "o": "abs",
-                        "c": [
-                          {
-                            "o": "var",
-                            "n": "x"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "o": "const",
-        "v": 0.5
+        "o": "var",
+        "n": "x"
       }
     ]
   }

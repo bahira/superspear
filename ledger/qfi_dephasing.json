@@ -85,11 +85,7 @@
     "formula": "((n)² * ((t)² * exp((-((n)² * (g * t))))))",
     "metric": 1.6734673238482507e-31,
     "level": 2,
-    "formulaCost": 28,
-    "vsIterative": {
-      "label": "BFGS optimisation",
-      "speedup": 28.6
-    }
+    "formulaCost": 9
   },
   "fastTree": {
     "o": "mul",

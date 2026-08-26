@@ -95,7 +95,7 @@
     "formula": "(sin((asin(sqrt(|(m / n)|)) + (2 * (k * asin(sqrt(|(m / n)|)))))))²",
     "metric": 8.312261599931228e-32,
     "level": 2,
-    "formulaCost": 76
+    "formulaCost": 19
   },
   "fastTree": {
     "o": "sq",
