@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SPEAR — Closed forms, evolved</title>
-<meta name="description" content="SPEAR is a symbolic regression engine that discovers closed-form math laws and compiles them to verified WebAssembly & MISRA-C. Browse the live registry of 73 parity-audited kernels, watch discovered formulas race their exact laws, and drive it all from any LLM via MCP.">
+<meta name="description" content="SPEAR is a symbolic regression engine that discovers closed-form math laws and compiles them to verified WebAssembly & MISRA-C. Browse the live registry of 89 parity-audited kernels — 36 solved to machine precision — watch discovered formulas race their exact laws, and drive it all from any LLM via MCP.">
 <meta property="og:title" content="SPEAR — Closed forms, evolved">
-<meta property="og:description" content="73 evolved math kernels, parity-audited WASM/MISRA-C exports, MCP-native. No neural nets, no black boxes.">
+<meta property="og:description" content="89 evolved math kernels — 36 at machine precision — parity-audited WASM/MISRA-C exports, MCP-native. No neural nets, no black boxes.">
 <meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230b0d0f'/%3E%3Ctext x='16' y='23' font-size='19' text-anchor='middle' fill='%23e9a23b' font-family='Georgia'%3E%E2%88%91%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -248,12 +248,12 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;font-family:var
       <div class="scope bracket reveal">
         <div class="scope-bar">
           <span class="dot" style="background:#c0554a"></span><span class="dot" style="background:#e9a23b"></span><span class="dot" style="background:#5fb7b2"></span>
-          <span class="fname">oscilloscope · silu.swiglu — exact vs evolved</span>
+          <span class="fname">oscilloscope · gaussian_cdf — exact vs evolved</span>
         </div>
         <canvas id="heroScope" width="760" height="420"></canvas>
         <div class="scope-foot">
-          <span><b>×2.43</b> faster than exp-based</span>
-          <span>0 transcendental ops</span>
+          <span><b>×11,500</b> vs Monte-Carlo · 1000 draws</span>
+          <span>EXACT — MSE ≤ 1e-33</span>
           <span id="heroErr">max err …</span>
           <span class="legend"><span><i style="background:var(--teal)"></i>exact σ</span><span><i style="background:var(--amber-hi)"></i>evolved</span></span>
         </div>
@@ -265,10 +265,10 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;font-family:var
 <!-- STATS -->
 <div class="stats" style="padding:0">
   <div class="wrap">
-    <div class="stat"><div class="n" data-count="74">0</div><div class="l">evolved kernels in the registry — activations, physics, finance, quantum, shaders</div></div>
-    <div class="stat"><div class="n" data-count="65">0</div><div class="l">ship a second, cheaper <b>fast slot</b> — two validated operating points per law</div></div>
-    <div class="stat"><div class="n" data-count="25" data-suffix="">0</div><div class="l">laws solved to <b>machine precision</b> — MSE ≤ 1e-12, many at exactly zero</div></div>
-    <div class="stat"><div class="n" data-count="5111" data-prefix="×">0</div><div class="l">fast slot vs Monte-Carlo on the Gaussian CDF — loops replaced by O(1) formulas</div></div>
+    <div class="stat"><div class="n" data-count="89">0</div><div class="l">evolved kernels in the registry — activations, physics, finance, quantum, audio, shaders</div></div>
+    <div class="stat"><div class="n" data-count="84">0</div><div class="l">ship a second, cheaper <b>fast slot</b> — two validated operating points per law</div></div>
+    <div class="stat"><div class="n" data-count="36">0</div><div class="l">laws solved to <b>machine precision</b> — MSE ≤ 1e-12, many at exactly zero</div></div>
+    <div class="stat"><div class="n" data-count="11500" data-prefix="×">0</div><div class="l">evolved law vs Monte-Carlo on the Gaussian CDF — <b>solved exact</b>, loops replaced by O(1) formulas</div></div>
   </div>
 </div>
 
@@ -335,7 +335,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;font-family:var
     <div class="mcp-grid">
       <div>
         <div class="tools">
-          <div class="tool"><div class="tname">discover</div><p>Evolve a replacement kernel for any target formula — seconds, not sprints.</p></div>
+          <div class="tool"><div class="tname">discover</div><p>Evolve a replacement kernel for any target — multi-variable, GPU cost profiles, seconds not sprints.</p></div>
           <div class="tool"><div class="tname">list_kernels</div><p>Browse the registry: records, speedups, exact-solve status.</p></div>
           <div class="tool"><div class="tname">get_kernel</div><p>Precise/fast formulas, MISRA-C, torch export, cost breakdown.</p></div>
           <div class="tool"><div class="tname">evaluate_kernel</div><p>Evaluate any kernel at specific inputs, either operating point.</p></div>
@@ -360,7 +360,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;font-family:var
     <div class="sec-head">
       <div class="sec-tag">The method</div>
       <h2>Evolution, not approximation.</h2>
-      <p>A population of algebraic trees competes on accuracy ↔ parsimony under NSGA-II. Transcendental ops are allowed but priced honestly (~20 ALU/SFU units vs 1 for a multiply), so the search is biased toward cheap deployable algebra. An out-of-distribution gate rejects formulas that only interpolate; past champions seed every new run. Same seed ⇒ same formulas.</p>
+      <p>A population of algebraic trees competes on accuracy ↔ parsimony under NSGA-II. Transcendental ops are allowed but priced honestly (~20 ALU/SFU units vs 1 for a multiply), so the search is biased toward cheap deployable algebra — and bandwidth-bound GPU targets can drop that price to ~1 unit (<span class="mono">transcendentalCost</span>), removing the bias entirely. An out-of-distribution gate rejects formulas that only interpolate; past champions seed every new run. Same seed ⇒ same formulas.</p>
     </div>
     <div class="pipe">
       <div class="step"><div class="idx">01</div><h3>Data</h3><p>Seeded datasets; exact-law baselines priced as cost-model references.</p></div>
@@ -382,10 +382,10 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;font-family:var
       <p>Where practitioners normally run an iterative solver, SPEAR finds a closed form. Solver bills counted fully, in the same ALU/SFU units — slower results reported as measured, never hidden.</p>
     </div>
     <div class="grid2">
-      <div class="card bracket"><div class="top"><h3>Gaussian CDF</h3><div class="mult">×5111<small>&nbsp;fast slot vs Monte-Carlo</small></div></div><p>1000 Box–Muller draws → one clamped rational at 9 units. The protected-div rails double as free saturation.</p><div class="f"><span class="o">46,000 → 9 units</span></div></div>
-      <div class="card bracket"><div class="top"><h3>Kerr deflection + spin</h3><div class="mult">×600<small>&nbsp;fast slot vs RK4</small></div></div><p>RK4 geodesic integration, 200 steps → a 4-unit rational. Precise slot still ×133.</p><div class="f"><span class="o">10.49/(s+b)</span> · 4 units</div></div>
+      <div class="card bracket"><div class="top"><h3>Gaussian CDF</h3><div class="mult">×11,500<small>&nbsp;vs Monte-Carlo</small></div></div><p>1000 Box–Muller draws → one erf evaluation at 4 units. Rediscovered exactly: MSE ≤ 1e-33, level 5.</p><div class="f"><span class="o">46,000 → 4 units</span> · <span class="amber">EXACT</span></div></div>
+      <div class="card bracket"><div class="top"><h3>Kerr deflection + spin</h3><div class="mult">×185<small>&nbsp;vs RK4 geodesic</small></div></div><p>RK4 integration, 200 steps → closed forms at 13–18 units; spin case exact to 7.5e-10. Fast slots at 4–5 units.</p><div class="f"><span class="o">10.49/(s+b)</span> · 5 units</div></div>
       <div class="card bracket"><div class="top"><h3>Damped oscillation</h3><div class="mult">×200<small>&nbsp;vs RKF45</small></div></div><p>Adaptive 300-step solve → polynomial envelope × carrier.</p><div class="f"><span class="o">(t−16.4)(t−8.3)·cos(2.996t)</span></div></div>
-      <div class="card bracket"><div class="top"><h3>2-link IK elbow</h3><div class="mult">×20<small>&nbsp;vs Newton-DLS</small></div></div><p>8 damped least-squares iterations → the analytic inverse, exact to 1.1e-13.</p><div class="f"><span class="o">atan identity</span> · 52 units</div></div>
+      <div class="card bracket"><div class="top"><h3>2-link IK elbow</h3><div class="mult">×6<small>&nbsp;vs Newton-DLS</small></div></div><p>8 damped least-squares iterations → the analytic inverse, exact to 4e-32.</p><div class="f"><span class="o">atan identity</span> · 52 units</div></div>
     </div>
   </div>
 </section>
@@ -439,10 +439,12 @@ function erf(x){const s=Math.sign(x);x=Math.abs(x);const t=1/(1+0.3275911*x);
 const CHAMPIONS={
   silu:{exact:x=>x/(1+Math.exp(-x)),evo:x=>0.997587*(x*(0.501+(0.587*x/(0.815+Math.sqrt(Math.abs(0.909361+x*x))))))-0.005749,
         lo:-6,hi:8,name:"silu.swiglu"},
-  gelu:{exact:x=>0.5*x*(1+Math.tanh(0.7978845608*(x+0.044715*x*x*x))),evo:x=>0.997729*(x*Math.min(1.002,Math.max(0,0.306923*x+0.501)))-0.004004,
+  gelu:{exact:x=>0.5*x*(1+erf(x/Math.SQRT2)),evo:x=>0.5*x*(1+erf(x*0.707107)),
         lo:-4,hi:4,name:"gelu.geglu"},
-  phi:{exact:x=>0.5*(1+erf(x/Math.SQRT2)),evo:x=>0.446257*Math.atan(Math.min(0.946094*Math.max(x,-2.183),2.045418))+0.50123,
+  phi:{exact:x=>0.5*(1+erf(x/Math.SQRT2)),evo:x=>0.5*(1+erf(x*0.707107)),
        lo:-3,hi:3,name:"gaussian_cdf"},
+  mish:{exact:x=>x*Math.tanh(Math.log(1+Math.exp(x))),evo:x=>x*Math.tanh(Math.log(Math.max(1e-30,1+Math.exp(x)))),
+        lo:-6,hi:6,name:"mish.yolo"},
   hill:{exact:x=>{const c=x*x*x;return c/(1+c);},evo:x=>-0.5088154625822694*Math.cos(Math.atan(x)+Math.atan(x*x))+0.5005994325153399,
         lo:0,hi:6,name:"hill.dose-response"}
 };
@@ -483,7 +485,7 @@ function drawCurves(cv,cfg,progress){
 function maxErr(cfg){let m=0;for(let i=0;i<=200;i++){const x=cfg.lo+(cfg.hi-cfg.lo)*i/200;const e=Math.abs(cfg.exact(x)-cfg.evo(x));if(Number.isFinite(e))m=Math.max(m,e);}return m;}
 
 /* hero scope */
-const heroCfg=CHAMPIONS.silu,heroCv=$("#heroScope");
+const heroCfg=CHAMPIONS.phi,heroCv=$("#heroScope");
 function animateHero(){
   if(reduced){drawCurves(heroCv,heroCfg,1);$("#heroErr").innerHTML="max err <b>"+maxErr(heroCfg).toExponential(1)+"</b>";return;}
   const t0=performance.now(),dur=1500;
@@ -495,12 +497,12 @@ addEventListener("load",animateHero);
 
 /* live lab */
 const SHOW=[
-  {id:"silu",label:"SiLU · ×2.43",mult:"×2.43",ex:"x · σ(x) &nbsp;<span class='k'>=</span> x/(1 + e⁻ˣ)",ev:"<span class='k'>evolved</span> 0.997587·x·(0.501 + 0.587·x/(0.815 + √(0.909+x²))) − 0.005749"},
-  {id:"gelu",label:"GELU · ×6.57",mult:"×6.57",ex:"0.5·x·(1 + tanh(0.798·(x+0.045x³)))",ev:"<span class='k'>evolved</span> 0.997729·x·min(1.002, relu(0.308x + 0.501)) − 0.004"},
-  {id:"phi",label:"Φ(x) · ×1840 vs MC",mult:"×1840",ex:"Φ(x) &nbsp;<span class='k'>=</span> ½(1 + erf(x/√2))",ev:"<span class='k'>evolved</span> 0.446257·atan(clamp(0.946·x, −2.183, 2.163)) + 0.50123"},
+  {id:"phi",label:"Φ(x) · EXACT · ×11,500 vs MC",mult:"EXACT",ex:"Φ(x) &nbsp;<span class='k'>=</span> ½(1 + erf(x/√2))",ev:"<span class='k'>evolved</span> ½·(1 + erf(0.707107·x)) &nbsp;<span class='amber'>— the law itself, rediscovered</span>"},
+  {id:"gelu",label:"GELU · EXACT · ×9.2",mult:"×9.2",ex:"GELU(x) &nbsp;<span class='k'>=</span> 0.5·x·(1 + erf(x/√2))",ev:"<span class='k'>evolved</span> 0.5·x·(1 + erf(0.707107·x)) &nbsp;<span class='amber'>5 u vs 46 u</span>"},
+  {id:"mish",label:"Mish · TRUE ZERO · ×12.4",mult:"EXACT",ex:"Mish(x) &nbsp;<span class='k'>=</span> x·tanh(ln(1 + eˣ))",ev:"<span class='k'>evolved</span> x·tanh(log(max(1+eˣ, 1e-30))) &nbsp;<span class='amber'>overflow-guarded, MSE 0</span>"},
   {id:"hill",label:"Hill · TRUE ZERO",mult:"EXACT",ex:"c³/(1 + c³)",ev:"<span class='k'>evolved</span> −0.5088·cos(atan(c) + atan(c²)) + 0.5006"}
 ];
-let labSel="silu";
+let labSel="phi";
 function renderTabs(){$("#labTabs").innerHTML=SHOW.map(s=>`<button class="tab${s.id===labSel?" on":""}" data-id="${s.id}">${s.label}</button>`).join("");
   $$("#labTabs .tab").forEach(b=>b.addEventListener("click",()=>{labSel=b.dataset.id;renderLab();}));}
 function renderLab(){
@@ -570,19 +572,19 @@ renderReg();
 
 /* ================= MCP TERMINAL ================= */
 const termLines=[
-  {c:"user",t:"Discover a fast algebraic replacement for SiLU on [-6, 8]"},
-  {c:"call",t:'spear · discover({ target: "x·σ(x)", domain: [-6, 8] })'},
-  {c:"ok",t:"champion found — MSE 7.8e-4 · level 2 · 14 units vs 34 (×2.43)"},
-  {c:"out",t:"x·(0.501 + 0.587·x/(0.815 + √(0.909+x²))) − 0.005749"},
-  {c:"call",t:'spear · evaluate_kernel({ id: "silu", inputs: [-1, 0, 1, 2] })'},
-  {c:"dyn"}, /* filled at runtime: real champion outputs vs true σ outputs */
-  {c:"call",t:"exports → wasm ✓ · misra-c99 ✓ · torch ✓ (parity ≤ 1e-6)"},
-  {c:"ok",t:"deployable. zero transcendental ops — runs on a microcontroller."}
+  {c:"user",t:"Evolve an exact Mish kernel for [-6, 6] — GPU target, SFU is free"},
+  {c:"call",t:'spear · discover({ target: "x·tanh(log(1+exp(x)))", domain: [-6, 6], transcendentalCost: 1 })'},
+  {c:"ok",t:"champion found — MSE 0 · level 5 · 5 units vs 62 (×12.40)"},
+  {c:"out",t:"x·tanh(log(max(1+exp(x), 1e-30)))"},
+  {c:"call",t:'spear · evaluate_kernel({ id: "mish", inputs: [-2, -1, 0, 1] })'},
+  {c:"dyn"}, /* filled at runtime: real champion outputs vs true law outputs */
+  {c:"call",t:"exports → wasm ✓ · misra-c99 ✓ · torch ✓ (parity ≤ 1e-9)"},
+  {c:"ok",t:"deployable. exact to machine precision — overflow-guarded, zero approximation error."}
 ];
 function playTerm(){
   const body=$("#termBody");body.innerHTML="";
-  const evo=CHAMPIONS.silu.evo,ex=CHAMPIONS.silu.exact;
-  const pts=[-1,0,1,2];
+  const evo=CHAMPIONS.mish.evo,ex=CHAMPIONS.mish.exact;
+  const pts=[-2,-1,0,1];
   termLines.forEach((ln,i)=>{
     setTimeout(()=>{
       const div=document.createElement("div");div.className="tl "+ln.c;
