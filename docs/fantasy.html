@@ -168,7 +168,7 @@ const AudioSys = {
   speak(n){
     try {
       if (this.voiceEl){ this.voiceEl.pause(); }
-      this.voiceEl = new Audio(`voice/${n}.wav`);
+      this.voiceEl = new Audio(`voice/${n}.mp3`);
       this.voiceEl.volume = 1;
       this.voiceEl.play().catch(()=>{});
     } catch(e){}
@@ -669,6 +669,15 @@ function makeWraith(){
 
 /* ---------- 7. ÉTAT ---------- */
 const heroes = [], wraiths = [], fireballs = [];
+let aliveFoes = 0;
+const beamFrom = new THREE.Vector3(), beamTo = new THREE.Vector3();
+const beam = (() => {
+  const mesh = new THREE.Mesh(
+    new THREE.CylinderGeometry(.09, .22, 1, 6, 1, true),
+    new THREE.MeshBasicMaterial({ color:0x7fe4ff, transparent:true, opacity:.8, blending:THREE.AdditiveBlending, depthWrite:false }));
+  mesh.visible = false; scene.add(mesh);
+  return { mesh, life: 0 };
+})();
 const G = 22;
 let wave = 0, generation = 0, simT = 0, waveState = "idle", stateT = 0;
 let nexusFlash = 0, screenshake = 0, bannerT = 0, timeScale = 1;
@@ -701,11 +710,22 @@ function spawnWraith(genome, portalIdx){
     fitness: 0, atkCd: rand(1.2,2.6), flash: 0, wob: Math.random()*6, meleeCd: 0, born: simT,
   };
   w.g.position.copy(w.pos);
-  world.add(w.g); wraiths.push(w);
+  world.add(w.g); wraiths.push(w); aliveFoes++;
   burst(w.pos.x, w.pos.y+1.6, w.pos.z, 16, [1.4,.4,2.2], 3);
 }
 
-/* ---------- 8. BOULES DE FEU ---------- */
+/* ---------- 8. PROJECTILES (feu ennemi + bolts alliés) ---------- */
+const boltGeo = new THREE.SphereGeometry(.16, 6, 5);
+const boltMat = new THREE.MeshBasicMaterial({ color:0x5fd4ff }); boltMat.color.setRGB(.7,2.2,2.8);
+function shootBolt(owner, from, targetPos){
+  const m = new THREE.Mesh(boltGeo, boltMat);
+  m.position.copy(from);
+  const T = 0.42;
+  const v = targetPos.clone().sub(from).multiplyScalar(1/T);
+  v.y = (targetPos.y - from.y)/T + 0.5*G*T;
+  world.add(m);
+  fireballs.push({ m, v, t: 0, owner, dmg: 12, bolt: true });
+}
 const fbGeo = new THREE.SphereGeometry(.28, 8, 6);
 const fbMat = new THREE.MeshBasicMaterial({ color:0xff8030 }); fbMat.color.setRGB(2.6,1.1,.3);
 const fbLight = new THREE.PointLight(0xff8030, 0, 10, 2); scene.add(fbLight);
@@ -783,11 +803,13 @@ function damageHero(h, dmg, fromDir){
 }
 function damageWraith(w, dmg, fromDir){
   w.hp -= dmg; w.flash = 1; w.fitness -= dmg*0.02;
-  w.vel.x += fromDir.x*6; w.vel.z += fromDir.z*6;
+  w.stunUntil = simT + 0.28;                         // sonné : plus de tir immédiat
+  w.vel.x += fromDir.x*8; w.vel.z += fromDir.z*8;
   burst(w.pos.x, w.pos.y+1.6, w.pos.z, 10, [1.6,.4,2], 3.5);
   AudioSys.sfx("hit");
   if (w.hp <= 0 && w.alive){
-    w.alive = false;
+    w.alive = false; aliveFoes--;
+    nexus.hp = Math.min(nexus.maxHp, nexus.hp + 1.5);   // essence : le Nexus se régénère
     burst(w.pos.x, w.pos.y+1.5, w.pos.z, 26, [.9,.3,1.8], 4);
     w.g.visible = false;
   }
@@ -804,6 +826,8 @@ function awakenHero(i){
   AudioSys.sfx("awaken");
 }
 
+const UI = {};
+for (const id of ["wave","gen","guards","foes","fit","lead","nexusfill","subtitle"]) UI[id] = document.getElementById(id);
 function stepSim(dt){
   simT += dt; stateT += dt;
   if (bannerT > 0){ bannerT -= dt; if (bannerT <= 0 && !cine.sub) $("#subtitle").style.opacity = 0; }
@@ -832,9 +856,17 @@ function stepSim(dt){
     h.atkCd -= dt; h.flash = Math.max(0, h.flash - dt*3);
     let best = null, bd = 1e9;
     for (const w of wraiths){ if (!w.alive) continue;
-      const d = h.pos.distanceTo(w.pos); if (d < bd){ bd = d; best = w; } }
+      const d = h.pos.distanceTo(w.pos) + (w.claim||0)*2.2;   // dispersion : chaque golem sa cible
+      if (d < bd){ bd = d; best = w; } }
+    if (best) best.claim = Math.min(3, (best.claim||0) + .01);
     let mvx = 0, mvz = 0, lunging = false;
-    if (best && bd < 12){
+    if (best && bd < 13){
+      // tir de bolt à moyenne portée (le bâton travaille aussi à distance)
+      if (best && best.alive && bd > 3.4 && bd < 11 && h.atkCd <= 0){
+        h.atkCd = 1.5;
+        const from = h.pos.clone(); from.y += 2.3;
+        shootBolt(h, from, best.pos.clone().setY(ARENA_Y+1.3));
+      }
       if (bd > 2.4){
         tmpV.copy(best.pos).sub(h.pos).normalize();
         mvx = tmpV.x*3.4; mvz = tmpV.z*3.4;
@@ -896,13 +928,28 @@ function stepSim(dt){
         w.fitness += 3;
       }
     } else if (best){
-      if (bd < 12 && w.atkCd <= 0){
+      if (bd < 12 && w.atkCd <= 0 && simT > (w.stunUntil||0)){
         w.atkCd = rand(2.2, 3.4) - w.gene.aggr;
         const from = w.pos.clone(); from.y += 2.1;
-        shootFireball(w, from, best.pos.clone().setY(ARENA_Y+1.2), best.vel, w.gene.lead*1.1);
+        const aim = best.pos.clone().setY(ARENA_Y+1.2);
+        shootFireball(w, from, aim, best.vel, w.gene.lead*1.1);
+        if (w.gene.aggr > 0.62){                       // burst des génomes agressifs
+          w.pendingBurst = { at: simT + .38, target: best };
+        }
       }
-      if (bd < 5){ tmpV.copy(w.pos).sub(best.pos).normalize(); mvx = tmpV.x*w.gene.speed; mvz = tmpV.z*w.gene.speed; }
-      else if (bd > 9){ tmpV.copy(best.pos).sub(w.pos).normalize(); mvx = tmpV.x*w.gene.speed; mvz = tmpV.z*w.gene.speed; }
+      if (w.pendingBurst && simT >= w.pendingBurst.at){
+        const b = w.pendingBurst;
+        if (b.target.alive){ const from = w.pos.clone(); from.y += 2.1;
+          shootFireball(w, from, b.target.pos.clone().setY(ARENA_Y+1.2), b.target.vel, w.gene.lead*1.1); }
+        w.pendingBurst = null;
+      }
+      // kite + strafe latéral (direction propre, inversée périodiquement)
+      if (simT > (w.strafeFlip||0)){ w.strafeFlip = simT + rand(1.6,3); w.strafeDir = Math.random()<.5?-1:1; }
+      const sd = w.strafeDir || 1;
+      if (bd < 5){ tmpV.copy(w.pos).sub(best.pos).normalize();
+        mvx = (tmpV.x - tmpV.z*sd*.7)*w.gene.speed; mvz = (tmpV.z + tmpV.x*sd*.7)*w.gene.speed; }
+      else if (bd > 9){ tmpV.copy(best.pos).sub(w.pos).normalize();
+        mvx = (tmpV.x + tmpV.z*sd*.5)*w.gene.speed; mvz = (tmpV.z - tmpV.x*sd*.5)*w.gene.speed; }
     }
     for (const fb of fireballs){
       if (fb.owner === w) continue;
@@ -912,6 +959,8 @@ function stepSim(dt){
         break;
       }
     }
+    const stunned = simT < (w.stunUntil||0);
+    if (stunned){ mvx *= .15; mvz *= .15; }
     w.vel.x += (mvx - w.vel.x)*Math.min(1, dt*5);
     w.vel.z += (mvz - w.vel.z)*Math.min(1, dt*5);
     w.pos.x += w.vel.x*dt; w.pos.z += w.vel.z*dt;
@@ -940,7 +989,16 @@ function stepSim(dt){
     fb.v.y -= G*dt;
     fb.m.position.addScaledVector(fb.v, dt);
     fb.m.rotation.x += dt*9; fb.m.rotation.z += dt*7;
+    if (!fb.bolt && Math.random() < dt*26) burst(fb.m.position.x, fb.m.position.y, fb.m.position.z, 1, [2.2,.9,.3], .5, .3);
     let boom = fb.m.position.y <= ARENA_Y + .25;
+    if (!boom && fb.bolt){
+      for (const w of wraiths){
+        if (w.alive && fb.owner !== w && fb.m.position.distanceTo(tmpV.set(w.pos.x, w.pos.y+1.4, w.pos.z)) < 1.0){
+          damageWraith(w, fb.dmg, tmpV.copy(fb.v).setY(0).normalize());
+          boom = true; break;
+        }
+      }
+    }
     if (!boom){
       for (const h of heroes){
         if (h.alive && !h.dormant && fb.m.position.distanceTo(tmpV.set(h.pos.x, h.pos.y+1.5, h.pos.z)) < 1.1){
@@ -950,7 +1008,8 @@ function stepSim(dt){
       }
     }
     if (boom){
-      burst(fb.m.position.x, fb.m.position.y, fb.m.position.z, 18, [2.4,1,.3], 4);
+      burst(fb.m.position.x, fb.m.position.y, fb.m.position.z, fb.bolt?7:18, fb.bolt?[.6,1.8,2.4]:[2.4,1,.3], 4);
+      fbLight.position.copy(fb.m.position); fbLight.intensity = 18;
       AudioSys.sfx("boom");
       if (fb.m.position.y <= ARENA_Y + .5){
         for (const h of heroes){
@@ -970,7 +1029,6 @@ function stepSim(dt){
   stepParticles(dt);
 
   /* --- vagues --- */
-  const aliveFoes = wraiths.filter(w=>w.alive).length;
   $("#foes").textContent = aliveFoes;
   if (waveState === "fight" && stateT > 4){
     if (aliveFoes === 0 && fireballs.length === 0) endWave();
@@ -986,7 +1044,32 @@ function stepSim(dt){
     startWave();
   }
 
-  // nexus
+  // défense du nexus : zap périodique du spectre le plus proche
+  nexus.zapCd = (nexus.zapCd||0) - dt;
+  if (nexus.zapCd <= 0){
+    let near = null, nd = 6.8;
+    for (const w of wraiths){ if (!w.alive) continue;
+      const d = Math.hypot(w.pos.x, w.pos.z); if (d < nd){ nd = d; near = w; } }
+    if (near){
+      nexus.zapCd = 2.6;
+      damageWraith(near, 9, tmpV.set(near.pos.x, 0, near.pos.z).normalize());
+      beamFrom.set(0, ARENA_Y+4.2, 0); beamTo.copy(near.pos).setY(near.pos.y+1.4);
+      beam.life = 1;
+    } else nexus.zapCd = .8;
+  }
+  // rendu du rayon
+  if (beam.life > 0){
+    beam.life -= dt*3;
+    beam.mesh.visible = true;
+    const mid = beamFrom.clone().add(beamTo).multiplyScalar(.5);
+    beam.mesh.position.copy(mid);
+    beam.mesh.scale.set(1, beamFrom.distanceTo(beamTo), 1);
+    beam.mesh.lookAt(beamTo);
+    beam.mesh.rotateX(Math.PI/2);
+    beam.mesh.material.opacity = clamp(beam.life, 0, 1)*.85;
+  } else beam.mesh.visible = false;
+
+  // nexus vivant
   nexusFlash = Math.max(0, nexusFlash - dt*2);
   nexus.core.rotation.y += dt*.8;
   nexus.core.position.y = 4.0 + K.damped_oscillation(simT*1.6)*.24;
@@ -1017,7 +1100,7 @@ function stepSim(dt){
 
 /* ---------- 12. RÉALISATION — le film, avec voix ---------- */
 const cine = { active: true, t: 0, started: false, sub: false };
-window.__cine = cine;   // hook de test
+window.__cine = cine;
 const camPos = new THREE.Vector3(), camLook = new THREE.Vector3();
 
 function sub(txt, dur){ $("#subtitle").innerHTML = txt; $("#subtitle").style.opacity = 1; cine.sub = true; bannerT = dur || 3.5; }
