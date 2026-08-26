@@ -1006,7 +1006,9 @@ export function impliedVol(c: number, s: number, k: number, t: number): number {
     const vega = s * npdf(d1) * Math.sqrt(t);
     const diff = price - c;
     if (Math.abs(diff) < 1e-10 || vega < 1e-10) break;
-    vol += diff / vega;
+    // BUGFIX: c'était `vol += diff/vega` — Newton à l'envers, l'itération
+    // fuyait la racine et clampeait aux bornes (0.01/3) sur ~80 % du jeu.
+    vol -= diff / vega;
   }
   return Math.max(0.01, Math.min(3, vol));
 }

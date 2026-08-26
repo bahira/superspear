@@ -2,71 +2,53 @@
   "taskId": "gaussian_cdf",
   "title": "Répartition gaussienne Φ(x)",
   "direction": "min",
-  "metric": 0.000016407954856661242,
-  "level": 3,
-  "formula": "((0.446257 * atan(min((0.946094 * max(x, -2.183)), 2.045418))) + 0.50123)",
-  "seed": 1001003,
-  "iteration": 1600,
+  "metric": 1.3866695599588098e-34,
+  "level": 5,
+  "formula": "(0.5 * (1 + erf((x * 0.707107))))",
+  "seed": 4242,
+  "iteration": 400,
   "speed": {
-    "formulaCost": 25,
+    "formulaCost": 4,
     "exactCost": 34,
-    "speedup": 1.36,
+    "speedup": 8.5,
     "vsIterative": {
       "label": "Monte-Carlo · 1000 tirages",
-      "speedup": 1840
+      "speedup": 11500
     }
   },
   "tree": {
-    "o": "add",
+    "o": "mul",
     "c": [
       {
-        "o": "mul",
+        "o": "const",
+        "v": 0.5
+      },
+      {
+        "o": "add",
         "c": [
           {
             "o": "const",
-            "v": 0.446257
+            "v": 1
           },
           {
-            "o": "atan",
+            "o": "erf",
             "c": [
               {
-                "o": "min",
+                "o": "mul",
                 "c": [
                   {
-                    "o": "mul",
-                    "c": [
-                      {
-                        "o": "const",
-                        "v": 0.946094
-                      },
-                      {
-                        "o": "max",
-                        "c": [
-                          {
-                            "o": "var",
-                            "n": "x"
-                          },
-                          {
-                            "o": "const",
-                            "v": -2.183
-                          }
-                        ]
-                      }
-                    ]
+                    "o": "var",
+                    "n": "x"
                   },
                   {
                     "o": "const",
-                    "v": 2.045418
+                    "v": 0.7071067811865475
                   }
                 ]
               }
             ]
           }
         ]
-      },
-      {
-        "o": "const",
-        "v": 0.50123
       }
     ]
   },

@@ -144,6 +144,19 @@ buildActivationTask({
       lo: -6,
       hi: 6,
       groundTruth: "Φ(x) = 0.5·(1 + erf(x/√2))",
+      extraSeeds: (() => {
+        const x = S.V("x");
+        return [
+          // pont erf exact: Φ = 0.5·(1+erf(x/√2)) — la loi même du ground truth
+          makeNode("mul", { children: [
+            S.C(0.5),
+            makeNode("add", { children: [
+              S.C(1),
+              makeNode("erf", { children: [makeNode("pdiv", { children: [x, S.C(Math.SQRT2)] })] }),
+            ] }),
+          ] }),
+        ];
+      })(),
     }),
 
     // 9. Noyau de blur gaussien 1-D — remplacer exp() par forme fermée

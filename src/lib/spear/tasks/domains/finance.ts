@@ -104,8 +104,45 @@ buildRegressionTask({
         const sqrtInvT = makeNode("sqrt", { children: [makeNode("pdiv", { children: [S.C(1), t] })] });
         const bs = makeNode("mul", { children: [S.C(2.5), makeNode("mul", { children: [cs, sqrtInvT] })] }); // √(2π)·(c/s)/√t
         const ksTerm = makeNode("mul", { children: [makeNode("pdiv", { children: [k, s] }), sqrtInvT] });
+        // Corrado–Miller 1996 (grade production historique): correction du terme
+        // forward sur l'ATMF — erreurs < 1 point de vol près de la money-ness.
+        // Shapes only: les constantes restent tunables par mutatePolish.
+        const halfSk = makeNode("pdiv", { children: [makeNode("sub", { children: [s, k] }), S.C(2)] });
+        const skSum = makeNode("add", { children: [s, k] });
+        const cm = makeNode("mul", { children: [
+          sqrtInvT,
+          makeNode("pdiv", { children: [
+            makeNode("add", { children: [
+              makeNode("sub", { children: [c, halfSk] }),
+              makeNode("mul", { children: [S.C(0.6366), makeNode("pdiv", { children: [makeNode("sq", { children: [halfSk] }), skSum] })] }),
+            ] }),
+            skSum,
+          ] }),
+        ] });
+        // Manaster–Koehler: départ canonique √(2|ln(K/S)|/T) — porte la
+        // structure log-moneyness qui domine hors de la money-ness.
+        const L = makeNode("log", { children: [makeNode("pdiv", { children: [k, s] })] });
+        const mk = makeNode("sqrt", { children: [makeNode("pdiv", { children: [
+          makeNode("mul", { children: [S.C(2), makeNode("abs", { children: [L] })] }),
+          t,
+        ] })] });
+        // Brenner corrigé en log-moneyness: σ₀·(1 + a·L·√T + b·L²·√T) — les
+        // erreurs du B-S brut sont quadratiques en ln(K/S), le GP règle a,b.
+        const corr = makeNode("mul", { children: [
+          bs,
+          makeNode("add", { children: [
+            S.C(1),
+            makeNode("add", { children: [
+              makeNode("mul", { children: [S.C(0.3), makeNode("pdiv", { children: [L, sqrtInvT] })] }),
+              makeNode("pdiv", { children: [makeNode("sq", { children: [L] }), sqrtInvT] }),
+            ] }),
+          ] }),
+        ] });
         return [
           bs,
+          cm,
+          mk,
+          corr,
           simplify(makeNode("add", { children: [bs, makeNode("mul", { children: [S.C(1), ksTerm] })] })),
           makeNode("mul", { children: [bs, makeNode("add", { children: [S.C(1), makeNode("pdiv", { children: [makeNode("sq", { children: [cs] }), t] })] })] }),
         ];

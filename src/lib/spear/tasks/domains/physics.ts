@@ -725,6 +725,48 @@ buildRegressionTask({
         const uCatch = -(1.7222 * Math.sin(v.th[i]) + 8.0402 * v.d[i]);
         return Math.min(2, Math.max(-2, (1 - w) * uSwing + w * uCatch));
       },
+      // loi du contrôleur entièrement exprimable dans la grammaire servie
+      // (cos/sin/exp/min/max) — seed shape-only, constants tunables
+      extraSeeds: (() => {
+        const th = S.V("th"), d = S.V("d");
+        const c = makeNode("cos", { children: [th] });
+        const s = makeNode("sin", { children: [th] });
+        // erreur d'énergie: ½θ̇² + 6(1−cosθ) − 12
+        const eErr = makeNode("add", { children: [
+          makeNode("mul", { children: [S.C(0.5), makeNode("sq", { children: [d] })] }),
+          makeNode("sub", { children: [
+            makeNode("mul", { children: [S.C(6), makeNode("sub", { children: [S.C(1), c] })] }),
+            S.C(12),
+          ] }),
+        ] });
+        const uSwing = makeNode("mul", { children: [
+          S.C(-4.33),
+          makeNode("mul", { children: [d, makeNode("mul", { children: [eErr, c] })] }),
+        ] });
+        // blend Lyapunov: w = σ(−k·(cosθ−0.7))
+        const w = makeNode("pdiv", { children: [
+          S.C(1),
+          makeNode("add", { children: [
+            S.C(1),
+            makeNode("exp", { children: [makeNode("neg", { children: [makeNode("mul", { children: [
+              S.C(10.18),
+              makeNode("sub", { children: [c, S.C(0.7)] }),
+            ] })] })] }),
+          ] }),
+        ] });
+        const uCatch = makeNode("neg", { children: [makeNode("add", { children: [
+          makeNode("mul", { children: [S.C(1.72), s] }),
+          makeNode("mul", { children: [S.C(8.04), d] }),
+        ] })] });
+        const blend = makeNode("add", { children: [
+          makeNode("mul", { children: [makeNode("sub", { children: [S.C(1), w] }), uSwing] }),
+          makeNode("mul", { children: [w, uCatch] }),
+        ] });
+        return [makeNode("max", { children: [
+          S.C(-2),
+          makeNode("min", { children: [S.C(2), blend] }),
+        ] })];
+      })(),
       verify: (node) => {
         const up = evaluateScalar(node, { th: 0.5, d: 1 });
         if (!Number.isFinite(up)) return null;

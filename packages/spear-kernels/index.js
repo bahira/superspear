@@ -154,11 +154,11 @@ export const kernels = {
   "gaussian_cdf": {
     id: "gaussian_cdf",
     precise:     {
-      js: "((x) => ((0.446257 * Math.atan(Math.min((0.946094 * Math.max(x, -2.183)), 2.045418))) + 0.50123))",
-      eval: ((x) => ((0.446257 * Math.atan(Math.min((0.946094 * Math.max(x, -2.183)), 2.045418))) + 0.50123)),
-      c: "// Evolved by SPEAR — algebraic only, FP16 safe\n__device__ inline float spear_fn(const float x) {\n    return ((0.446257f * atanf(fminf((0.946094f * fmaxf(x, -2.183f)), 2.045418f))) + 0.50123f);\n}",
-      py: "import torch\n\ndef spear_fn(x):\n    # Evolved by SPEAR — zero transcendental ops (exp/erf/tanh free)\n    return ((0.446257 * torch.atan(torch.minimum((0.946094 * torch.maximum(x, -2.183)), 2.045418))) + 0.50123)",
-      wasmBase64: "AGFzbQEAAAABCwJgAXwBfGABfAF8AgwBA2VudgRhdGFuAAEDAgEABwkBBXNwZWFyAAEKOgE4AETOGyeFeY/cP0RsI57sZkbuPyAARBBYObTIdgHApaJEpTLFHARdAECkEACiREPFOH8TCuA/oAs=",
+      js: "((x) => { const __erf = (x) => { const s = x < 0 ? -1 : 1; const ax = Math.abs(x); const t = 1 / (1 + 0.3275911 * ax); return s * (1 - ((((1.061405429 * t - 1.453152027) * t + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-ax * ax)); }; return (0.5 * (1 + __erf((x * 0.7071067811865475)))); })",
+      eval: ((x) => { const __erf = (x) => { const s = x < 0 ? -1 : 1; const ax = Math.abs(x); const t = 1 / (1 + 0.3275911 * ax); return s * (1 - ((((1.061405429 * t - 1.453152027) * t + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-ax * ax)); }; return (0.5 * (1 + __erf((x * 0.7071067811865475)))); }),
+      c: "// Evolved by SPEAR — algebraic only, FP16 safe\n__device__ inline float spear_fn(const float x) {\n    return (0.5f * (1f + erff((x * 0.707107f))));\n}",
+      py: "import torch\n\ndef spear_fn(x):\n    # Evolved by SPEAR — zero transcendental ops (exp/erf/tanh free)\n    return (0.5 * (1 + torch.erf((x * 0.707107))))",
+      wasmBase64: "AGFzbQEAAAABCwJgAXwBfGABfAF8AgsBA2VudgNlcmYAAQMCAQAHCQEFc3BlYXIAAQomASQARAAAAAAAAOA/RAAAAAAAAPA/IABEzDt/Zp6g5j+iEACgogs=",
     },
     fast:     {
       js: "((x) => Math.tanh(x))",
@@ -168,12 +168,12 @@ export const kernels = {
       wasmBase64: "AGFzbQEAAAABCwJgAXwBfGABfAF8AgwBA2VudgR0YW5oAAEDAgEABwkBBXNwZWFyAAEKCAEGACAAEAAL",
     },
     meta: {
-      metric: 0.000016407954856661242,
-      level: 3,
-      formulaCost: 25,
+      metric: 1.3866695599588098e-34,
+      level: 5,
+      formulaCost: 4,
       exactCost: 34,
-      speedupVsExact: 1.36,
-      vsIterative: {"label":"Monte-Carlo · 1000 tirages","speedup":1840},
+      speedupVsExact: 8.5,
+      vsIterative: {"label":"Monte-Carlo · 1000 tirages","speedup":11500},
     },
   },
   "damped_pendulum": {
@@ -615,18 +615,25 @@ export const kernels = {
   "pendulum_hybrid": {
     id: "pendulum_hybrid",
     precise:     {
-      js: "((d, th) => ((-0.4791144877035046 * ((d * Math.cos(th)) + Math.cos((-Math.max(0, d))))) + 0.19358895313254176))",
-      eval: ((d, th) => ((-0.4791144877035046 * ((d * Math.cos(th)) + Math.cos((-Math.max(0, d))))) + 0.19358895313254176)),
-      c: "// Evolved by SPEAR — algebraic only, FP16 safe\n__device__ inline float spear_fn(const float x) {\n    return ((-0.479114f * ((d * cosf(th)) + cosf((-fmaxf(0.0f, d))))) + 0.193589f);\n}",
-      py: "import torch\n\ndef spear_fn(d, th):\n    # Evolved by SPEAR — zero transcendental ops (exp/erf/tanh free)\n    return ((-0.479114 * ((d * torch.cos(th)) + torch.cos((-torch.relu(d))))) + 0.193589)",
-      wasmBase64: "AGFzbQEAAAABDAJgAnx8AXxgAXwBfAILAQNlbnYDY29zAAEDAgEABwkBBXNwZWFyAAEKLwEtAER2fO7Pz6nevyAAIAEQAKIgAEQAAAAAAAAAAKWaEACgokQ8G0nXhcfIP6AL",
+      js: "((th, d) => ((0.999982 * Math.max(-2, Math.min(2, (((1 - Math.min(1e4, Math.max(-1e4, (1) / (((1 + Math.exp(Math.max(-50, Math.min(50, (-(10.18 * (Math.cos(th) - 0.7)))))))) < 1e-4 && ((1 + Math.exp(Math.max(-50, Math.min(50, (-(10.18 * (Math.cos(th) - 0.7)))))))) > -1e-4 ? (((1 + Math.exp(Math.max(-50, Math.min(50, (-(10.18 * (Math.cos(th) - 0.7)))))))) >= 0 ? 1e-4 : -1e-4) : ((1 + Math.exp(Math.max(-50, Math.min(50, (-(10.18 * (Math.cos(th) - 0.7)))))))))))) * (-4.33 * (d * (((0.5 * (d) * (d)) + ((6 * (1 - Math.cos(th))) - 12)) * Math.cos(th))))) + (Math.min(1e4, Math.max(-1e4, (1) / (((1 + Math.exp(Math.max(-50, Math.min(50, (-(10.18 * (Math.cos(th) - 0.7)))))))) < 1e-4 && ((1 + Math.exp(Math.max(-50, Math.min(50, (-(10.18 * (Math.cos(th) - 0.7)))))))) > -1e-4 ? (((1 + Math.exp(Math.max(-50, Math.min(50, (-(10.18 * (Math.cos(th) - 0.7)))))))) >= 0 ? 1e-4 : -1e-4) : ((1 + Math.exp(Math.max(-50, Math.min(50, (-(10.18 * (Math.cos(th) - 0.7))))))))))) * (-((1.72 * Math.sin(th)) + (8.04 * d)))))))) + 0.000009068541028117494))",
+      eval: ((th, d) => ((0.999982 * Math.max(-2, Math.min(2, (((1 - Math.min(1e4, Math.max(-1e4, (1) / (((1 + Math.exp(Math.max(-50, Math.min(50, (-(10.18 * (Math.cos(th) - 0.7)))))))) < 1e-4 && ((1 + Math.exp(Math.max(-50, Math.min(50, (-(10.18 * (Math.cos(th) - 0.7)))))))) > -1e-4 ? (((1 + Math.exp(Math.max(-50, Math.min(50, (-(10.18 * (Math.cos(th) - 0.7)))))))) >= 0 ? 1e-4 : -1e-4) : ((1 + Math.exp(Math.max(-50, Math.min(50, (-(10.18 * (Math.cos(th) - 0.7)))))))))))) * (-4.33 * (d * (((0.5 * (d) * (d)) + ((6 * (1 - Math.cos(th))) - 12)) * Math.cos(th))))) + (Math.min(1e4, Math.max(-1e4, (1) / (((1 + Math.exp(Math.max(-50, Math.min(50, (-(10.18 * (Math.cos(th) - 0.7)))))))) < 1e-4 && ((1 + Math.exp(Math.max(-50, Math.min(50, (-(10.18 * (Math.cos(th) - 0.7)))))))) > -1e-4 ? (((1 + Math.exp(Math.max(-50, Math.min(50, (-(10.18 * (Math.cos(th) - 0.7)))))))) >= 0 ? 1e-4 : -1e-4) : ((1 + Math.exp(Math.max(-50, Math.min(50, (-(10.18 * (Math.cos(th) - 0.7))))))))))) * (-((1.72 * Math.sin(th)) + (8.04 * d)))))))) + 0.000009068541028117494)),
+      c: "// Evolved by SPEAR — algebraic only, FP16 safe\n__device__ inline float spear_fn(const float x) {\n    return ((0.999982f * fmaxf(-2f, fminf(2f, (((1f - fminf(fmaxf((1f / copysignf(fmaxf(fabsf((1f + expf(fmaxf(-50.0f, fminf(50.0f, (-(10.18f * (cosf(th) - 0.7f)))))))), 1.0e-4f), (1f + expf(fmaxf(-50.0f, fminf(50.0f, (-(10.18f * (cosf(th) - 0.7f))))))))), -1.0e4f), 1.0e4f)) * (-4.33f * (d * (((0.5f * powf(d, 2.0f)) + ((6f * (1f - cosf(th))) - 12f)) * cosf(th))))) + (fminf(fmaxf((1f / copysignf(fmaxf(fabsf((1f + expf(fmaxf(-50.0f, fminf(50.0f, (-(10.18f * (cosf(th) - 0.7f)))))))), 1.0e-4f), (1f + expf(fmaxf(-50.0f, fminf(50.0f, (-(10.18f * (cosf(th) - 0.7f))))))))), -1.0e4f), 1.0e4f) * (-((1.72f * sinf(th)) + (8.04f * d)))))))) + 0.000009f);\n}",
+      py: "import torch\n\ndef spear_fn(th, d):\n    # Evolved by SPEAR — zero transcendental ops (exp/erf/tanh free)\n    return ((0.999982 * torch.maximum(-2, torch.minimum(2, (((1 - (1 / (abs((1 + torch.exp(torch.clamp((-(10.18 * (torch.cos(th) - 0.7))), -50.0, 50.0)))) < 1e-4 ? 1e-4 : (1 + torch.exp(torch.clamp((-(10.18 * (torch.cos(th) - 0.7))), -50.0, 50.0)))))) * (-4.33 * (d * (((0.5 * (d * d)) + ((6 * (1 - torch.cos(th))) - 12)) * torch.cos(th))))) + ((1 / (abs((1 + torch.exp(torch.clamp((-(10.18 * (torch.cos(th) - 0.7))), -50.0, 50.0)))) < 1e-4 ? 1e-4 : (1 + torch.exp(torch.clamp((-(10.18 * (torch.cos(th) - 0.7))), -50.0, 50.0))))) * (-((1.72 * torch.sin(th)) + (8.04 * d)))))))) + 0.000009)",
+      wasmBase64: "AGFzbQEAAAABDAJgAnx8AXxgAXwBfAIfAwNlbnYDZXhwAAEDZW52A3NpbgABA2VudgNjb3MAAQMCAQAHCQEFc3BlYXIAAwrSAwHPAwBEZ9ZSQNr/7z9EAAAAAAAAAMBEAAAAAAAAAEBEAAAAAAAA8D9EAAAAAAAA8D9EAAAAAAAA8D9EXI/C9ShcJEAgABACRGZmZmZmZuY/oaKaRAAAAAAAAEnApUQAAAAAAABJQKQQAKCZRC1DHOviNho/pUQAAAAAAADwP0Rcj8L1KFwkQCAAEAJEZmZmZmZm5j+hoppEAAAAAAAAScClRAAAAAAAAElApBAAoKajRAAAAAAAiMPApUQAAAAAAIjDQKShRFK4HoXrURHAIAFEAAAAAAAA4D8gASABoqJEAAAAAAAAGEBEAAAAAAAA8D8gABACoaJEAAAAAAAAKEChoCAAEAKioqKiRAAAAAAAAPA/RAAAAAAAAPA/RFyPwvUoXCRAIAAQAkRmZmZmZmbmP6GimkQAAAAAAABJwKVEAAAAAAAASUCkEACgmUQtQxzr4jYaP6VEAAAAAAAA8D9EXI/C9ShcJEAgABACRGZmZmZmZuY/oaKaRAAAAAAAAEnApUQAAAAAAABJQKQQAKCmo0QAAAAAAIjDwKVEAAAAAACIw0CkRIXrUbgehfs/IAAQAaJEFK5H4XoUIEAgAaKgmqKgpKWiREoM1smiBOM+oAs=",
+    },
+    fast:     {
+      js: "((th, d) => ((0.999982 * Math.max(-2, Math.min(2, (((1 - Math.min(1e4, Math.max(-1e4, (1) / (((1 + Math.exp(Math.max(-50, Math.min(50, (-(10.18 * (Math.cos(th) - 0.7)))))))) < 1e-4 && ((1 + Math.exp(Math.max(-50, Math.min(50, (-(10.18 * (Math.cos(th) - 0.7)))))))) > -1e-4 ? (((1 + Math.exp(Math.max(-50, Math.min(50, (-(10.18 * (Math.cos(th) - 0.7)))))))) >= 0 ? 1e-4 : -1e-4) : ((1 + Math.exp(Math.max(-50, Math.min(50, (-(10.18 * (Math.cos(th) - 0.7)))))))))))) * (-4.33 * (d * (((0.5 * (d) * (d)) + ((6 * (1 - Math.cos(th))) - 12)) * Math.cos(th))))) + (Math.min(1e4, Math.max(-1e4, (1) / (((1 + Math.exp(Math.max(-50, Math.min(50, (-(10.18 * (Math.cos(th) - 0.7)))))))) < 1e-4 && ((1 + Math.exp(Math.max(-50, Math.min(50, (-(10.18 * (Math.cos(th) - 0.7)))))))) > -1e-4 ? (((1 + Math.exp(Math.max(-50, Math.min(50, (-(10.18 * (Math.cos(th) - 0.7)))))))) >= 0 ? 1e-4 : -1e-4) : ((1 + Math.exp(Math.max(-50, Math.min(50, (-(10.18 * (Math.cos(th) - 0.7))))))))))) * (-((1.72 * Math.sin(th)) + (8.04 * d)))))))) + 0.000009068541028117494))",
+      eval: ((th, d) => ((0.999982 * Math.max(-2, Math.min(2, (((1 - Math.min(1e4, Math.max(-1e4, (1) / (((1 + Math.exp(Math.max(-50, Math.min(50, (-(10.18 * (Math.cos(th) - 0.7)))))))) < 1e-4 && ((1 + Math.exp(Math.max(-50, Math.min(50, (-(10.18 * (Math.cos(th) - 0.7)))))))) > -1e-4 ? (((1 + Math.exp(Math.max(-50, Math.min(50, (-(10.18 * (Math.cos(th) - 0.7)))))))) >= 0 ? 1e-4 : -1e-4) : ((1 + Math.exp(Math.max(-50, Math.min(50, (-(10.18 * (Math.cos(th) - 0.7)))))))))))) * (-4.33 * (d * (((0.5 * (d) * (d)) + ((6 * (1 - Math.cos(th))) - 12)) * Math.cos(th))))) + (Math.min(1e4, Math.max(-1e4, (1) / (((1 + Math.exp(Math.max(-50, Math.min(50, (-(10.18 * (Math.cos(th) - 0.7)))))))) < 1e-4 && ((1 + Math.exp(Math.max(-50, Math.min(50, (-(10.18 * (Math.cos(th) - 0.7)))))))) > -1e-4 ? (((1 + Math.exp(Math.max(-50, Math.min(50, (-(10.18 * (Math.cos(th) - 0.7)))))))) >= 0 ? 1e-4 : -1e-4) : ((1 + Math.exp(Math.max(-50, Math.min(50, (-(10.18 * (Math.cos(th) - 0.7))))))))))) * (-((1.72 * Math.sin(th)) + (8.04 * d)))))))) + 0.000009068541028117494)),
+      c: "// Evolved by SPEAR — algebraic only, FP16 safe\n__device__ inline float spear_fn(const float x) {\n    return ((0.999982f * fmaxf(-2f, fminf(2f, (((1f - fminf(fmaxf((1f / copysignf(fmaxf(fabsf((1f + expf(fmaxf(-50.0f, fminf(50.0f, (-(10.18f * (cosf(th) - 0.7f)))))))), 1.0e-4f), (1f + expf(fmaxf(-50.0f, fminf(50.0f, (-(10.18f * (cosf(th) - 0.7f))))))))), -1.0e4f), 1.0e4f)) * (-4.33f * (d * (((0.5f * powf(d, 2.0f)) + ((6f * (1f - cosf(th))) - 12f)) * cosf(th))))) + (fminf(fmaxf((1f / copysignf(fmaxf(fabsf((1f + expf(fmaxf(-50.0f, fminf(50.0f, (-(10.18f * (cosf(th) - 0.7f)))))))), 1.0e-4f), (1f + expf(fmaxf(-50.0f, fminf(50.0f, (-(10.18f * (cosf(th) - 0.7f))))))))), -1.0e4f), 1.0e4f) * (-((1.72f * sinf(th)) + (8.04f * d)))))))) + 0.000009f);\n}",
+      py: "import torch\n\ndef spear_fn(th, d):\n    # Evolved by SPEAR — zero transcendental ops (exp/erf/tanh free)\n    return ((0.999982 * torch.maximum(-2, torch.minimum(2, (((1 - (1 / (abs((1 + torch.exp(torch.clamp((-(10.18 * (torch.cos(th) - 0.7))), -50.0, 50.0)))) < 1e-4 ? 1e-4 : (1 + torch.exp(torch.clamp((-(10.18 * (torch.cos(th) - 0.7))), -50.0, 50.0)))))) * (-4.33 * (d * (((0.5 * (d * d)) + ((6 * (1 - torch.cos(th))) - 12)) * torch.cos(th))))) + ((1 / (abs((1 + torch.exp(torch.clamp((-(10.18 * (torch.cos(th) - 0.7))), -50.0, 50.0)))) < 1e-4 ? 1e-4 : (1 + torch.exp(torch.clamp((-(10.18 * (torch.cos(th) - 0.7))), -50.0, 50.0))))) * (-((1.72 * torch.sin(th)) + (8.04 * d)))))))) + 0.000009)",
+      wasmBase64: "AGFzbQEAAAABDAJgAnx8AXxgAXwBfAIfAwNlbnYDZXhwAAEDZW52A3NpbgABA2VudgNjb3MAAQMCAQAHCQEFc3BlYXIAAwrSAwHPAwBEZ9ZSQNr/7z9EAAAAAAAAAMBEAAAAAAAAAEBEAAAAAAAA8D9EAAAAAAAA8D9EAAAAAAAA8D9EXI/C9ShcJEAgABACRGZmZmZmZuY/oaKaRAAAAAAAAEnApUQAAAAAAABJQKQQAKCZRC1DHOviNho/pUQAAAAAAADwP0Rcj8L1KFwkQCAAEAJEZmZmZmZm5j+hoppEAAAAAAAAScClRAAAAAAAAElApBAAoKajRAAAAAAAiMPApUQAAAAAAIjDQKShRFK4HoXrURHAIAFEAAAAAAAA4D8gASABoqJEAAAAAAAAGEBEAAAAAAAA8D8gABACoaJEAAAAAAAAKEChoCAAEAKioqKiRAAAAAAAAPA/RAAAAAAAAPA/RFyPwvUoXCRAIAAQAkRmZmZmZmbmP6GimkQAAAAAAABJwKVEAAAAAAAASUCkEACgmUQtQxzr4jYaP6VEAAAAAAAA8D9EXI/C9ShcJEAgABACRGZmZmZmZuY/oaKaRAAAAAAAAEnApUQAAAAAAABJQKQQAKCmo0QAAAAAAIjDwKVEAAAAAACIw0CkRIXrUbgehfs/IAAQAaJEFK5H4XoUIEAgAaKgmqKgpKWiREoM1smiBOM+oAs=",
     },
     meta: {
-      metric: 2.0391289425393437,
-      level: 0,
-      formulaCost: 46,
-      exactCost: 173,
-      speedupVsExact: 3.760869565217391,
+      metric: 5.04177596772154e-7,
+      level: 2,
+      formulaCost: 44,
+      exactCost: 40,
+      speedupVsExact: 0.9090909090909091,
       vsIterative: null,
     },
   },
@@ -1319,14 +1326,14 @@ export const kernels = {
   "implied_vol": {
     id: "implied_vol",
     precise:     {
-      js: "((k, s, t, c) => ((-1.1629327259438174 * (Math.min(1e4, Math.max(-1e4, (k) / ((s) < 1e-4 && (s) > -1e-4 ? ((s) >= 0 ? 1e-4 : -1e-4) : (s)))) * (Math.min(1e4, Math.max(-1e4, (0.205774) / ((t) < 1e-4 && (t) > -1e-4 ? ((t) >= 0 ? 1e-4 : -1e-4) : (t)))) + Math.sqrt(Math.abs((3.267127 + c)))))) + 6.6139818048422185))",
-      eval: ((k, s, t, c) => ((-1.1629327259438174 * (Math.min(1e4, Math.max(-1e4, (k) / ((s) < 1e-4 && (s) > -1e-4 ? ((s) >= 0 ? 1e-4 : -1e-4) : (s)))) * (Math.min(1e4, Math.max(-1e4, (0.205774) / ((t) < 1e-4 && (t) > -1e-4 ? ((t) >= 0 ? 1e-4 : -1e-4) : (t)))) + Math.sqrt(Math.abs((3.267127 + c)))))) + 6.6139818048422185)),
-      c: "// Evolved by SPEAR — algebraic only, FP16 safe\n__device__ inline float spear_fn(const float x) {\n    return ((-1.162933f * (fminf(fmaxf((k / copysignf(fmaxf(fabsf(s), 1.0e-4f), s)), -1.0e4f), 1.0e4f) * (fminf(fmaxf((0.205774f / copysignf(fmaxf(fabsf(t), 1.0e-4f), t)), -1.0e4f), 1.0e4f) + sqrtf(fabsf((3.267127f + c)))))) + 6.613982f);\n}",
-      py: "import torch\n\ndef spear_fn(k, s, t, c):\n    # Evolved by SPEAR — zero transcendental ops (exp/erf/tanh free)\n    return ((-1.162933 * ((k / (abs(s) < 1e-4 ? 1e-4 : s)) * ((0.205774 / (abs(t) < 1e-4 ? 1e-4 : t)) + torch.sqrt(torch.abs((3.267127 + c)))))) + 6.613982)",
-      wasmBase64: "AGFzbQEAAAABDgJgBHx8fHwBfGABfAF8AwIBAAcJAQVzcGVhcgAACn0BewBEeweWWF+b8r8gACABmUQtQxzr4jYaP6UgAaajRAAAAAAAiMPApUQAAAAAAIjDQKRERP0ubM1Wyj8gAplELUMc6+I2Gj+lIAKmo0QAAAAAAIjDwKVEAAAAAACIw0CkRFsHB3sTIwpAIAOgmZ+goqJEqItwpbd0GkCgCw==",
+      js: "((t, c, s, k) => ((1.0338652122047158 * ((4.540114 * (Math.sqrt(Math.abs(Math.min(1e4, Math.max(-1e4, (1) / ((t) < 1e-4 && (t) > -1e-4 ? ((t) >= 0 ? 1e-4 : -1e-4) : (t)))))) * Math.min(1e4, Math.max(-1e4, (((c - ((s - k) * 0.505)) + (0.3183 * Math.min(1e4, Math.max(-1e4, ((((s - k) * 0.25)) * (((s - k) * 0.25))) / (((s + k)) < 1e-4 && ((s + k)) > -1e-4 ? (((s + k)) >= 0 ? 1e-4 : -1e-4) : ((s + k)))))))) / (((s + k)) < 1e-4 && ((s + k)) > -1e-4 ? (((s + k)) >= 0 ? 1e-4 : -1e-4) : ((s + k))))))) + -0.032453)) + -0.011516810558767247))",
+      eval: ((t, c, s, k) => ((1.0338652122047158 * ((4.540114 * (Math.sqrt(Math.abs(Math.min(1e4, Math.max(-1e4, (1) / ((t) < 1e-4 && (t) > -1e-4 ? ((t) >= 0 ? 1e-4 : -1e-4) : (t)))))) * Math.min(1e4, Math.max(-1e4, (((c - ((s - k) * 0.505)) + (0.3183 * Math.min(1e4, Math.max(-1e4, ((((s - k) * 0.25)) * (((s - k) * 0.25))) / (((s + k)) < 1e-4 && ((s + k)) > -1e-4 ? (((s + k)) >= 0 ? 1e-4 : -1e-4) : ((s + k)))))))) / (((s + k)) < 1e-4 && ((s + k)) > -1e-4 ? (((s + k)) >= 0 ? 1e-4 : -1e-4) : ((s + k))))))) + -0.032453)) + -0.011516810558767247)),
+      c: "// Evolved by SPEAR — algebraic only, FP16 safe\n__device__ inline float spear_fn(const float x) {\n    return ((1.033865f * ((4.540114f * (sqrtf(fabsf(fminf(fmaxf((1f / copysignf(fmaxf(fabsf(t), 1.0e-4f), t)), -1.0e4f), 1.0e4f))) * fminf(fmaxf((((c - ((s - k) * 0.505f)) + (0.3183f * fminf(fmaxf((powf(((s - k) * 0.25f), 2.0f) / copysignf(fmaxf(fabsf((s + k)), 1.0e-4f), (s + k))), -1.0e4f), 1.0e4f))) / copysignf(fmaxf(fabsf((s + k)), 1.0e-4f), (s + k))), -1.0e4f), 1.0e4f))) + -0.032453f)) + -0.011517f);\n}",
+      py: "import torch\n\ndef spear_fn(t, c, s, k):\n    # Evolved by SPEAR — zero transcendental ops (exp/erf/tanh free)\n    return ((1.033865 * ((4.540114 * (torch.sqrt(torch.abs((1 / (abs(t) < 1e-4 ? 1e-4 : t)))) * (((c - ((s - k) * 0.505)) + (0.3183 * ((((s - k) * 0.25) * ((s - k) * 0.25)) / (abs((s + k)) < 1e-4 ? 1e-4 : (s + k))))) / (abs((s + k)) < 1e-4 ? 1e-4 : (s + k))))) + -0.032453)) + -0.011517)",
+      wasmBase64: "AGFzbQEAAAABDgJgBHx8fHwBfGABfAF8AwIBAAcJAQVzcGVhcgAACvABAe0BAET9Qq4/torwP0RtcvikEykSQEQAAAAAAADwPyAAmUQtQxzr4jYaP6UgAKajRAAAAAAAiMPApUQAAAAAAIjDQKSZnyABIAIgA6FEKVyPwvUo4D+ioUR0RpT2Bl/UPyACIAOhRAAAAAAAANA/oiACIAOhRAAAAAAAANA/oqIgAiADoJlELUMc6+I2Gj+lIAIgA6Cmo0QAAAAAAIjDwKVEAAAAAACIw0CkoqAgAiADoJlELUMc6+I2Gj+lIAIgA6Cmo0QAAAAAAIjDwKVEAAAAAACIw0CkoqJE121Q+62doL+gokRiEKIlIJaHv6AL",
     },
     meta: {
-      metric: 0.9250539868167686,
+      metric: 0.013185177440660847,
       level: 0,
       formulaCost: null,
       exactCost: null,
@@ -1719,11 +1726,11 @@ export const kernels = {
       wasmBase64: "AGFzbQEAAAABCwJgAXwBfGABfAF8AhYCA2VudgNleHAAAQNlbnYEYXNpbgABAwIBAAcJAQVzcGVhcgACCn4BfABECnUC8rJczT8gAEQAAAAAAABJwKVEAAAAAAAASUCkEAAgAEQAAAAAAADwv6VEAAAAAAAA8D+kEAEgAEQAAAAAAADwv6VEAAAAAAAA8D+kEAEgAEQAAAAAAADwv6VEAAAAAAAA8D+kEAGioqIgAKCiRB1ZwOrtSPo/oAs=",
     },
     fast:     {
-      js: "((m) => (((Math.asin(Math.max(-1, Math.min(1, m)))) * (Math.asin(Math.max(-1, Math.min(1, m))))) * ((Math.asin(Math.max(-1, Math.min(1, m)))) * (Math.asin(Math.max(-1, Math.min(1, m))))) * Math.min(1e4, Math.max(-1e4, (Math.asin(Math.max(-1, Math.min(1, m)))) / ((((m) * (m)) * ((m) * (m))) < 1e-4 && (((m) * (m)) * ((m) * (m))) > -1e-4 ? ((((m) * (m)) * ((m) * (m))) >= 0 ? 1e-4 : -1e-4) : (((m) * (m)) * ((m) * (m))))))))",
-      eval: ((m) => (((Math.asin(Math.max(-1, Math.min(1, m)))) * (Math.asin(Math.max(-1, Math.min(1, m))))) * ((Math.asin(Math.max(-1, Math.min(1, m)))) * (Math.asin(Math.max(-1, Math.min(1, m))))) * Math.min(1e4, Math.max(-1e4, (Math.asin(Math.max(-1, Math.min(1, m)))) / ((((m) * (m)) * ((m) * (m))) < 1e-4 && (((m) * (m)) * ((m) * (m))) > -1e-4 ? ((((m) * (m)) * ((m) * (m))) >= 0 ? 1e-4 : -1e-4) : (((m) * (m)) * ((m) * (m)))))))),
-      c: "// Evolved by SPEAR — algebraic only, FP16 safe\n__device__ inline float spear_fn(const float x) {\n    return (powf(powf(asinf(fmaxf(-1.0f, fminf(1.0f, m))), 2.0f), 2.0f) * fminf(fmaxf((asinf(fmaxf(-1.0f, fminf(1.0f, m))) / copysignf(fmaxf(fabsf(powf(powf(m, 2.0f), 2.0f)), 1.0e-4f), powf(powf(m, 2.0f), 2.0f))), -1.0e4f), 1.0e4f));\n}",
-      py: "import torch\n\ndef spear_fn(m):\n    # Evolved by SPEAR — zero transcendental ops (exp/erf/tanh free)\n    return (((torch.asin(torch.clamp(m, -1.0, 1.0)) * torch.asin(torch.clamp(m, -1.0, 1.0))) * (torch.asin(torch.clamp(m, -1.0, 1.0)) * torch.asin(torch.clamp(m, -1.0, 1.0)))) * (torch.asin(torch.clamp(m, -1.0, 1.0)) / (abs(((m * m) * (m * m))) < 1e-4 ? 1e-4 : ((m * m) * (m * m)))))",
-      wasmBase64: "AGFzbQEAAAABCwJgAXwBfGABfAF8AgwBA2VudgRhc2luAAEDAgEABwkBBXNwZWFyAAEKuAEBtQEAIABEAAAAAAAA8L+lRAAAAAAAAPA/pBAAIABEAAAAAAAA8L+lRAAAAAAAAPA/pBAAoiAARAAAAAAAAPC/pUQAAAAAAADwP6QQACAARAAAAAAAAPC/pUQAAAAAAADwP6QQAKKiIABEAAAAAAAA8L+lRAAAAAAAAPA/pBAAIAAgAKIgACAAoqKZRC1DHOviNho/pSAAIACiIAAgAKKipqNEAAAAAACIw8ClRAAAAAAAiMNApKIL",
+      js: "((m) => ((Math.max(m, 0.830492) * ((m) * (m) * Math.max(m, 0.906194))) * Math.max(((m) * (m) * (m)) * ((m) * (m) * (m)) * ((m) * (m) * (m)), 0.598429)))",
+      eval: ((m) => ((Math.max(m, 0.830492) * ((m) * (m) * Math.max(m, 0.906194))) * Math.max(((m) * (m) * (m)) * ((m) * (m) * (m)) * ((m) * (m) * (m)), 0.598429))),
+      c: "// Evolved by SPEAR — algebraic only, FP16 safe\n__device__ inline float spear_fn(const float x) {\n    return ((fmaxf(m, 0.830492f) * (powf(m, 2.0f) * fmaxf(m, 0.906194f))) * fmaxf(powf(powf(m, 3.0f), 3.0f), 0.598429f));\n}",
+      py: "import torch\n\ndef spear_fn(m):\n    # Evolved by SPEAR — zero transcendental ops (exp/erf/tanh free)\n    return ((torch.maximum(m, 0.830492) * ((m * m) * torch.maximum(m, 0.906194))) * torch.maximum(((m ** 3) ** 3), 0.598429))",
+      wasmBase64: "AGFzbQEAAAABCwJgAXwBfGABfAF8AwIBAAcJAQVzcGVhcgAACkgBRgAgAERE3nL1Y5PqP6UgACAAoiAARAebOo+K/+w/paKiIAAgACAAoqIgACAAIACioiAAIAAgAKKioqJEpUv/klQm4z+logs=",
     },
     meta: {
       metric: 0.004333603318947968,
@@ -2152,8 +2159,33 @@ export const kernels = {
       vsIterative: null,
     },
   },
+  "layernorm_scale": {
+    id: "layernorm_scale",
+    precise:     {
+      js: "((x) => Math.min(1e4, Math.max(-1e4, (1) / ((Math.sqrt(Math.abs(x))) < 1e-4 && (Math.sqrt(Math.abs(x))) > -1e-4 ? ((Math.sqrt(Math.abs(x))) >= 0 ? 1e-4 : -1e-4) : (Math.sqrt(Math.abs(x)))))))",
+      eval: ((x) => Math.min(1e4, Math.max(-1e4, (1) / ((Math.sqrt(Math.abs(x))) < 1e-4 && (Math.sqrt(Math.abs(x))) > -1e-4 ? ((Math.sqrt(Math.abs(x))) >= 0 ? 1e-4 : -1e-4) : (Math.sqrt(Math.abs(x))))))),
+      c: "// Evolved by SPEAR — algebraic only, FP16 safe\n__device__ inline float spear_fn(const float x) {\n    return fminf(fmaxf((1f / copysignf(fmaxf(fabsf(sqrtf(fabsf(x))), 1.0e-4f), sqrtf(fabsf(x)))), -1.0e4f), 1.0e4f);\n}",
+      py: "import torch\n\ndef spear_fn(x):\n    # Evolved by SPEAR — zero transcendental ops (exp/erf/tanh free)\n    return (1 / (abs(torch.sqrt(torch.abs(x))) < 1e-4 ? 1e-4 : torch.sqrt(torch.abs(x))))",
+      wasmBase64: "AGFzbQEAAAABCwJgAXwBfGABfAF8AwIBAAcJAQVzcGVhcgAACjYBNABEAAAAAAAA8D8gAJmfmUQtQxzr4jYaP6UgAJmfpqNEAAAAAACIw8ClRAAAAAAAiMNApAs=",
+    },
+    fast:     {
+      js: "((x) => Math.sqrt(Math.abs(Math.min(1e4, Math.max(-1e4, (x) / (((x) * (x)) < 1e-4 && ((x) * (x)) > -1e-4 ? (((x) * (x)) >= 0 ? 1e-4 : -1e-4) : ((x) * (x))))))))",
+      eval: ((x) => Math.sqrt(Math.abs(Math.min(1e4, Math.max(-1e4, (x) / (((x) * (x)) < 1e-4 && ((x) * (x)) > -1e-4 ? (((x) * (x)) >= 0 ? 1e-4 : -1e-4) : ((x) * (x)))))))),
+      c: "// Evolved by SPEAR — algebraic only, FP16 safe\n__device__ inline float spear_fn(const float x) {\n    return sqrtf(fabsf(fminf(fmaxf((x / copysignf(fmaxf(fabsf(powf(x, 2.0f)), 1.0e-4f), powf(x, 2.0f))), -1.0e4f), 1.0e4f)));\n}",
+      py: "import torch\n\ndef spear_fn(x):\n    # Evolved by SPEAR — zero transcendental ops (exp/erf/tanh free)\n    return torch.sqrt(torch.abs((x / (abs((x * x)) < 1e-4 ? 1e-4 : (x * x)))))",
+      wasmBase64: "AGFzbQEAAAABCwJgAXwBfGABfAF8AwIBAAcJAQVzcGVhcgAACjMBMQAgACAAIACimUQtQxzr4jYaP6UgACAAoqajRAAAAAAAiMPApUQAAAAAAIjDQKSZnws=",
+    },
+    meta: {
+      metric: 0,
+      level: 5,
+      formulaCost: 6,
+      exactCost: 3,
+      speedupVsExact: 0.5,
+      vsIterative: null,
+    },
+  },
 };
 
-export const kernelIds = ["silu","gelu","sigmoid","kv_cache","free_fall","kepler","gaussian_cdf","damped_pendulum","rl_distillation","lambert_w","rc_circuit","gaussian_kernel","diffusion_beta","bilinear_interp","european_call","temporal_grad","lorentz","hill","kerr","lennard_jones","damped_oscillation","logistic_growth","softplus","kdv_soliton","kerr_spin","pendulum_hybrid","eigen3_sym","ik_reach","idm_following","gemv4","rope_rot","gauss_shader","ema_smooth","smoothstep","srgb_gamma","tanh_sat","atan_unit","srgb_decode","erf_prob","huber_loss","cosh_curve","bessel_j0","bessel_j1","blackbody_r","aces_fit","logsumexp2","probit_quantile","pmt_finance","blackbody_g","blackbody_b","bessel_j2","logit_ml","kelly_criterion","rsi_momentum","implied_vol","michaelis_menten","temperature_softmax","doppler_effect","stefan_boltzmann","mm1_queue_wait","grover_amplitude","concurrence_pure","chsh_correlation","legendre_p2","laguerre_l2","asin_hard","qfi_dephasing","amp_damp_fid","loschmidt_rate","bessel_i0e","elliptic_k","kepler_solver","fast_exp_alu","fresnel_schlick","rayleigh_phase","smootherstep","fog_exp2","back_ease_out","light_falloff_punctual","bias_slope","uncharted2_tonemap","mish","rope_freq","bilateral_weight","bs_d1_sigma","mel_scale","bs_d2_sigma","a_weighting"];
+export const kernelIds = ["silu","gelu","sigmoid","kv_cache","free_fall","kepler","gaussian_cdf","damped_pendulum","rl_distillation","lambert_w","rc_circuit","gaussian_kernel","diffusion_beta","bilinear_interp","european_call","temporal_grad","lorentz","hill","kerr","lennard_jones","damped_oscillation","logistic_growth","softplus","kdv_soliton","kerr_spin","pendulum_hybrid","eigen3_sym","ik_reach","idm_following","gemv4","rope_rot","gauss_shader","ema_smooth","smoothstep","srgb_gamma","tanh_sat","atan_unit","srgb_decode","erf_prob","huber_loss","cosh_curve","bessel_j0","bessel_j1","blackbody_r","aces_fit","logsumexp2","probit_quantile","pmt_finance","blackbody_g","blackbody_b","bessel_j2","logit_ml","kelly_criterion","rsi_momentum","implied_vol","michaelis_menten","temperature_softmax","doppler_effect","stefan_boltzmann","mm1_queue_wait","grover_amplitude","concurrence_pure","chsh_correlation","legendre_p2","laguerre_l2","asin_hard","qfi_dephasing","amp_damp_fid","loschmidt_rate","bessel_i0e","elliptic_k","kepler_solver","fast_exp_alu","fresnel_schlick","rayleigh_phase","smootherstep","fog_exp2","back_ease_out","light_falloff_punctual","bias_slope","uncharted2_tonemap","mish","rope_freq","bilateral_weight","bs_d1_sigma","mel_scale","bs_d2_sigma","a_weighting","layernorm_scale"];
 
 export default kernels;

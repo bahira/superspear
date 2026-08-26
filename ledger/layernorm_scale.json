@@ -3,27 +3,21 @@
   "title": "LayerNorm · échelle 1/√(var+ε)",
   "direction": "min",
   "metric": 0,
-  "level": 2,
-  "formula": "(-0.318426 * ((-((2.584738 / x) * 1.214997)) * sqrt(|x|)))",
+  "level": 5,
+  "formula": "(1 / sqrt(|x|))",
   "seed": 12345,
-  "iteration": 94,
-  "fast": {
-    "formula": "(0.524071 / sqrt(|x|))",
-    "metric": 4.975817196879307e-30,
-    "level": 2,
+  "iteration": 640,
+  "speed": {
     "formulaCost": 6,
-    "speed": {
-      "formulaCost": 6,
-      "exactCost": 3,
-      "speedup": 0.5
-    }
+    "exactCost": 3,
+    "speedup": 0.5
   },
-  "fastTree": {
+  "tree": {
     "o": "pdiv",
     "c": [
       {
         "o": "const",
-        "v": 0.524071
+        "v": 1
       },
       {
         "o": "sqrt",
@@ -31,6 +25,35 @@
           {
             "o": "var",
             "n": "x"
+          }
+        ]
+      }
+    ]
+  },
+  "fast": {
+    "formula": "sqrt(|(x / (x)²)|)",
+    "metric": 2.98904327368899e-33,
+    "level": 2,
+    "formulaCost": 7
+  },
+  "fastTree": {
+    "o": "sqrt",
+    "c": [
+      {
+        "o": "pdiv",
+        "c": [
+          {
+            "o": "var",
+            "n": "x"
+          },
+          {
+            "o": "sq",
+            "c": [
+              {
+                "o": "var",
+                "n": "x"
+              }
+            ]
           }
         ]
       }
