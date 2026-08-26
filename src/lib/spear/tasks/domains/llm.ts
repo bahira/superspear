@@ -226,6 +226,30 @@ buildRegressionTask({
       },
     }),
 
+    // 28. RoPE frequency spectrum — chirplet cos(m·ωᵢ), ωᵢ = base^(−i/16):
+    // pure cos∘exp composition, no algebraic shortcut exists. This IS what
+    // makes attention position-aware.
+buildActivationTask({
+      id: "rope_freq",
+      title: "Spectre RoPE (ω par lane · base 10⁴ · d=64 · m=1024)",
+      subtitle: "cos(m·base^(−2i/d)) sur i ∈ [0,32] — chirplet cos∘exp, aucun raccourci algébrique",
+      fn: (x) => Math.cos(1024 * Math.pow(10000, -x / 32)),
+      lo: 0,
+      hi: 32,
+      groundTruth: "cos(m·ωᵢ), ωᵢ = base^(−2i/d)",
+      exactCost: 43,
+      extraSeeds: (() => {
+        const x = S.V("x");
+        return [
+          // pont exact: cos(1024·e^(−0.28782·i)) — constants tunés par mutatePolish
+          makeNode("cos", { children: [makeNode("mul", { children: [
+            S.C(1024),
+            makeNode("exp", { children: [makeNode("mul", { children: [S.C(-0.28782), x] })] }),
+          ] })] }),
+        ];
+      })(),
+    }),
+
     // 25. city.ts traffic — IDM acceleration law as pure regression target
 buildRegressionTask({
       id: "idm_following",

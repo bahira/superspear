@@ -1,0 +1,141 @@
+{
+  "taskId": "bilateral_weight",
+  "title": "Poids bilatéral (débruitage temps réel · SVGF)",
+  "direction": "min",
+  "metric": 9.336399957342636e-35,
+  "level": 5,
+  "formula": "(exp((-((x)² * 50))) / (1 + ((x)² * 2)))",
+  "seed": 4242,
+  "iteration": 200,
+  "speed": {
+    "formulaCost": 11,
+    "exactCost": 45,
+    "speedup": 4.090909090909091
+  },
+  "tree": {
+    "o": "pdiv",
+    "c": [
+      {
+        "o": "exp",
+        "c": [
+          {
+            "o": "neg",
+            "c": [
+              {
+                "o": "mul",
+                "c": [
+                  {
+                    "o": "sq",
+                    "c": [
+                      {
+                        "o": "var",
+                        "n": "x"
+                      }
+                    ]
+                  },
+                  {
+                    "o": "const",
+                    "v": 50
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "add",
+        "c": [
+          {
+            "o": "const",
+            "v": 1
+          },
+          {
+            "o": "mul",
+            "c": [
+              {
+                "o": "sq",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "x"
+                  }
+                ]
+              },
+              {
+                "o": "const",
+                "v": 2
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "fast": {
+    "formula": "(exp((-((x)² * 50))) / (1 + ((x)² * 2)))",
+    "metric": 9.336399957342636e-35,
+    "level": 5,
+    "formulaCost": 11
+  },
+  "fastTree": {
+    "o": "pdiv",
+    "c": [
+      {
+        "o": "exp",
+        "c": [
+          {
+            "o": "neg",
+            "c": [
+              {
+                "o": "mul",
+                "c": [
+                  {
+                    "o": "sq",
+                    "c": [
+                      {
+                        "o": "var",
+                        "n": "x"
+                      }
+                    ]
+                  },
+                  {
+                    "o": "const",
+                    "v": 50
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "add",
+        "c": [
+          {
+            "o": "const",
+            "v": 1
+          },
+          {
+            "o": "mul",
+            "c": [
+              {
+                "o": "sq",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "x"
+                  }
+                ]
+              },
+              {
+                "o": "const",
+                "v": 2
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

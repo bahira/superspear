@@ -185,5 +185,51 @@ buildRegressionTask({
         return err < 0.1 ? `erreur relative ${(err * 100).toFixed(1)} %` : null;
       },
     }),
+
+    // Black-Scholes d₁(σ) — S=110, K=100, r=5%, T=0.25:
+    // d₁ = (ln(S/K)+(r+σ²/2)T)/(σ√T) = c/σ + σ/4 — hyperbole+linéaire,
+    // le cœur de tout pricer, zéro SFU nécessaire.
+buildActivationTask({
+      id: "bs_d1_sigma",
+      title: "Black-Scholes d₁(σ) (S/K=1.1 · r=5% · T=3m)",
+      subtitle: "d₁ = (ln(S/K)+(r+σ²/2)T)/(σ√T) sur σ ∈ [0.08,1.2] — forme rationnelle pure",
+      fn: (x) => (Math.log(1.1) + (0.05 + (x * x) / 2) * 0.25) / (x * 0.5),
+      lo: 0.08,
+      hi: 1.2,
+      groundTruth: "d₁(σ) = (ln(S/K)+(r+σ²/2)T)/(σ√T)",
+      exactCost: 9,
+      extraSeeds: (() => {
+        const x = S.V("x");
+        return [
+          // pont exact: c/x + x/4
+          makeNode("add", { children: [
+            makeNode("pdiv", { children: [S.C(0.21562036), x] }),
+            makeNode("mul", { children: [S.C(0.25), x] }),
+          ] }),
+        ];
+      })(),
+    }),
+
+    // Black-Scholes d₂(σ) = d₁ − σ√T = c/σ − σ/4 — même famille, signe opposé
+buildActivationTask({
+      id: "bs_d2_sigma",
+      title: "Black-Scholes d₂(σ) (S/K=1.1 · r=5% · T=3m)",
+      subtitle: "d₂ = d₁ − σ√T sur σ ∈ [0.08,1.2] — hyperbole−linéaire, moneyness→probabilité",
+      fn: (x) => (Math.log(1.1) + (0.05 + (x * x) / 2) * 0.25) / (x * 0.5) - 0.5 * x,
+      lo: 0.08,
+      hi: 1.2,
+      groundTruth: "d₂(σ) = d₁(σ) − σ√T",
+      exactCost: 11,
+      extraSeeds: (() => {
+        const x = S.V("x");
+        return [
+          // pont exact: c/x − x/4
+          makeNode("add", { children: [
+            makeNode("pdiv", { children: [S.C(0.21562036), x] }),
+            makeNode("neg", { children: [makeNode("mul", { children: [S.C(0.25), x] })] }),
+          ] }),
+        ];
+      })(),
+    }),
   ];
 }

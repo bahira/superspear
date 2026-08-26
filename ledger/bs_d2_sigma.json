@@ -1,0 +1,93 @@
+{
+  "taskId": "bs_d2_sigma",
+  "title": "Black-Scholes d₂(σ) (S/K=1.1 · r=5% · T=3m)",
+  "direction": "min",
+  "metric": 1.6217711130493227e-18,
+  "level": 5,
+  "formula": "((0.21562 / x) + (-(0.25 * x)))",
+  "seed": 4242,
+  "iteration": 141,
+  "speed": {
+    "formulaCost": 7,
+    "exactCost": 11,
+    "speedup": 1.5714285714285714
+  },
+  "tree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "pdiv",
+        "c": [
+          {
+            "o": "const",
+            "v": 0.21562036
+          },
+          {
+            "o": "var",
+            "n": "x"
+          }
+        ]
+      },
+      {
+        "o": "neg",
+        "c": [
+          {
+            "o": "mul",
+            "c": [
+              {
+                "o": "const",
+                "v": 0.25
+              },
+              {
+                "o": "var",
+                "n": "x"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "fast": {
+    "formula": "((0.21562 / x) + (-(0.25 * x)))",
+    "metric": 1.2399882919736038e-13,
+    "level": 5,
+    "formulaCost": 7
+  },
+  "fastTree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "pdiv",
+        "c": [
+          {
+            "o": "const",
+            "v": 0.21562036
+          },
+          {
+            "o": "var",
+            "n": "x"
+          }
+        ]
+      },
+      {
+        "o": "neg",
+        "c": [
+          {
+            "o": "mul",
+            "c": [
+              {
+                "o": "const",
+                "v": 0.25
+              },
+              {
+                "o": "var",
+                "n": "x"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

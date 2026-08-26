@@ -5,10 +5,11 @@ import * as finance from "./domains/finance";
 import * as graphics from "./domains/graphics";
 import * as physics from "./domains/physics";
 import * as rendering from "./domains/rendering";
+import * as audio from "./domains/audio";
 export { taskOpProfile } from "./shared";
 
 /** Registre extensible: ajouter un domaine = un fichier + une ligne ici. */
-const SOURCES = [llm, quantum, finance, graphics, physics, rendering];
+const SOURCES = [llm, quantum, finance, graphics, physics, rendering, audio];
 
 export function buildTasks(): TaskDef[] {
   const all: TaskDef[] = SOURCES.flatMap((m) => m.defs());

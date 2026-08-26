@@ -222,5 +222,34 @@ buildRegressionTask({
         return err < 0.2 ? `∂I/∂t ≈ ${c.toFixed(4)} (exact 0.0300)` : null;
       },
     }),
+
+    // Bilateral range kernel × spatial Lorentzian — the edge-aware weight
+    // behind every real-time denoiser/sharpen (SVGF, bilateral grids).
+    // W(Δ) = exp(−Δ²/(2σr²)) / (1+Δ²/(2σs²)), σr=0.1, σs=0.5.
+buildActivationTask({
+      id: "bilateral_weight",
+      title: "Poids bilatéral (débruitage temps réel · SVGF)",
+      subtitle: "W(Δ)=exp(−Δ²/0.02)/(1+Δ²/0.5) sur Δ ∈ [0,1] — gaussienne×lorentzienne",
+      fn: (x) => Math.exp(-(x * x) / 0.02) / (1 + (x * x) / 0.5),
+      lo: 0,
+      hi: 1,
+      groundTruth: "W(Δ) = exp(−Δ²/(2σr²))/(1+Δ²/(2σs²))",
+      exactCost: 45,
+      extraSeeds: (() => {
+        const x = S.V("x");
+        return [
+          // pont exact: exp(−x²/0.02)/(1+x²/0.5)
+          makeNode("pdiv", { children: [
+            makeNode("exp", { children: [makeNode("neg", { children: [
+              makeNode("pdiv", { children: [makeNode("sq", { children: [x] }), S.C(0.02)] }),
+            ] })] }),
+            makeNode("add", { children: [
+              S.C(1),
+              makeNode("pdiv", { children: [makeNode("sq", { children: [x] }), S.C(0.5)] }),
+            ] }),
+          ] }),
+        ];
+      })(),
+    }),
   ];
 }
