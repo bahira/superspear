@@ -3,7 +3,7 @@ import { toWasmBytes } from "../src/lib/spear/wasm";
 import { readFileSync, writeFileSync } from "node:fs";
 
 const led = JSON.parse(readFileSync("spear-hall-of-fame.json", "utf8"));
-const out = {};
+const out: Record<string, { b64: string }> = {};
 for (const id of ["sigmoid", "gaussian_cdf", "hill"]) {
   const bytes = toWasmBytes(parseNode(led[id].tree));
   out[id] = { b64: Buffer.from(bytes).toString("base64") };
