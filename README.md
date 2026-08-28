@@ -460,7 +460,7 @@ The benchmark portfolio draws inspiration from the GROUNDED-SPEAR paper series (
 
 SPEAR tourne grâce au temps GPU de la ferme d'évolution. Si les kernels vous font gagner du temps de calcul :
 
-₿ **bc1q54n9x2894rr43f7nkaqywtegn8aufxwlnnkh5r**
+₿ **bc1q6zmudp0ju8rg29jycgzmc8ev2zarejaejnntnd**
 
 L'adresse est aussi déclarée dans le champ `funding` de [spear-kernels](https://www.npmjs.com/package/spear-kernels) (`npm fund`). Chaque satoshi retourne en heures de GPU.
 

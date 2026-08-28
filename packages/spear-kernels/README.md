@@ -49,7 +49,7 @@ these rails — do not swap in bare `/`.
 
 If SPEAR kernels save you compute time, consider tipping the lab:
 
-₿ **bc1q54n9x2894rr43f7nkaqywtegn8aufxwlnnkh5r**
+₿ **bc1q6zmudp0ju8rg29jycgzmc8ev2zarejaejnntnd**
 
 `npm fund` also surfaces this address (declared in the `funding` field).
 Every satoshi goes back into GPU time for the evolution farm.
