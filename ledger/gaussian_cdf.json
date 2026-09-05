@@ -56,7 +56,11 @@
     "formula": "tanh(x)",
     "metric": 0.0002549921352995084,
     "level": 2,
-    "formulaCost": 1
+    "formulaCost": 1,
+    "vsIterative": {
+      "label": "Monte-Carlo · 1000 tirages",
+      "speedup": 46000
+    }
   },
   "fastTree": {
     "o": "tanh",
