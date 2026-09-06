@@ -75,6 +75,12 @@ jobs:
       # is timed against. A wrong entry makes every speedup measured against it
       # fiction, so each law must reproduce its own task target. This caught two
       # pre-existing wrong laws (diffusion_beta, pendulum_hybrid).
+      # Constant snapping is what lets a numerically-refined formula become
+      # exact (kerr 3.8e-17 -> 1.7e-23). It is easy to break silently: a greedy
+      # per-constant rule rejects the kerr combination entirely.
+      - name: Constant snapping recovers exactness and never harms
+        run: npx tsx scripts/test-const-snapping.ts
+
       - name: Reference laws reproduce their targets
         run: npx tsx scripts/verify-exact-laws.ts
 

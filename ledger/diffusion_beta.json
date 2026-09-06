@@ -2,25 +2,25 @@
   "taskId": "diffusion_beta",
   "title": "Diffusion · schedule de bruit β(t)",
   "direction": "min",
-  "metric": 4.8949761346019325e-15,
-  "holdout": 4.891973580642611e-15,
+  "metric": 4.416535812970087e-15,
+  "holdout": 4.413133622752793e-15,
   "level": 2,
-  "formula": "((0.825876 - (cos(((t + 0.008) * 1.55833)))²) + 0.174124)",
-  "seed": 555111,
+  "formula": "((0.744838 - (cos(((t + 0.008) * 1.55833)))²) + 0.255162)",
+  "seed": 90210,
   "iteration": 8,
   "speed": {
     "formulaCost": 25,
     "exactCost": 28,
     "speedup": 1.12,
+    "costProfile": "cpu-transcendental-20",
     "measured": {
-      "measuredSpeedup": 0.9919,
-      "nsFormula": 10.3517,
-      "nsExact": 10.2682,
-      "agreement": 0.8857,
+      "measuredSpeedup": 1.0107,
+      "nsFormula": 10.2424,
+      "nsExact": 10.3519,
+      "agreement": 0.9024,
       "resolvable": false,
       "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
-    },
-    "costProfile": "cpu-transcendental-20"
+    }
   },
   "tree": {
     "o": "add",
@@ -30,7 +30,7 @@
         "c": [
           {
             "o": "const",
-            "v": 0.825876
+            "v": 0.744838
           },
           {
             "o": "sq",
@@ -68,34 +68,35 @@
       },
       {
         "o": "const",
-        "v": 0.17412393131748538
+        "v": 0.25516192313317204
       }
     ]
   },
   "fast": {
-    "formula": "(1 - (cos(((t + 0.008) * 1.55833)))²)",
-    "metric": 1.4189440115748394e-14,
+    "formula": "((-0.962434 * (cos((t * 1.706757)))²) + 0.94671)",
+    "metric": 0.0005060200458450411,
     "level": 2,
-    "formulaCost": 24
+    "formulaCost": 24,
+    "deploy": true
   },
   "fastTree": {
-    "o": "sub",
+    "o": "add",
     "c": [
       {
-        "o": "const",
-        "v": 1
-      },
-      {
-        "o": "sq",
+        "o": "mul",
         "c": [
           {
-            "o": "cos",
+            "o": "const",
+            "v": -0.9624339634735436
+          },
+          {
+            "o": "sq",
             "c": [
               {
-                "o": "mul",
+                "o": "cos",
                 "c": [
                   {
-                    "o": "add",
+                    "o": "mul",
                     "c": [
                       {
                         "o": "var",
@@ -103,19 +104,19 @@
                       },
                       {
                         "o": "const",
-                        "v": 0.008
+                        "v": 1.706757
                       }
                     ]
-                  },
-                  {
-                    "o": "const",
-                    "v": 1.55833
                   }
                 ]
               }
             ]
           }
         ]
+      },
+      {
+        "o": "const",
+        "v": 0.9467097490522063
       }
     ]
   }

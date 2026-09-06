@@ -11,12 +11,12 @@
   "speed": {
     "formulaCost": 5,
     "exactCost": 5,
-    "speedup": 2.4173,
+    "speedup": 2.0034,
     "measured": {
-      "measuredSpeedup": 2.4173,
-      "nsFormula": 2.7562,
-      "nsExact": 6.6624,
-      "agreement": 2.4173,
+      "measuredSpeedup": 2.0034,
+      "nsFormula": 2.7195,
+      "nsExact": 5.4482,
+      "agreement": 2.0034,
       "resolvable": true,
       "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
     },

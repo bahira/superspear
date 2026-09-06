@@ -4,7 +4,7 @@
   "direction": "min",
   "metric": 1.5455587803707568e-34,
   "level": 5,
-  "formula": "((0.5 * x) * (1 + erf((x * 0.707107))))",
+  "formula": "((0.5 * x) * (1 + erf((x * 0.7071067811865476))))",
   "seed": 4242,
   "iteration": 400,
   "speed": {

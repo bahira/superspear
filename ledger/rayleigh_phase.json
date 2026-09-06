@@ -2,27 +2,25 @@
   "taskId": "rayleigh_phase",
   "title": "Phase de Rayleigh (ciel atmosphérique)",
   "direction": "min",
-  "metric": 8.040757517816709e-35,
-  "holdout": 8.185202263645752e-35,
+  "metric": 7.162051980690034e-35,
+  "holdout": 6.018531076210112e-35,
   "level": 5,
-  "formula": "((0.029842 * ((1.162478 + (cos(x))²) + (cos(x))²)) + 0.024993)",
-  "seed": 20260906,
-  "iteration": 38,
+  "formula": "((0.059683 * (0.006473 + (cos(x))²)) + 0.059297)",
+  "seed": 90210,
+  "iteration": 52,
   "speed": {
-    "formulaCost": 46,
+    "formulaCost": 24,
     "exactCost": 5,
-    "speedup": 0.9651,
-    "measured": {
-      "measuredSpeedup": 0.9651,
-      "nsFormula": 7.8606,
-      "nsExact": 7.5863,
-      "agreement": 8.879,
-      "resolvable": true,
-      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
-    },
+    "speedup": 0.20833333333333334,
     "costProfile": "cpu-transcendental-20",
-    "speedupModelled": 0.10869565217391304,
-    "speedupSource": "measured"
+    "measured": {
+      "measuredSpeedup": 1.0113,
+      "nsFormula": 7.6069,
+      "nsExact": 7.693,
+      "agreement": 4.8543,
+      "resolvable": false,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    }
   },
   "tree": {
     "o": "add",
@@ -32,33 +30,14 @@
         "c": [
           {
             "o": "const",
-            "v": 0.02984155
+            "v": 0.0596831
           },
           {
             "o": "add",
             "c": [
               {
-                "o": "add",
-                "c": [
-                  {
-                    "o": "const",
-                    "v": 1.162478
-                  },
-                  {
-                    "o": "sq",
-                    "c": [
-                      {
-                        "o": "cos",
-                        "c": [
-                          {
-                            "o": "var",
-                            "n": "x"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
+                "o": "const",
+                "v": 0.006473
               },
               {
                 "o": "sq",
@@ -80,8 +59,18 @@
       },
       {
         "o": "const",
-        "v": 0.02499295463910001
+        "v": 0.05929677129370001
       }
     ]
+  },
+  "fast": {
+    "formula": "0.089599",
+    "metric": 0.0004463666351605404,
+    "level": 2,
+    "formulaCost": 0
+  },
+  "fastTree": {
+    "o": "const",
+    "v": 0.089599
   }
 }

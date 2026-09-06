@@ -2,22 +2,22 @@
   "taskId": "mel_scale",
   "title": "Échelle de Mel (MFCC · speech)",
   "direction": "min",
-  "metric": 2.591804276516316e-22,
-  "holdout": 2.603361247496618e-22,
+  "metric": 3.949666571450027e-25,
+  "holdout": 3.331845541065949e-25,
   "level": 5,
-  "formula": "(1126.994181 * log(max((1 + (x * 0.001429)), 1e-30)))",
-  "seed": 990601,
-  "iteration": 3,
+  "formula": "(1126.9941805389383 * log(max((1 + (x * 0.001429)), 1e-30)))",
+  "seed": 424242,
+  "iteration": 7,
   "speed": {
     "formulaCost": 23,
     "exactCost": 23,
-    "speedup": 1.6178,
+    "speedup": 1.6198,
     "costProfile": "cpu-transcendental-20",
     "measured": {
-      "measuredSpeedup": 1.6178,
-      "nsFormula": 6.3904,
-      "nsExact": 10.3383,
-      "agreement": 1.6178,
+      "measuredSpeedup": 1.6198,
+      "nsFormula": 6.3454,
+      "nsExact": 10.2783,
+      "agreement": 1.6198,
       "resolvable": true,
       "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
     },
@@ -29,7 +29,7 @@
     "c": [
       {
         "o": "const",
-        "v": 1126.9941805389446
+        "v": 1126.9941805389383
       },
       {
         "o": "log",
@@ -57,59 +57,6 @@
             ]
           }
         ]
-      }
-    ]
-  },
-  "fast": {
-    "formula": "((442.903239 * |sqrt(|sqrt(|(x + 0.0187)|)|)|) + -1390.150149)",
-    "metric": 2248.320084270009,
-    "level": 2,
-    "formulaCost": 8,
-    "deploy": true
-  },
-  "fastTree": {
-    "o": "add",
-    "c": [
-      {
-        "o": "mul",
-        "c": [
-          {
-            "o": "const",
-            "v": 442.9032390358543
-          },
-          {
-            "o": "abs",
-            "c": [
-              {
-                "o": "sqrt",
-                "c": [
-                  {
-                    "o": "sqrt",
-                    "c": [
-                      {
-                        "o": "add",
-                        "c": [
-                          {
-                            "o": "var",
-                            "n": "x"
-                          },
-                          {
-                            "o": "const",
-                            "v": 0.0187
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "o": "const",
-        "v": -1390.1501491961158
       }
     ]
   }
