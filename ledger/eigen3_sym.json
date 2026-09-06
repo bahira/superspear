@@ -502,16 +502,18 @@
     "level": 2,
     "formulaCost": 11,
     "seed": 999904,
-    "vsIterative": {
-      "label": "Jacobi · 4 balayages",
-      "speedup": 18.2
-    },
     "measured": {
       "measuredSpeedup": 17.3196,
       "nsChampion": 52.6754,
       "nsFast": 3.0414,
       "resolvable": true,
       "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    },
+    "vsSolverContext": {
+      "label": "Jacobi · 4 balayages",
+      "speedup": 18.2,
+      "note": "Context only — a closed-form reference exists for this task, so the solver is not what a real implementation runs. Not a like-for-like speedup: the solver's accuracy is orders of magnitude worse.",
+      "honestSpeedupVsReference": 9.727272727272727
     }
   },
   "fastTree": {
@@ -611,11 +613,25 @@
   },
   "speed": {
     "formulaCost": 120,
-    "vsIterative": {
-      "label": "Jacobi · 4 balayages",
-      "speedup": 1.7
+    "costProfile": "cpu-transcendental-20",
+    "measured": {
+      "measuredSpeedup": 1.3516,
+      "nsFormula": 52.1558,
+      "nsExact": 70.4939,
+      "agreement": 1.5158,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
     },
-    "costProfile": "cpu-transcendental-20"
+    "exactCost": 107,
+    "speedup": 1.3516,
+    "speedupModelled": 0.8916666666666667,
+    "speedupSource": "measured",
+    "vsSolverContext": {
+      "label": "Jacobi · 4 balayages",
+      "speedup": 1.7,
+      "note": "Context only — a closed-form reference exists for this task, so the solver is not what a real implementation runs. Not a like-for-like speedup: the solver's accuracy is orders of magnitude worse.",
+      "honestSpeedupVsReference": 0.8916666666666667
+    }
   },
   "holdout": 1.7913231060066527e-12
 }

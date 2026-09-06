@@ -10,14 +10,24 @@
   "speed": {
     "formulaCost": 47,
     "exactCost": 18,
-    "speedup": 0.3829787234042553,
+    "speedup": 0.943,
     "costProfile": "cpu-transcendental-20",
     "vsSolverContext": {
       "label": "Diag complète 128 modes",
       "speedup": 13.6,
       "note": "Context only — a closed-form reference exists for this task, so the solver is not what a real implementation runs. Not a like-for-like speedup: the solver's accuracy is orders of magnitude worse.",
       "honestSpeedupVsReference": 0.3829787234042553
-    }
+    },
+    "measured": {
+      "measuredSpeedup": 0.943,
+      "nsFormula": 19.0858,
+      "nsExact": 17.9975,
+      "agreement": 2.4622,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    },
+    "speedupModelled": 0.3829787234042553,
+    "speedupSource": "measured"
   },
   "tree": {
     "o": "add",
@@ -93,86 +103,6 @@
       {
         "o": "const",
         "v": 0.5942965371145621
-      }
-    ]
-  },
-  "fast": {
-    "formula": "((-1.673987 * ((-0.287877 + cos((t * 3.057635))))³) + 0.484534)",
-    "metric": 0.0613458418308354,
-    "level": 2,
-    "formulaCost": 26,
-    "speed": {
-      "formulaCost": 24,
-      "exactCost": 18,
-      "speedup": 0.75,
-      "vsSolverContext": {
-        "label": "Diag complÃ¨te 128 modes",
-        "speedup": 26.666666666666668,
-        "note": "Context only — a closed-form reference exists for this task, so the solver is not what a real implementation runs. Not a like-for-like speedup: the solver's accuracy is orders of magnitude worse.",
-        "honestSpeedupVsReference": 0.75
-      }
-    },
-    "vsSolverContext": {
-      "label": "Diag complète 128 modes",
-      "speedup": 24.6,
-      "note": "Context only — a closed-form reference exists for this task, so the solver is not what a real implementation runs. Not a like-for-like speedup: the solver's accuracy is orders of magnitude worse.",
-      "honestSpeedupVsReference": 0.6923076923076923
-    },
-    "measured": {
-      "measuredSpeedup": 1.9692,
-      "nsChampion": 19.8504,
-      "nsFast": 10.0805,
-      "resolvable": true,
-      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
-    }
-  },
-  "fastTree": {
-    "o": "add",
-    "c": [
-      {
-        "o": "mul",
-        "c": [
-          {
-            "o": "const",
-            "v": -1.6739871695757627
-          },
-          {
-            "o": "cube",
-            "c": [
-              {
-                "o": "add",
-                "c": [
-                  {
-                    "o": "const",
-                    "v": -0.287877
-                  },
-                  {
-                    "o": "cos",
-                    "c": [
-                      {
-                        "o": "mul",
-                        "c": [
-                          {
-                            "o": "var",
-                            "n": "t"
-                          },
-                          {
-                            "o": "const",
-                            "v": 3.057635
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "o": "const",
-        "v": 0.48453383814599804
       }
     ]
   }

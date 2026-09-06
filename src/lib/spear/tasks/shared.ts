@@ -510,6 +510,38 @@ export const EXACT_LAWS: Record<string, SpearNode> = {
 
 
   // ---------------------------------------------------------------------
+  // Five more references, found by testing each "impossible" instead of
+  // asserting it. Every one of these tasks was on the no-reference list.
+  //
+  //   rope_freq       10000^(-x/32) is just exp(-x*ln(10000)/32)   2.6e-28
+  //   loschmidt_rate  its trueLaw is already closed form           0
+  //   eigen3_sym      Cardano trigonometric; acos IS a served op   0
+  //   idm_following   closed form incl. the outer clamp            1.5e-32
+  //   blackbody_r     piecewise, but max(t,66) selects the branch
+  //                   exactly because 329.7*6^-0.1332 = 255        1.1e-33
+  //
+  // eigen3_sym is notable: it was listed as a legitimate "replaces an
+  // iterative solver" case (x1.7 vs Jacobi). It has a closed form, so that
+  // premise needs re-checking — the strawman rule now does it automatically.
+  //
+  // NOT added: blackbody_g and blackbody_b. Their Tanner Helland fits are
+  // genuinely discontinuous at t=66 and the two branches CROSS before the
+  // threshold (at t=66: gLo=255.63 vs gHi=251.66), so min/max cannot select
+  // them. Best approximations reach 1.7e-6 and 4.8e-5 — close, but a
+  // reference must be exact or the benchmark compares the champion against a
+  // slightly wrong curve. Selecting them needs a step function, not served.
+  // ---------------------------------------------------------------------
+  ...Object.fromEntries(
+    Object.entries({
+    rope_freq: "cos((1024*exp(((-x)*(9.210340371976184/32)))))",
+    loschmidt_rate: "(-log(max(((cos((1.55173487107174513e+00*t)))² + (7.90840261653796665e-03*(sin((1.55173487107174513e+00*t)))²)), 1e-30)))",
+    eigen3_sym: "(((t/3)) + (2*sqrt(max((-(((u - (((t)²)/3)))/3)), 0))*cos(((acos(max(-1,min(1,((((3*((((t*u)/3) - ((2*((t)³))/27)) - w)))/(2*((u - (((t)²)/3))))) * sqrt(max((-3/((u - (((t)²)/3)))), 0)))))))/3))))",
+    idm_following: "max(-9, min(2, (2*((1 - (((v/33))²)²) - (((2 + max(0, ((v*1.5) + ((v*dv)/4.89897948556635576e+00))))/s)*((2 + max(0, ((v*1.5) + ((v*dv)/4.89897948556635576e+00))))/s))))))",
+    blackbody_r: "(min(255, (329.698727446*exp(((-0.1332047592)*log(max((max((x/100),66) - 60), 1e-30))))))/255)",
+    } as Record<string, string>).map(([id, src]) => [id, parseFormula(src)]),
+  ),
+
+  // ---------------------------------------------------------------------
   // kepler_solver: E - e*sin(E) = M, solved by unrolled Halley iteration.
   //
   // I dismissed this task twice, both times for a bad reason.

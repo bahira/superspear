@@ -655,7 +655,13 @@
     {
       "id": "eigen3_sym",
       "hasTask": true,
-      "issues": [],
+      "issues": [
+        {
+          "code": "speedup-model-off",
+          "severity": "warn",
+          "detail": "modelled ×0.89 vs measured ×1.35 (agreement 1.52) — cite the measured figure"
+        }
+      ],
       "storedMetric": 3.325277645075658e-11,
       "recomputedMetric": 3.325277645075658e-11,
       "metricDrift": 0,
@@ -663,10 +669,12 @@
       "recomputedLevel": 2,
       "cost": 120,
       "storedCost": 120,
+      "speedup": 0.8916666666666667,
       "transcendental": 6,
       "provenance": "search",
       "holdout": 1.7913231060066527e-12,
       "overfitRatio": 0.05386988087023019,
+      "ood": 0,
       "r2": 0.9999999999545889,
       "fastCost": 11,
       "fastMetric": 0.030848965408385668
@@ -1122,6 +1130,7 @@
       "provenance": "search",
       "holdout": 0.002425005044156095,
       "overfitRatio": 0.8252098358536647,
+      "ood": 0,
       "r2": 0.9998192150475046
     },
     {
@@ -1603,6 +1612,11 @@
       "hasTask": true,
       "issues": [
         {
+          "code": "speedup-model-off",
+          "severity": "warn",
+          "detail": "modelled ×0.38 vs measured ×0.94 (agreement 2.46) — cite the measured figure"
+        },
+        {
           "code": "low-r2",
           "severity": "warn",
           "detail": "r²=0.9677 < 0.98 — below deployable grade"
@@ -1620,9 +1634,8 @@
       "provenance": "search",
       "holdout": 0.044550536457605115,
       "overfitRatio": 0.8417531149664078,
-      "r2": 0.9677433054112933,
-      "fastCost": 26,
-      "fastMetric": 0.0613458418308354
+      "ood": 0,
+      "r2": 0.9677433054112933
     },
     {
       "id": "mel_scale",
@@ -1897,13 +1910,7 @@
     {
       "id": "rope_freq",
       "hasTask": true,
-      "issues": [
-        {
-          "code": "fast-slot-pointless",
-          "severity": "warn",
-          "detail": "fast slot measures ×1.01 — no usable gain, so its accuracy loss buys nothing"
-        }
-      ],
+      "issues": [],
       "storedMetric": 8.450097215948882e-7,
       "recomputedMetric": 8.450097215948882e-7,
       "metricDrift": 0,
@@ -1917,9 +1924,7 @@
       "holdout": 7.946056930423871e-7,
       "overfitRatio": 0.9403509483212009,
       "ood": 0,
-      "r2": 0.9999983975093184,
-      "fastCost": 44,
-      "fastMetric": 8.450097215948873e-7
+      "r2": 0.9999983975093184
     },
     {
       "id": "rope_rot",
