@@ -11,11 +11,13 @@
     "formulaCost": 47,
     "exactCost": 18,
     "speedup": 0.3829787234042553,
-    "vsIterative": {
+    "costProfile": "cpu-transcendental-20",
+    "vsSolverContext": {
       "label": "Diag complète 128 modes",
-      "speedup": 13.6
-    },
-    "costProfile": "cpu-transcendental-20"
+      "speedup": 13.6,
+      "note": "Context only — a closed-form reference exists for this task, so the solver is not what a real implementation runs. Not a like-for-like speedup: the solver's accuracy is orders of magnitude worse.",
+      "honestSpeedupVsReference": 0.3829787234042553
+    }
   },
   "tree": {
     "o": "add",
@@ -103,14 +105,18 @@
       "formulaCost": 24,
       "exactCost": 18,
       "speedup": 0.75,
-      "vsIterative": {
+      "vsSolverContext": {
         "label": "Diag complÃ¨te 128 modes",
-        "speedup": 26.666666666666668
+        "speedup": 26.666666666666668,
+        "note": "Context only — a closed-form reference exists for this task, so the solver is not what a real implementation runs. Not a like-for-like speedup: the solver's accuracy is orders of magnitude worse.",
+        "honestSpeedupVsReference": 0.75
       }
     },
-    "vsIterative": {
+    "vsSolverContext": {
       "label": "Diag complète 128 modes",
-      "speedup": 24.6
+      "speedup": 24.6,
+      "note": "Context only — a closed-form reference exists for this task, so the solver is not what a real implementation runs. Not a like-for-like speedup: the solver's accuracy is orders of magnitude worse.",
+      "honestSpeedupVsReference": 0.6923076923076923
     }
   },
   "fastTree": {

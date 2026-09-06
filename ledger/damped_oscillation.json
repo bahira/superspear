@@ -11,11 +11,13 @@
     "formulaCost": 27,
     "exactCost": 44,
     "speedup": 1.6296296296296295,
-    "vsIterative": {
+    "costProfile": "cpu-transcendental-20",
+    "vsSolverContext": {
       "label": "RKF45 · 300 pas",
-      "speedup": 200
-    },
-    "costProfile": "cpu-transcendental-20"
+      "speedup": 200,
+      "note": "Context only — a closed-form reference exists for this task, so the solver is not what a real implementation runs. Not a like-for-like speedup: the solver's accuracy is orders of magnitude worse.",
+      "honestSpeedupVsReference": 1.6296296296296295
+    }
   },
   "tree": {
     "o": "add",

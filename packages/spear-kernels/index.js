@@ -159,7 +159,7 @@ export const kernels = {
       formulaCost: 23,
       exactCost: 34,
       speedupVsExact: 1.4782608695652173,
-      vsIterative: {"label":"Monte-Carlo · 1000 tirages","speedup":2000},
+      vsIterative: null,
     },
   },
   "damped_pendulum": {
@@ -403,7 +403,7 @@ export const kernels = {
       formulaCost: 13,
       exactCost: 17,
       speedupVsExact: 1.3076923076923077,
-      vsIterative: {"label":"RK4 géodésique · 200 pas","speedup":184.6},
+      vsIterative: null,
     },
   },
   "lennard_jones": {
@@ -446,7 +446,7 @@ export const kernels = {
       formulaCost: 27,
       exactCost: 44,
       speedupVsExact: 1.6296296296296295,
-      vsIterative: {"label":"RKF45 · 300 pas","speedup":200},
+      vsIterative: null,
     },
   },
   "logistic_growth": {
@@ -539,7 +539,7 @@ export const kernels = {
       formulaCost: 18,
       exactCost: 21,
       speedupVsExact: 1.1666666666666667,
-      vsIterative: {"label":"RK4 géodésique · 200 pas","speedup":133.3},
+      vsIterative: null,
     },
   },
   "pendulum_hybrid": {
@@ -668,7 +668,7 @@ export const kernels = {
       formulaCost: 44,
       exactCost: 43,
       speedupVsExact: 0.9772727272727273,
-      vsIterative: {"label":"CORDIC · 16 micro-rotations","speedup":1.5},
+      vsIterative: null,
     },
   },
   "gauss_shader": {
@@ -1449,7 +1449,7 @@ export const kernels = {
       formulaCost: 28,
       exactCost: 22,
       speedupVsExact: 0.7857142857142857,
-      vsIterative: {"label":"BFGS optimisation","speedup":28.6},
+      vsIterative: null,
     },
   },
   "amp_damp_fid": {
@@ -1467,7 +1467,7 @@ export const kernels = {
       formulaCost: 90,
       exactCost: 24,
       speedupVsExact: 0.26666666666666666,
-      vsIterative: {"label":"Kraus ops 4×4 matmul","speedup":0.5},
+      vsIterative: null,
     },
   },
   "loschmidt_rate": {
@@ -1492,7 +1492,7 @@ export const kernels = {
       formulaCost: 47,
       exactCost: 18,
       speedupVsExact: 0.3829787234042553,
-      vsIterative: {"label":"Diag complète 128 modes","speedup":13.6},
+      vsIterative: null,
     },
   },
   "bessel_i0e": {

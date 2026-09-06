@@ -26,7 +26,7 @@ gaussian_kernel (5.4e-34) · rope_rot (0) · atan_unit (0) · ema_smooth
 
 | Tâche | Solveur | Gain |
 |---|---|---|
-| gaussian_cdf | Monte-Carlo 1000 tirages | **×1840** |
+| ~~gaussian_cdf~~ | ~~Monte-Carlo 1000 tirages~~ | **retiré** — strawman (forme fermée existante ; honnête ×1.48) |
 | damped_oscillation | RKF45 300 pas | ×200 |
 | kerr | RK4 géodésique 200 pas | ×185 |
 | kerr_spin | RK4 géodésique | ×133 |

@@ -13,6 +13,6 @@
 ## Chiffres maîtres (v1.0.0+)
 
 - **50 tâches** · 14 exactes · 37 slots rapides · 46/48 vitesses chiffrées
-- **×1840** vs Monte-Carlo (gaussian_cdf) — sommet vs solveurs itératifs
+- **×33** vs Euler-Cromer (damped_pendulum) — sommet vs solveurs itératifs *réels* (tâches sans forme fermée). L'ancien ×1840 vs Monte-Carlo est retiré : strawman, voir AUDIT-2026-09.md §7
 - **80.31 %** rétention KV-cache sur vraies attentions distilgpt2 (bat H2O)
 - 2 bugs critiques moteur exterminés · CI parité 47/47 à chaque push

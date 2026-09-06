@@ -1,4 +1,4 @@
-﻿// Price every ledger entry against its task's iterative baseline:
+// Price every ledger entry against its task's iterative baseline:
 //   speedup = solver total cost / formula cost (same ALU/SFU units)
 // Cheap VALIDATED fast slots previously had their x-multipliers computed only
 // in prose (README tables) â€” never stored in the ledger itself. This pass
@@ -26,8 +26,16 @@ async function main() {
 
   let priced = 0;
   for (const [id, e] of Object.entries(ledger)) {
-    const ib = defs.get(id)?.iterativeBaseline;
+    const def = defs.get(id);
+    const ib = def?.iterativeBaseline;
     if (!ib) continue;
+    // Skip tasks that HAVE a closed-form reference: pricing them against an
+    // iterative solver compares the champion to something no real
+    // implementation runs, and buys a headline multiplier from a strawman
+    // (gaussian_cdf: ×2000 advertised vs ×1.48 honest). Those comparisons live
+    // in `speed.vsSolverContext`, set by fix-strawman-baselines.ts, and must
+    // not be re-promoted here. Enforced by the audit's strawman-baseline rule.
+    if ((def as any)?.exactCost !== undefined || (def as any)?.exactRefNode !== undefined) continue;
     // refresh precise pricing if missing, stale-labelled or mis-rounded
     if (e.speed?.formulaCost) {
       const wantPrecise = round1(ib.totalCost / Math.max(1, e.speed.formulaCost));

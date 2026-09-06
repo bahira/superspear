@@ -19,7 +19,7 @@
 
 ## Phase 3 — Produit & revenus (mois 1+)
 - [ ] Deploy dashboard Fly/Railway + Stripe metered sur /api/spear/discover
-- [ ] Landing page avec la story ×1840
+- [ ] Landing page — NE PAS utiliser l'ancienne story ×1840 (strawman retiré, cf. AUDIT-2026-09.md §7). Angle honnête : 33 kernels exacts auditables + remplacement de solveurs réels (×1.7–×33)
 - [ ] Pack Fab/Unity « Verified Math Kernels » ($14.99) depuis le kit
 - [ ] Démo MCU ESP32 des noyaux MISRA-C
 

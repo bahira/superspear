@@ -11,11 +11,13 @@
     "formulaCost": 44,
     "exactCost": 43,
     "speedup": 0.9772727272727273,
-    "vsIterative": {
+    "costProfile": "cpu-transcendental-20",
+    "vsSolverContext": {
       "label": "CORDIC · 16 micro-rotations",
-      "speedup": 1.5
-    },
-    "costProfile": "cpu-transcendental-20"
+      "speedup": 1.5,
+      "note": "Context only — a closed-form reference exists for this task, so the solver is not what a real implementation runs. Not a like-for-like speedup: the solver's accuracy is orders of magnitude worse.",
+      "honestSpeedupVsReference": 0.9772727272727273
+    }
   },
   "tree": {
     "o": "add",

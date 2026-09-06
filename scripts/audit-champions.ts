@@ -129,6 +129,35 @@ function auditEntry(id: string, entry: Record<string, any>, def: TaskDef | undef
   }
   row.transcendental = countOps(node).transcendental;
 
+  // ---- vs-iterative baselines: is the comparison like-for-like?
+  //
+  // `iterativeBaseline` is contractually "the way practitioners compute this
+  // WITHOUT a closed form". When the task ALSO ships a closed-form reference,
+  // that premise is false: nobody runs 1000-draw Monte-Carlo for Φ(x) when
+  // erf() exists. Pricing against the solver then buys a huge multiplier from
+  // a strawman — gaussian_cdf advertised ×2000 while the honest number against
+  // the real reference kernel is ×1.48, an inflation of ~1350×.
+  //
+  // Worse, the accuracies are not comparable either: 1000-draw Monte-Carlo
+  // lands at MSE ≈ 9e-5, while the champion is at 1e-34. A cost ratio between
+  // two kernels that differ by 29 orders of magnitude in accuracy is not a
+  // speedup, it is a category error.
+  const ib = def.iterativeBaseline;
+  if (ib) {
+    const hasClosedForm = def.exactCost !== undefined || def.exactRefNode !== undefined;
+    const claimed = entry.speed?.vsIterative?.speedup as number | undefined;
+    if (hasClosedForm && claimed !== undefined) {
+      const honest = row.speedup;
+      const inflation = honest && honest > 0 ? claimed / honest : undefined;
+      push(
+        "strawman-baseline",
+        inflation !== undefined && inflation > 10 ? "fail" : "warn",
+        `advertises ×${claimed.toFixed(1)} vs "${ib.label}", but a closed-form reference exists — honest ratio is ×${honest?.toFixed(2) ?? "?"}` +
+          (inflation !== undefined ? ` (inflated ${inflation.toFixed(0)}×)` : ""),
+      );
+    }
+  }
+
   // ---- generalisation: holdout
   if (def.holdout) {
     const h = safe(() => def.holdout!(node));

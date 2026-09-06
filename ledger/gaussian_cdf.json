@@ -11,11 +11,13 @@
     "formulaCost": 23,
     "exactCost": 34,
     "speedup": 1.4782608695652173,
-    "vsIterative": {
+    "costProfile": "cpu-transcendental-20",
+    "vsSolverContext": {
       "label": "Monte-Carlo · 1000 tirages",
-      "speedup": 2000
-    },
-    "costProfile": "cpu-transcendental-20"
+      "speedup": 2000,
+      "note": "Context only — a closed-form reference exists for this task, so the solver is not what a real implementation runs. Not a like-for-like speedup: the solver's accuracy is orders of magnitude worse.",
+      "honestSpeedupVsReference": 1.4782608695652173
+    }
   },
   "tree": {
     "o": "mul",
@@ -58,9 +60,11 @@
     "metric": 0.0002549921352995084,
     "level": 2,
     "formulaCost": 22,
-    "vsIterative": {
+    "vsSolverContext": {
       "label": "Monte-Carlo · 1000 tirages",
-      "speedup": 2090.9
+      "speedup": 2090.9,
+      "note": "Context only — a closed-form reference exists for this task, so the solver is not what a real implementation runs. Not a like-for-like speedup: the solver's accuracy is orders of magnitude worse.",
+      "honestSpeedupVsReference": 1.5454545454545454
     }
   },
   "fastTree": {

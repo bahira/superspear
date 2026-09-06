@@ -11,11 +11,13 @@
     "formulaCost": 18,
     "exactCost": 21,
     "speedup": 1.1666666666666667,
-    "vsIterative": {
+    "costProfile": "cpu-transcendental-20",
+    "vsSolverContext": {
       "label": "RK4 géodésique · 200 pas",
-      "speedup": 133.3
-    },
-    "costProfile": "cpu-transcendental-20"
+      "speedup": 133.3,
+      "note": "Context only — a closed-form reference exists for this task, so the solver is not what a real implementation runs. Not a like-for-like speedup: the solver's accuracy is orders of magnitude worse.",
+      "honestSpeedupVsReference": 1.1666666666666667
+    }
   },
   "tree": {
     "o": "add",
@@ -111,14 +113,18 @@
       "formulaCost": 4,
       "exactCost": 21,
       "speedup": 5.25,
-      "vsIterative": {
+      "vsSolverContext": {
         "label": "RK4 gÃ©odÃ©sique · 200 pas",
-        "speedup": 600
+        "speedup": 600,
+        "note": "Context only — a closed-form reference exists for this task, so the solver is not what a real implementation runs. Not a like-for-like speedup: the solver's accuracy is orders of magnitude worse.",
+        "honestSpeedupVsReference": 5.25
       }
     },
-    "vsIterative": {
+    "vsSolverContext": {
       "label": "RK4 géodésique · 200 pas",
-      "speedup": 400
+      "speedup": 400,
+      "note": "Context only — a closed-form reference exists for this task, so the solver is not what a real implementation runs. Not a like-for-like speedup: the solver's accuracy is orders of magnitude worse.",
+      "honestSpeedupVsReference": 3.5
     }
   },
   "fastTree": {

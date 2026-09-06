@@ -11,11 +11,13 @@
     "formulaCost": 28,
     "exactCost": 22,
     "speedup": 0.7857142857142857,
-    "vsIterative": {
+    "costProfile": "cpu-transcendental-20",
+    "vsSolverContext": {
       "label": "BFGS optimisation",
-      "speedup": 28.6
-    },
-    "costProfile": "cpu-transcendental-20"
+      "speedup": 28.6,
+      "note": "Context only — a closed-form reference exists for this task, so the solver is not what a real implementation runs. Not a like-for-like speedup: the solver's accuracy is orders of magnitude worse.",
+      "honestSpeedupVsReference": 0.7857142857142857
+    }
   },
   "tree": {
     "o": "mul",
