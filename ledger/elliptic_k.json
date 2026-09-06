@@ -2,11 +2,18 @@
   "taskId": "elliptic_k",
   "title": "Intégrale elliptique K(m) (pendule · géodésiques)",
   "direction": "min",
-  "metric": 0.004333603318947968,
+  "metric": 0.0010426866886825285,
+  "holdout": 0.0009718726334056787,
   "level": 2,
-  "formula": "((0.229391 * ((exp(m) * (asin(m))³) + m)) + 1.642805)",
-  "seed": 20260825,
-  "iteration": 7,
+  "formula": "((-0.864881 * log(max(acos(m), 1e-30))) + 1.909222)",
+  "seed": 770077,
+  "iteration": 22,
+  "speed": {
+    "formulaCost": 42,
+    "exactCost": 16,
+    "speedup": 0.38095238095238093,
+    "costProfile": "cpu-transcendental-20"
+  },
   "tree": {
     "o": "add",
     "c": [
@@ -15,143 +22,17 @@
         "c": [
           {
             "o": "const",
-            "v": 0.22939144913554116
+            "v": -0.8648805663709055
           },
           {
-            "o": "add",
+            "o": "log",
             "c": [
               {
-                "o": "mul",
+                "o": "acos",
                 "c": [
                   {
-                    "o": "exp",
-                    "c": [
-                      {
-                        "o": "var",
-                        "n": "m"
-                      }
-                    ]
-                  },
-                  {
-                    "o": "cube",
-                    "c": [
-                      {
-                        "o": "asin",
-                        "c": [
-                          {
-                            "o": "var",
-                            "n": "m"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "o": "var",
-                "n": "m"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "o": "const",
-        "v": 1.6428050203299513
-      }
-    ]
-  },
-  "speed": {
-    "formulaCost": 46,
-    "exactCost": 16,
-    "speedup": 0.34782608695652173,
-    "costProfile": "cpu-transcendental-20"
-  },
-  "fast": {
-    "formula": "((2.466219 * ((max(m, 0.830492) * ((m)² * max(m, 0.906194))) * max(((m)³)³, 0.598429))) + 1.583328)",
-    "metric": 0.003226352794085104,
-    "level": 2,
-    "formulaCost": 13
-  },
-  "fastTree": {
-    "o": "add",
-    "c": [
-      {
-        "o": "mul",
-        "c": [
-          {
-            "o": "const",
-            "v": 2.4662189983594343
-          },
-          {
-            "o": "mul",
-            "c": [
-              {
-                "o": "mul",
-                "c": [
-                  {
-                    "o": "max",
-                    "c": [
-                      {
-                        "o": "var",
-                        "n": "m"
-                      },
-                      {
-                        "o": "const",
-                        "v": 0.830492
-                      }
-                    ]
-                  },
-                  {
-                    "o": "mul",
-                    "c": [
-                      {
-                        "o": "sq",
-                        "c": [
-                          {
-                            "o": "var",
-                            "n": "m"
-                          }
-                        ]
-                      },
-                      {
-                        "o": "max",
-                        "c": [
-                          {
-                            "o": "var",
-                            "n": "m"
-                          },
-                          {
-                            "o": "const",
-                            "v": 0.906194
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "o": "max",
-                "c": [
-                  {
-                    "o": "cube",
-                    "c": [
-                      {
-                        "o": "cube",
-                        "c": [
-                          {
-                            "o": "var",
-                            "n": "m"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "o": "const",
-                    "v": 0.598429
+                    "o": "var",
+                    "n": "m"
                   }
                 ]
               }
@@ -161,7 +42,7 @@
       },
       {
         "o": "const",
-        "v": 1.5833278564498237
+        "v": 1.9092221800154128
       }
     ]
   }

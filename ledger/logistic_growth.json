@@ -2,94 +2,84 @@
   "taskId": "logistic_growth",
   "title": "Croissance logistique",
   "direction": "min",
-  "metric": 0.000011045057513989082,
-  "level": 2,
-  "formula": "((-0.416375 * (sin(sin((8.28632 - t))) - (t * 0.170954))) + 0.358312)",
-  "seed": 990703,
-  "iteration": 400,
+  "metric": 0,
+  "holdout": 0,
+  "level": 5,
+  "formula": "(1 / (1 + exp((-(2 * (t - 2))))))",
+  "seed": 260906,
+  "iteration": 7,
   "speed": {
-    "formulaCost": 45,
+    "formulaCost": 28,
     "exactCost": 28,
-    "speedup": 0.6222222222222222,
-    "costProfile": "cpu-transcendental-20",
+    "speedup": 1.0193,
     "measured": {
-      "measuredSpeedup": 1.006,
-      "nsFormula": 15.6178,
-      "nsExact": 15.7107,
-      "agreement": 1.6167,
-      "resolvable": false,
+      "measuredSpeedup": 1.0193,
+      "nsFormula": 15.8542,
+      "nsExact": 16.1606,
+      "agreement": 1.0193,
+      "resolvable": true,
       "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
-    }
+    },
+    "costProfile": "cpu-transcendental-20",
+    "speedupModelled": 1,
+    "speedupSource": "measured"
   },
   "tree": {
-    "o": "add",
+    "o": "pdiv",
     "c": [
       {
-        "o": "mul",
+        "o": "const",
+        "v": 1
+      },
+      {
+        "o": "add",
         "c": [
           {
             "o": "const",
-            "v": -0.416375
+            "v": 1
           },
           {
-            "o": "sub",
+            "o": "exp",
             "c": [
               {
-                "o": "sin",
+                "o": "neg",
                 "c": [
                   {
-                    "o": "sin",
+                    "o": "mul",
                     "c": [
+                      {
+                        "o": "const",
+                        "v": 2
+                      },
                       {
                         "o": "sub",
                         "c": [
                           {
-                            "o": "const",
-                            "v": 8.28632
-                          },
-                          {
                             "o": "var",
                             "n": "t"
+                          },
+                          {
+                            "o": "const",
+                            "v": 2
                           }
                         ]
                       }
                     ]
                   }
                 ]
-              },
-              {
-                "o": "mul",
-                "c": [
-                  {
-                    "o": "var",
-                    "n": "t"
-                  },
-                  {
-                    "o": "const",
-                    "v": 0.170954
-                  }
-                ]
               }
             ]
           }
         ]
-      },
-      {
-        "o": "const",
-        "v": 0.358312
       }
     ]
   },
   "fast": {
-    "formula": "((0.103248 * ((min(t, 2.609741))² + (0.86783 * max(1.214626, t)))) + -0.093028)",
-    "metric": 0.0004105827823591433,
+    "formula": "((0.545667 * min(atan(t), (max(t, 1.124395) - 1.369325))) + 0.195405)",
+    "metric": 0.0020583095052845034,
     "level": 2,
-    "formulaCost": 7,
-    "speed": {
-      "formulaCost": 5,
-      "exactCost": 28,
-      "speedup": 5.6
-    }
+    "formulaCost": 25,
+    "deploy": true
   },
   "fastTree": {
     "o": "add",
@@ -99,48 +89,39 @@
         "c": [
           {
             "o": "const",
-            "v": 0.10324827489389778
+            "v": 0.5456665594542681
           },
           {
-            "o": "add",
+            "o": "min",
             "c": [
               {
-                "o": "sq",
+                "o": "atan",
                 "c": [
                   {
-                    "o": "min",
-                    "c": [
-                      {
-                        "o": "var",
-                        "n": "t"
-                      },
-                      {
-                        "o": "const",
-                        "v": 2.609741
-                      }
-                    ]
+                    "o": "var",
+                    "n": "t"
                   }
                 ]
               },
               {
-                "o": "mul",
+                "o": "sub",
                 "c": [
-                  {
-                    "o": "const",
-                    "v": 0.86783
-                  },
                   {
                     "o": "max",
                     "c": [
                       {
-                        "o": "const",
-                        "v": 1.214626
-                      },
-                      {
                         "o": "var",
                         "n": "t"
+                      },
+                      {
+                        "o": "const",
+                        "v": 1.124395
                       }
                     ]
+                  },
+                  {
+                    "o": "const",
+                    "v": 1.369325
                   }
                 ]
               }
@@ -150,7 +131,7 @@
       },
       {
         "o": "const",
-        "v": -0.09302767496182511
+        "v": 0.19540516229348223
       }
     ]
   }

@@ -2,32 +2,33 @@
   "taskId": "gauss_shader",
   "title": "Gaussienne shader-ready (blur variable DoF/bloom)",
   "direction": "min",
-  "metric": 8.1772509994516e-34,
+  "metric": 0,
+  "holdout": 0,
   "level": 5,
-  "formula": "sqrt(|exp((-(x)²))|)",
-  "seed": 993001,
-  "iteration": 400,
+  "formula": "exp(((-(x)²) * 0.5))",
+  "seed": 260906,
+  "iteration": 8,
   "speed": {
-    "formulaCost": 24,
+    "formulaCost": 23,
     "exactCost": 22,
-    "speedup": 1.5358,
-    "costProfile": "cpu-transcendental-20",
+    "speedup": 1.5712,
     "measured": {
-      "measuredSpeedup": 1.5358,
-      "nsFormula": 8.1654,
-      "nsExact": 12.5404,
-      "agreement": 1.6754,
+      "measuredSpeedup": 1.5712,
+      "nsFormula": 7.8825,
+      "nsExact": 12.3851,
+      "agreement": 1.6426,
       "resolvable": true,
       "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
     },
-    "speedupModelled": 0.9166666666666666,
+    "costProfile": "cpu-transcendental-20",
+    "speedupModelled": 0.9565217391304348,
     "speedupSource": "measured"
   },
   "tree": {
-    "o": "sqrt",
+    "o": "exp",
     "c": [
       {
-        "o": "exp",
+        "o": "mul",
         "c": [
           {
             "o": "neg",
@@ -42,69 +43,12 @@
                 ]
               }
             ]
-          }
-        ]
-      }
-    ]
-  },
-  "fast": {
-    "formula": "((1.191253 * (x / (x + (x * (x)²)))) + -0.081508)",
-    "metric": 0.0023544555566728824,
-    "level": 2,
-    "formulaCost": 9,
-    "deploy": true
-  },
-  "fastTree": {
-    "o": "add",
-    "c": [
-      {
-        "o": "mul",
-        "c": [
-          {
-            "o": "const",
-            "v": 1.1912526733610884
           },
           {
-            "o": "pdiv",
-            "c": [
-              {
-                "o": "var",
-                "n": "x"
-              },
-              {
-                "o": "add",
-                "c": [
-                  {
-                    "o": "var",
-                    "n": "x"
-                  },
-                  {
-                    "o": "mul",
-                    "c": [
-                      {
-                        "o": "var",
-                        "n": "x"
-                      },
-                      {
-                        "o": "sq",
-                        "c": [
-                          {
-                            "o": "var",
-                            "n": "x"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
+            "o": "const",
+            "v": 0.5
           }
         ]
-      },
-      {
-        "o": "const",
-        "v": -0.08150750984072072
       }
     ]
   }

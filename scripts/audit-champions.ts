@@ -16,6 +16,7 @@
 //   npx tsx scripts/audit-champions.ts --strict     # exit 1 on any FAIL
 //   npx tsx scripts/audit-champions.ts --md > REPORTS/champion-audit.md
 import { loadLedger } from "../src/lib/spear/ledger";
+import { EXACT_LAWS } from "../src/lib/spear/tasks/shared";
 import { buildTasks } from "../src/lib/spear/benchmarks";
 import { parseNode, estimateCost, nodeToString, countOps } from "../src/lib/spear/engine";
 import type { SpearNode } from "../src/lib/spear/engine";
@@ -24,7 +25,7 @@ import type { TaskDef } from "../src/lib/spear/tasks/types";
 const REL_TOL = 1e-6;    // relative tolerance on metric reproduction
 const ABS_FLOOR = 1e-30; // below this, metrics are "exact" and only compared loosely
 
-type Severity = "ok" | "warn" | "fail";
+type Severity = "ok" | "info" | "warn" | "fail";
 
 interface Issue { code: string; severity: Severity; detail: string }
 
@@ -39,6 +40,8 @@ interface Row {
   cost?: number;
   storedCost?: number;
   speedup?: number;
+  /** "search" = found by the loop; "recovered-seed" = textually the seeded law. */
+  provenance?: "search" | "recovered-seed";
   holdout?: number;
   overfitRatio?: number;
   ood?: number;
@@ -163,6 +166,27 @@ function auditEntry(id: string, entry: Record<string, any>, def: TaskDef | undef
           (inflation !== undefined ? ` (inflated ${inflation.toFixed(0)}×)` : ""),
       );
     }
+  }
+
+  // ---- did the search DISCOVER this, or recover a seeded law?
+  // The task's reference law is in the seed pool (it was a real search wall:
+  // the law beat the champion on 39 of 69 tasks before seeding). That is
+  // legitimate — a seed still has to survive selection and constant refitting.
+  // But a champion that is textually the seeded law is a RECOVERY, not a
+  // discovery, and the two must never be reported as the same thing.
+  const seededLaw = EXACT_LAWS[id];
+  if (seededLaw) {
+    const same = nodeToString(node) === nodeToString(seededLaw);
+    row.provenance = same ? "recovered-seed" : "search";
+    if (same) {
+      push(
+        "champion-is-seeded-law",
+        "info",
+        `champion is textually the seeded reference law — a recovery, not a discovery`,
+      );
+    }
+  } else {
+    row.provenance = "search";
   }
 
   // ---- the advertised speedup vs what the hardware actually did
@@ -302,10 +326,13 @@ async function main() {
 
   const fails = rows.filter((r) => r.issues.some((i) => i.severity === "fail"));
   const warns = rows.filter((r) => r.issues.some((i) => i.severity === "warn") && !fails.includes(r));
-  const clean = rows.filter((r) => r.issues.length === 0);
+  // `info` issues (provenance) are annotations, not defects: a record whose
+  // only issue is "this is the seeded law" is still a clean record.
+  const clean = rows.filter((r) => r.issues.every((i) => i.severity === "info"));
+  const recovered = rows.filter((r) => r.provenance === "recovered-seed");
 
   if (asJson) {
-    console.log(JSON.stringify({ rows, missing, summary: { total: rows.length, clean: clean.length, warn: warns.length, fail: fails.length } }, null, 2));
+    console.log(JSON.stringify({ rows, missing, summary: { total: rows.length, clean: clean.length, warn: warns.length, fail: fails.length, recoveredSeed: recovered.length, searchFound: rows.length - recovered.length } }, null, 2));
     if (strict && fails.length) process.exit(1);
     return;
   }
@@ -372,6 +399,7 @@ async function main() {
   console.log(`  warnings  : ${warns.length}`);
   console.log(`  failures  : ${fails.length}`);
   console.log(`  no champion: ${missing.length}${missing.length ? " → " + missing.join(", ") : ""}`);
+  console.log(`  provenance : ${rows.length - recovered.length} search-found | ${recovered.length} recovered seeded law`);
   const byCode = new Map<string, number>();
   for (const r of rows) for (const i of r.issues) byCode.set(i.code, (byCode.get(i.code) ?? 0) + 1);
   console.log(`\n== issue histogram ==`);

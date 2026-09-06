@@ -2,92 +2,70 @@
   "taskId": "laguerre_l2",
   "title": "Laguerre L₂ (radiale hydrogène · oscillateur)",
   "direction": "min",
-  "metric": 8.257087129644967e-7,
+  "metric": 0,
+  "holdout": 0,
   "level": 5,
-  "formula": "((0.250056 * ((-0.01236 + ((x + -1.996089))²) + ((x + -2.005496))²)) + -0.996478)",
-  "seed": 1000140,
-  "iteration": 400,
+  "formula": "((1 - (2 * x)) + ((x)² * 0.5))",
+  "seed": 260906,
+  "iteration": 8,
   "speed": {
-    "formulaCost": 8,
+    "formulaCost": 5,
     "exactCost": 5,
-    "speedup": 1.9952,
-    "costProfile": "cpu-transcendental-20",
+    "speedup": 2.0008,
     "measured": {
-      "measuredSpeedup": 1.9952,
-      "nsFormula": 2.7309,
-      "nsExact": 5.4487,
-      "agreement": 3.1923,
+      "measuredSpeedup": 2.0008,
+      "nsFormula": 2.7287,
+      "nsExact": 5.4597,
+      "agreement": 2.0008,
       "resolvable": true,
       "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
     },
-    "speedupModelled": 0.625,
+    "costProfile": "cpu-transcendental-20",
+    "speedupModelled": 1,
     "speedupSource": "measured"
   },
   "tree": {
     "o": "add",
     "c": [
       {
-        "o": "mul",
+        "o": "sub",
         "c": [
           {
             "o": "const",
-            "v": 0.25005568930581107
+            "v": 1
           },
           {
-            "o": "add",
+            "o": "mul",
             "c": [
               {
-                "o": "add",
-                "c": [
-                  {
-                    "o": "const",
-                    "v": -0.01236
-                  },
-                  {
-                    "o": "sq",
-                    "c": [
-                      {
-                        "o": "add",
-                        "c": [
-                          {
-                            "o": "var",
-                            "n": "x"
-                          },
-                          {
-                            "o": "const",
-                            "v": -1.996089
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
+                "o": "const",
+                "v": 2
               },
               {
-                "o": "sq",
-                "c": [
-                  {
-                    "o": "add",
-                    "c": [
-                      {
-                        "o": "var",
-                        "n": "x"
-                      },
-                      {
-                        "o": "const",
-                        "v": -2.005496
-                      }
-                    ]
-                  }
-                ]
+                "o": "var",
+                "n": "x"
               }
             ]
           }
         ]
       },
       {
-        "o": "const",
-        "v": -0.996477875101051
+        "o": "mul",
+        "c": [
+          {
+            "o": "sq",
+            "c": [
+              {
+                "o": "var",
+                "n": "x"
+              }
+            ]
+          },
+          {
+            "o": "const",
+            "v": 0.5
+          }
+        ]
       }
     ]
   },

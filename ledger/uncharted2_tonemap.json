@@ -2,26 +2,26 @@
   "taskId": "uncharted2_tonemap",
   "title": "Tonemap Uncharted 2 (filmic)",
   "direction": "min",
-  "metric": 9.292472074252858e-9,
-  "holdout": 3.6705075261139104e-9,
+  "metric": 5.653203630850936e-29,
+  "holdout": 5.641882794961444e-29,
   "level": 2,
-  "formula": "((1.288651 * (x / (1.60694 + |x|))) + -0.001333)",
-  "seed": 271828,
-  "iteration": 26,
+  "formula": "((1.379064 * (((((2 * x) * ((0.3 * x) + 0.05)) + 0.004) / (((2 * x) * ((0.3 * x) + 0.5)) + 0.06)) - -0.208666)) + -0.379701)",
+  "seed": 31337,
+  "iteration": 7,
   "speed": {
-    "formulaCost": 8,
+    "formulaCost": 17,
     "exactCost": 26,
-    "speedup": 1.1519,
-    "costProfile": "cpu-transcendental-20",
+    "speedup": 1.0638,
     "measured": {
-      "measuredSpeedup": 1.1519,
-      "nsFormula": 7.5698,
-      "nsExact": 8.7197,
-      "agreement": 0.3544,
+      "measuredSpeedup": 1.0638,
+      "nsFormula": 8.2234,
+      "nsExact": 8.748,
+      "agreement": 0.6956,
       "resolvable": true,
       "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
     },
-    "speedupModelled": 3.25,
+    "costProfile": "cpu-transcendental-20",
+    "speedupModelled": 1.5294117647058822,
     "speedupSource": "measured"
   },
   "tree": {
@@ -32,32 +32,117 @@
         "c": [
           {
             "o": "const",
-            "v": 1.288650555929167
+            "v": 1.3790642466494378
           },
           {
-            "o": "pdiv",
+            "o": "sub",
             "c": [
               {
-                "o": "var",
-                "n": "x"
-              },
-              {
-                "o": "add",
+                "o": "pdiv",
                 "c": [
                   {
-                    "o": "const",
-                    "v": 1.60694
-                  },
-                  {
-                    "o": "abs",
+                    "o": "add",
                     "c": [
                       {
-                        "o": "var",
-                        "n": "x"
+                        "o": "mul",
+                        "c": [
+                          {
+                            "o": "mul",
+                            "c": [
+                              {
+                                "o": "const",
+                                "v": 2
+                              },
+                              {
+                                "o": "var",
+                                "n": "x"
+                              }
+                            ]
+                          },
+                          {
+                            "o": "add",
+                            "c": [
+                              {
+                                "o": "mul",
+                                "c": [
+                                  {
+                                    "o": "const",
+                                    "v": 0.3
+                                  },
+                                  {
+                                    "o": "var",
+                                    "n": "x"
+                                  }
+                                ]
+                              },
+                              {
+                                "o": "const",
+                                "v": 0.05
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "o": "const",
+                        "v": 0.004
+                      }
+                    ]
+                  },
+                  {
+                    "o": "add",
+                    "c": [
+                      {
+                        "o": "mul",
+                        "c": [
+                          {
+                            "o": "mul",
+                            "c": [
+                              {
+                                "o": "const",
+                                "v": 2
+                              },
+                              {
+                                "o": "var",
+                                "n": "x"
+                              }
+                            ]
+                          },
+                          {
+                            "o": "add",
+                            "c": [
+                              {
+                                "o": "mul",
+                                "c": [
+                                  {
+                                    "o": "const",
+                                    "v": 0.3
+                                  },
+                                  {
+                                    "o": "var",
+                                    "n": "x"
+                                  }
+                                ]
+                              },
+                              {
+                                "o": "const",
+                                "v": 0.5
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "o": "const",
+                        "v": 0.06
                       }
                     ]
                   }
                 ]
+              },
+              {
+                "o": "const",
+                "v": -0.208666
               }
             ]
           }
@@ -65,53 +150,134 @@
       },
       {
         "o": "const",
-        "v": -0.0013329713184702997
+        "v": -0.379701436534655
       }
     ]
   },
   "fast": {
-    "formula": "((1.275811 * (x / (1.98 + x))) + 0.056702)",
-    "metric": 0.00013803885447372032,
+    "formula": "(1.379064 * (((((2 * x) * ((0.3 * x) + 0.05)) + 0.004) / (((2 * x) * ((0.3 * x) + 0.5)) + 0.06)) - 0.066667))",
+    "metric": 2.664376972745578e-14,
     "level": 2,
-    "formulaCost": 7
+    "formulaCost": 16
   },
   "fastTree": {
-    "o": "add",
+    "o": "mul",
     "c": [
       {
-        "o": "mul",
+        "o": "const",
+        "v": 1.379064
+      },
+      {
+        "o": "sub",
         "c": [
-          {
-            "o": "const",
-            "v": 1.275810730240923
-          },
           {
             "o": "pdiv",
             "c": [
               {
-                "o": "var",
-                "n": "x"
+                "o": "add",
+                "c": [
+                  {
+                    "o": "mul",
+                    "c": [
+                      {
+                        "o": "mul",
+                        "c": [
+                          {
+                            "o": "const",
+                            "v": 2
+                          },
+                          {
+                            "o": "var",
+                            "n": "x"
+                          }
+                        ]
+                      },
+                      {
+                        "o": "add",
+                        "c": [
+                          {
+                            "o": "mul",
+                            "c": [
+                              {
+                                "o": "const",
+                                "v": 0.3
+                              },
+                              {
+                                "o": "var",
+                                "n": "x"
+                              }
+                            ]
+                          },
+                          {
+                            "o": "const",
+                            "v": 0.05
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "o": "const",
+                    "v": 0.004
+                  }
+                ]
               },
               {
                 "o": "add",
                 "c": [
                   {
-                    "o": "const",
-                    "v": 1.98
+                    "o": "mul",
+                    "c": [
+                      {
+                        "o": "mul",
+                        "c": [
+                          {
+                            "o": "const",
+                            "v": 2
+                          },
+                          {
+                            "o": "var",
+                            "n": "x"
+                          }
+                        ]
+                      },
+                      {
+                        "o": "add",
+                        "c": [
+                          {
+                            "o": "mul",
+                            "c": [
+                              {
+                                "o": "const",
+                                "v": 0.3
+                              },
+                              {
+                                "o": "var",
+                                "n": "x"
+                              }
+                            ]
+                          },
+                          {
+                            "o": "const",
+                            "v": 0.5
+                          }
+                        ]
+                      }
+                    ]
                   },
                   {
-                    "o": "var",
-                    "n": "x"
+                    "o": "const",
+                    "v": 0.06
                   }
                 ]
               }
             ]
+          },
+          {
+            "o": "const",
+            "v": 0.06666666666666667
           }
         ]
-      },
-      {
-        "o": "const",
-        "v": 0.056701708850312824
       }
     ]
   }

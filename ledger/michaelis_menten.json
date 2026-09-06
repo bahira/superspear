@@ -2,109 +2,56 @@
   "taskId": "michaelis_menten",
   "title": "Michaelis-Menten (biochimie · pharma)",
   "direction": "min",
-  "metric": 6.947760597116317e-10,
-  "level": 2,
-  "formula": "((5.18082 * (((s + -75.797025) / (s - -3.997718)) - (-2.586911 / max(s, (s - -3.930559))))) + 94.819196)",
-  "seed": 1000080,
-  "iteration": 400,
+  "metric": 0,
+  "holdout": 0,
+  "level": 5,
+  "formula": "((100 * s) / (4 + s))",
+  "seed": 260906,
+  "iteration": 8,
   "speed": {
-    "formulaCost": 15,
+    "formulaCost": 6,
     "exactCost": 7,
-    "speedup": 0.3972,
-    "costProfile": "cpu-transcendental-20",
+    "speedup": 1.0371,
     "measured": {
-      "measuredSpeedup": 0.3972,
-      "nsFormula": 19.1547,
-      "nsExact": 7.6085,
-      "agreement": 0.8512,
+      "measuredSpeedup": 1.0371,
+      "nsFormula": 8.1183,
+      "nsExact": 8.4197,
+      "agreement": 0.889,
       "resolvable": true,
       "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
     },
-    "speedupModelled": 0.4666666666666667,
+    "costProfile": "cpu-transcendental-20",
+    "speedupModelled": 1.1666666666666667,
     "speedupSource": "measured"
   },
   "tree": {
-    "o": "add",
+    "o": "pdiv",
     "c": [
       {
         "o": "mul",
         "c": [
           {
             "o": "const",
-            "v": 5.180819843767829
+            "v": 100
           },
           {
-            "o": "sub",
-            "c": [
-              {
-                "o": "pdiv",
-                "c": [
-                  {
-                    "o": "add",
-                    "c": [
-                      {
-                        "o": "var",
-                        "n": "s"
-                      },
-                      {
-                        "o": "const",
-                        "v": -75.797025
-                      }
-                    ]
-                  },
-                  {
-                    "o": "sub",
-                    "c": [
-                      {
-                        "o": "var",
-                        "n": "s"
-                      },
-                      {
-                        "o": "const",
-                        "v": -3.997718
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "o": "pdiv",
-                "c": [
-                  {
-                    "o": "const",
-                    "v": -2.586911
-                  },
-                  {
-                    "o": "max",
-                    "c": [
-                      {
-                        "o": "var",
-                        "n": "s"
-                      },
-                      {
-                        "o": "sub",
-                        "c": [
-                          {
-                            "o": "var",
-                            "n": "s"
-                          },
-                          {
-                            "o": "const",
-                            "v": -3.930559
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
+            "o": "var",
+            "n": "s"
           }
         ]
       },
       {
-        "o": "const",
-        "v": 94.81919572289306
+        "o": "add",
+        "c": [
+          {
+            "o": "const",
+            "v": 4
+          },
+          {
+            "o": "var",
+            "n": "s"
+          }
+        ]
       }
     ]
   }

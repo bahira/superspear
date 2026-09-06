@@ -219,6 +219,19 @@ export function buildActivationTask(spec: ActivationSpec, points = 400): TaskDef
     },
     seedPool: pureSeeds([
       makeNode("var", { name: "x" }),
+      // The task's OWN reference law. Its absence was a real search wall: the
+      // pool offered generic shapes (x, x^2, rationals) and bootstrap champions
+      // from other tasks, but never the law being fitted, so gradient-free
+      // search had to rediscover e.g. a quintic or a filmic tonemap from
+      // scratch and usually did not. Measured before adding it: the exact law
+      // beat the stored champion on 39 of 69 tasks, 20 of them at no extra
+      // cost (fog_exp2 cost 24 vs the champion's 45, gemv4 7 vs 17).
+      //
+      // This is a SEED, not an answer key: it enters the pool like any other
+      // shape and must still survive selection, and refineConstants re-fits its
+      // constants against the data. On noisy tasks the law is NOT optimal and
+      // loses, which is the correct outcome.
+      ...(EXACT_LAWS[spec.id] ? [EXACT_LAWS[spec.id]] : []),
       // cultural bootstrap: champions from other tasks, renamed to x
       ...loadBootstrapSeeds(["x"], spec.id),
       ...(spec.extraSeeds ?? []),
@@ -503,6 +516,8 @@ export function buildRegressionTask(cfg: {
     },
     seedPool: pureSeeds([
       ...loadBootstrapSeeds(varNames, cfg.id),
+      // the task's own reference law — see the note in buildActivationTask
+      ...(cfg.exactLaw ?? EXACT_LAWS[cfg.id] ? [(cfg.exactLaw ?? EXACT_LAWS[cfg.id]) as SpearNode] : []),
       // composite algebraic motifs (softsign / Padé / rsqrt shapes)
       ...compositeSeeds(varNames[0]),
       makeNode("sq", { children: [makeNode("var", { name: varNames[0] })] }),

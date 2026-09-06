@@ -2,36 +2,37 @@
   "taskId": "chsh_correlation",
   "title": "Paramètre CHSH (test de Bell · Nobel 2022)",
   "direction": "min",
-  "metric": 2.1055469858256505e-32,
+  "metric": 0,
+  "holdout": 0,
   "level": 5,
-  "formula": "|(((-cos((a - b))) + (-cos((ap - b)))) - ((-cos((a - bp))) - (-cos((ap - bp)))))|",
-  "seed": 1000070,
-  "iteration": 400,
+  "formula": "|(((cos((a - b)) - cos((a - bp))) + cos((ap - b))) + cos((ap - bp)))|",
+  "seed": 260906,
+  "iteration": 8,
   "speed": {
-    "formulaCost": 92,
+    "formulaCost": 88,
     "exactCost": 84,
-    "speedup": 0.9130434782608695,
-    "costProfile": "cpu-transcendental-20",
+    "speedup": 0.9545454545454546,
     "measured": {
-      "measuredSpeedup": 0.9909,
-      "nsFormula": 29.4435,
-      "nsExact": 29.1758,
-      "agreement": 1.0853,
+      "measuredSpeedup": 1.0015,
+      "nsFormula": 28.9173,
+      "nsExact": 28.9611,
+      "agreement": 1.0492,
       "resolvable": false,
       "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
-    }
+    },
+    "costProfile": "cpu-transcendental-20"
   },
   "tree": {
     "o": "abs",
     "c": [
       {
-        "o": "sub",
+        "o": "add",
         "c": [
           {
             "o": "add",
             "c": [
               {
-                "o": "neg",
+                "o": "sub",
                 "c": [
                   {
                     "o": "cos",
@@ -50,12 +51,7 @@
                         ]
                       }
                     ]
-                  }
-                ]
-              },
-              {
-                "o": "neg",
-                "c": [
+                  },
                   {
                     "o": "cos",
                     "c": [
@@ -64,13 +60,31 @@
                         "c": [
                           {
                             "o": "var",
-                            "n": "ap"
+                            "n": "a"
                           },
                           {
                             "o": "var",
-                            "n": "b"
+                            "n": "bp"
                           }
                         ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "o": "cos",
+                "c": [
+                  {
+                    "o": "sub",
+                    "c": [
+                      {
+                        "o": "var",
+                        "n": "ap"
+                      },
+                      {
+                        "o": "var",
+                        "n": "b"
                       }
                     ]
                   }
@@ -79,51 +93,18 @@
             ]
           },
           {
-            "o": "sub",
+            "o": "cos",
             "c": [
               {
-                "o": "neg",
+                "o": "sub",
                 "c": [
                   {
-                    "o": "cos",
-                    "c": [
-                      {
-                        "o": "sub",
-                        "c": [
-                          {
-                            "o": "var",
-                            "n": "a"
-                          },
-                          {
-                            "o": "var",
-                            "n": "bp"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "o": "neg",
-                "c": [
+                    "o": "var",
+                    "n": "ap"
+                  },
                   {
-                    "o": "cos",
-                    "c": [
-                      {
-                        "o": "sub",
-                        "c": [
-                          {
-                            "o": "var",
-                            "n": "ap"
-                          },
-                          {
-                            "o": "var",
-                            "n": "bp"
-                          }
-                        ]
-                      }
-                    ]
+                    "o": "var",
+                    "n": "bp"
                   }
                 ]
               }
@@ -132,6 +113,5 @@
         ]
       }
     ]
-  },
-  "holdout": 1.9625827986413555e-32
+  }
 }

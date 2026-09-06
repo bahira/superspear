@@ -2,133 +2,39 @@
   "taskId": "rl_distillation",
   "title": "Distillation d'acteur Deep-RL",
   "direction": "min",
-  "metric": 0.00015509445364142197,
-  "level": 2,
-  "formula": "(1.143472 * ((x + (0.135 * (x)³)) / (0.584 + (0.75 * (x)²))))",
-  "seed": 777,
-  "iteration": 106,
+  "metric": 0,
+  "holdout": 0,
+  "level": 5,
+  "formula": "tanh((2 * x))",
+  "seed": 606060,
+  "iteration": 6,
   "speed": {
-    "formulaCost": 12,
+    "formulaCost": 21,
     "exactCost": 34,
-    "speedup": 2.131,
-    "costProfile": "cpu-transcendental-20",
+    "speedup": 1.619047619047619,
     "measured": {
-      "measuredSpeedup": 2.131,
-      "nsFormula": 8.7402,
-      "nsExact": 18.6252,
-      "agreement": 0.7521,
-      "resolvable": true,
+      "measuredSpeedup": 1.0016,
+      "nsFormula": 18.6363,
+      "nsExact": 18.6664,
+      "agreement": 0.6186,
+      "resolvable": false,
       "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
     },
-    "speedupModelled": 2.8333333333333335,
-    "speedupSource": "measured"
+    "costProfile": "cpu-transcendental-20"
   },
   "tree": {
-    "o": "mul",
+    "o": "tanh",
     "c": [
       {
-        "o": "const",
-        "v": 1.143472
-      },
-      {
-        "o": "pdiv",
+        "o": "mul",
         "c": [
           {
-            "o": "add",
-            "c": [
-              {
-                "o": "var",
-                "n": "x"
-              },
-              {
-                "o": "mul",
-                "c": [
-                  {
-                    "o": "const",
-                    "v": 0.135
-                  },
-                  {
-                    "o": "cube",
-                    "c": [
-                      {
-                        "o": "var",
-                        "n": "x"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
+            "o": "const",
+            "v": 2
           },
-          {
-            "o": "add",
-            "c": [
-              {
-                "o": "const",
-                "v": 0.584
-              },
-              {
-                "o": "mul",
-                "c": [
-                  {
-                    "o": "const",
-                    "v": 0.75
-                  },
-                  {
-                    "o": "sq",
-                    "c": [
-                      {
-                        "o": "var",
-                        "n": "x"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  },
-  "fast": {
-    "formula": "(1.299679 * (x / (0.51034 + |x|)))",
-    "metric": 0.0062386789018556025,
-    "level": 2,
-    "formulaCost": 7,
-    "deploy": true
-  },
-  "fastTree": {
-    "o": "mul",
-    "c": [
-      {
-        "o": "const",
-        "v": 1.299678621718735
-      },
-      {
-        "o": "pdiv",
-        "c": [
           {
             "o": "var",
             "n": "x"
-          },
-          {
-            "o": "add",
-            "c": [
-              {
-                "o": "const",
-                "v": 0.51034
-              },
-              {
-                "o": "abs",
-                "c": [
-                  {
-                    "o": "var",
-                    "n": "x"
-                  }
-                ]
-              }
-            ]
           }
         ]
       }

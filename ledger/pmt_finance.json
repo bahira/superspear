@@ -2,28 +2,120 @@
   "taskId": "pmt_finance",
   "title": "Mensualité de prêt par unité (fintech edge)",
   "direction": "min",
-  "metric": 4.3680216924352057e-7,
-  "level": 2,
-  "formula": "((-0.646901 * ((n / (r + (n * 0.269972))) / ((r * 0.810197) - atan(n)))) + -1.526075)",
-  "seed": 1000010,
-  "iteration": 1200,
+  "metric": 0,
+  "holdout": 0,
+  "level": 5,
+  "formula": "((r * exp((n * log(max((1 + r), 1e-30))))) / (exp((n * log(max((1 + r), 1e-30)))) - 1))",
+  "seed": 260906,
+  "iteration": 8,
   "speed": {
-    "formulaCost": 34,
+    "formulaCost": 90,
     "exactCost": 47,
-    "speedup": 1.6797,
-    "costProfile": "cpu-transcendental-20",
+    "speedup": 0.5222222222222223,
     "measured": {
-      "measuredSpeedup": 1.6797,
-      "nsFormula": 26.7136,
-      "nsExact": 44.8699,
-      "agreement": 1.2151,
-      "resolvable": true,
+      "measuredSpeedup": 1.0085,
+      "nsFormula": 44.8468,
+      "nsExact": 45.2263,
+      "agreement": 1.9311,
+      "resolvable": false,
       "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
     },
-    "speedupModelled": 1.3823529411764706,
-    "speedupSource": "measured"
+    "costProfile": "cpu-transcendental-20"
   },
   "tree": {
+    "o": "pdiv",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "var",
+            "n": "r"
+          },
+          {
+            "o": "exp",
+            "c": [
+              {
+                "o": "mul",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "n"
+                  },
+                  {
+                    "o": "log",
+                    "c": [
+                      {
+                        "o": "add",
+                        "c": [
+                          {
+                            "o": "const",
+                            "v": 1
+                          },
+                          {
+                            "o": "var",
+                            "n": "r"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "sub",
+        "c": [
+          {
+            "o": "exp",
+            "c": [
+              {
+                "o": "mul",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "n"
+                  },
+                  {
+                    "o": "log",
+                    "c": [
+                      {
+                        "o": "add",
+                        "c": [
+                          {
+                            "o": "const",
+                            "v": 1
+                          },
+                          {
+                            "o": "var",
+                            "n": "r"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "o": "const",
+            "v": 1
+          }
+        ]
+      }
+    ]
+  },
+  "fast": {
+    "formula": "((-0.646901 * ((n / (r + (n * 0.269972))) / ((r * 0.810197) - atan(n)))) + -1.526075)",
+    "metric": 4.3680216924352057e-7,
+    "level": 2,
+    "formulaCost": 34
+  },
+  "fastTree": {
     "o": "add",
     "c": [
       {
@@ -101,52 +193,6 @@
       {
         "o": "const",
         "v": -1.5260749723747622
-      }
-    ]
-  },
-  "fast": {
-    "formula": "((14.587535 * ((r + 0.054528) / n)) + 0.007846)",
-    "metric": 0.000012813368712074652,
-    "level": 2,
-    "formulaCost": 7
-  },
-  "fastTree": {
-    "o": "add",
-    "c": [
-      {
-        "o": "mul",
-        "c": [
-          {
-            "o": "const",
-            "v": 14.587535143756963
-          },
-          {
-            "o": "pdiv",
-            "c": [
-              {
-                "o": "add",
-                "c": [
-                  {
-                    "o": "var",
-                    "n": "r"
-                  },
-                  {
-                    "o": "const",
-                    "v": 0.054528
-                  }
-                ]
-              },
-              {
-                "o": "var",
-                "n": "n"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "o": "const",
-        "v": 0.007845981090750707
       }
     ]
   }

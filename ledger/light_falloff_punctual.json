@@ -2,77 +2,71 @@
   "taskId": "light_falloff_punctual",
   "title": "Atténuation punctual (three.js)",
   "direction": "min",
-  "metric": 0.00001313216883844109,
-  "level": 2,
-  "formula": "((-1.950693 * ((3.068119 / x) / (-0.092287 + min(4.058391, (x * -5.800075))))) + -0.012508)",
-  "seed": 990102,
-  "iteration": 485,
+  "metric": 1.5032920443487647e-36,
+  "holdout": 7.890505829894605e-37,
+  "level": 5,
+  "formula": "((min(1, relu((1 - (((x * 0.125))²)²))))² / (x)²)",
+  "seed": 260906,
+  "iteration": 7,
   "speed": {
-    "formulaCost": 13,
+    "formulaCost": 12,
     "exactCost": 20,
-    "speedup": 0.7346,
-    "costProfile": "cpu-transcendental-20",
+    "speedup": 1.3562,
     "measured": {
-      "measuredSpeedup": 0.7346,
-      "nsFormula": 25.4553,
-      "nsExact": 18.7,
-      "agreement": 0.4775,
+      "measuredSpeedup": 1.3562,
+      "nsFormula": 13.8687,
+      "nsExact": 18.8088,
+      "agreement": 0.8137,
       "resolvable": true,
       "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
     },
-    "speedupModelled": 1.5384615384615385,
+    "costProfile": "cpu-transcendental-20",
+    "speedupModelled": 1.6666666666666667,
     "speedupSource": "measured"
   },
   "tree": {
-    "o": "add",
+    "o": "pdiv",
     "c": [
       {
-        "o": "mul",
+        "o": "sq",
         "c": [
           {
-            "o": "const",
-            "v": -1.950692846126142
-          },
-          {
-            "o": "pdiv",
+            "o": "min",
             "c": [
               {
-                "o": "pdiv",
-                "c": [
-                  {
-                    "o": "const",
-                    "v": 3.068119
-                  },
-                  {
-                    "o": "var",
-                    "n": "x"
-                  }
-                ]
+                "o": "const",
+                "v": 1
               },
               {
-                "o": "add",
+                "o": "relu",
                 "c": [
                   {
-                    "o": "const",
-                    "v": -0.092287
-                  },
-                  {
-                    "o": "min",
+                    "o": "sub",
                     "c": [
                       {
                         "o": "const",
-                        "v": 4.058391
+                        "v": 1
                       },
                       {
-                        "o": "mul",
+                        "o": "sq",
                         "c": [
                           {
-                            "o": "var",
-                            "n": "x"
-                          },
-                          {
-                            "o": "const",
-                            "v": -5.800075
+                            "o": "sq",
+                            "c": [
+                              {
+                                "o": "mul",
+                                "c": [
+                                  {
+                                    "o": "var",
+                                    "n": "x"
+                                  },
+                                  {
+                                    "o": "const",
+                                    "v": 0.125
+                                  }
+                                ]
+                              }
+                            ]
                           }
                         ]
                       }
@@ -85,8 +79,55 @@
         ]
       },
       {
+        "o": "sq",
+        "c": [
+          {
+            "o": "var",
+            "n": "x"
+          }
+        ]
+      }
+    ]
+  },
+  "fast": {
+    "formula": "((39.463781 * (0.025493 / (x)²)) + -0.010761)",
+    "metric": 0.000022254134884792464,
+    "level": 2,
+    "formulaCost": 7
+  },
+  "fastTree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": 39.46378068909496
+          },
+          {
+            "o": "pdiv",
+            "c": [
+              {
+                "o": "const",
+                "v": 0.025493
+              },
+              {
+                "o": "sq",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "x"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
         "o": "const",
-        "v": -0.012507849918452899
+        "v": -0.010760922650096667
       }
     ]
   }

@@ -2,42 +2,82 @@
   "taskId": "logsumexp2",
   "title": "LogSumExp 2-logits (max différentiable)",
   "direction": "min",
-  "metric": 0.01044425969530025,
-  "level": 2,
-  "formula": "((0.988445 * max(min(b, a), (max(b, max(a, b)) + -0.863454))) + 0.946364)",
-  "seed": 997001,
-  "iteration": 800,
+  "metric": 0,
+  "holdout": 0,
+  "level": 5,
+  "formula": "(max(a, b) + log(max((exp((a - max(a, b))) + exp((b - max(a, b)))), 1e-30)))",
+  "seed": 260906,
+  "iteration": 8,
+  "speed": {
+    "formulaCost": 67,
+    "exactCost": 60,
+    "speedup": 1.0121,
+    "measured": {
+      "measuredSpeedup": 1.0121,
+      "nsFormula": 23.6038,
+      "nsExact": 23.8887,
+      "agreement": 1.1301,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    },
+    "costProfile": "cpu-transcendental-20",
+    "speedupModelled": 0.8955223880597015,
+    "speedupSource": "measured"
+  },
   "tree": {
     "o": "add",
     "c": [
       {
-        "o": "mul",
+        "o": "max",
         "c": [
           {
-            "o": "const",
-            "v": 0.9884453418513615
+            "o": "var",
+            "n": "a"
           },
           {
-            "o": "max",
+            "o": "var",
+            "n": "b"
+          }
+        ]
+      },
+      {
+        "o": "log",
+        "c": [
+          {
+            "o": "add",
             "c": [
               {
-                "o": "min",
+                "o": "exp",
                 "c": [
                   {
-                    "o": "var",
-                    "n": "b"
-                  },
-                  {
-                    "o": "var",
-                    "n": "a"
+                    "o": "sub",
+                    "c": [
+                      {
+                        "o": "var",
+                        "n": "a"
+                      },
+                      {
+                        "o": "max",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "a"
+                          },
+                          {
+                            "o": "var",
+                            "n": "b"
+                          }
+                        ]
+                      }
+                    ]
                   }
                 ]
               },
               {
-                "o": "add",
+                "o": "exp",
                 "c": [
                   {
-                    "o": "max",
+                    "o": "sub",
                     "c": [
                       {
                         "o": "var",
@@ -57,20 +97,12 @@
                         ]
                       }
                     ]
-                  },
-                  {
-                    "o": "const",
-                    "v": -0.863454
                   }
                 ]
               }
             ]
           }
         ]
-      },
-      {
-        "o": "const",
-        "v": 0.9463635441197152
       }
     ]
   },
@@ -78,12 +110,7 @@
     "formula": "((0.968206 * max(a, b)) + 0.199848)",
     "metric": 0.030249371156328322,
     "level": 2,
-    "formulaCost": 3,
-    "speed": {
-      "formulaCost": 1,
-      "exactCost": 60,
-      "speedup": 60
-    }
+    "formulaCost": 3
   },
   "fastTree": {
     "o": "add",
@@ -115,21 +142,5 @@
         "v": 0.199848428389339
       }
     ]
-  },
-  "speed": {
-    "formulaCost": 7,
-    "exactCost": 60,
-    "speedup": 2.4722,
-    "costProfile": "cpu-transcendental-20",
-    "measured": {
-      "measuredSpeedup": 2.4722,
-      "nsFormula": 9.9541,
-      "nsExact": 24.6086,
-      "agreement": 0.2884,
-      "resolvable": true,
-      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
-    },
-    "speedupModelled": 8.571428571428571,
-    "speedupSource": "measured"
   }
 }

@@ -2,26 +2,25 @@
   "taskId": "grover_amplitude",
   "title": "Amplification de Grover (recherche quantique)",
   "direction": "min",
-  "metric": 8.312261599931228e-32,
+  "metric": 0,
+  "holdout": 0,
   "level": 5,
-  "formula": "(sin((asin(sqrt(|(m / n)|)) + (2 * (k * asin(sqrt(|(m / n)|)))))))²",
-  "seed": 920605,
-  "iteration": 1600,
+  "formula": "(sin((((2 * k) + 1) * asin(sqrt(|(m / n)|)))))²",
+  "seed": 260906,
+  "iteration": 8,
   "speed": {
-    "formulaCost": 76,
+    "formulaCost": 50,
     "exactCost": 48,
-    "speedup": 0.8253,
-    "costProfile": "cpu-transcendental-20",
+    "speedup": 0.96,
     "measured": {
-      "measuredSpeedup": 0.8253,
-      "nsFormula": 57.0898,
-      "nsExact": 47.1182,
-      "agreement": 1.3068,
-      "resolvable": true,
+      "measuredSpeedup": 1.0001,
+      "nsFormula": 47.1247,
+      "nsExact": 47.1317,
+      "agreement": 1.0418,
+      "resolvable": false,
       "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
     },
-    "speedupModelled": 0.631578947368421,
-    "speedupSource": "measured"
+    "costProfile": "cpu-transcendental-20"
   },
   "tree": {
     "o": "sq",
@@ -30,8 +29,30 @@
         "o": "sin",
         "c": [
           {
-            "o": "add",
+            "o": "mul",
             "c": [
+              {
+                "o": "add",
+                "c": [
+                  {
+                    "o": "mul",
+                    "c": [
+                      {
+                        "o": "const",
+                        "v": 2
+                      },
+                      {
+                        "o": "var",
+                        "n": "k"
+                      }
+                    ]
+                  },
+                  {
+                    "o": "const",
+                    "v": 1
+                  }
+                ]
+              },
               {
                 "o": "asin",
                 "c": [
@@ -54,53 +75,11 @@
                     ]
                   }
                 ]
-              },
-              {
-                "o": "mul",
-                "c": [
-                  {
-                    "o": "const",
-                    "v": 2
-                  },
-                  {
-                    "o": "mul",
-                    "c": [
-                      {
-                        "o": "var",
-                        "n": "k"
-                      },
-                      {
-                        "o": "asin",
-                        "c": [
-                          {
-                            "o": "sqrt",
-                            "c": [
-                              {
-                                "o": "pdiv",
-                                "c": [
-                                  {
-                                    "o": "var",
-                                    "n": "m"
-                                  },
-                                  {
-                                    "o": "var",
-                                    "n": "n"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
               }
             ]
           }
         ]
       }
     ]
-  },
-  "holdout": 1.5339713212976391e-31
+  }
 }

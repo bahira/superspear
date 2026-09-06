@@ -2,34 +2,94 @@
   "taskId": "kerr",
   "title": "Déflexion de Kerr · lentille gravitationnelle",
   "direction": "min",
-  "metric": 1.39756685796311e-7,
+  "metric": 3.839599676816691e-17,
+  "holdout": 3.7101536555240195e-17,
   "level": 2,
-  "formula": "((4.044113 * (((2.83748 + (10.692104 / b)) + b) / (b)²)) + -0.001252)",
-  "seed": 777,
-  "iteration": 132,
+  "formula": "((4 / b) + ((11.780972 / (b)²) + (42.666667 / (b)³)))",
+  "seed": 260906,
+  "iteration": 8,
   "speed": {
-    "formulaCost": 13,
+    "formulaCost": 17,
     "exactCost": 17,
-    "speedup": 0.8359,
-    "costProfile": "cpu-transcendental-20",
-    "vsSolverContext": {
-      "label": "RK4 géodésique · 200 pas",
-      "speedup": 184.6,
-      "note": "Context only — a closed-form reference exists for this task, so the solver is not what a real implementation runs. Not a like-for-like speedup: the solver's accuracy is orders of magnitude worse.",
-      "honestSpeedupVsReference": 1.3076923076923077
-    },
+    "speedup": 1.0127,
     "measured": {
-      "measuredSpeedup": 0.8359,
-      "nsFormula": 28.5832,
-      "nsExact": 23.8922,
-      "agreement": 0.6392,
+      "measuredSpeedup": 1.0127,
+      "nsFormula": 24.0959,
+      "nsExact": 24.4018,
+      "agreement": 1.0127,
       "resolvable": true,
       "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
     },
-    "speedupModelled": 1.3076923076923077,
+    "costProfile": "cpu-transcendental-20",
+    "speedupModelled": 1,
     "speedupSource": "measured"
   },
   "tree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "pdiv",
+        "c": [
+          {
+            "o": "const",
+            "v": 4
+          },
+          {
+            "o": "var",
+            "n": "b"
+          }
+        ]
+      },
+      {
+        "o": "add",
+        "c": [
+          {
+            "o": "pdiv",
+            "c": [
+              {
+                "o": "const",
+                "v": 11.780972
+              },
+              {
+                "o": "sq",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "b"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "o": "pdiv",
+            "c": [
+              {
+                "o": "const",
+                "v": 42.666667
+              },
+              {
+                "o": "cube",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "b"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "fast": {
+    "formula": "((4.044113 * (((2.83748 + (10.692104 / b)) + b) / (b)²)) + -0.001252)",
+    "metric": 1.39756685796311e-7,
+    "level": 2,
+    "formulaCost": 13
+  },
+  "fastTree": {
     "o": "add",
     "c": [
       {

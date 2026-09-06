@@ -2,43 +2,29 @@
   "taskId": "qfi_dephasing",
   "title": "QFI GHZ déphasage collectif (métrologie quantique)",
   "direction": "min",
-  "metric": 1.6734673238482507e-31,
+  "metric": 1.5050754313933294e-32,
+  "holdout": 3.1601655043930574e-32,
   "level": 5,
-  "formula": "((n)² * ((t)² * exp((-((n)² * (g * t))))))",
-  "seed": 930701,
-  "iteration": 1200,
+  "formula": "(((n)² * (t)²) * exp((-(((n)² * g) * t))))",
+  "seed": 260906,
+  "iteration": 8,
   "speed": {
     "formulaCost": 28,
     "exactCost": 22,
     "speedup": 0.7857142857142857,
-    "costProfile": "cpu-transcendental-20",
-    "vsSolverContext": {
-      "label": "BFGS optimisation",
-      "speedup": 28.571428571428573,
-      "note": "Context only — a closed-form reference exists for this task, so the solver is not what a real implementation runs. Not a like-for-like speedup: the solver's accuracy is orders of magnitude worse.",
-      "honestSpeedupVsReference": 0.7857142857142857
-    },
     "measured": {
-      "measuredSpeedup": 0.9998,
-      "nsFormula": 8.5147,
-      "nsExact": 8.5131,
-      "agreement": 1.2725,
+      "measuredSpeedup": 0.9979,
+      "nsFormula": 8.5006,
+      "nsExact": 8.4828,
+      "agreement": 1.2701,
       "resolvable": false,
       "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
-    }
+    },
+    "costProfile": "cpu-transcendental-20"
   },
   "tree": {
     "o": "mul",
     "c": [
-      {
-        "o": "sq",
-        "c": [
-          {
-            "o": "var",
-            "n": "n"
-          }
-        ]
-      },
       {
         "o": "mul",
         "c": [
@@ -47,15 +33,29 @@
             "c": [
               {
                 "o": "var",
-                "n": "t"
+                "n": "n"
               }
             ]
           },
           {
-            "o": "exp",
+            "o": "sq",
             "c": [
               {
-                "o": "neg",
+                "o": "var",
+                "n": "t"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "exp",
+        "c": [
+          {
+            "o": "neg",
+            "c": [
+              {
+                "o": "mul",
                 "c": [
                   {
                     "o": "mul",
@@ -70,19 +70,14 @@
                         ]
                       },
                       {
-                        "o": "mul",
-                        "c": [
-                          {
-                            "o": "var",
-                            "n": "g"
-                          },
-                          {
-                            "o": "var",
-                            "n": "t"
-                          }
-                        ]
+                        "o": "var",
+                        "n": "g"
                       }
                     ]
+                  },
+                  {
+                    "o": "var",
+                    "n": "t"
                   }
                 ]
               }
@@ -91,6 +86,5 @@
         ]
       }
     ]
-  },
-  "holdout": 3.4988775734703503e-32
+  }
 }

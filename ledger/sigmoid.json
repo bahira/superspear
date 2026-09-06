@@ -2,32 +2,63 @@
   "taskId": "sigmoid",
   "title": "Sigmoid (routage MoE · portes d'attention)",
   "direction": "min",
-  "metric": 4.790511494175498e-33,
+  "metric": 0,
+  "holdout": 0,
   "level": 5,
-  "formula": "((-(1 / (1 + exp(x)))) + 1)",
-  "seed": 987654,
-  "iteration": 270,
+  "formula": "(1 / (1 + exp((-x))))",
+  "seed": 260906,
+  "iteration": 8,
   "speed": {
-    "formulaCost": 27,
+    "formulaCost": 26,
     "exactCost": 34,
-    "speedup": 1.0375,
-    "costProfile": "cpu-transcendental-20",
+    "speedup": 1.3076923076923077,
     "measured": {
-      "measuredSpeedup": 1.0375,
-      "nsFormula": 15.8101,
-      "nsExact": 16.4026,
-      "agreement": 0.8239,
-      "resolvable": true,
+      "measuredSpeedup": 1.0004,
+      "nsFormula": 14.6073,
+      "nsExact": 14.613,
+      "agreement": 0.765,
+      "resolvable": false,
       "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
     },
-    "speedupModelled": 1.2592592592592593,
-    "speedupSource": "measured"
+    "costProfile": "cpu-transcendental-20"
+  },
+  "tree": {
+    "o": "pdiv",
+    "c": [
+      {
+        "o": "const",
+        "v": 1
+      },
+      {
+        "o": "add",
+        "c": [
+          {
+            "o": "const",
+            "v": 1
+          },
+          {
+            "o": "exp",
+            "c": [
+              {
+                "o": "neg",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "x"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
   },
   "fast": {
-    "formula": "((0.598942 * (x / (1 + sqrt(|(1.168024 + (x)²)|)))) + 0.5)",
-    "metric": 0.0002561124244271645,
+    "formula": "((0.605014 * (x / (1.24384 + |x|))) + 0.5)",
+    "metric": 0.000487056042875682,
     "level": 2,
-    "formulaCost": 11
+    "formulaCost": 8
   },
   "fastTree": {
     "o": "add",
@@ -37,7 +68,7 @@
         "c": [
           {
             "o": "const",
-            "v": 0.5989417152363854
+            "v": 0.6050135885851711
           },
           {
             "o": "pdiv",
@@ -51,65 +82,10 @@
                 "c": [
                   {
                     "o": "const",
-                    "v": 1
+                    "v": 1.24384
                   },
                   {
-                    "o": "sqrt",
-                    "c": [
-                      {
-                        "o": "add",
-                        "c": [
-                          {
-                            "o": "const",
-                            "v": 1.168024
-                          },
-                          {
-                            "o": "sq",
-                            "c": [
-                              {
-                                "o": "var",
-                                "n": "x"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "o": "const",
-        "v": 0.5000000000000001
-      }
-    ]
-  },
-  "tree": {
-    "o": "add",
-    "c": [
-      {
-        "o": "neg",
-        "c": [
-          {
-            "o": "pdiv",
-            "c": [
-              {
-                "o": "const",
-                "v": 1
-              },
-              {
-                "o": "add",
-                "c": [
-                  {
-                    "o": "const",
-                    "v": 1
-                  },
-                  {
-                    "o": "exp",
+                    "o": "abs",
                     "c": [
                       {
                         "o": "var",
@@ -125,7 +101,7 @@
       },
       {
         "o": "const",
-        "v": 1
+        "v": 0.5
       }
     ]
   }

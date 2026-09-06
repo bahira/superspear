@@ -2,28 +2,129 @@
   "taskId": "kdv_soliton",
   "title": "Soliton KdV · sech²",
   "direction": "min",
-  "metric": 0.0017117911533114868,
-  "level": 2,
-  "formula": "((-1.553578 * max(sqrt(|(6.660595 - max(3.1671, x))|), 0.603662)) + 2.906087)",
-  "seed": 930202,
-  "iteration": 400,
+  "metric": 0,
+  "holdout": 0,
+  "level": 5,
+  "formula": "(2 * (1 / ((0.5 * (exp((x - (4 * t))) + exp((-(x - (4 * t)))))))²))",
+  "seed": 260906,
+  "iteration": 8,
   "speed": {
-    "formulaCost": 7,
+    "formulaCost": 53,
     "exactCost": 53,
-    "speedup": 6.9398,
-    "costProfile": "cpu-transcendental-20",
+    "speedup": 1,
     "measured": {
-      "measuredSpeedup": 6.9398,
-      "nsFormula": 5.8762,
-      "nsExact": 40.7802,
-      "agreement": 0.9166,
-      "resolvable": true,
+      "measuredSpeedup": 1.0049,
+      "nsFormula": 41.1157,
+      "nsExact": 41.3171,
+      "agreement": 1.0049,
+      "resolvable": false,
       "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
     },
-    "speedupModelled": 7.571428571428571,
-    "speedupSource": "measured"
+    "costProfile": "cpu-transcendental-20"
   },
   "tree": {
+    "o": "mul",
+    "c": [
+      {
+        "o": "const",
+        "v": 2
+      },
+      {
+        "o": "pdiv",
+        "c": [
+          {
+            "o": "const",
+            "v": 1
+          },
+          {
+            "o": "sq",
+            "c": [
+              {
+                "o": "mul",
+                "c": [
+                  {
+                    "o": "const",
+                    "v": 0.5
+                  },
+                  {
+                    "o": "add",
+                    "c": [
+                      {
+                        "o": "exp",
+                        "c": [
+                          {
+                            "o": "sub",
+                            "c": [
+                              {
+                                "o": "var",
+                                "n": "x"
+                              },
+                              {
+                                "o": "mul",
+                                "c": [
+                                  {
+                                    "o": "const",
+                                    "v": 4
+                                  },
+                                  {
+                                    "o": "var",
+                                    "n": "t"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "o": "exp",
+                        "c": [
+                          {
+                            "o": "neg",
+                            "c": [
+                              {
+                                "o": "sub",
+                                "c": [
+                                  {
+                                    "o": "var",
+                                    "n": "x"
+                                  },
+                                  {
+                                    "o": "mul",
+                                    "c": [
+                                      {
+                                        "o": "const",
+                                        "v": 4
+                                      },
+                                      {
+                                        "o": "var",
+                                        "n": "t"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "fast": {
+    "formula": "((-1.553578 * max(sqrt(|(6.660595 - max(3.1671, x))|), 0.603662)) + 2.906087)",
+    "metric": 0.0017117911533114868,
+    "level": 2,
+    "formulaCost": 7
+  },
+  "fastTree": {
     "o": "add",
     "c": [
       {

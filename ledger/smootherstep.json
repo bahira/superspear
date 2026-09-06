@@ -2,28 +2,125 @@
   "taskId": "smootherstep",
   "title": "Smootherstep (fade Perlin)",
   "direction": "min",
-  "metric": 0.00032318543387844427,
-  "level": 2,
-  "formula": "((1.593609 * max(0.195325, min(x, 0.805))) + -0.296433)",
-  "seed": 990101,
-  "iteration": 486,
+  "metric": 3.565127808420542e-31,
+  "holdout": 5.820860799878609e-31,
+  "level": 5,
+  "formula": "(((6 * (((x)²)² * x)) - (15 * ((x)²)²)) + (10 * ((x)² * x)))",
+  "seed": 260906,
+  "iteration": 8,
   "speed": {
-    "formulaCost": 4,
+    "formulaCost": 12,
     "exactCost": 9,
-    "speedup": 0.5009,
-    "costProfile": "cpu-transcendental-20",
+    "speedup": 0.75,
     "measured": {
-      "measuredSpeedup": 0.5009,
-      "nsFormula": 5.456,
-      "nsExact": 2.7327,
-      "agreement": 0.2226,
-      "resolvable": true,
+      "measuredSpeedup": 0.9998,
+      "nsFormula": 2.7286,
+      "nsExact": 2.7279,
+      "agreement": 1.333,
+      "resolvable": false,
       "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
     },
-    "speedupModelled": 2.25,
-    "speedupSource": "measured"
+    "costProfile": "cpu-transcendental-20"
   },
   "tree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "sub",
+        "c": [
+          {
+            "o": "mul",
+            "c": [
+              {
+                "o": "const",
+                "v": 6
+              },
+              {
+                "o": "mul",
+                "c": [
+                  {
+                    "o": "sq",
+                    "c": [
+                      {
+                        "o": "sq",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "x"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "o": "var",
+                    "n": "x"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "o": "mul",
+            "c": [
+              {
+                "o": "const",
+                "v": 15
+              },
+              {
+                "o": "sq",
+                "c": [
+                  {
+                    "o": "sq",
+                    "c": [
+                      {
+                        "o": "var",
+                        "n": "x"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": 10
+          },
+          {
+            "o": "mul",
+            "c": [
+              {
+                "o": "sq",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "x"
+                  }
+                ]
+              },
+              {
+                "o": "var",
+                "n": "x"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "fast": {
+    "formula": "((1.593609 * max(0.195325, min(x, 0.805))) + -0.296433)",
+    "metric": 0.00032318543387844427,
+    "level": 2,
+    "formulaCost": 4
+  },
+  "fastTree": {
     "o": "add",
     "c": [
       {

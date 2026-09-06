@@ -2,67 +2,59 @@
   "taskId": "smoothstep",
   "title": "Smoothstep (interpolation shader iconique)",
   "direction": "min",
-  "metric": 3.283596399606784e-7,
+  "metric": 0,
+  "holdout": 0,
   "level": 5,
-  "formula": "((-1.988372 * ((x)² * (x + -1.503545))) + 0.000554)",
-  "seed": 999801,
-  "iteration": 1600,
+  "formula": "((x)² * (3 - (2 * x)))",
+  "seed": 260906,
+  "iteration": 8,
   "speed": {
-    "formulaCost": 5,
+    "formulaCost": 4,
     "exactCost": 5,
-    "speedup": 1,
-    "costProfile": "cpu-transcendental-20",
+    "speedup": 1.25,
     "measured": {
-      "measuredSpeedup": 1.0016,
-      "nsFormula": 2.7266,
-      "nsExact": 2.731,
-      "agreement": 1.0016,
+      "measuredSpeedup": 0.9992,
+      "nsFormula": 2.72,
+      "nsExact": 2.7177,
+      "agreement": 0.7993,
       "resolvable": false,
       "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
-    }
+    },
+    "costProfile": "cpu-transcendental-20"
   },
   "tree": {
-    "o": "add",
+    "o": "mul",
     "c": [
       {
-        "o": "mul",
+        "o": "sq",
+        "c": [
+          {
+            "o": "var",
+            "n": "x"
+          }
+        ]
+      },
+      {
+        "o": "sub",
         "c": [
           {
             "o": "const",
-            "v": -1.9883720211312108
+            "v": 3
           },
           {
             "o": "mul",
             "c": [
               {
-                "o": "sq",
-                "c": [
-                  {
-                    "o": "var",
-                    "n": "x"
-                  }
-                ]
+                "o": "const",
+                "v": 2
               },
               {
-                "o": "add",
-                "c": [
-                  {
-                    "o": "var",
-                    "n": "x"
-                  },
-                  {
-                    "o": "const",
-                    "v": -1.503545
-                  }
-                ]
+                "o": "var",
+                "n": "x"
               }
             ]
           }
         ]
-      },
-      {
-        "o": "const",
-        "v": 0.0005544574268407132
       }
     ]
   }
