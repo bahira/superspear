@@ -1091,11 +1091,6 @@
           "code": "champion-is-seeded-law",
           "severity": "info",
           "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
-        },
-        {
-          "code": "speedup-model-off",
-          "severity": "warn",
-          "detail": "modelled ×0.56 vs measured ×1.09 (agreement 1.96) — cite the measured figure"
         }
       ],
       "storedMetric": 0,
@@ -1791,6 +1786,11 @@
       "hasTask": true,
       "issues": [
         {
+          "code": "speedup-model-off",
+          "severity": "warn",
+          "detail": "modelled ×0.97 vs measured ×12.73 (agreement 13.19) — cite the measured figure"
+        },
+        {
           "code": "ood-violation",
           "severity": "warn",
           "detail": "ood violation 1.45e-1 — extrapolates badly"
@@ -2314,8 +2314,8 @@
   "missing": [],
   "summary": {
     "total": 89,
-    "clean": 53,
-    "warn": 36,
+    "clean": 54,
+    "warn": 35,
     "fail": 0,
     "recoveredSeed": 45,
     "searchFound": 44
