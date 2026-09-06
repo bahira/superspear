@@ -1,9 +1,10 @@
 # Roadmap — plan en 4 phases
 
-## Phase 1 — Publication & visibilité (semaine 1) ✅ quasi-complète
+## Phase 1 — Publication & visibilité (semaine 1) ✅ complète
 - [x] RELEASE_NOTES.md + LAUNCH_POST.md rédigés
 - [x] Description + topics GitHub (via gh CLI)
-- [x] npm pack vérifié — **publish restant** : `cd packages/spear-kernels && npm publish` (compte romainabdelaal@gmail.com, OTP requis)
+- [x] npm publish — **spear-kernels 1.10.3 live** (adresse BTC corrigée 1.10.2,
+      champions implied_vol L2 + gauss_shader fast en 1.10.3)
 - [ ] Post HN/Reddit à partir de LAUNCH_POST.md
 
 ## Phase 2 — Science du papier (2 semaines)
@@ -14,7 +15,7 @@
 - [x] Adaptateur PySR exporté (12 datasets + manifest, runner prêt)
 - [ ] Exécuter PySR head-to-head (`pip install pysr pandas` puis run-pysr.py)
 - [x] Audit de composition généralisé (REPORTS/composition-audit.md)
-- [ ] Fix logit_ml wide-domain (retrain en cours à l'écriture de ce doc)
+- [x] Fix logit_ml wide-domain — réglé : metric 0 (retrain réussi)
 - [ ] Finaliser PAPER.md → LaTeX (paper/main.tex drafté) → arXiv cs.NE
 
 ## Phase 3 — Produit & revenus (mois 1+)
@@ -34,6 +35,8 @@
 | logsumexp n-logits | généralisation LSE | design |
 
 ## Dette technique absorbable
+- [x] Archive fast-slot cost-sorted dans le loop (ancien TODO « ponytail »)
+      — implémentée 2026-09-06 : gauss_shader fast 7u, implied_vol L2 ×54.8
 - kv_cache hors cost-model par design → documenter dans benchmarks.ts
 - probe-f32 généralisé en audit permanent inter-backends
 - Nettoyer scripts debug restants
