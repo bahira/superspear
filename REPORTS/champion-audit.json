@@ -1,0 +1,2323 @@
+{
+  "rows": [
+    {
+      "id": "a_weighting",
+      "hasTask": true,
+      "issues": [],
+      "storedMetric": 2.628534104818355e-30,
+      "recomputedMetric": 2.628534104818355e-30,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 45,
+      "storedCost": 45,
+      "speedup": 1.2222222222222223,
+      "transcendental": 2,
+      "provenance": "search",
+      "holdout": 2.6482577941200677e-30,
+      "overfitRatio": 1.0075036839984526,
+      "ood": 0,
+      "r2": 1
+    },
+    {
+      "id": "aces_fit",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        }
+      ],
+      "storedMetric": 0,
+      "recomputedMetric": 0,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 13,
+      "storedCost": 13,
+      "speedup": 0.6153846153846154,
+      "transcendental": 0,
+      "provenance": "recovered-seed",
+      "holdout": 0,
+      "ood": 0,
+      "r2": 1,
+      "fastCost": 8,
+      "fastMetric": 0.0003534610806656422
+    },
+    {
+      "id": "amp_damp_fid",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        },
+        {
+          "code": "speedup-model-off",
+          "severity": "warn",
+          "detail": "modelled ×0.27 vs measured ×1.02 (agreement 3.82) — cite the measured figure"
+        }
+      ],
+      "storedMetric": 0,
+      "recomputedMetric": 0,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 90,
+      "storedCost": 90,
+      "speedup": 0.26666666666666666,
+      "transcendental": 4,
+      "provenance": "recovered-seed",
+      "holdout": 0,
+      "ood": 0,
+      "r2": 1
+    },
+    {
+      "id": "asin_hard",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        }
+      ],
+      "storedMetric": 0,
+      "recomputedMetric": 0,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 20,
+      "storedCost": 20,
+      "speedup": 1.4,
+      "transcendental": 1,
+      "provenance": "recovered-seed",
+      "holdout": 0,
+      "ood": 0,
+      "r2": 1
+    },
+    {
+      "id": "atan_unit",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        }
+      ],
+      "storedMetric": 0,
+      "recomputedMetric": 0,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 20,
+      "storedCost": 20,
+      "speedup": 1,
+      "transcendental": 1,
+      "provenance": "recovered-seed",
+      "holdout": 0,
+      "ood": 0,
+      "r2": 1,
+      "fastCost": 1,
+      "fastMetric": 0.0009350974646082436
+    },
+    {
+      "id": "back_ease_out",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        }
+      ],
+      "storedMetric": 2.166286001446763e-32,
+      "recomputedMetric": 2.166286001446763e-32,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 9,
+      "storedCost": 9,
+      "speedup": 1.2222222222222223,
+      "transcendental": 0,
+      "provenance": "recovered-seed",
+      "holdout": 1.232595164407831e-32,
+      "overfitRatio": 0.012325951644078308,
+      "ood": 0,
+      "r2": 1
+    },
+    {
+      "id": "bessel_i0e",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "speedup-model-off",
+          "severity": "warn",
+          "detail": "modelled ×3.00 vs measured ×5.08 (agreement 1.69) — cite the measured figure"
+        },
+        {
+          "code": "ood-violation",
+          "severity": "warn",
+          "detail": "ood violation 5.00e-1 — extrapolates badly"
+        }
+      ],
+      "storedMetric": 0.00003054886219191836,
+      "recomputedMetric": 0.00003054886219191836,
+      "metricDrift": 0,
+      "storedLevel": 2,
+      "recomputedLevel": 2,
+      "cost": 8,
+      "storedCost": 8,
+      "speedup": 3,
+      "transcendental": 0,
+      "provenance": "search",
+      "holdout": 0.00003107218721220352,
+      "overfitRatio": 1.0171307532502343,
+      "ood": 0.5,
+      "r2": 0.9973227609847197
+    },
+    {
+      "id": "bessel_j0",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "speedup-model-off",
+          "severity": "warn",
+          "detail": "modelled ×3.08 vs measured ×0.83 (agreement 0.27) — cite the measured figure"
+        },
+        {
+          "code": "ood-violation",
+          "severity": "warn",
+          "detail": "ood violation 2.70e-1 — extrapolates badly"
+        }
+      ],
+      "storedMetric": 0.00026389864276618125,
+      "recomputedMetric": 0.00026389864276618125,
+      "metricDrift": 0,
+      "storedLevel": 2,
+      "recomputedLevel": 2,
+      "cost": 13,
+      "storedCost": 13,
+      "speedup": 3.076923076923077,
+      "transcendental": 0,
+      "provenance": "search",
+      "holdout": 0.00026243153751230304,
+      "overfitRatio": 0.9944406487335439,
+      "ood": 0.26950896862039175,
+      "r2": 0.9987966048183532
+    },
+    {
+      "id": "bessel_j1",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "ood-violation",
+          "severity": "warn",
+          "detail": "ood violation 4.82e-1 — extrapolates badly"
+        }
+      ],
+      "storedMetric": 0.000005197986685271395,
+      "recomputedMetric": 0.000005197986685271395,
+      "metricDrift": 0,
+      "storedLevel": 4,
+      "recomputedLevel": 4,
+      "cost": 48,
+      "storedCost": 48,
+      "speedup": 0.8333333333333334,
+      "transcendental": 2,
+      "provenance": "search",
+      "holdout": 0.0000051975595227719345,
+      "overfitRatio": 0.9999178215479715,
+      "ood": 0.481776797813946,
+      "r2": 0.9999541606898801
+    },
+    {
+      "id": "bessel_j2",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "fast-slot-pointless",
+          "severity": "warn",
+          "detail": "fast slot measures ×1.00 — no usable gain, so its accuracy loss buys nothing"
+        },
+        {
+          "code": "ood-violation",
+          "severity": "warn",
+          "detail": "ood violation 6.99e-3 — extrapolates badly"
+        }
+      ],
+      "storedMetric": 0.00010303824064693589,
+      "recomputedMetric": 0.00010303824064693589,
+      "metricDrift": 0,
+      "storedLevel": 2,
+      "recomputedLevel": 2,
+      "cost": 27,
+      "storedCost": 27,
+      "speedup": 1.4814814814814814,
+      "transcendental": 1,
+      "provenance": "search",
+      "holdout": 0.00010161932879133565,
+      "overfitRatio": 0.9862292693791017,
+      "ood": 0.006993241391331173,
+      "r2": 0.997680586729149,
+      "fastCost": 26,
+      "fastMetric": 0.0001003120533476376
+    },
+    {
+      "id": "bias_slope",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        }
+      ],
+      "storedMetric": 0,
+      "recomputedMetric": 0,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 8,
+      "storedCost": 8,
+      "speedup": 1,
+      "transcendental": 1,
+      "provenance": "recovered-seed",
+      "holdout": 0,
+      "ood": 0,
+      "r2": 1
+    },
+    {
+      "id": "bilateral_weight",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-equivalent-to-law",
+          "severity": "info",
+          "detail": "champion differs textually from the seeded law but is equally exact — an algebraic rewrite, not a new result (cost 30 vs 30)"
+        },
+        {
+          "code": "speedup-unmeasurable",
+          "severity": "warn",
+          "detail": "advertises ×1.50 but both kernels sit at the call-overhead floor (measured ×0.97) — the gain is not observable"
+        }
+      ],
+      "storedMetric": 9.336399957342636e-35,
+      "recomputedMetric": 9.336399957342636e-35,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 30,
+      "storedCost": 30,
+      "speedup": 1.5,
+      "transcendental": 1,
+      "provenance": "rewrite-of-law",
+      "holdout": 1.6370551464088509e-34,
+      "overfitRatio": 0.00016370551464088508,
+      "ood": 0,
+      "r2": 1,
+      "fastCost": 24,
+      "fastMetric": 0.0010740557349480262
+    },
+    {
+      "id": "bilinear_interp",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-equivalent-to-law",
+          "severity": "info",
+          "detail": "champion differs textually from the seeded law but is equally exact — an algebraic rewrite, not a new result (cost 2 vs 1)"
+        }
+      ],
+      "storedMetric": 0,
+      "recomputedMetric": 0,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 2,
+      "storedCost": 2,
+      "speedup": 0.5,
+      "transcendental": 0,
+      "provenance": "rewrite-of-law",
+      "holdout": 0,
+      "ood": 0,
+      "r2": 1,
+      "fastCost": 1,
+      "fastMetric": 0
+    },
+    {
+      "id": "blackbody_b",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "ood-violation",
+          "severity": "warn",
+          "detail": "ood violation 6.52e-1 — extrapolates badly"
+        }
+      ],
+      "storedMetric": 0.00022595735189612456,
+      "recomputedMetric": 0.00022595735189612456,
+      "metricDrift": 0,
+      "storedLevel": 2,
+      "recomputedLevel": 2,
+      "cost": 65,
+      "storedCost": 65,
+      "speedup": 0.38461538461538464,
+      "transcendental": 3,
+      "provenance": "search",
+      "holdout": 0.00021404318248463452,
+      "overfitRatio": 0.9472724861062847,
+      "ood": 0.6524696080177088,
+      "r2": 0.9974553581295283,
+      "fastCost": 28,
+      "fastMetric": 0.0015032930520104606
+    },
+    {
+      "id": "blackbody_g",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "ood-violation",
+          "severity": "warn",
+          "detail": "ood violation 1.58e+0 — extrapolates badly"
+        }
+      ],
+      "storedMetric": 0.00012987872179127973,
+      "recomputedMetric": 0.00012987872179127973,
+      "metricDrift": 0,
+      "storedLevel": 2,
+      "recomputedLevel": 2,
+      "cost": 74,
+      "storedCost": 74,
+      "speedup": 0.33783783783783783,
+      "transcendental": 4,
+      "provenance": "search",
+      "holdout": 0.00013265337376721829,
+      "overfitRatio": 1.0213634068588813,
+      "ood": 1.5798634913592813,
+      "r2": 0.9915796347232397,
+      "fastCost": 15,
+      "fastMetric": 0.0002497888707507383
+    },
+    {
+      "id": "blackbody_r",
+      "hasTask": true,
+      "issues": [],
+      "storedMetric": 0.000003643325039992557,
+      "recomputedMetric": 0.000003643325039992557,
+      "metricDrift": 0,
+      "storedLevel": 4,
+      "recomputedLevel": 4,
+      "cost": 14,
+      "storedCost": 14,
+      "speedup": 1.7857142857142858,
+      "transcendental": 0,
+      "provenance": "search",
+      "holdout": 0.000004120299494718398,
+      "overfitRatio": 1.130917348710346,
+      "ood": 0,
+      "r2": 0.9996174828495048,
+      "fastCost": 3,
+      "fastMetric": 0.00034741754943065336
+    },
+    {
+      "id": "bs_d1_sigma",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-equivalent-to-law",
+          "severity": "info",
+          "detail": "champion differs textually from the seeded law but is equally exact — an algebraic rewrite, not a new result (cost 11 vs 13)"
+        },
+        {
+          "code": "speedup-model-off",
+          "severity": "warn",
+          "detail": "modelled ×0.82 vs measured ×1.57 (agreement 1.92) — cite the measured figure"
+        }
+      ],
+      "storedMetric": 1.8048120620446115e-30,
+      "recomputedMetric": 1.8048120620446115e-30,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 11,
+      "storedCost": 11,
+      "speedup": 0.8181818181818182,
+      "transcendental": 0,
+      "provenance": "rewrite-of-law",
+      "holdout": 1.798433382068801e-30,
+      "overfitRatio": 0.9964657372864716,
+      "ood": 0,
+      "r2": 1
+    },
+    {
+      "id": "bs_d2_sigma",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "speedup-unmeasurable",
+          "severity": "warn",
+          "detail": "advertises ×1.57 but both kernels sit at the call-overhead floor (measured ×0.99) — the gain is not observable"
+        }
+      ],
+      "storedMetric": 1.6217711130493227e-18,
+      "recomputedMetric": 1.6217711130493227e-18,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 7,
+      "storedCost": 7,
+      "speedup": 1.5714285714285714,
+      "transcendental": 0,
+      "provenance": "search",
+      "holdout": 1.6173952447079004e-18,
+      "overfitRatio": 0.9973017965937285,
+      "ood": 0,
+      "r2": 1,
+      "fastCost": 6,
+      "fastMetric": 0.0024722215921133715
+    },
+    {
+      "id": "chsh_correlation",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        }
+      ],
+      "storedMetric": 0,
+      "recomputedMetric": 0,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 88,
+      "storedCost": 88,
+      "speedup": 0.9545454545454546,
+      "transcendental": 4,
+      "provenance": "recovered-seed",
+      "holdout": 0,
+      "ood": 0,
+      "r2": 1
+    },
+    {
+      "id": "concurrence_pure",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        },
+        {
+          "code": "speedup-unmeasurable",
+          "severity": "warn",
+          "detail": "advertises ×1.40 but both kernels sit at the call-overhead floor (measured ×1.01) — the gain is not observable"
+        }
+      ],
+      "storedMetric": 0,
+      "recomputedMetric": 0,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 5,
+      "storedCost": 5,
+      "speedup": 1.4,
+      "transcendental": 0,
+      "provenance": "recovered-seed",
+      "holdout": 0,
+      "ood": 0,
+      "r2": 1
+    },
+    {
+      "id": "cosh_curve",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-equivalent-to-law",
+          "severity": "info",
+          "detail": "champion differs textually from the seeded law but is equally exact — an algebraic rewrite, not a new result (cost 43 vs 46)"
+        }
+      ],
+      "storedMetric": 3.5745259767827095e-33,
+      "recomputedMetric": 3.5745259767827095e-33,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 43,
+      "storedCost": 43,
+      "speedup": 1.0232558139534884,
+      "transcendental": 2,
+      "provenance": "rewrite-of-law",
+      "holdout": 6.779273404243071e-33,
+      "overfitRatio": 0.00677927340424307,
+      "ood": 0,
+      "r2": 1,
+      "fastCost": 3,
+      "fastMetric": 0.003777734011353794
+    },
+    {
+      "id": "damped_oscillation",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        }
+      ],
+      "storedMetric": 0,
+      "recomputedMetric": 0,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 44,
+      "storedCost": 44,
+      "speedup": 1,
+      "transcendental": 2,
+      "provenance": "recovered-seed",
+      "holdout": 0,
+      "ood": 0,
+      "r2": 1,
+      "fastCost": 27,
+      "fastMetric": 0.00030630571172772763
+    },
+    {
+      "id": "damped_pendulum",
+      "hasTask": true,
+      "issues": [],
+      "storedMetric": 0.0006756423002196924,
+      "recomputedMetric": 0.0006756423002196924,
+      "metricDrift": 0,
+      "storedLevel": 2,
+      "recomputedLevel": 2,
+      "cost": 46,
+      "storedCost": 46,
+      "transcendental": 2,
+      "provenance": "search",
+      "holdout": 0.0006163382207062233,
+      "overfitRatio": 0.9122256266456589,
+      "r2": 0.9992353053391322,
+      "fastCost": 23,
+      "fastMetric": 0.01460094082613519
+    },
+    {
+      "id": "diffusion_beta",
+      "hasTask": true,
+      "issues": [],
+      "storedMetric": 4.416535812970087e-15,
+      "recomputedMetric": 4.416535812970087e-15,
+      "metricDrift": 0,
+      "storedLevel": 2,
+      "recomputedLevel": 2,
+      "cost": 25,
+      "storedCost": 25,
+      "speedup": 1.12,
+      "transcendental": 1,
+      "provenance": "search",
+      "holdout": 4.413133622752793e-15,
+      "overfitRatio": 0.9992296699582278,
+      "ood": 0,
+      "r2": 0.9999999999999638,
+      "fastCost": 24,
+      "fastMetric": 0.0005060200458450411
+    },
+    {
+      "id": "doppler_effect",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        }
+      ],
+      "storedMetric": 0,
+      "recomputedMetric": 0,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 7,
+      "storedCost": 7,
+      "speedup": 0.7142857142857143,
+      "transcendental": 0,
+      "provenance": "recovered-seed",
+      "holdout": 0,
+      "ood": 0,
+      "r2": 1,
+      "fastCost": 3,
+      "fastMetric": 11.408687912051402
+    },
+    {
+      "id": "eigen3_sym",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "speedup-model-off",
+          "severity": "warn",
+          "detail": "modelled ×0.89 vs measured ×1.35 (agreement 1.52) — cite the measured figure"
+        }
+      ],
+      "storedMetric": 3.325277645075658e-11,
+      "recomputedMetric": 3.325277645075658e-11,
+      "metricDrift": 0,
+      "storedLevel": 2,
+      "recomputedLevel": 2,
+      "cost": 120,
+      "storedCost": 120,
+      "speedup": 0.8916666666666667,
+      "transcendental": 6,
+      "provenance": "search",
+      "holdout": 1.7913231060066527e-12,
+      "overfitRatio": 0.05386988087023019,
+      "ood": 0,
+      "r2": 0.9999999999545889,
+      "fastCost": 11,
+      "fastMetric": 0.030848965408385668
+    },
+    {
+      "id": "elliptic_k",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "speedup-model-off",
+          "severity": "warn",
+          "detail": "modelled ×0.38 vs measured ×2.46 (agreement 6.47) — cite the measured figure"
+        },
+        {
+          "code": "ood-violation",
+          "severity": "warn",
+          "detail": "ood violation 2.01e+1 — extrapolates badly"
+        }
+      ],
+      "storedMetric": 0.0010426866886825285,
+      "recomputedMetric": 0.0010426866886825285,
+      "metricDrift": 0,
+      "storedLevel": 2,
+      "recomputedLevel": 2,
+      "cost": 42,
+      "storedCost": 42,
+      "speedup": 0.38095238095238093,
+      "transcendental": 2,
+      "provenance": "search",
+      "holdout": 0.0009718726334056787,
+      "overfitRatio": 0.932085010727119,
+      "ood": 20.054170907505235,
+      "r2": 0.9950656039625979,
+      "fastCost": 8,
+      "fastMetric": 0.005535101499306599
+    },
+    {
+      "id": "ema_smooth",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        }
+      ],
+      "storedMetric": 0,
+      "recomputedMetric": 0,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 23,
+      "storedCost": 23,
+      "speedup": 1,
+      "transcendental": 1,
+      "provenance": "recovered-seed",
+      "holdout": 0,
+      "ood": 0,
+      "r2": 1,
+      "fastCost": 2,
+      "fastMetric": 0.0000107285951384828
+    },
+    {
+      "id": "erf_prob",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        },
+        {
+          "code": "speedup-unmeasurable",
+          "severity": "warn",
+          "detail": "advertises ×1.30 but both kernels sit at the call-overhead floor (measured ×1.00) — the gain is not observable"
+        }
+      ],
+      "storedMetric": 0,
+      "recomputedMetric": 0,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 20,
+      "storedCost": 20,
+      "speedup": 1.3,
+      "transcendental": 1,
+      "provenance": "recovered-seed",
+      "holdout": 0,
+      "ood": 0,
+      "r2": 1
+    },
+    {
+      "id": "european_call",
+      "hasTask": true,
+      "issues": [],
+      "storedMetric": 0.23308346247997982,
+      "recomputedMetric": 0.23308346247997982,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 62,
+      "storedCost": 62,
+      "speedup": 0.06451612903225806,
+      "transcendental": 3,
+      "provenance": "search",
+      "holdout": 0.30038069359715264,
+      "overfitRatio": 1.2887258941545592,
+      "ood": 0,
+      "r2": 0.9950190838176941
+    },
+    {
+      "id": "fast_exp_alu",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        },
+        {
+          "code": "speedup-model-off",
+          "severity": "warn",
+          "detail": "modelled ×1.70 vs measured ×0.92 (agreement 0.54) — cite the measured figure"
+        },
+        {
+          "code": "ood-violation",
+          "severity": "warn",
+          "detail": "ood violation 8.29e+2 — extrapolates badly"
+        }
+      ],
+      "storedMetric": 0,
+      "recomputedMetric": 0,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 20,
+      "storedCost": 20,
+      "speedup": 1.7,
+      "transcendental": 1,
+      "provenance": "recovered-seed",
+      "holdout": 0,
+      "ood": 828.9243552528318,
+      "r2": 1
+    },
+    {
+      "id": "fog_exp2",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        }
+      ],
+      "storedMetric": 0,
+      "recomputedMetric": 0,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 24,
+      "storedCost": 24,
+      "speedup": 0.9166666666666666,
+      "transcendental": 1,
+      "provenance": "recovered-seed",
+      "holdout": 0,
+      "ood": 0,
+      "r2": 1
+    },
+    {
+      "id": "free_fall",
+      "hasTask": true,
+      "issues": [],
+      "storedMetric": 0.0002573900531002858,
+      "recomputedMetric": 0.0002573900531002858,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 3,
+      "storedCost": 3,
+      "speedup": 0.6666666666666666,
+      "transcendental": 0,
+      "provenance": "search",
+      "holdout": 0.00017401308603717303,
+      "overfitRatio": 0.6760676410808037,
+      "ood": 0,
+      "r2": 0.9999985788645238
+    },
+    {
+      "id": "fresnel_schlick",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        },
+        {
+          "code": "speedup-unmeasurable",
+          "severity": "warn",
+          "detail": "advertises ×1.33 but both kernels sit at the call-overhead floor (measured ×1.00) — the gain is not observable"
+        }
+      ],
+      "storedMetric": 1.1352153315947514e-33,
+      "recomputedMetric": 1.1352153315947514e-33,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 9,
+      "storedCost": 9,
+      "speedup": 1.3333333333333333,
+      "transcendental": 0,
+      "provenance": "recovered-seed",
+      "holdout": 1.2133358649639586e-33,
+      "overfitRatio": 0.0012133358649639584,
+      "ood": 0,
+      "r2": 1,
+      "fastCost": 8,
+      "fastMetric": 0.0001697292959297894
+    },
+    {
+      "id": "gauss_shader",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-equivalent-to-law",
+          "severity": "info",
+          "detail": "champion differs textually from the seeded law but is equally exact — an algebraic rewrite, not a new result (cost 23 vs 26)"
+        },
+        {
+          "code": "speedup-model-off",
+          "severity": "warn",
+          "detail": "modelled ×0.96 vs measured ×1.57 (agreement 1.64) — cite the measured figure"
+        }
+      ],
+      "storedMetric": 0,
+      "recomputedMetric": 0,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 23,
+      "storedCost": 23,
+      "speedup": 0.9565217391304348,
+      "transcendental": 1,
+      "provenance": "rewrite-of-law",
+      "holdout": 0,
+      "ood": 0,
+      "r2": 1
+    },
+    {
+      "id": "gaussian_cdf",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        },
+        {
+          "code": "speedup-unmeasurable",
+          "severity": "warn",
+          "detail": "advertises ×1.48 but both kernels sit at the call-overhead floor (measured ×1.00) — the gain is not observable"
+        }
+      ],
+      "storedMetric": 1.3866695599588098e-34,
+      "recomputedMetric": 1.3866695599588098e-34,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 23,
+      "storedCost": 23,
+      "speedup": 1.4782608695652173,
+      "transcendental": 1,
+      "provenance": "recovered-seed",
+      "holdout": 3.0814879110195775e-34,
+      "overfitRatio": 0.0003081487911019577,
+      "ood": 0,
+      "r2": 1,
+      "fastCost": 8,
+      "fastMetric": 0.0009034064270384005
+    },
+    {
+      "id": "gaussian_kernel",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        }
+      ],
+      "storedMetric": 0,
+      "recomputedMetric": 0,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 23,
+      "storedCost": 23,
+      "speedup": 1,
+      "transcendental": 1,
+      "provenance": "recovered-seed",
+      "holdout": 0,
+      "ood": 0,
+      "r2": 1
+    },
+    {
+      "id": "gelu",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-equivalent-to-law",
+          "severity": "info",
+          "detail": "champion differs textually from the seeded law but is equally exact — an algebraic rewrite, not a new result (cost 24 vs 24)"
+        },
+        {
+          "code": "speedup-unmeasurable",
+          "severity": "warn",
+          "detail": "advertises ×1.92 but both kernels sit at the call-overhead floor (measured ×0.99) — the gain is not observable"
+        }
+      ],
+      "storedMetric": 1.5455587803707568e-34,
+      "recomputedMetric": 1.5455587803707568e-34,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 24,
+      "storedCost": 24,
+      "speedup": 1.9166666666666667,
+      "transcendental": 1,
+      "provenance": "rewrite-of-law",
+      "holdout": 3.0814879110195775e-34,
+      "overfitRatio": 0.0003081487911019577,
+      "ood": 0,
+      "r2": 1,
+      "fastCost": 3,
+      "fastMetric": 0.0029735142917741517
+    },
+    {
+      "id": "gemv4",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        }
+      ],
+      "storedMetric": 0,
+      "recomputedMetric": 0,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 7,
+      "storedCost": 7,
+      "speedup": 1,
+      "transcendental": 0,
+      "provenance": "recovered-seed",
+      "holdout": 0,
+      "ood": 0,
+      "r2": 1
+    },
+    {
+      "id": "grover_amplitude",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        }
+      ],
+      "storedMetric": 0,
+      "recomputedMetric": 0,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 50,
+      "storedCost": 50,
+      "speedup": 0.96,
+      "transcendental": 3,
+      "provenance": "recovered-seed",
+      "holdout": 0,
+      "ood": 0,
+      "r2": 1
+    },
+    {
+      "id": "hill",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        }
+      ],
+      "storedMetric": 0,
+      "recomputedMetric": 0,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 9,
+      "storedCost": 9,
+      "speedup": 1,
+      "transcendental": 0,
+      "provenance": "recovered-seed",
+      "holdout": 0,
+      "ood": 0,
+      "r2": 1
+    },
+    {
+      "id": "huber_loss",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        }
+      ],
+      "storedMetric": 0,
+      "recomputedMetric": 0,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 9,
+      "storedCost": 9,
+      "speedup": 0.5555555555555556,
+      "transcendental": 0,
+      "provenance": "recovered-seed",
+      "holdout": 0,
+      "ood": 0,
+      "r2": 1,
+      "fastCost": 3,
+      "fastMetric": 0.006767969139784184
+    },
+    {
+      "id": "idm_following",
+      "hasTask": true,
+      "issues": [],
+      "storedMetric": 0.002938652617546022,
+      "recomputedMetric": 0.002938652617546022,
+      "metricDrift": 0,
+      "storedLevel": 2,
+      "recomputedLevel": 2,
+      "cost": 20,
+      "storedCost": 20,
+      "speedup": 1.5,
+      "transcendental": 0,
+      "provenance": "search",
+      "holdout": 0.002425005044156095,
+      "overfitRatio": 0.8252098358536647,
+      "ood": 0,
+      "r2": 0.9998192150475046
+    },
+    {
+      "id": "ik_reach",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-equivalent-to-law",
+          "severity": "info",
+          "detail": "champion differs textually from the seeded law but is equally exact — an algebraic rewrite, not a new result (cost 52 vs 31)"
+        }
+      ],
+      "storedMetric": 4.0626336618882106e-32,
+      "recomputedMetric": 4.0626336618882106e-32,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 52,
+      "storedCost": 52,
+      "speedup": 0.5961538461538461,
+      "transcendental": 2,
+      "provenance": "rewrite-of-law",
+      "holdout": 3.192421475816282e-32,
+      "overfitRatio": 0.03192421475816282,
+      "ood": 0,
+      "r2": 1
+    },
+    {
+      "id": "implied_vol",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "low-r2",
+          "severity": "warn",
+          "detail": "r²=0.9523 < 0.98 — below deployable grade"
+        }
+      ],
+      "storedMetric": 0.003230719025237649,
+      "recomputedMetric": 0.003230719025237649,
+      "metricDrift": 0,
+      "storedLevel": 2,
+      "recomputedLevel": 2,
+      "cost": 41,
+      "transcendental": 2,
+      "provenance": "search",
+      "holdout": 0.0041047555892528495,
+      "overfitRatio": 1.2705393310861834,
+      "r2": 0.9523362019825349
+    },
+    {
+      "id": "kdv_soliton",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        }
+      ],
+      "storedMetric": 0,
+      "recomputedMetric": 0,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 53,
+      "storedCost": 53,
+      "speedup": 1,
+      "transcendental": 2,
+      "provenance": "recovered-seed",
+      "holdout": 0,
+      "ood": 0,
+      "r2": 1,
+      "fastCost": 7,
+      "fastMetric": 0.0017117911533114868
+    },
+    {
+      "id": "kelly_criterion",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        }
+      ],
+      "storedMetric": 0,
+      "recomputedMetric": 0,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 8,
+      "storedCost": 8,
+      "speedup": 0.75,
+      "transcendental": 0,
+      "provenance": "recovered-seed",
+      "holdout": 0,
+      "ood": 0,
+      "r2": 1
+    },
+    {
+      "id": "kepler",
+      "hasTask": true,
+      "issues": [],
+      "storedMetric": 0.09573117786146322,
+      "recomputedMetric": 0.09573117786146322,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 5,
+      "storedCost": 5,
+      "speedup": 0.6,
+      "transcendental": 1,
+      "provenance": "search",
+      "holdout": 0.23458775275830687,
+      "overfitRatio": 2.4504843458396497,
+      "ood": 0,
+      "r2": 0.9999621316109284,
+      "fastCost": 3,
+      "fastMetric": 31.04917940596365
+    },
+    {
+      "id": "kepler_solver",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "speedup-model-off",
+          "severity": "warn",
+          "detail": "modelled ×2.91 vs measured ×17.96 (agreement 6.17) — cite the measured figure"
+        }
+      ],
+      "storedMetric": 0.006134991867434414,
+      "recomputedMetric": 0.006134991867434414,
+      "metricDrift": 0,
+      "storedLevel": 1,
+      "recomputedLevel": 1,
+      "cost": 11,
+      "storedCost": 11,
+      "speedup": 2.909090909090909,
+      "transcendental": 0,
+      "provenance": "search",
+      "holdout": 0.004641021324542897,
+      "overfitRatio": 0.7564836962829947,
+      "ood": 0,
+      "r2": 0.9915868815707831,
+      "fastCost": 6,
+      "fastMetric": 0.012893357865503231
+    },
+    {
+      "id": "kerr",
+      "hasTask": true,
+      "issues": [],
+      "storedMetric": 1.7036779187577078e-23,
+      "recomputedMetric": 1.7036779187577078e-23,
+      "metricDrift": 0,
+      "storedLevel": 2,
+      "recomputedLevel": 2,
+      "cost": 17,
+      "storedCost": 17,
+      "speedup": 1,
+      "transcendental": 0,
+      "provenance": "search",
+      "holdout": 1.5743727298205226e-23,
+      "overfitRatio": 0.9241023273744886,
+      "ood": 0,
+      "r2": 1
+    },
+    {
+      "id": "kerr_spin",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        }
+      ],
+      "storedMetric": 3.354125112578511e-15,
+      "recomputedMetric": 3.354125112578511e-15,
+      "metricDrift": 0,
+      "storedLevel": 2,
+      "recomputedLevel": 2,
+      "cost": 21,
+      "storedCost": 21,
+      "speedup": 1,
+      "transcendental": 0,
+      "provenance": "recovered-seed",
+      "holdout": 3.32420451971408e-15,
+      "overfitRatio": 0.9910794642834807,
+      "ood": 0,
+      "r2": 0.9999999999998226,
+      "fastCost": 11,
+      "fastMetric": 0.00006044557112643241
+    },
+    {
+      "id": "kv_cache",
+      "hasTask": true,
+      "issues": [],
+      "storedMetric": 77.22369944411342,
+      "recomputedMetric": 77.22369944411342,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 0,
+      "transcendental": 0,
+      "provenance": "search",
+      "holdout": 56.661956598160415,
+      "overfitRatio": 0.7337379199136467
+    },
+    {
+      "id": "laguerre_l2",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-equivalent-to-law",
+          "severity": "info",
+          "detail": "champion differs textually from the seeded law but is equally exact — an algebraic rewrite, not a new result (cost 5 vs 8)"
+        },
+        {
+          "code": "speedup-model-off",
+          "severity": "warn",
+          "detail": "modelled ×1.00 vs measured ×2.00 (agreement 2.00) — cite the measured figure"
+        }
+      ],
+      "storedMetric": 0,
+      "recomputedMetric": 0,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 5,
+      "storedCost": 5,
+      "speedup": 1,
+      "transcendental": 0,
+      "provenance": "rewrite-of-law",
+      "holdout": 0,
+      "ood": 0,
+      "r2": 1,
+      "fastCost": 4,
+      "fastMetric": 0.4004357201082086
+    },
+    {
+      "id": "lambert_w",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-equivalent-to-law",
+          "severity": "info",
+          "detail": "champion differs textually from the seeded law but is equally exact — an algebraic rewrite, not a new result (cost 22 vs 21)"
+        }
+      ],
+      "storedMetric": 0,
+      "recomputedMetric": 0,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 22,
+      "storedCost": 22,
+      "speedup": 0.9545454545454546,
+      "transcendental": 1,
+      "provenance": "rewrite-of-law",
+      "holdout": 0,
+      "ood": 0,
+      "r2": 1
+    },
+    {
+      "id": "layernorm_scale",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        }
+      ],
+      "storedMetric": 0,
+      "recomputedMetric": 0,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 6,
+      "storedCost": 6,
+      "speedup": 0.5,
+      "transcendental": 1,
+      "provenance": "recovered-seed",
+      "holdout": 0,
+      "ood": 0,
+      "r2": 1
+    },
+    {
+      "id": "legendre_p2",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-equivalent-to-law",
+          "severity": "info",
+          "detail": "champion differs textually from the seeded law but is equally exact — an algebraic rewrite, not a new result (cost 3 vs 3)"
+        },
+        {
+          "code": "speedup-unmeasurable",
+          "severity": "warn",
+          "detail": "advertises ×1.67 but both kernels sit at the call-overhead floor (measured ×1.00) — the gain is not observable"
+        }
+      ],
+      "storedMetric": 3.250969746125654e-33,
+      "recomputedMetric": 3.250969746125654e-33,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 3,
+      "storedCost": 3,
+      "speedup": 1.6666666666666667,
+      "transcendental": 0,
+      "provenance": "rewrite-of-law",
+      "holdout": 3.197043707682812e-33,
+      "overfitRatio": 0.0031970437076828113,
+      "ood": 0,
+      "r2": 1
+    },
+    {
+      "id": "lennard_jones",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        }
+      ],
+      "storedMetric": 1.6853372386857923e-31,
+      "recomputedMetric": 1.6853372386857923e-31,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 17,
+      "storedCost": 17,
+      "speedup": 1,
+      "transcendental": 0,
+      "provenance": "recovered-seed",
+      "holdout": 1.0120972506342592e-32,
+      "overfitRatio": 0.01012097250634259,
+      "ood": 0,
+      "r2": 1
+    },
+    {
+      "id": "light_falloff_punctual",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-equivalent-to-law",
+          "severity": "info",
+          "detail": "champion differs textually from the seeded law but is equally exact — an algebraic rewrite, not a new result (cost 12 vs 15)"
+        }
+      ],
+      "storedMetric": 1.5032920443487647e-36,
+      "recomputedMetric": 1.5032920443487647e-36,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 12,
+      "storedCost": 12,
+      "speedup": 1.6666666666666667,
+      "transcendental": 0,
+      "provenance": "rewrite-of-law",
+      "holdout": 7.890505829894605e-37,
+      "overfitRatio": 7.890505829894605e-7,
+      "ood": 0,
+      "r2": 1,
+      "fastCost": 7,
+      "fastMetric": 0.000022254134884792464
+    },
+    {
+      "id": "logistic_growth",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        }
+      ],
+      "storedMetric": 0,
+      "recomputedMetric": 0,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 28,
+      "storedCost": 28,
+      "speedup": 1,
+      "transcendental": 1,
+      "provenance": "recovered-seed",
+      "holdout": 0,
+      "ood": 0,
+      "r2": 1,
+      "fastCost": 5,
+      "fastMetric": 0.0017566807184006097
+    },
+    {
+      "id": "logit_ml",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        }
+      ],
+      "storedMetric": 0,
+      "recomputedMetric": 0,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 25,
+      "storedCost": 25,
+      "speedup": 1.08,
+      "transcendental": 1,
+      "provenance": "recovered-seed",
+      "holdout": 0,
+      "ood": 0,
+      "r2": 1
+    },
+    {
+      "id": "logsumexp2",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        }
+      ],
+      "storedMetric": 0,
+      "recomputedMetric": 0,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 67,
+      "storedCost": 67,
+      "speedup": 0.8955223880597015,
+      "transcendental": 3,
+      "provenance": "recovered-seed",
+      "holdout": 0,
+      "ood": 0,
+      "r2": 1,
+      "fastCost": 3,
+      "fastMetric": 0.030249371156328322
+    },
+    {
+      "id": "lorentz",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-equivalent-to-law",
+          "severity": "info",
+          "detail": "champion differs textually from the seeded law but is equally exact — an algebraic rewrite, not a new result (cost 9 vs 8)"
+        },
+        {
+          "code": "fast-slot-pointless",
+          "severity": "warn",
+          "detail": "fast slot measures ×1.01 — no usable gain, so its accuracy loss buys nothing"
+        }
+      ],
+      "storedMetric": 0,
+      "recomputedMetric": 0,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 9,
+      "storedCost": 9,
+      "speedup": 0.8888888888888888,
+      "transcendental": 1,
+      "provenance": "rewrite-of-law",
+      "holdout": 0,
+      "ood": 0,
+      "r2": 1,
+      "fastCost": 8,
+      "fastMetric": 0
+    },
+    {
+      "id": "loschmidt_rate",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "speedup-model-off",
+          "severity": "warn",
+          "detail": "modelled ×0.38 vs measured ×0.94 (agreement 2.46) — cite the measured figure"
+        },
+        {
+          "code": "low-r2",
+          "severity": "warn",
+          "detail": "r²=0.9677 < 0.98 — below deployable grade"
+        }
+      ],
+      "storedMetric": 0.052925894381018135,
+      "recomputedMetric": 0.052925894381018135,
+      "metricDrift": 0,
+      "storedLevel": 2,
+      "recomputedLevel": 2,
+      "cost": 47,
+      "storedCost": 47,
+      "speedup": 0.3829787234042553,
+      "transcendental": 2,
+      "provenance": "search",
+      "holdout": 0.044550536457605115,
+      "overfitRatio": 0.8417531149664078,
+      "ood": 0,
+      "r2": 0.9677433054112933
+    },
+    {
+      "id": "mel_scale",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "speedup-model-off",
+          "severity": "warn",
+          "detail": "modelled ×1.00 vs measured ×1.62 (agreement 1.62) — cite the measured figure"
+        }
+      ],
+      "storedMetric": 3.949666571450027e-25,
+      "recomputedMetric": 3.949666571450027e-25,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 23,
+      "storedCost": 23,
+      "speedup": 1,
+      "transcendental": 1,
+      "provenance": "search",
+      "holdout": 3.331845541065949e-25,
+      "overfitRatio": 0.8435764084872461,
+      "ood": 0,
+      "r2": 1
+    },
+    {
+      "id": "michaelis_menten",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        }
+      ],
+      "storedMetric": 0,
+      "recomputedMetric": 0,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 6,
+      "storedCost": 6,
+      "speedup": 1.1666666666666667,
+      "transcendental": 0,
+      "provenance": "recovered-seed",
+      "holdout": 0,
+      "ood": 0,
+      "r2": 1
+    },
+    {
+      "id": "mish",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        }
+      ],
+      "storedMetric": 0,
+      "recomputedMetric": 0,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 62,
+      "storedCost": 62,
+      "speedup": 1,
+      "transcendental": 3,
+      "provenance": "recovered-seed",
+      "holdout": 0,
+      "ood": 0,
+      "r2": 1,
+      "fastCost": 3,
+      "fastMetric": 0.005653078807284052
+    },
+    {
+      "id": "mm1_queue_wait",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        }
+      ],
+      "storedMetric": 0,
+      "recomputedMetric": 0,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 6,
+      "storedCost": 6,
+      "speedup": 1,
+      "transcendental": 0,
+      "provenance": "recovered-seed",
+      "holdout": 0,
+      "ood": 0,
+      "r2": 1
+    },
+    {
+      "id": "pendulum_hybrid",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "fast-slot-pointless",
+          "severity": "warn",
+          "detail": "fast slot measures ×1.01 — no usable gain, so its accuracy loss buys nothing"
+        }
+      ],
+      "storedMetric": 4.790337801365642e-7,
+      "recomputedMetric": 4.790337801365642e-7,
+      "metricDrift": 0,
+      "storedLevel": 2,
+      "recomputedLevel": 2,
+      "cost": 179,
+      "transcendental": 7,
+      "provenance": "search",
+      "holdout": 9.609859851677126e-7,
+      "overfitRatio": 2.0060923154391164,
+      "r2": 0.9999998643066239,
+      "fastCost": 177,
+      "fastMetric": 0.0016450044687864698
+    },
+    {
+      "id": "pmt_finance",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        }
+      ],
+      "storedMetric": 0,
+      "recomputedMetric": 0,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 90,
+      "storedCost": 90,
+      "speedup": 0.5222222222222223,
+      "transcendental": 4,
+      "provenance": "recovered-seed",
+      "holdout": 0,
+      "ood": 0,
+      "r2": 1,
+      "fastCost": 34,
+      "fastMetric": 4.3680216924352057e-7
+    },
+    {
+      "id": "probit_quantile",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "speedup-model-off",
+          "severity": "warn",
+          "detail": "modelled ×0.97 vs measured ×12.73 (agreement 13.19) — cite the measured figure"
+        },
+        {
+          "code": "ood-violation",
+          "severity": "warn",
+          "detail": "ood violation 1.45e-1 — extrapolates badly"
+        }
+      ],
+      "storedMetric": 0.000019016893432652806,
+      "recomputedMetric": 0.000019016893432652806,
+      "metricDrift": 0,
+      "storedLevel": 3,
+      "recomputedLevel": 3,
+      "cost": 29,
+      "storedCost": 29,
+      "speedup": 0.9655172413793104,
+      "transcendental": 3,
+      "provenance": "search",
+      "holdout": 0.000018600294804992465,
+      "overfitRatio": 0.9780932343584035,
+      "ood": 0.14492804600491638,
+      "r2": 0.9999762728848401,
+      "fastCost": 5,
+      "fastMetric": 0.010600724117111038
+    },
+    {
+      "id": "qfi_dephasing",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        }
+      ],
+      "storedMetric": 1.5050754313933294e-32,
+      "recomputedMetric": 1.5050754313933294e-32,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 28,
+      "storedCost": 28,
+      "speedup": 0.7857142857142857,
+      "transcendental": 1,
+      "provenance": "recovered-seed",
+      "holdout": 3.1601655043930574e-32,
+      "overfitRatio": 0.031601655043930574,
+      "ood": 0,
+      "r2": 1
+    },
+    {
+      "id": "rayleigh_phase",
+      "hasTask": true,
+      "issues": [],
+      "storedMetric": 7.162051980690034e-35,
+      "recomputedMetric": 7.162051980690034e-35,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 24,
+      "storedCost": 24,
+      "speedup": 0.20833333333333334,
+      "transcendental": 1,
+      "provenance": "search",
+      "holdout": 6.018531076210112e-35,
+      "overfitRatio": 0.00006018531076210112,
+      "ood": 0,
+      "r2": 1,
+      "fastCost": 0,
+      "fastMetric": 0.0004463666351605404
+    },
+    {
+      "id": "rc_circuit",
+      "hasTask": true,
+      "issues": [],
+      "storedMetric": 0.00010966177677556906,
+      "recomputedMetric": 0.00010966177677556906,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 23,
+      "storedCost": 23,
+      "speedup": 0.9565217391304348,
+      "transcendental": 1,
+      "provenance": "search",
+      "holdout": 0.0002844062080868289,
+      "overfitRatio": 2.593485318671129,
+      "ood": 0,
+      "r2": 0.9983486937017619
+    },
+    {
+      "id": "rl_distillation",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        },
+        {
+          "code": "speedup-unmeasurable",
+          "severity": "warn",
+          "detail": "advertises ×1.62 but both kernels sit at the call-overhead floor (measured ×1.00) — the gain is not observable"
+        }
+      ],
+      "storedMetric": 0,
+      "recomputedMetric": 0,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 21,
+      "storedCost": 21,
+      "speedup": 1.619047619047619,
+      "transcendental": 1,
+      "provenance": "recovered-seed",
+      "holdout": 0,
+      "ood": 0,
+      "r2": 1
+    },
+    {
+      "id": "rope_freq",
+      "hasTask": true,
+      "issues": [],
+      "storedMetric": 8.450097215948882e-7,
+      "recomputedMetric": 8.450097215948882e-7,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 46,
+      "storedCost": 46,
+      "speedup": 0.9347826086956522,
+      "transcendental": 2,
+      "provenance": "search",
+      "holdout": 7.946056930423871e-7,
+      "overfitRatio": 0.9403509483212009,
+      "ood": 0,
+      "r2": 0.9999983975093184
+    },
+    {
+      "id": "rope_rot",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-equivalent-to-law",
+          "severity": "info",
+          "detail": "champion differs textually from the seeded law but is equally exact — an algebraic rewrite, not a new result (cost 44 vs 43)"
+        }
+      ],
+      "storedMetric": 0,
+      "recomputedMetric": 0,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 44,
+      "storedCost": 44,
+      "speedup": 0.9772727272727273,
+      "transcendental": 2,
+      "provenance": "rewrite-of-law",
+      "holdout": 0,
+      "ood": 0,
+      "r2": 1
+    },
+    {
+      "id": "rsi_momentum",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        },
+        {
+          "code": "speedup-model-off",
+          "severity": "warn",
+          "detail": "modelled ×0.67 vs measured ×1.04 (agreement 1.56) — cite the measured figure"
+        }
+      ],
+      "storedMetric": 0,
+      "recomputedMetric": 0,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 6,
+      "storedCost": 6,
+      "speedup": 0.6666666666666666,
+      "transcendental": 0,
+      "provenance": "recovered-seed",
+      "holdout": 0,
+      "ood": 0,
+      "r2": 1
+    },
+    {
+      "id": "sigmoid",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        },
+        {
+          "code": "speedup-unmeasurable",
+          "severity": "warn",
+          "detail": "advertises ×1.31 but both kernels sit at the call-overhead floor (measured ×1.00) — the gain is not observable"
+        }
+      ],
+      "storedMetric": 0,
+      "recomputedMetric": 0,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 26,
+      "storedCost": 26,
+      "speedup": 1.3076923076923077,
+      "transcendental": 1,
+      "provenance": "recovered-seed",
+      "holdout": 0,
+      "ood": 0,
+      "r2": 1,
+      "fastCost": 8,
+      "fastMetric": 0.000487056042875682
+    },
+    {
+      "id": "silu",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        },
+        {
+          "code": "speedup-unmeasurable",
+          "severity": "warn",
+          "detail": "advertises ×1.31 but both kernels sit at the call-overhead floor (measured ×1.00) — the gain is not observable"
+        }
+      ],
+      "storedMetric": 0,
+      "recomputedMetric": 0,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 26,
+      "storedCost": 26,
+      "speedup": 1.3076923076923077,
+      "transcendental": 1,
+      "provenance": "recovered-seed",
+      "holdout": 0,
+      "ood": 0,
+      "r2": 1,
+      "fastCost": 3,
+      "fastMetric": 0.007335732937479303
+    },
+    {
+      "id": "smootherstep",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        }
+      ],
+      "storedMetric": 3.565127808420542e-31,
+      "recomputedMetric": 3.565127808420542e-31,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 12,
+      "storedCost": 12,
+      "speedup": 0.75,
+      "transcendental": 0,
+      "provenance": "recovered-seed",
+      "holdout": 5.820860799878609e-31,
+      "overfitRatio": 0.5820860799878609,
+      "ood": 0,
+      "r2": 1
+    },
+    {
+      "id": "smoothstep",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        }
+      ],
+      "storedMetric": 0,
+      "recomputedMetric": 0,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 4,
+      "storedCost": 4,
+      "speedup": 1.25,
+      "transcendental": 0,
+      "provenance": "recovered-seed",
+      "holdout": 0,
+      "ood": 0,
+      "r2": 1
+    },
+    {
+      "id": "softplus",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        }
+      ],
+      "storedMetric": 0,
+      "recomputedMetric": 0,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 41,
+      "storedCost": 41,
+      "speedup": 1,
+      "transcendental": 2,
+      "provenance": "recovered-seed",
+      "holdout": 0,
+      "ood": 0,
+      "r2": 1,
+      "fastCost": 3,
+      "fastMetric": 0.02868721493659664
+    },
+    {
+      "id": "srgb_decode",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        },
+        {
+          "code": "speedup-model-off",
+          "severity": "warn",
+          "detail": "modelled ×0.54 vs measured ×1.03 (agreement 1.92) — cite the measured figure"
+        }
+      ],
+      "storedMetric": 9.210454018549092e-34,
+      "recomputedMetric": 9.210454018549092e-34,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 41,
+      "storedCost": 41,
+      "speedup": 0.5365853658536586,
+      "transcendental": 2,
+      "provenance": "recovered-seed",
+      "holdout": 7.455026039710738e-34,
+      "overfitRatio": 0.0007455026039710737,
+      "ood": 0,
+      "r2": 1,
+      "fastCost": 3,
+      "fastMetric": 0.0001304377643047932
+    },
+    {
+      "id": "srgb_gamma",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-equivalent-to-law",
+          "severity": "info",
+          "detail": "champion differs textually from the seeded law but is equally exact — an algebraic rewrite, not a new result (cost 45 vs 46)"
+        },
+        {
+          "code": "speedup-model-off",
+          "severity": "warn",
+          "detail": "modelled ×0.49 vs measured ×1.38 (agreement 2.82) — cite the measured figure"
+        }
+      ],
+      "storedMetric": 2.7231034629710704e-28,
+      "recomputedMetric": 2.7231034629710704e-28,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 45,
+      "storedCost": 45,
+      "speedup": 0.4888888888888889,
+      "transcendental": 2,
+      "provenance": "rewrite-of-law",
+      "holdout": 2.0360738779067418e-30,
+      "overfitRatio": 0.007477034587900903,
+      "ood": 0,
+      "r2": 1,
+      "fastCost": 4,
+      "fastMetric": 0.00011551060259047263
+    },
+    {
+      "id": "stefan_boltzmann",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-equivalent-to-law",
+          "severity": "info",
+          "detail": "champion differs textually from the seeded law but is equally exact — an algebraic rewrite, not a new result (cost 5 vs 4)"
+        },
+        {
+          "code": "speedup-model-off",
+          "severity": "warn",
+          "detail": "modelled ×0.60 vs measured ×0.90 (agreement 1.50) — cite the measured figure"
+        }
+      ],
+      "storedMetric": 2.382092673239445e-26,
+      "recomputedMetric": 2.382092673239445e-26,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 5,
+      "storedCost": 5,
+      "speedup": 0.6,
+      "transcendental": 0,
+      "provenance": "rewrite-of-law",
+      "holdout": 2.0716209980018904e-26,
+      "overfitRatio": 0.8696643171252698,
+      "ood": 0,
+      "r2": 1
+    },
+    {
+      "id": "tanh_sat",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        }
+      ],
+      "storedMetric": 0,
+      "recomputedMetric": 0,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 20,
+      "storedCost": 20,
+      "speedup": 1,
+      "transcendental": 1,
+      "provenance": "recovered-seed",
+      "holdout": 0,
+      "ood": 0,
+      "r2": 1
+    },
+    {
+      "id": "temperature_softmax",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        }
+      ],
+      "storedMetric": 7.439476402624881e-47,
+      "recomputedMetric": 7.439476402624881e-47,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 30,
+      "storedCost": 30,
+      "speedup": 0.8666666666666667,
+      "transcendental": 1,
+      "provenance": "recovered-seed",
+      "holdout": 0,
+      "overfitRatio": 0,
+      "ood": 0,
+      "r2": 1
+    },
+    {
+      "id": "temporal_grad",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-is-seeded-law",
+          "severity": "info",
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
+        }
+      ],
+      "storedMetric": 0,
+      "recomputedMetric": 0,
+      "metricDrift": 0,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 1,
+      "storedCost": 1,
+      "speedup": 1,
+      "transcendental": 0,
+      "provenance": "recovered-seed",
+      "holdout": 0,
+      "ood": 0,
+      "r2": 1
+    },
+    {
+      "id": "uncharted2_tonemap",
+      "hasTask": true,
+      "issues": [
+        {
+          "code": "champion-equivalent-to-law",
+          "severity": "info",
+          "detail": "champion differs textually from the seeded law but is equally exact — an algebraic rewrite, not a new result (cost 17 vs 18)"
+        }
+      ],
+      "storedMetric": 5.653203630850936e-29,
+      "recomputedMetric": 5.653203630850936e-29,
+      "metricDrift": 0,
+      "storedLevel": 2,
+      "recomputedLevel": 2,
+      "cost": 17,
+      "storedCost": 17,
+      "speedup": 1.5294117647058822,
+      "transcendental": 0,
+      "provenance": "rewrite-of-law",
+      "holdout": 5.641882794961444e-29,
+      "overfitRatio": 0.9979974477077542,
+      "ood": 0,
+      "r2": 1,
+      "fastCost": 16,
+      "fastMetric": 2.664376972745578e-14
+    }
+  ],
+  "missing": [],
+  "summary": {
+    "total": 89,
+    "clean": 54,
+    "warn": 35,
+    "fail": 0,
+    "recoveredSeed": 45,
+    "searchFound": 44
+  }
+}

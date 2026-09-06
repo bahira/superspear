@@ -51,6 +51,8 @@ export interface LoopTaskSnapshot {
   history: { i: number; metric: number; size: number }[];
   paretoFront: LoopFrontEntry[];
   best: LoopFrontEntry | null;
+  /** honest generalisation score of `best` (held-out split); null if unavailable */
+  holdout: number | null;
   secondary: number | null;
   python: string | null;
   c: string | null;
@@ -120,7 +122,7 @@ export interface LoopProgress {
 interface TaskRuntime {
   def: TaskDef;
   population: SpearNode[];
-  cache: Map<string, { metric: number; secondary?: number; violation?: number }>;
+  cache: Map<string, { metric: number; secondary?: number; violation?: number; node: SpearNode }>;
   /** UCB bandits over child-producing operators (heritage / exploration zones) */
   banditH: OperatorBandit;
   banditE: OperatorBandit;
@@ -232,10 +234,35 @@ function selectFitness(rt: TaskRuntime, raw: number, size: number, iterationsUse
   return fitnessOf(rt.def, rt.def.metricDirection === "min" ? raw * penalty : raw / penalty);
 }
 
-/** honest reported score: holdout split when the task defines one */
+/**
+ * Canonical record score: the TRAIN metric.
+ *
+ * It must stay the train metric for three reasons, all of which broke when this
+ * briefly returned the holdout instead:
+ *   • the ledger's 89 existing records are train metrics — comparing a fresh
+ *     holdout number against a stored train number (run-farm's `better()`)
+ *     silently overwrites good champions with worse ones, and vice versa;
+ *   • milestones/levels are calibrated on train quantities (the noise floor is
+ *     measured on the train set), so a holdout metric would shift every level;
+ *   • holdout is a *diagnostic* about generalisation, not the objective — the
+ *     search must not be able to select against it or it stops being held out.
+ *
+ * The honest generalisation number is reported alongside, via `holdoutOf`.
+ */
 function reportMetric(rt: TaskRuntime, node: SpearNode): { metric: number; secondary?: number } {
-  const r = rt.def.holdout ? rt.def.holdout(node) : rt.def.evaluate(node);
+  const r = rt.def.evaluate(node);
   return { metric: r.metric, secondary: r.secondary };
+}
+
+/** Generalisation diagnostic for the reported champion (never a selection signal). */
+function holdoutOf(rt: TaskRuntime, node: SpearNode): number | null {
+  if (!rt.def.holdout) return null;
+  try {
+    const h = rt.def.holdout(node);
+    return Number.isFinite(h.metric) ? h.metric : null;
+  } catch {
+    return null;
+  }
 }
 
 function cachedEval(rt: TaskRuntime, node: SpearNode): ShapedEval {
@@ -243,7 +270,11 @@ function cachedEval(rt: TaskRuntime, node: SpearNode): ShapedEval {
   const hit = rt.cache.get(key);
   if (hit) {
     rt.cacheHits++;
-    return { metric: hit.metric, secondary: hit.secondary, violation: hit.violation, node };
+    // CRITICAL: return the SHAPED node, not the raw one. `metric` belongs to
+    // the affine-wrapped formula; handing back the raw AST paired with the
+    // wrapped metric is what put un-shaped trees in the ledger's fast slots
+    // (a stored `atan(x)` claiming the MSE of `0.351631·atan(x) + 0.5`).
+    return { metric: hit.metric, secondary: hit.secondary, violation: hit.violation, node: hit.node };
   }
   const res = scored(rt, node);
   rt.evals++;
@@ -253,7 +284,7 @@ function cachedEval(rt: TaskRuntime, node: SpearNode): ShapedEval {
     // formula is what gets reported and deployed, so it is what must survive
     // extrapolation.
     violation = rt.def.ood ? rt.def.ood(res.node) : undefined;
-    rt.cache.set(key, { metric: res.metric, secondary: res.secondary, violation });
+    rt.cache.set(key, { metric: res.metric, secondary: res.secondary, violation, node: res.node });
     if (rt.cache.size > 20000) rt.cache.clear();
   }
   return { metric: res.metric, secondary: res.secondary, node: res.node, violation };
@@ -341,6 +372,7 @@ function snapshotTask(rt: TaskRuntime, full: boolean): LoopTaskSnapshot {
         level: rt.bestLevel,
       }
     : null;
+  const holdout = rt.bestNode ? holdoutOf(rt, rt.bestNode) : null;
 
   // periodic snapshots stay cheap: codegen + wasm compile + the 100k-element
   // speed bench only run on the final full snapshot
@@ -382,6 +414,7 @@ function snapshotTask(rt: TaskRuntime, full: boolean): LoopTaskSnapshot {
     history: rt.history.slice(-160),
     paretoFront: front.slice(0, 10),
     best,
+    holdout,
     secondary: rt.bestSecondary ?? null,
     python: full && rt.bestNode ? toPython(rt.bestNode, `spear_${t.id}`) : null,
     c: full && rt.bestNode ? toC(rt.bestNode, `spear_${t.id}`, t.codeVarDecl) : null,
@@ -764,7 +797,11 @@ export async function runGroundedLoop(opts: GroundedLoopOptions = {}): Promise<L
       const key = canonicalKey(rt.population[i]);
       if (seen.has(key)) continue;
       seen.add(key);
-      rt.frontRaw.push({ node: rt.population[i], metric: results[i].metric, size: rt.population[i].size });
+      // store the SHAPED node from the evaluation: `results[i].metric` is the
+      // metric of that shaped formula, so the front must carry it — otherwise
+      // the fast slot ships a raw AST labelled with someone else's error.
+      const shaped = results[i].node;
+      rt.frontRaw.push({ node: shaped, metric: results[i].metric, size: shaped.size });
     }
 
     // ---- A↔B migration: every MIGRATE_EVERY generations, exchange elites for

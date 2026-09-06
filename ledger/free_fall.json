@@ -2,11 +2,26 @@
   "taskId": "free_fall",
   "title": "Loi de chute libre",
   "direction": "min",
-  "metric": 0.00018985148816310314,
+  "metric": 0.0002573900531002858,
+  "holdout": 0.00017401308603717303,
   "level": 5,
-  "formula": "((4.905917 * (t)²) + -0.001081)",
-  "seed": 3333,
-  "iteration": 28,
+  "formula": "((4.905735 * (t)²) + -0.001678)",
+  "seed": 4242,
+  "iteration": 5,
+  "speed": {
+    "formulaCost": 3,
+    "exactCost": 2,
+    "speedup": 0.6666666666666666,
+    "costProfile": "cpu-transcendental-20",
+    "measured": {
+      "measuredSpeedup": 1.0013,
+      "nsFormula": 2.76,
+      "nsExact": 2.7635,
+      "agreement": 1.5019,
+      "resolvable": false,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    }
+  },
   "tree": {
     "o": "add",
     "c": [
@@ -15,7 +30,7 @@
         "c": [
           {
             "o": "const",
-            "v": 4.905917
+            "v": 4.905735
           },
           {
             "o": "sq",
@@ -30,32 +45,7 @@
       },
       {
         "o": "const",
-        "v": -0.001081
-      }
-    ]
-  },
-  "speed": {
-    "formulaCost": 3,
-    "exactCost": 2,
-    "speedup": 0.6666666666666666
-  },
-  "fast": {
-    "formula": "(t)²",
-    "metric": 0.0005030952469190765,
-    "level": 5,
-    "formulaCost": 1,
-    "speed": {
-      "formulaCost": 1,
-      "exactCost": 2,
-      "speedup": 2
-    }
-  },
-  "fastTree": {
-    "o": "sq",
-    "c": [
-      {
-        "o": "var",
-        "n": "t"
+        "v": -0.001678
       }
     ]
   }

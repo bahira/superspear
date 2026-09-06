@@ -10,7 +10,18 @@
   "speed": {
     "formulaCost": 13,
     "exactCost": 40,
-    "speedup": 3.076923076923077
+    "speedup": 0.8306,
+    "costProfile": "cpu-transcendental-20",
+    "measured": {
+      "measuredSpeedup": 0.8306,
+      "nsFormula": 19.0507,
+      "nsExact": 15.8231,
+      "agreement": 0.2699,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    },
+    "speedupModelled": 3.076923076923077,
+    "speedupSource": "measured"
   },
   "tree": {
     "o": "add",
@@ -103,93 +114,6 @@
       {
         "o": "const",
         "v": 1.48653822658716
-      }
-    ]
-  },
-  "fast": {
-    "formula": "(((2.899151 + min(3.154708, x)) + (min(3.396868, x) * min(2.061274, x))) / max(4.359564, x))",
-    "metric": 0.0002544410084939293,
-    "level": 2,
-    "formulaCost": 11,
-    "speed": {
-      "formulaCost": 11,
-      "exactCost": 40,
-      "speedup": 3.6363636363636362
-    }
-  },
-  "fastTree": {
-    "o": "pdiv",
-    "c": [
-      {
-        "o": "add",
-        "c": [
-          {
-            "o": "add",
-            "c": [
-              {
-                "o": "const",
-                "v": 2.899151
-              },
-              {
-                "o": "min",
-                "c": [
-                  {
-                    "o": "const",
-                    "v": 3.154708
-                  },
-                  {
-                    "o": "var",
-                    "n": "x"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "o": "mul",
-            "c": [
-              {
-                "o": "min",
-                "c": [
-                  {
-                    "o": "const",
-                    "v": 3.396868
-                  },
-                  {
-                    "o": "var",
-                    "n": "x"
-                  }
-                ]
-              },
-              {
-                "o": "min",
-                "c": [
-                  {
-                    "o": "const",
-                    "v": 2.061274
-                  },
-                  {
-                    "o": "var",
-                    "n": "x"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "o": "max",
-        "c": [
-          {
-            "o": "const",
-            "v": 4.359564
-          },
-          {
-            "o": "var",
-            "n": "x"
-          }
-        ]
       }
     ]
   }

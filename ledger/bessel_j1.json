@@ -10,7 +10,18 @@
   "speed": {
     "formulaCost": 48,
     "exactCost": 40,
-    "speedup": 0.8333333333333334
+    "speedup": 0.8518,
+    "costProfile": "cpu-transcendental-20",
+    "measured": {
+      "measuredSpeedup": 0.8518,
+      "nsFormula": 18.0982,
+      "nsExact": 15.4167,
+      "agreement": 1.0222,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    },
+    "speedupModelled": 0.8333333333333334,
+    "speedupSource": "measured"
   },
   "tree": {
     "o": "add",
@@ -95,71 +106,6 @@
       {
         "o": "const",
         "v": 0.123708
-      }
-    ]
-  },
-  "fast": {
-    "formula": "min(min(2.051452, (x + -0.339138)), min(0.889558, sin((x * 0.889558))))",
-    "metric": 0.0002900666672221887,
-    "level": 2,
-    "formulaCost": 25,
-    "speed": {
-      "formulaCost": 25,
-      "exactCost": 40,
-      "speedup": 1.6
-    }
-  },
-  "fastTree": {
-    "o": "min",
-    "c": [
-      {
-        "o": "min",
-        "c": [
-          {
-            "o": "const",
-            "v": 2.051452
-          },
-          {
-            "o": "add",
-            "c": [
-              {
-                "o": "var",
-                "n": "x"
-              },
-              {
-                "o": "const",
-                "v": -0.339138
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "o": "min",
-        "c": [
-          {
-            "o": "const",
-            "v": 0.889558
-          },
-          {
-            "o": "sin",
-            "c": [
-              {
-                "o": "mul",
-                "c": [
-                  {
-                    "o": "var",
-                    "n": "x"
-                  },
-                  {
-                    "o": "const",
-                    "v": 0.889558
-                  }
-                ]
-              }
-            ]
-          }
-        ]
       }
     ]
   }

@@ -15,6 +15,8 @@ interface Finding {
   title: string;
   direction: "min" | "max";
   metric: number;
+  /** generalisation diagnostic (held-out split) — never used for ranking */
+  holdout?: number;
   level: number;
   formula: string;
   seed: number;
@@ -84,6 +86,47 @@ async function farmInner(seed: number, budget: number, workers: number, only: Se
   const outs = await Promise.all(procs);
   const wall = (performance.now() - t0) / 1000;
 
+  // A fast slot only means something if it is genuinely CHEAPER than the
+  // champion it accompanies. The merge below can violate that in two ways: a
+  // demoted ex-champion may not be cheaper than the incoming one, and a
+  // carried-over `prev.fast` may be dearer than a newly improved champion.
+  // Both shipped invalid slots to the ledger before (27 `fast-not-faster`
+  // failures in one farm run), so the invariant is enforced here at the single
+  // write point rather than patched afterwards by repair-ledger.
+  // Tasks that HAVE a closed-form reference must never advertise a multiplier
+  // against an iterative solver: the solver is not what a real implementation
+  // runs, and the comparison is not accuracy-matched (gaussian_cdf advertised
+  // ×2000 where the honest like-for-like ratio is ×1.48). The loop snapshot
+  // still carries `vsIterative`, so strip it here at the write point.
+  const { buildTasks: bt2 } = await import("../src/lib/spear/benchmarks");
+  const hasClosedForm = new Set(
+    (bt2() as any[]).filter((t) => t.exactCost !== undefined || t.exactRefNode !== undefined).map((t) => t.id),
+  );
+  const stripStrawman = (entry: Finding): void => {
+    if (!hasClosedForm.has(entry.taskId)) return;
+    if (entry.speed?.vsIterative) delete entry.speed.vsIterative;
+    const fast = entry.fast as { vsIterative?: unknown } | undefined;
+    if (fast?.vsIterative) delete fast.vsIterative;
+  };
+
+  const pruneFast = (entry: Finding): void => {
+    if (!entry.fast) return;
+    // A slot whose formula is literally the champion's is not an alternative
+    // operating point (kv_cache shipped `A` as both champion and fast slot).
+    if (entry.fast.formula === entry.formula) {
+      delete entry.fast;
+      delete entry.fastTree;
+      return;
+    }
+    const champCost = entry.speed?.formulaCost;
+    const fastCost = entry.fast.formulaCost;
+    if (champCost === undefined || fastCost === undefined) return;
+    if (fastCost >= champCost) {
+      delete entry.fast;
+      delete entry.fastTree;
+    }
+  };
+
   let records = 0;
   let totalBt = 0;
   for (const o of outs) {
@@ -99,14 +142,17 @@ async function farmInner(seed: number, budget: number, workers: number, only: Se
             f.fastTree = prev.tree;
           }
         }
+        pruneFast(f);
+        stripStrawman(f);
         ledger[f.taskId] = f;
         records++;
       } else {
         if (prev.formula === f.formula) {
           // backfill missing annotations on reproduced champions
           if (!prev.speed && f.speed) prev.speed = f.speed;
-          if (prev.speed && !prev.speed.vsIterative && f.speed?.vsIterative) prev.speed.vsIterative = f.speed.vsIterative;
+          if (prev.speed && !prev.speed.vsIterative && f.speed?.vsIterative && !hasClosedForm.has(f.taskId)) prev.speed.vsIterative = f.speed.vsIterative;
           if (!prev.tree && f.tree) prev.tree = f.tree;
+          if (prev.holdout === undefined && f.holdout !== undefined) prev.holdout = f.holdout;
         }
         // fast-slot: keep the cheapest VALIDATED form ever seen (record
         // ladder L>=2, or deployment grade R^2>=0.98 flagged `deploy`)
@@ -114,6 +160,8 @@ async function farmInner(seed: number, budget: number, workers: number, only: Se
           prev.fast = f.fast;
           prev.fastTree = f.fastTree;
         }
+        pruneFast(prev);
+        stripStrawman(prev);
       }
     }
   }

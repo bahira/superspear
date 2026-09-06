@@ -2,21 +2,86 @@
   "taskId": "damped_oscillation",
   "title": "Oscillation amortie e^(−t/τ)·cos(ωt)",
   "direction": "min",
-  "metric": 0.00030630571172772763,
-  "level": 2,
-  "formula": "((0.00696 * ((t - 16.41765) * ((t - 8.280135) * cos((t * 2.996281))))) + -0.000501)",
-  "seed": 910001,
-  "iteration": 200,
+  "metric": 0,
+  "holdout": 0,
+  "level": 5,
+  "formula": "(exp((-(0.25 * t))) * cos((3 * t)))",
+  "seed": 260906,
+  "iteration": 8,
   "speed": {
-    "formulaCost": 27,
+    "formulaCost": 44,
     "exactCost": 44,
-    "speedup": 1.6296296296296295,
-    "vsIterative": {
-      "label": "RKF45 · 300 pas",
-      "speedup": 200
-    }
+    "speedup": 1,
+    "measured": {
+      "measuredSpeedup": 1.0078,
+      "nsFormula": 18.1332,
+      "nsExact": 18.2741,
+      "agreement": 1.0078,
+      "resolvable": false,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    },
+    "costProfile": "cpu-transcendental-20"
   },
   "tree": {
+    "o": "mul",
+    "c": [
+      {
+        "o": "exp",
+        "c": [
+          {
+            "o": "neg",
+            "c": [
+              {
+                "o": "mul",
+                "c": [
+                  {
+                    "o": "const",
+                    "v": 0.25
+                  },
+                  {
+                    "o": "var",
+                    "n": "t"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "cos",
+        "c": [
+          {
+            "o": "mul",
+            "c": [
+              {
+                "o": "const",
+                "v": 3
+              },
+              {
+                "o": "var",
+                "n": "t"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "fast": {
+    "formula": "((0.00696 * ((t - 16.41765) * ((t - 8.280135) * cos((t * 2.996281))))) + -0.000501)",
+    "metric": 0.00030630571172772763,
+    "level": 2,
+    "formulaCost": 27,
+    "measured": {
+      "measuredSpeedup": 1.7793,
+      "nsChampion": 18.0291,
+      "nsFast": 10.1329,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    }
+  },
+  "fastTree": {
     "o": "add",
     "c": [
       {

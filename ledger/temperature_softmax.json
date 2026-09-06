@@ -3,14 +3,25 @@
   "title": "Softmax tempéré 2-logits (échantillonnage LLM)",
   "direction": "min",
   "metric": 7.439476402624881e-47,
-  "level": 2,
+  "level": 5,
   "formula": "(1 / (1 + exp((-(da / t)))))",
   "seed": 1000120,
   "iteration": 400,
   "speed": {
     "formulaCost": 30,
     "exactCost": 26,
-    "speedup": 0.8666666666666667
+    "speedup": 1.0137,
+    "costProfile": "cpu-transcendental-20",
+    "measured": {
+      "measuredSpeedup": 1.0137,
+      "nsFormula": 23.2447,
+      "nsExact": 23.5639,
+      "agreement": 1.1697,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    },
+    "speedupModelled": 0.8666666666666667,
+    "speedupSource": "measured"
   },
   "tree": {
     "o": "pdiv",
@@ -53,51 +64,5 @@
       }
     ]
   },
-  "fast": {
-    "formula": "(1 / (1 + exp((-(da / t)))))",
-    "metric": 7.439476402624881e-47,
-    "level": 2,
-    "formulaCost": 11
-  },
-  "fastTree": {
-    "o": "pdiv",
-    "c": [
-      {
-        "o": "const",
-        "v": 1
-      },
-      {
-        "o": "add",
-        "c": [
-          {
-            "o": "const",
-            "v": 1
-          },
-          {
-            "o": "exp",
-            "c": [
-              {
-                "o": "neg",
-                "c": [
-                  {
-                    "o": "pdiv",
-                    "c": [
-                      {
-                        "o": "var",
-                        "n": "da"
-                      },
-                      {
-                        "o": "var",
-                        "n": "t"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  }
+  "holdout": 0
 }

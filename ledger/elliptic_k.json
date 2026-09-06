@@ -2,11 +2,28 @@
   "taskId": "elliptic_k",
   "title": "Intégrale elliptique K(m) (pendule · géodésiques)",
   "direction": "min",
-  "metric": 0.004333603318947968,
+  "metric": 0.0010426866886825285,
+  "holdout": 0.0009718726334056787,
   "level": 2,
-  "formula": "((0.229391 * ((exp(m) * (asin(m))³) + m)) + 1.642805)",
-  "seed": 20260825,
-  "iteration": 7,
+  "formula": "((-0.864881 * log(max(acos(m), 1e-30))) + 1.909222)",
+  "seed": 770077,
+  "iteration": 22,
+  "speed": {
+    "formulaCost": 42,
+    "exactCost": 16,
+    "speedup": 2.4649,
+    "costProfile": "cpu-transcendental-20",
+    "measured": {
+      "measuredSpeedup": 2.4649,
+      "nsFormula": 19.2408,
+      "nsExact": 47.4269,
+      "agreement": 6.4704,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    },
+    "speedupModelled": 0.38095238095238093,
+    "speedupSource": "measured"
+  },
   "tree": {
     "o": "add",
     "c": [
@@ -15,42 +32,77 @@
         "c": [
           {
             "o": "const",
-            "v": 0.22939144913554116
+            "v": -0.8648805663709055
           },
           {
-            "o": "add",
+            "o": "log",
             "c": [
               {
-                "o": "mul",
+                "o": "acos",
                 "c": [
                   {
-                    "o": "exp",
+                    "o": "var",
+                    "n": "m"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": 1.9092221800154128
+      }
+    ]
+  },
+  "fast": {
+    "formula": "((0.209784 * (m / (1.091589 + (-m)))) + 1.64262)",
+    "metric": 0.005535101499306599,
+    "level": 2,
+    "formulaCost": 8,
+    "measured": {
+      "measuredSpeedup": 2.3931,
+      "nsChampion": 20.1313,
+      "nsFast": 8.4123,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    }
+  },
+  "fastTree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": 0.20978396035586658
+          },
+          {
+            "o": "pdiv",
+            "c": [
+              {
+                "o": "var",
+                "n": "m"
+              },
+              {
+                "o": "add",
+                "c": [
+                  {
+                    "o": "const",
+                    "v": 1.091589
+                  },
+                  {
+                    "o": "neg",
                     "c": [
                       {
                         "o": "var",
                         "n": "m"
                       }
                     ]
-                  },
-                  {
-                    "o": "cube",
-                    "c": [
-                      {
-                        "o": "asin",
-                        "c": [
-                          {
-                            "o": "var",
-                            "n": "m"
-                          }
-                        ]
-                      }
-                    ]
                   }
                 ]
-              },
-              {
-                "o": "var",
-                "n": "m"
               }
             ]
           }
@@ -58,91 +110,7 @@
       },
       {
         "o": "const",
-        "v": 1.6428050203299513
-      }
-    ]
-  },
-  "speed": {
-    "formulaCost": 46,
-    "exactCost": 16,
-    "speedup": 0.34782608695652173
-  },
-  "fast": {
-    "formula": "((max(m, 0.830492) * ((m)² * max(m, 0.906194))) * max(((m)³)³, 0.598429))",
-    "metric": 0.003226352794085104,
-    "level": 2,
-    "formulaCost": 11
-  },
-  "fastTree": {
-    "o": "mul",
-    "c": [
-      {
-        "o": "mul",
-        "c": [
-          {
-            "o": "max",
-            "c": [
-              {
-                "o": "var",
-                "n": "m"
-              },
-              {
-                "o": "const",
-                "v": 0.830492
-              }
-            ]
-          },
-          {
-            "o": "mul",
-            "c": [
-              {
-                "o": "sq",
-                "c": [
-                  {
-                    "o": "var",
-                    "n": "m"
-                  }
-                ]
-              },
-              {
-                "o": "max",
-                "c": [
-                  {
-                    "o": "var",
-                    "n": "m"
-                  },
-                  {
-                    "o": "const",
-                    "v": 0.906194
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "o": "max",
-        "c": [
-          {
-            "o": "cube",
-            "c": [
-              {
-                "o": "cube",
-                "c": [
-                  {
-                    "o": "var",
-                    "n": "m"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "o": "const",
-            "v": 0.598429
-          }
-        ]
+        "v": 1.6426201334727484
       }
     ]
   }

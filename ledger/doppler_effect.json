@@ -2,17 +2,82 @@
   "taskId": "doppler_effect",
   "title": "Effet Doppler (audio · radar)",
   "direction": "min",
-  "metric": 9.281797631143672e-10,
-  "level": 2,
-  "formula": "((-700.007578 * ((vs + vo) / (0.049677 - (340.052626 - vs)))) + 699.999885)",
-  "seed": 1000090,
-  "iteration": 1600,
+  "metric": 0,
+  "holdout": 0,
+  "level": 5,
+  "formula": "((700 * (340 + vo)) / (340 - vs))",
+  "seed": 260906,
+  "iteration": 8,
   "speed": {
-    "formulaCost": 9,
+    "formulaCost": 7,
     "exactCost": 5,
-    "speedup": 0.5555555555555556
+    "speedup": 1.0368,
+    "measured": {
+      "measuredSpeedup": 1.0368,
+      "nsFormula": 7.8697,
+      "nsExact": 8.1594,
+      "agreement": 1.4515,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    },
+    "costProfile": "cpu-transcendental-20",
+    "speedupModelled": 0.7142857142857143,
+    "speedupSource": "measured"
   },
   "tree": {
+    "o": "pdiv",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": 700
+          },
+          {
+            "o": "add",
+            "c": [
+              {
+                "o": "const",
+                "v": 340
+              },
+              {
+                "o": "var",
+                "n": "vo"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "sub",
+        "c": [
+          {
+            "o": "const",
+            "v": 340
+          },
+          {
+            "o": "var",
+            "n": "vs"
+          }
+        ]
+      }
+    ]
+  },
+  "fast": {
+    "formula": "((2.579149 * (vs + vo)) + 687.591235)",
+    "metric": 11.408687912051402,
+    "level": 2,
+    "formulaCost": 3,
+    "measured": {
+      "measuredSpeedup": 6.9613,
+      "nsChampion": 8.4351,
+      "nsFast": 1.2117,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    }
+  },
+  "fastTree": {
     "o": "add",
     "c": [
       {
@@ -20,45 +85,18 @@
         "c": [
           {
             "o": "const",
-            "v": -700.007578094087
+            "v": 2.579149167278826
           },
           {
-            "o": "pdiv",
+            "o": "add",
             "c": [
               {
-                "o": "add",
-                "c": [
-                  {
-                    "o": "var",
-                    "n": "vs"
-                  },
-                  {
-                    "o": "var",
-                    "n": "vo"
-                  }
-                ]
+                "o": "var",
+                "n": "vs"
               },
               {
-                "o": "sub",
-                "c": [
-                  {
-                    "o": "const",
-                    "v": 0.049677
-                  },
-                  {
-                    "o": "sub",
-                    "c": [
-                      {
-                        "o": "const",
-                        "v": 340.052626
-                      },
-                      {
-                        "o": "var",
-                        "n": "vs"
-                      }
-                    ]
-                  }
-                ]
+                "o": "var",
+                "n": "vo"
               }
             ]
           }
@@ -66,26 +104,7 @@
       },
       {
         "o": "const",
-        "v": 699.9998851514688
-      }
-    ]
-  },
-  "fast": {
-    "formula": "(vo + vs)",
-    "metric": 11.408687912051402,
-    "level": 2,
-    "formulaCost": 1
-  },
-  "fastTree": {
-    "o": "add",
-    "c": [
-      {
-        "o": "var",
-        "n": "vo"
-      },
-      {
-        "o": "var",
-        "n": "vs"
+        "v": 687.5912350674787
       }
     ]
   }

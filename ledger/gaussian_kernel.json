@@ -2,25 +2,41 @@
   "taskId": "gaussian_kernel",
   "title": "Blur gaussien · noyau exp(−x²/2σ²)",
   "direction": "min",
-  "metric": 5.356342194550095e-34,
-  "level": 2,
-  "formula": "sqrt(|exp((-(x)²))|)",
-  "seed": 920101,
-  "iteration": 400,
+  "metric": 0,
+  "holdout": 0,
+  "level": 5,
+  "formula": "exp((-(0.5 * (x)²)))",
+  "seed": 260906,
+  "iteration": 8,
   "speed": {
-    "formulaCost": 24,
+    "formulaCost": 23,
     "exactCost": 23,
-    "speedup": 0.9583333333333334
+    "speedup": 0.9599,
+    "measured": {
+      "measuredSpeedup": 0.9599,
+      "nsFormula": 7.9136,
+      "nsExact": 7.5962,
+      "agreement": 0.9599,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    },
+    "costProfile": "cpu-transcendental-20",
+    "speedupModelled": 1,
+    "speedupSource": "measured"
   },
   "tree": {
-    "o": "sqrt",
+    "o": "exp",
     "c": [
       {
-        "o": "exp",
+        "o": "neg",
         "c": [
           {
-            "o": "neg",
+            "o": "mul",
             "c": [
+              {
+                "o": "const",
+                "v": 0.5
+              },
               {
                 "o": "sq",
                 "c": [
@@ -33,26 +49,6 @@
             ]
           }
         ]
-      }
-    ]
-  },
-  "fast": {
-    "formula": "|x|",
-    "metric": 0.005657377567763322,
-    "level": 2,
-    "formulaCost": 1,
-    "speed": {
-      "formulaCost": 1,
-      "exactCost": 23,
-      "speedup": 23
-    }
-  },
-  "fastTree": {
-    "o": "abs",
-    "c": [
-      {
-        "o": "var",
-        "n": "x"
       }
     ]
   }

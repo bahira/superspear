@@ -2,129 +2,68 @@
   "taskId": "kelly_criterion",
   "title": "Kelly criterion — position sizing",
   "direction": "min",
-  "metric": 9.839944734124527e-9,
-  "level": 2,
-  "formula": "((1.000326 * max(0.0003, (p - ((1.000014 - p) / b)))) + -0.000194)",
-  "seed": 1000060,
-  "iteration": 1072,
+  "metric": 0,
+  "holdout": 0,
+  "level": 5,
+  "formula": "relu((((p * (b + 1)) - 1) / b))",
+  "seed": 260906,
+  "iteration": 8,
   "speed": {
-    "formulaCost": 9,
+    "formulaCost": 8,
     "exactCost": 6,
-    "speedup": 0.6666666666666666
+    "speedup": 1.0294,
+    "measured": {
+      "measuredSpeedup": 1.0294,
+      "nsFormula": 10.6221,
+      "nsExact": 10.9345,
+      "agreement": 1.3725,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    },
+    "costProfile": "cpu-transcendental-20",
+    "speedupModelled": 0.75,
+    "speedupSource": "measured"
   },
   "tree": {
-    "o": "add",
+    "o": "relu",
     "c": [
       {
-        "o": "mul",
+        "o": "pdiv",
         "c": [
           {
-            "o": "const",
-            "v": 1.000326
-          },
-          {
-            "o": "max",
+            "o": "sub",
             "c": [
               {
-                "o": "const",
-                "v": 0.0003
-              },
-              {
-                "o": "sub",
+                "o": "mul",
                 "c": [
                   {
                     "o": "var",
                     "n": "p"
                   },
                   {
-                    "o": "pdiv",
+                    "o": "add",
                     "c": [
-                      {
-                        "o": "sub",
-                        "c": [
-                          {
-                            "o": "const",
-                            "v": 1.000014
-                          },
-                          {
-                            "o": "var",
-                            "n": "p"
-                          }
-                        ]
-                      },
                       {
                         "o": "var",
                         "n": "b"
+                      },
+                      {
+                        "o": "const",
+                        "v": 1
                       }
                     ]
                   }
                 ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "o": "const",
-        "v": -0.000194
-      }
-    ]
-  },
-  "fast": {
-    "formula": "max(0.001, ((p * 1.05) - ((1.018793 - p) / b)))",
-    "metric": 0.000009448441470558611,
-    "level": 2,
-    "formulaCost": 8,
-    "speed": {
-      "formulaCost": 8,
-      "exactCost": 6,
-      "speedup": 0.75
-    }
-  },
-  "fastTree": {
-    "o": "max",
-    "c": [
-      {
-        "o": "const",
-        "v": 0.001
-      },
-      {
-        "o": "sub",
-        "c": [
-          {
-            "o": "mul",
-            "c": [
-              {
-                "o": "var",
-                "n": "p"
               },
               {
                 "o": "const",
-                "v": 1.05
+                "v": 1
               }
             ]
           },
           {
-            "o": "pdiv",
-            "c": [
-              {
-                "o": "sub",
-                "c": [
-                  {
-                    "o": "const",
-                    "v": 1.018793
-                  },
-                  {
-                    "o": "var",
-                    "n": "p"
-                  }
-                ]
-              },
-              {
-                "o": "var",
-                "n": "b"
-              }
-            ]
+            "o": "var",
+            "n": "b"
           }
         ]
       }

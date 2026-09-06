@@ -2,15 +2,27 @@
   "taskId": "uncharted2_tonemap",
   "title": "Tonemap Uncharted 2 (filmic)",
   "direction": "min",
-  "metric": 9.35135840763872e-9,
+  "metric": 5.653203630850936e-29,
+  "holdout": 5.641882794961444e-29,
   "level": 2,
-  "formula": "((0.375422 * ((3.432475 * x) / (x + 1.607412))) + -0.001248)",
-  "seed": 990102,
-  "iteration": 475,
+  "formula": "((1.379064 * (((((2 * x) * ((0.3 * x) + 0.05)) + 0.004) / (((2 * x) * ((0.3 * x) + 0.5)) + 0.06)) - -0.208666)) + -0.379701)",
+  "seed": 31337,
+  "iteration": 7,
   "speed": {
-    "formulaCost": 8,
+    "formulaCost": 17,
     "exactCost": 26,
-    "speedup": 3.25
+    "speedup": 1.0638,
+    "measured": {
+      "measuredSpeedup": 1.0638,
+      "nsFormula": 8.2234,
+      "nsExact": 8.748,
+      "agreement": 0.6956,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    },
+    "costProfile": "cpu-transcendental-20",
+    "speedupModelled": 1.5294117647058822,
+    "speedupSource": "measured"
   },
   "tree": {
     "o": "add",
@@ -20,36 +32,117 @@
         "c": [
           {
             "o": "const",
-            "v": 0.37542164283885915
+            "v": 1.3790642466494378
           },
           {
-            "o": "pdiv",
+            "o": "sub",
             "c": [
               {
-                "o": "mul",
+                "o": "pdiv",
                 "c": [
                   {
-                    "o": "const",
-                    "v": 3.432475
+                    "o": "add",
+                    "c": [
+                      {
+                        "o": "mul",
+                        "c": [
+                          {
+                            "o": "mul",
+                            "c": [
+                              {
+                                "o": "const",
+                                "v": 2
+                              },
+                              {
+                                "o": "var",
+                                "n": "x"
+                              }
+                            ]
+                          },
+                          {
+                            "o": "add",
+                            "c": [
+                              {
+                                "o": "mul",
+                                "c": [
+                                  {
+                                    "o": "const",
+                                    "v": 0.3
+                                  },
+                                  {
+                                    "o": "var",
+                                    "n": "x"
+                                  }
+                                ]
+                              },
+                              {
+                                "o": "const",
+                                "v": 0.05
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "o": "const",
+                        "v": 0.004
+                      }
+                    ]
                   },
                   {
-                    "o": "var",
-                    "n": "x"
+                    "o": "add",
+                    "c": [
+                      {
+                        "o": "mul",
+                        "c": [
+                          {
+                            "o": "mul",
+                            "c": [
+                              {
+                                "o": "const",
+                                "v": 2
+                              },
+                              {
+                                "o": "var",
+                                "n": "x"
+                              }
+                            ]
+                          },
+                          {
+                            "o": "add",
+                            "c": [
+                              {
+                                "o": "mul",
+                                "c": [
+                                  {
+                                    "o": "const",
+                                    "v": 0.3
+                                  },
+                                  {
+                                    "o": "var",
+                                    "n": "x"
+                                  }
+                                ]
+                              },
+                              {
+                                "o": "const",
+                                "v": 0.5
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "o": "const",
+                        "v": 0.06
+                      }
+                    ]
                   }
                 ]
               },
               {
-                "o": "add",
-                "c": [
-                  {
-                    "o": "var",
-                    "n": "x"
-                  },
-                  {
-                    "o": "const",
-                    "v": 1.607412
-                  }
-                ]
+                "o": "const",
+                "v": -0.208666
               }
             ]
           }
@@ -57,25 +150,139 @@
       },
       {
         "o": "const",
-        "v": -0.0012480885611314818
+        "v": -0.379701436534655
       }
     ]
   },
   "fast": {
-    "formula": "(atan(x))²",
-    "metric": 0.0005938769229777217,
+    "formula": "(1.379064 * (((((2 * x) * ((0.3 * x) + 0.05)) + 0.004) / (((2 * x) * ((0.3 * x) + 0.5)) + 0.06)) - 0.066667))",
+    "metric": 2.664376972745578e-14,
     "level": 2,
-    "formulaCost": 2
+    "formulaCost": 16,
+    "measured": {
+      "measuredSpeedup": 1.0667,
+      "nsChampion": 8.6976,
+      "nsFast": 8.1534,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    }
   },
   "fastTree": {
-    "o": "sq",
+    "o": "mul",
     "c": [
       {
-        "o": "atan",
+        "o": "const",
+        "v": 1.379064
+      },
+      {
+        "o": "sub",
         "c": [
           {
-            "o": "var",
-            "n": "x"
+            "o": "pdiv",
+            "c": [
+              {
+                "o": "add",
+                "c": [
+                  {
+                    "o": "mul",
+                    "c": [
+                      {
+                        "o": "mul",
+                        "c": [
+                          {
+                            "o": "const",
+                            "v": 2
+                          },
+                          {
+                            "o": "var",
+                            "n": "x"
+                          }
+                        ]
+                      },
+                      {
+                        "o": "add",
+                        "c": [
+                          {
+                            "o": "mul",
+                            "c": [
+                              {
+                                "o": "const",
+                                "v": 0.3
+                              },
+                              {
+                                "o": "var",
+                                "n": "x"
+                              }
+                            ]
+                          },
+                          {
+                            "o": "const",
+                            "v": 0.05
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "o": "const",
+                    "v": 0.004
+                  }
+                ]
+              },
+              {
+                "o": "add",
+                "c": [
+                  {
+                    "o": "mul",
+                    "c": [
+                      {
+                        "o": "mul",
+                        "c": [
+                          {
+                            "o": "const",
+                            "v": 2
+                          },
+                          {
+                            "o": "var",
+                            "n": "x"
+                          }
+                        ]
+                      },
+                      {
+                        "o": "add",
+                        "c": [
+                          {
+                            "o": "mul",
+                            "c": [
+                              {
+                                "o": "const",
+                                "v": 0.3
+                              },
+                              {
+                                "o": "var",
+                                "n": "x"
+                              }
+                            ]
+                          },
+                          {
+                            "o": "const",
+                            "v": 0.5
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "o": "const",
+                    "v": 0.06
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "o": "const",
+            "v": 0.06666666666666667
           }
         ]
       }

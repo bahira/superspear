@@ -8,7 +8,7 @@
 npm install spear-kernels
 ```
 
-Now shipping **74 verified kernels on npm** (`spear-kernels@latest`) — **65 fast slots**, **25 exact solves** — including the **SPEAR Quant Pack**: Kelly criterion, RSI, implied volatility, Gaussian CDF, probit — all parity-audited across JS/WASM/C/PyTorch. that discovers **closed-form mathematical laws** from data — then compiles them to **verified WebAssembly** and **MISRA-C:2012 C99**, with machine-checked parity.
+Now shipping **89 audited kernels on npm** (`spear-kernels@latest`) — **55 fast slots**, **35 exact solves**, every record reproducing its own numbers ([champion audit](./REPORTS/champion-audit.md)) — including the **SPEAR Quant Pack**: Kelly criterion, RSI, implied volatility, Gaussian CDF, probit — all parity-audited across JS/WASM/C/PyTorch. that discovers **closed-form mathematical laws** from data — then compiles them to **verified WebAssembly** and **MISRA-C:2012 C99**, with machine-checked parity.
 
 No neural networks, no black boxes: what comes out is a formula you can read, audit, and deploy on a microcontroller.
 
@@ -169,7 +169,7 @@ Seeding the *shape of the trick* changed everything on the optimality tests:
 |---|---|---|---|---|
 | **probit_quantile** ⭐ | THE quantile kernel (VaR · z-scores · probit regression) | **1.9e-5, L3** gen-1 — novel √√log+x² hybrid at Acklam-cost parity | 29 | ×0.97 |
 | **pmt_finance** ⭐ | loan payment per unit, embedded fintech | **4.4e-7, L2** — discovered **atan(n) hybrid replaces e^(n·ln(1+r))**, ×1.38 faster than textbook | 34 | **×1.38** |
-| logsumexp2 (SPEAR² self-hunt) | beating our own ×8.57 record | record held — the 7-unit form resists its own engine | 7 | ×8.57 |
+| logsumexp2 (SPEAR² self-hunt) | beating our own record | record held — the 7-unit form resists its own engine | 7 | ×2.47 measured (×8.57 modelled) |
 
 The pmt discovery is the kind of surprise that justifies the whole method: nobody writes loan-payment kernels with arctangent, yet evolution found one that is cheaper than the textbook exponential form and exact-grade accurate.
 ### 🌈 Wave 5 — PBR trio completed & hardened references
@@ -322,11 +322,21 @@ The engine (`src/lib/spear/`) combines:
 
 ```bash
 npm install
-# Postgres required (DATABASE_URL in .env)
 npm run dev          # → http://localhost:3000
 ```
 
-The dashboard offers the **Grounded Loop** (all tasks, budget 30–2000 iterations), per-preset labs (activations, KV-cache, custom CSV regression), and Postgres-persisted run history including breakthroughs.
+**No database needed.** Postgres is optional and only stores run history; without
+`DATABASE_URL` the app runs fine and says so instead of failing. (It used to
+throw `DATABASE_URL is required` at module scope, so a fresh clone answered
+HTTP 500 with a stacktrace on the home page.)
+
+The dashboard opens on the **Hall of Fame** — all 89 audited kernels, searchable
+and filterable, showing *measured* speedups rather than cost-model predictions,
+plus the caveats: which kernels are unsafe outside their training band, and
+whether a champion was found by the search or is simply the seeded reference law
+recovered. It also offers the **Grounded Loop** (all tasks, budget 30–2000
+iterations), per-preset labs (activations, KV-cache, custom CSV regression), and
+run history when Postgres is configured.
 
 ### Headless scripts
 

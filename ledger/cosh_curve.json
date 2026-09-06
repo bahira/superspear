@@ -2,82 +2,52 @@
   "taskId": "cosh_curve",
   "title": "Cosh (caténaires · ring-mod audio)",
   "direction": "min",
-  "metric": 2.6331998691285042e-8,
+  "metric": 3.5745259767827095e-33,
+  "holdout": 6.779273404243071e-33,
   "level": 5,
-  "formula": "((0.001256 * ((sqrt(|(x)²|) * cos((x)²)) + (((x)² + 11.494621))³)) + -0.907039)",
-  "seed": 996002,
-  "iteration": 800,
+  "formula": "((exp(x) + exp((-x))) * 0.5)",
+  "seed": 260906,
+  "iteration": 8,
   "speed": {
-    "formulaCost": 32,
+    "formulaCost": 43,
     "exactCost": 44,
-    "speedup": 1.375
+    "speedup": 1.3231,
+    "measured": {
+      "measuredSpeedup": 1.3231,
+      "nsFormula": 16.3423,
+      "nsExact": 21.6227,
+      "agreement": 1.293,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    },
+    "costProfile": "cpu-transcendental-20",
+    "speedupModelled": 1.0232558139534884,
+    "speedupSource": "measured"
   },
   "tree": {
-    "o": "add",
+    "o": "mul",
     "c": [
       {
-        "o": "mul",
+        "o": "add",
         "c": [
           {
-            "o": "const",
-            "v": 0.0012556691840234057
-          },
-          {
-            "o": "add",
+            "o": "exp",
             "c": [
               {
-                "o": "mul",
-                "c": [
-                  {
-                    "o": "sqrt",
-                    "c": [
-                      {
-                        "o": "sq",
-                        "c": [
-                          {
-                            "o": "var",
-                            "n": "x"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "o": "cos",
-                    "c": [
-                      {
-                        "o": "sq",
-                        "c": [
-                          {
-                            "o": "var",
-                            "n": "x"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
+                "o": "var",
+                "n": "x"
+              }
+            ]
+          },
+          {
+            "o": "exp",
+            "c": [
               {
-                "o": "cube",
+                "o": "neg",
                 "c": [
                   {
-                    "o": "add",
-                    "c": [
-                      {
-                        "o": "sq",
-                        "c": [
-                          {
-                            "o": "var",
-                            "n": "x"
-                          }
-                        ]
-                      },
-                      {
-                        "o": "const",
-                        "v": 11.494621
-                      }
-                    ]
+                    "o": "var",
+                    "n": "x"
                   }
                 ]
               }
@@ -87,27 +57,34 @@
       },
       {
         "o": "const",
-        "v": -0.9070393177602898
+        "v": 0.5
       }
     ]
   },
   "fast": {
-    "formula": "(((x)² + 5.05555))²",
-    "metric": 0.000005967909320814225,
-    "level": 4,
+    "formula": "((0.660617 * (x)²) + 0.933079)",
+    "metric": 0.003777734011353794,
+    "level": 2,
     "formulaCost": 3,
-    "speed": {
-      "formulaCost": 3,
-      "exactCost": 44,
-      "speedup": 14.666666666666666
+    "deploy": true,
+    "measured": {
+      "measuredSpeedup": 13.3348,
+      "nsChampion": 16.2241,
+      "nsFast": 1.2167,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
     }
   },
   "fastTree": {
-    "o": "sq",
+    "o": "add",
     "c": [
       {
-        "o": "add",
+        "o": "mul",
         "c": [
+          {
+            "o": "const",
+            "v": 0.6606171971625971
+          },
           {
             "o": "sq",
             "c": [
@@ -116,12 +93,12 @@
                 "n": "x"
               }
             ]
-          },
-          {
-            "o": "const",
-            "v": 5.05555
           }
         ]
+      },
+      {
+        "o": "const",
+        "v": 0.9330791853296796
       }
     ]
   }

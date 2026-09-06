@@ -7,7 +7,7 @@
 - [ ] Post HN/Reddit à partir de LAUNCH_POST.md
 
 ## Phase 2 — Science du papier (2 semaines)
-- [x] Validation KV-cache réelle distilgpt2 (80.31 % vs h2o 80.20 %)
+- [x] Validation KV-cache réelle distilgpt2 — **égalité avec H2O** (spear devant à 3 caps sur 4, H2O devant à cap=64) ; audit rejouable `scripts/audit-kv-claim.ts`
 - [x] kv_multiscale.py prêt (caps 64→320, table multi-échelle distilgpt2)
 - [ ] Llama-3.2-1B multiscale : accepter licence HF + `$env:HF_TOKEN` puis
       `--models distilgpt2,Llama-3.2-1B` (~2.5 GB téléchargement)
@@ -19,7 +19,7 @@
 
 ## Phase 3 — Produit & revenus (mois 1+)
 - [ ] Deploy dashboard Fly/Railway + Stripe metered sur /api/spear/discover
-- [ ] Landing page avec la story ×1840
+- [ ] Landing page — NE PAS utiliser l'ancienne story ×1840 (strawman retiré, cf. AUDIT-2026-09.md §7). Angle honnête : 33 kernels exacts auditables + remplacement de solveurs réels (×1.7–×33)
 - [ ] Pack Fab/Unity « Verified Math Kernels » ($14.99) depuis le kit
 - [ ] Démo MCU ESP32 des noyaux MISRA-C
 

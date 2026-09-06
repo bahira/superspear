@@ -2,15 +2,26 @@
   "taskId": "stefan_boltzmann",
   "title": "Stefan-Boltzmann (radiation thermique)",
   "direction": "min",
-  "metric": 2.1322035895929197e-26,
-  "level": 2,
+  "metric": 2.382092673239445e-26,
+  "level": 5,
   "formula": "(0.42 * (relu(t) * (t)³))",
   "seed": 1000080,
   "iteration": 400,
   "speed": {
     "formulaCost": 5,
     "exactCost": 3,
-    "speedup": 0.6
+    "speedup": 0.9002,
+    "costProfile": "cpu-transcendental-20",
+    "measured": {
+      "measuredSpeedup": 0.9002,
+      "nsFormula": 3.0308,
+      "nsExact": 2.7282,
+      "agreement": 1.5003,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    },
+    "speedupModelled": 0.6,
+    "speedupSource": "measured"
   },
   "tree": {
     "o": "mul",
@@ -41,26 +52,6 @@
             ]
           }
         ]
-      }
-    ]
-  },
-  "fast": {
-    "formula": "(t)³",
-    "metric": 19301.61438055919,
-    "level": 2,
-    "formulaCost": 2,
-    "speed": {
-      "formulaCost": 2,
-      "exactCost": 3,
-      "speedup": 1.5
-    }
-  },
-  "fastTree": {
-    "o": "cube",
-    "c": [
-      {
-        "o": "var",
-        "n": "t"
       }
     ]
   }

@@ -2,100 +2,51 @@
   "taskId": "kerr",
   "title": "Déflexion de Kerr · lentille gravitationnelle",
   "direction": "min",
-  "metric": 1.39756685796311e-7,
+  "metric": 1.7036779187577078e-23,
+  "holdout": 1.5743727298205226e-23,
   "level": 2,
-  "formula": "((4.044113 * (((2.83748 + (10.692104 / b)) + b) / (b)²)) + -0.001252)",
-  "seed": 777,
-  "iteration": 132,
+  "formula": "((4 / b) + ((11.780972450961723 / (b)²) + (42.666666666666664 / (b)³)))",
+  "seed": 424242,
+  "iteration": 7,
   "speed": {
-    "formulaCost": 13,
+    "formulaCost": 17,
     "exactCost": 17,
-    "speedup": 1.3076923076923077,
-    "vsIterative": {
-      "label": "RK4 géodésique · 200 pas",
-      "speedup": 184.6
+    "speedup": 1,
+    "costProfile": "cpu-transcendental-20",
+    "measured": {
+      "measuredSpeedup": 1.0148,
+      "nsFormula": 24.3858,
+      "nsExact": 24.7473,
+      "agreement": 1.0148,
+      "resolvable": false,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
     }
   },
-  "fast": {
-    "formula": "((0.630738 / b))²",
-    "metric": 0.0014679448665524788,
-    "level": 2,
-    "formulaCost": 5,
-    "speed": {
-      "formulaCost": 5,
-      "exactCost": 17,
-      "speedup": 3.4,
-      "vsIterative": {
-        "label": "RK4 gÃ©odÃ©sique · 200 pas",
-        "speedup": 480
-      }
-    },
-    "vsIterative": {
-      "label": "RK4 géodésique · 200 pas",
-      "speedup": 480
-    }
-  },
-  "fastTree": {
-    "o": "sq",
+  "tree": {
+    "o": "add",
     "c": [
       {
         "o": "pdiv",
         "c": [
           {
             "o": "const",
-            "v": 0.630738
+            "v": 4
           },
           {
             "o": "var",
             "n": "b"
           }
         ]
-      }
-    ]
-  },
-  "tree": {
-    "o": "add",
-    "c": [
+      },
       {
-        "o": "mul",
+        "o": "add",
         "c": [
-          {
-            "o": "const",
-            "v": 4.044113
-          },
           {
             "o": "pdiv",
             "c": [
               {
-                "o": "add",
-                "c": [
-                  {
-                    "o": "add",
-                    "c": [
-                      {
-                        "o": "const",
-                        "v": 2.83748
-                      },
-                      {
-                        "o": "pdiv",
-                        "c": [
-                          {
-                            "o": "const",
-                            "v": 10.692104
-                          },
-                          {
-                            "o": "var",
-                            "n": "b"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "o": "var",
-                    "n": "b"
-                  }
-                ]
+                "o": "const",
+                "v": 11.780972450961723
               },
               {
                 "o": "sq",
@@ -107,12 +58,26 @@
                 ]
               }
             ]
+          },
+          {
+            "o": "pdiv",
+            "c": [
+              {
+                "o": "const",
+                "v": 42.666666666666664
+              },
+              {
+                "o": "cube",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "b"
+                  }
+                ]
+              }
+            ]
           }
         ]
-      },
-      {
-        "o": "const",
-        "v": -0.001252
       }
     ]
   }

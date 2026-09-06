@@ -2,17 +2,88 @@
   "taskId": "laguerre_l2",
   "title": "Laguerre L₂ (radiale hydrogène · oscillateur)",
   "direction": "min",
-  "metric": 8.257087129644967e-7,
+  "metric": 0,
+  "holdout": 0,
   "level": 5,
-  "formula": "((0.250056 * ((-0.01236 + ((x + -1.996089))²) + ((x + -2.005496))²)) + -0.996478)",
-  "seed": 1000140,
-  "iteration": 400,
+  "formula": "((1 - (2 * x)) + ((x)² * 0.5))",
+  "seed": 260906,
+  "iteration": 8,
   "speed": {
-    "formulaCost": 8,
+    "formulaCost": 5,
     "exactCost": 5,
-    "speedup": 0.625
+    "speedup": 2.0034,
+    "measured": {
+      "measuredSpeedup": 2.0034,
+      "nsFormula": 2.7195,
+      "nsExact": 5.4482,
+      "agreement": 2.0034,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    },
+    "costProfile": "cpu-transcendental-20",
+    "speedupModelled": 1,
+    "speedupSource": "measured"
   },
   "tree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "sub",
+        "c": [
+          {
+            "o": "const",
+            "v": 1
+          },
+          {
+            "o": "mul",
+            "c": [
+              {
+                "o": "const",
+                "v": 2
+              },
+              {
+                "o": "var",
+                "n": "x"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "sq",
+            "c": [
+              {
+                "o": "var",
+                "n": "x"
+              }
+            ]
+          },
+          {
+            "o": "const",
+            "v": 0.5
+          }
+        ]
+      }
+    ]
+  },
+  "fast": {
+    "formula": "((0.033161 * (x)³) + -0.623405)",
+    "metric": 0.4004357201082086,
+    "level": 2,
+    "formulaCost": 4,
+    "deploy": true,
+    "measured": {
+      "measuredSpeedup": 1.0247,
+      "nsChampion": 1.289,
+      "nsFast": 1.2579,
+      "resolvable": false,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    }
+  },
+  "fastTree": {
     "o": "add",
     "c": [
       {
@@ -20,93 +91,14 @@
         "c": [
           {
             "o": "const",
-            "v": 0.25005568930581107
+            "v": 0.03316071805727699
           },
           {
-            "o": "add",
-            "c": [
-              {
-                "o": "add",
-                "c": [
-                  {
-                    "o": "const",
-                    "v": -0.01236
-                  },
-                  {
-                    "o": "sq",
-                    "c": [
-                      {
-                        "o": "add",
-                        "c": [
-                          {
-                            "o": "var",
-                            "n": "x"
-                          },
-                          {
-                            "o": "const",
-                            "v": -1.996089
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "o": "sq",
-                "c": [
-                  {
-                    "o": "add",
-                    "c": [
-                      {
-                        "o": "var",
-                        "n": "x"
-                      },
-                      {
-                        "o": "const",
-                        "v": -2.005496
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "o": "const",
-        "v": -0.996477875101051
-      }
-    ]
-  },
-  "fast": {
-    "formula": "(((x + -1.996089))² + -0.262804)",
-    "metric": 0.000020056550508695337,
-    "level": 3,
-    "formulaCost": 3,
-    "speed": {
-      "formulaCost": 3,
-      "exactCost": 5,
-      "speedup": 1.6666666666666667
-    }
-  },
-  "fastTree": {
-    "o": "add",
-    "c": [
-      {
-        "o": "sq",
-        "c": [
-          {
-            "o": "add",
+            "o": "cube",
             "c": [
               {
                 "o": "var",
                 "n": "x"
-              },
-              {
-                "o": "const",
-                "v": -1.996089
               }
             ]
           }
@@ -114,7 +106,7 @@
       },
       {
         "o": "const",
-        "v": -0.262804
+        "v": -0.6234046927177053
       }
     ]
   }

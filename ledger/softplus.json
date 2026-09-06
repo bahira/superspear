@@ -2,17 +2,64 @@
   "taskId": "softplus",
   "title": "Softplus ln(1+eˣ)",
   "direction": "min",
-  "metric": 0.0000018948345099656158,
-  "level": 2,
-  "formula": "((1.002747 * log(max((1.010159 + exp(x)), 1e-30))) + -0.008384)",
-  "seed": 1000002,
-  "iteration": 201,
+  "metric": 0,
+  "holdout": 0,
+  "level": 5,
+  "formula": "log(max((1 + exp(x)), 1e-30))",
+  "seed": 260906,
+  "iteration": 8,
   "speed": {
-    "formulaCost": 43,
+    "formulaCost": 41,
     "exactCost": 41,
-    "speedup": 0.9534883720930233
+    "speedup": 1,
+    "measured": {
+      "measuredSpeedup": 1.0285,
+      "nsFormula": 12.934,
+      "nsExact": 13.3031,
+      "agreement": 1.0285,
+      "resolvable": false,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    },
+    "costProfile": "cpu-transcendental-20"
   },
   "tree": {
+    "o": "log",
+    "c": [
+      {
+        "o": "add",
+        "c": [
+          {
+            "o": "const",
+            "v": 1
+          },
+          {
+            "o": "exp",
+            "c": [
+              {
+                "o": "var",
+                "n": "x"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "fast": {
+    "formula": "((0.940496 * relu(x)) + 0.259938)",
+    "metric": 0.02868721493659664,
+    "level": 2,
+    "formulaCost": 3,
+    "deploy": true,
+    "measured": {
+      "measuredSpeedup": 4.659,
+      "nsChampion": 12.7011,
+      "nsFast": 2.7261,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    }
+  },
+  "fastTree": {
     "o": "add",
     "c": [
       {
@@ -20,66 +67,14 @@
         "c": [
           {
             "o": "const",
-            "v": 1.002747
+            "v": 0.9404960170820488
           },
           {
-            "o": "log",
-            "c": [
-              {
-                "o": "add",
-                "c": [
-                  {
-                    "o": "const",
-                    "v": 1.010159
-                  },
-                  {
-                    "o": "exp",
-                    "c": [
-                      {
-                        "o": "var",
-                        "n": "x"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "o": "const",
-        "v": -0.008384
-      }
-    ]
-  },
-  "fast": {
-    "formula": "(((x + 6.630221))³ + 239.762951)",
-    "metric": 0.007707567263369909,
-    "level": 2,
-    "formulaCost": 4,
-    "speed": {
-      "formulaCost": 4,
-      "exactCost": 41,
-      "speedup": 10.25
-    }
-  },
-  "fastTree": {
-    "o": "add",
-    "c": [
-      {
-        "o": "cube",
-        "c": [
-          {
-            "o": "add",
+            "o": "relu",
             "c": [
               {
                 "o": "var",
                 "n": "x"
-              },
-              {
-                "o": "const",
-                "v": 6.630221
               }
             ]
           }
@@ -87,7 +82,7 @@
       },
       {
         "o": "const",
-        "v": 239.762951
+        "v": 0.25993812268292843
       }
     ]
   }

@@ -2,7 +2,7 @@
   "taskId": "probit_quantile",
   "title": "Probit / quantile normal (finance · risque · z-scores)",
   "direction": "min",
-  "metric": 0.00001901761235141796,
+  "metric": 0.000019016893432652806,
   "level": 3,
   "formula": "((-4.274877 * (sqrt(|sqrt(|log(max(x, 1e-30))|)|) + (0.076417 * (x)²))) + 3.983949)",
   "seed": 1000010,
@@ -10,7 +10,18 @@
   "speed": {
     "formulaCost": 29,
     "exactCost": 28,
-    "speedup": 0.9655172413793104
+    "speedup": 12.7304,
+    "costProfile": "cpu-transcendental-20",
+    "measured": {
+      "measuredSpeedup": 12.7304,
+      "nsFormula": 6.8622,
+      "nsExact": 87.3583,
+      "agreement": 13.185,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    },
+    "speedupModelled": 0.9655172413793104,
+    "speedupSource": "measured"
   },
   "tree": {
     "o": "add",
@@ -73,32 +84,61 @@
     ]
   },
   "fast": {
-    "formula": "sqrt(|sqrt(|log(max(x, 1e-30))|)|)",
-    "metric": 0.000608820558356222,
+    "formula": "((-3.009731 * (-(max(0.838113, x) + x))) + -4.059374)",
+    "metric": 0.010600724117111038,
     "level": 2,
-    "formulaCost": 24,
-    "speed": {
-      "formulaCost": 24,
-      "exactCost": 28,
-      "speedup": 1.1666666666666667
+    "formulaCost": 5,
+    "deploy": true,
+    "measured": {
+      "measuredSpeedup": 2.4596,
+      "nsChampion": 6.6733,
+      "nsFast": 2.7132,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
     }
   },
   "fastTree": {
-    "o": "sqrt",
+    "o": "add",
     "c": [
       {
-        "o": "sqrt",
+        "o": "mul",
         "c": [
           {
-            "o": "log",
+            "o": "const",
+            "v": -3.009731398265231
+          },
+          {
+            "o": "neg",
             "c": [
               {
-                "o": "var",
-                "n": "x"
+                "o": "add",
+                "c": [
+                  {
+                    "o": "max",
+                    "c": [
+                      {
+                        "o": "const",
+                        "v": 0.838113
+                      },
+                      {
+                        "o": "var",
+                        "n": "x"
+                      }
+                    ]
+                  },
+                  {
+                    "o": "var",
+                    "n": "x"
+                  }
+                ]
               }
             ]
           }
         ]
+      },
+      {
+        "o": "const",
+        "v": -4.059374029078665
       }
     ]
   }

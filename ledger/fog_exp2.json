@@ -2,64 +2,50 @@
   "taskId": "fog_exp2",
   "title": "Brouillard exponentiel carré (three.js)",
   "direction": "min",
-  "metric": 0.0003272787409612414,
-  "level": 2,
-  "formula": "((-0.127494 * ((-1.929961 * min(1.668613, x)) + (-4.722092 * min(1.135005, x)))) + -0.0965)",
-  "seed": 990101,
-  "iteration": 475,
+  "metric": 0,
+  "holdout": 0,
+  "level": 5,
+  "formula": "(1 - exp((-((1.2 * x))²)))",
+  "seed": 260906,
+  "iteration": 7,
   "speed": {
-    "formulaCost": 7,
+    "formulaCost": 24,
     "exactCost": 22,
-    "speedup": 3.142857142857143
+    "speedup": 0.9616,
+    "measured": {
+      "measuredSpeedup": 0.9616,
+      "nsFormula": 8.2306,
+      "nsExact": 7.9145,
+      "agreement": 1.049,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    },
+    "costProfile": "cpu-transcendental-20",
+    "speedupModelled": 0.9166666666666666,
+    "speedupSource": "measured"
   },
   "tree": {
-    "o": "add",
+    "o": "sub",
     "c": [
       {
-        "o": "mul",
+        "o": "const",
+        "v": 1
+      },
+      {
+        "o": "exp",
         "c": [
           {
-            "o": "const",
-            "v": -0.1274940863656017
-          },
-          {
-            "o": "add",
+            "o": "neg",
             "c": [
               {
-                "o": "mul",
+                "o": "sq",
                 "c": [
                   {
-                    "o": "const",
-                    "v": -1.929961
-                  },
-                  {
-                    "o": "min",
+                    "o": "mul",
                     "c": [
                       {
                         "o": "const",
-                        "v": 1.668613
-                      },
-                      {
-                        "o": "var",
-                        "n": "x"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "o": "mul",
-                "c": [
-                  {
-                    "o": "const",
-                    "v": -4.722092
-                  },
-                  {
-                    "o": "min",
-                    "c": [
-                      {
-                        "o": "const",
-                        "v": 1.135005
+                        "v": 1.2
                       },
                       {
                         "o": "var",
@@ -72,29 +58,6 @@
             ]
           }
         ]
-      },
-      {
-        "o": "const",
-        "v": -0.09650001036725882
-      }
-    ]
-  },
-  "fast": {
-    "formula": "min(x, 1.295335)",
-    "metric": 0.0006703216539337277,
-    "level": 2,
-    "formulaCost": 1
-  },
-  "fastTree": {
-    "o": "min",
-    "c": [
-      {
-        "o": "var",
-        "n": "x"
-      },
-      {
-        "o": "const",
-        "v": 1.295335
       }
     ]
   }

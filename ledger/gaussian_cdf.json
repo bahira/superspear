@@ -4,16 +4,27 @@
   "direction": "min",
   "metric": 1.3866695599588098e-34,
   "level": 5,
-  "formula": "(0.5 * (1 + erf((x * 0.707107))))",
+  "formula": "(0.5 * (1 + erf((x * 0.7071067811865476))))",
   "seed": 4242,
   "iteration": 400,
   "speed": {
-    "formulaCost": 4,
+    "formulaCost": 23,
     "exactCost": 34,
-    "speedup": 8.5,
-    "vsIterative": {
+    "speedup": 1.4782608695652173,
+    "costProfile": "cpu-transcendental-20",
+    "vsSolverContext": {
       "label": "Monte-Carlo · 1000 tirages",
-      "speedup": 11500
+      "speedup": 2000,
+      "note": "Context only — a closed-form reference exists for this task, so the solver is not what a real implementation runs. Not a like-for-like speedup: the solver's accuracy is orders of magnitude worse.",
+      "honestSpeedupVsReference": 1.4782608695652173
+    },
+    "measured": {
+      "measuredSpeedup": 1.0009,
+      "nsFormula": 11.1832,
+      "nsExact": 11.1933,
+      "agreement": 0.6771,
+      "resolvable": false,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
     }
   },
   "tree": {
@@ -53,22 +64,62 @@
     ]
   },
   "fast": {
-    "formula": "tanh(x)",
-    "metric": 0.0002549921352995084,
+    "formula": "((0.625605 * (x / (0.912761 + |x|))) + 0.5)",
+    "metric": 0.0009034064270384005,
     "level": 2,
-    "formulaCost": 1,
-    "vsIterative": {
-      "label": "Monte-Carlo · 1000 tirages",
-      "speedup": 46000
+    "formulaCost": 8,
+    "measured": {
+      "measuredSpeedup": 2.5209,
+      "nsChampion": 17.5579,
+      "nsFast": 6.965,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
     }
   },
   "fastTree": {
-    "o": "tanh",
+    "o": "add",
     "c": [
       {
-        "o": "var",
-        "n": "x"
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": 0.6256053621791134
+          },
+          {
+            "o": "pdiv",
+            "c": [
+              {
+                "o": "var",
+                "n": "x"
+              },
+              {
+                "o": "add",
+                "c": [
+                  {
+                    "o": "const",
+                    "v": 0.912761
+                  },
+                  {
+                    "o": "abs",
+                    "c": [
+                      {
+                        "o": "var",
+                        "n": "x"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": 0.4999999999999995
       }
     ]
-  }
+  },
+  "holdout": 1.1227280313086098e-15
 }

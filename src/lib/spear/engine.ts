@@ -197,8 +197,128 @@ export function cloneNode(n: SpearNode): SpearNode {
   });
 }
 
+/**
+ * Closed-form constants worth snapping to. Numeric refinement hill-climbs in
+ * f64 but every write goes through roundConst, which truncates to 6 decimals —
+ * so a constant converging on 15*pi/4 = 11.78097245... is stored as 11.780972
+ * and the formula can never become exact. Measured cost of that truncation:
+ * kerr 1.7e-23 -> 3.8e-17, mel_scale 3.9e-25 -> 9.1e-2 (six orders, and nine
+ * for mel_scale where the constant multiplies a log).
+ *
+ * Snapping is attempted, never forced: snapConstants only keeps a substitution
+ * that actually scores better, so a fitted 3.14 that is NOT pi stays put.
+ */
+const CLOSED_FORMS: { value: number; label: string }[] = (() => {
+  const out: { value: number; label: string }[] = [];
+  const base: [number, string][] = [
+    [Math.PI, "pi"], [Math.E, "e"], [Math.SQRT2, "sqrt2"],
+    [Math.LN2, "ln2"], [Math.LN10, "ln10"], [Math.sqrt(3), "sqrt3"],
+    [1 / Math.sqrt(2 * Math.PI), "1/sqrt(2pi)"], [Math.sqrt(2 / Math.PI), "sqrt(2/pi)"],
+    [2595 / Math.LN10, "2595/ln10"],
+  ];
+  for (const [v, label] of base) {
+    // small rational multiples and simple powers cover the constants that
+    // actually show up in physics/graphics kernels (15pi/4, 128/3, pi/2, ...)
+    for (const num of [1, 2, 3, 4, 5, 8, 15, 16, 128]) {
+      for (const den of [1, 2, 3, 4, 6, 8, 16]) {
+        const val = (v * num) / den;
+        if (Number.isFinite(val) && Math.abs(val) < 1e7) out.push({ value: val, label: `${num}*${label}/${den}` });
+      }
+    }
+    out.push({ value: v * v, label: `${label}^2` }, { value: Math.sqrt(Math.abs(v)), label: `sqrt(${label})` });
+  }
+  for (let num = 1; num <= 200; num++) {
+    for (const den of [3, 6, 7, 9, 11, 12]) {
+      if (num % den === 0) continue;
+      out.push({ value: num / den, label: `${num}/${den}` });
+      out.push({ value: -num / den, label: `-${num}/${den}` });
+    }
+  }
+  return out;
+})();
+
+/**
+ * Try replacing each constant with a nearby closed form, keeping only strict
+ * improvements. This is what lets a numerically-refined formula become exact.
+ */
+export function snapConstants(
+  node: SpearNode,
+  score: (candidate: SpearNode) => number,
+): { node: SpearNode; score: number; evals: number } {
+  const best = cloneNode(node);
+  let bestScore = score(best);
+  let evals = 1;
+  if (!Number.isFinite(bestScore)) return { node: best, score: bestScore, evals };
+
+  const positions: SpearNode[] = [];
+  const collect = (nd: SpearNode) => {
+    if (nd.op === "const") positions.push(nd);
+    nd.children.forEach(collect);
+  };
+  collect(best);
+
+  // Pass 1: for each constant, find the closed form that scores best on its
+  // own, and remember it as a CANDIDATE without committing.
+  const candidates: { pos: SpearNode; original: number; best: number }[] = [];
+  for (const pos of positions) {
+    const original = pos.value as number;
+    if (!Number.isFinite(original) || original === 0) continue;
+    // only consider forms already close to the fitted value: this is a
+    // refinement of a converged constant, not a search over all constants
+    const tol = Math.max(Math.abs(original) * 2e-4, 1e-7);
+    // Pick the NEAREST closed form, not the best-scoring one. Scoring each
+    // constant in isolation is misleading: on kerr, snapping 128/3 alone makes
+    // the metric WORSE (5.8e-17 vs 3.8e-17) because the other constant is
+    // still truncated and now dominates — yet 15pi/4 AND 128/3 together give
+    // 1.7e-23, six orders better. Proximity is the honest signal that a
+    // constant converged on a closed form; whether it pays off is decided by
+    // the combined test below, which can still reject everything.
+    let localBest = original;
+    let localDist = tol;
+    for (const cf of CLOSED_FORMS) {
+      const d = Math.abs(cf.value - original);
+      if (d > tol || d >= localDist) continue;
+      localDist = d;
+      localBest = cf.value;
+    }
+    if (localBest !== original) candidates.push({ pos, original, best: localBest });
+  }
+
+  // Pass 2: apply all candidates together, then keep the combination only if
+  // it actually improves; otherwise fall back to the best single snap.
+  if (candidates.length > 0) {
+    for (const c of candidates) c.pos.value = c.best;
+    const combined = score(best);
+    evals++;
+    if (Number.isFinite(combined) && combined < bestScore - 1e-30) {
+      bestScore = combined;
+    } else {
+      for (const c of candidates) c.pos.value = c.original;
+      for (const c of candidates) {
+        c.pos.value = c.best;
+        const s = score(best);
+        evals++;
+        if (Number.isFinite(s) && s < bestScore - 1e-30) bestScore = s;
+        else c.pos.value = c.original;
+      }
+    }
+  }
+  return { node: best, score: bestScore, evals };
+}
+
 export function roundConst(v: number): number {
-  return Math.abs(v) < 1e-6 ? 0 : Number(v.toFixed(6));
+  if (Math.abs(v) < 1e-6) return 0;
+  // Snap f64 dust back onto exact values first. Preserving full precision (see
+  // below) otherwise lets 2 drift to 2.0000000000000004 through arithmetic,
+  // which desynchronises the stored formula text from the AST for no gain.
+  const near = Math.round(v);
+  if (near !== 0 && Math.abs(v - near) < Math.abs(v) * 1e-12) return near;
+  // Preserve full f64 precision for values that are already a recognised
+  // closed form; truncating them to 6 decimals is what blocked exactness.
+  for (const cf of CLOSED_FORMS) {
+    if (cf.value !== 0 && Math.abs(v - cf.value) < Math.abs(cf.value) * 1e-12) return cf.value;
+  }
+  return Number(v.toFixed(6));
 }
 
 // ---------------------------------------------------------------- evaluation
@@ -418,7 +538,13 @@ export function parseFormula(src: string): SpearNode {
     }
     if (t === "|") { eat("|"); const e = expr(); eat("|"); return makeNode("abs", { children: [e] }); }
     if (t === "-") { eat("-"); return makeNode("neg", { children: [atom()] }); }
-    if (/[a-z_]/.test(t[0])) {
+    // Case-insensitive, matching the tokenizer at the top of this function
+    // (/[a-z_]/i). Without the `i` flag an uppercase variable tokenised fine
+    // and then fell through to the numeric branch, silently becoming NaN:
+    // parseFormula("M - e*sin(M)") evaluated to NaN for every input, including
+    // M=0,e=0. Tasks using uppercase names (kepler_solver's M) could not have a
+    // reference law written for them at all.
+    if (/[a-z_]/i.test(t[0])) {
       eat();
       if (peek() === "(" && FUNCS.has(t)) {
         eat("(");
@@ -828,6 +954,16 @@ export function refineConstants(
     }
     if (!improved) break;
   }
+  // Snap converged constants onto closed forms. Numeric descent gets within
+  // ~1e-6 of pi, 15pi/4 or 2595/ln10 but cannot land ON them, and the residual
+  // error dominates everything else once the shape is right.
+  const snapped = snapConstants(best, score);
+  evals += snapped.evals;
+  if (Number.isFinite(snapped.score) && snapped.score < bestScore) {
+    best = snapped.node;
+    bestScore = snapped.score;
+  }
+
   // final cleanup: fold trivial constants
   const cleaned = simplify(best);
   const cleanedScore = score(cleaned);

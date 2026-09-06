@@ -2,15 +2,27 @@
   "taskId": "srgb_gamma",
   "title": "Transfert sRGB (encodage linéaire→affichage)",
   "direction": "min",
-  "metric": 0.0000019009578309001974,
-  "level": 4,
-  "formula": "((0.330799 * (sqrt(|sqrt(|sin(x)|)|) + ((1.41372 * sqrt(|x|)) + (0.881576 * sqrt(|x|))))) + -0.07679)",
-  "seed": 995003,
-  "iteration": 400,
+  "metric": 2.7231034629710704e-28,
+  "holdout": 2.0360738779067418e-30,
+  "level": 5,
+  "formula": "((1.186022 * ((0.889528 * exp((log(max(x, 1e-30)) * 0.4166666666666667))) - 0.055)) + 0.010231)",
+  "seed": 555111,
+  "iteration": 8,
   "speed": {
-    "formulaCost": 34,
+    "formulaCost": 45,
     "exactCost": 22,
-    "speedup": 0.6470588235294118
+    "speedup": 1.3782,
+    "measured": {
+      "measuredSpeedup": 1.3782,
+      "nsFormula": 13.8447,
+      "nsExact": 19.0806,
+      "agreement": 2.819,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    },
+    "costProfile": "cpu-transcendental-20",
+    "speedupModelled": 0.4888888888888889,
+    "speedupSource": "measured"
   },
   "tree": {
     "o": "add",
@@ -20,23 +32,36 @@
         "c": [
           {
             "o": "const",
-            "v": 0.3307987373817299
+            "v": 1.186022250002255
           },
           {
-            "o": "add",
+            "o": "sub",
             "c": [
               {
-                "o": "sqrt",
+                "o": "mul",
                 "c": [
                   {
-                    "o": "sqrt",
+                    "o": "const",
+                    "v": 0.889528
+                  },
+                  {
+                    "o": "exp",
                     "c": [
                       {
-                        "o": "sin",
+                        "o": "mul",
                         "c": [
                           {
-                            "o": "var",
-                            "n": "x"
+                            "o": "log",
+                            "c": [
+                              {
+                                "o": "var",
+                                "n": "x"
+                              }
+                            ]
+                          },
+                          {
+                            "o": "const",
+                            "v": 0.4166666666666667
                           }
                         ]
                       }
@@ -45,45 +70,8 @@
                 ]
               },
               {
-                "o": "add",
-                "c": [
-                  {
-                    "o": "mul",
-                    "c": [
-                      {
-                        "o": "const",
-                        "v": 1.41372
-                      },
-                      {
-                        "o": "sqrt",
-                        "c": [
-                          {
-                            "o": "var",
-                            "n": "x"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "o": "mul",
-                    "c": [
-                      {
-                        "o": "const",
-                        "v": 0.881576
-                      },
-                      {
-                        "o": "sqrt",
-                        "c": [
-                          {
-                            "o": "var",
-                            "n": "x"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
+                "o": "const",
+                "v": 0.055
               }
             ]
           }
@@ -91,27 +79,47 @@
       },
       {
         "o": "const",
-        "v": -0.07678952774168579
+        "v": 0.010231223750119227
       }
     ]
   },
   "fast": {
-    "formula": "sqrt(|x|)",
-    "metric": 0.00011551060259047266,
+    "formula": "((0.973051 * sqrt(|x|)) + 0.040841)",
+    "metric": 0.00011551060259047263,
     "level": 2,
-    "formulaCost": 2,
-    "speed": {
-      "formulaCost": 2,
-      "exactCost": 22,
-      "speedup": 11
+    "formulaCost": 4,
+    "measured": {
+      "measuredSpeedup": 10.5805,
+      "nsChampion": 13.0416,
+      "nsFast": 1.2326,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
     }
   },
   "fastTree": {
-    "o": "sqrt",
+    "o": "add",
     "c": [
       {
-        "o": "var",
-        "n": "x"
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": 0.9730507444073812
+          },
+          {
+            "o": "sqrt",
+            "c": [
+              {
+                "o": "var",
+                "n": "x"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": 0.040840870014255015
       }
     ]
   }

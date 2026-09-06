@@ -2,149 +2,39 @@
   "taskId": "rl_distillation",
   "title": "Distillation d'acteur Deep-RL",
   "direction": "min",
-  "metric": 0.00015509445364142197,
-  "level": 2,
-  "formula": "(1.143472 * ((x + (0.135 * (x)³)) / (0.584 + (0.75 * (x)²))))",
-  "seed": 777,
-  "iteration": 106,
+  "metric": 0,
+  "holdout": 0,
+  "level": 5,
+  "formula": "tanh((2 * x))",
+  "seed": 606060,
+  "iteration": 6,
   "speed": {
-    "formulaCost": 12,
+    "formulaCost": 21,
     "exactCost": 34,
-    "speedup": 2.8333333333333335
+    "speedup": 1.619047619047619,
+    "measured": {
+      "measuredSpeedup": 1.0016,
+      "nsFormula": 18.6363,
+      "nsExact": 18.6664,
+      "agreement": 0.6186,
+      "resolvable": false,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    },
+    "costProfile": "cpu-transcendental-20"
   },
   "tree": {
-    "o": "mul",
+    "o": "tanh",
     "c": [
       {
-        "o": "const",
-        "v": 1.143472
-      },
-      {
-        "o": "pdiv",
-        "c": [
-          {
-            "o": "add",
-            "c": [
-              {
-                "o": "var",
-                "n": "x"
-              },
-              {
-                "o": "mul",
-                "c": [
-                  {
-                    "o": "const",
-                    "v": 0.135
-                  },
-                  {
-                    "o": "cube",
-                    "c": [
-                      {
-                        "o": "var",
-                        "n": "x"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "o": "add",
-            "c": [
-              {
-                "o": "const",
-                "v": 0.584
-              },
-              {
-                "o": "mul",
-                "c": [
-                  {
-                    "o": "const",
-                    "v": 0.75
-                  },
-                  {
-                    "o": "sq",
-                    "c": [
-                      {
-                        "o": "var",
-                        "n": "x"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  },
-  "fast": {
-    "formula": "((x + (0.169 * (x)³)) / (0.5 + (0.75 * (x)²)))",
-    "metric": 0.0005281406564176935,
-    "level": 2,
-    "formulaCost": 11,
-    "speed": {
-      "formulaCost": 11,
-      "exactCost": 34,
-      "speedup": 3.090909090909091
-    }
-  },
-  "fastTree": {
-    "o": "pdiv",
-    "c": [
-      {
-        "o": "add",
-        "c": [
-          {
-            "o": "var",
-            "n": "x"
-          },
-          {
-            "o": "mul",
-            "c": [
-              {
-                "o": "const",
-                "v": 0.169
-              },
-              {
-                "o": "cube",
-                "c": [
-                  {
-                    "o": "var",
-                    "n": "x"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "o": "add",
+        "o": "mul",
         "c": [
           {
             "o": "const",
-            "v": 0.5
+            "v": 2
           },
           {
-            "o": "mul",
-            "c": [
-              {
-                "o": "const",
-                "v": 0.75
-              },
-              {
-                "o": "sq",
-                "c": [
-                  {
-                    "o": "var",
-                    "n": "x"
-                  }
-                ]
-              }
-            ]
+            "o": "var",
+            "n": "x"
           }
         ]
       }

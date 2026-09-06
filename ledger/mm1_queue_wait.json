@@ -2,80 +2,54 @@
   "taskId": "mm1_queue_wait",
   "title": "Attente file M/M/1 (SRE · systèmes)",
   "direction": "min",
-  "metric": 6.062690637388583e-33,
-  "level": 2,
-  "formula": "(-((l / m) / (l - m)))",
-  "seed": 1000080,
-  "iteration": 83,
+  "metric": 0,
+  "holdout": 0,
+  "level": 5,
+  "formula": "(l / (m * (m - l)))",
+  "seed": 260906,
+  "iteration": 8,
   "speed": {
-    "formulaCost": 10,
+    "formulaCost": 6,
     "exactCost": 6,
-    "speedup": 0.6
+    "speedup": 1.0393,
+    "measured": {
+      "measuredSpeedup": 1.0393,
+      "nsFormula": 8.0195,
+      "nsExact": 8.3349,
+      "agreement": 1.0393,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    },
+    "costProfile": "cpu-transcendental-20",
+    "speedupModelled": 1,
+    "speedupSource": "measured"
   },
   "tree": {
-    "o": "neg",
+    "o": "pdiv",
     "c": [
       {
-        "o": "pdiv",
+        "o": "var",
+        "n": "l"
+      },
+      {
+        "o": "mul",
         "c": [
           {
-            "o": "pdiv",
-            "c": [
-              {
-                "o": "var",
-                "n": "l"
-              },
-              {
-                "o": "var",
-                "n": "m"
-              }
-            ]
+            "o": "var",
+            "n": "m"
           },
           {
             "o": "sub",
             "c": [
               {
                 "o": "var",
-                "n": "l"
+                "n": "m"
               },
               {
                 "o": "var",
-                "n": "m"
+                "n": "l"
               }
             ]
-          }
-        ]
-      }
-    ]
-  },
-  "fast": {
-    "formula": "(-1.22881 / (l - m))",
-    "metric": 0.021826793682645364,
-    "level": 2,
-    "formulaCost": 5,
-    "speed": {
-      "formulaCost": 5,
-      "exactCost": 6,
-      "speedup": 1.2
-    }
-  },
-  "fastTree": {
-    "o": "pdiv",
-    "c": [
-      {
-        "o": "const",
-        "v": -1.22881
-      },
-      {
-        "o": "sub",
-        "c": [
-          {
-            "o": "var",
-            "n": "l"
-          },
-          {
-            "o": "var",
-            "n": "m"
           }
         ]
       }

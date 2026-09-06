@@ -2,38 +2,48 @@
   "taskId": "back_ease_out",
   "title": "Back ease-out (easing p5.js)",
   "direction": "min",
-  "metric": 0.00002740528761995583,
-  "level": 3,
-  "formula": "((7.763933 * (x / ((x + 1.821643) + (5.203625 * (x)²)))) + 0.011075)",
-  "seed": 990102,
-  "iteration": 476,
+  "metric": 2.166286001446763e-32,
+  "holdout": 1.232595164407831e-32,
+  "level": 5,
+  "formula": "((1 + (2.70158 * ((x - 1))³)) + (1.70158 * ((x - 1))²))",
+  "seed": 260906,
+  "iteration": 7,
   "speed": {
-    "formulaCost": 10,
+    "formulaCost": 9,
     "exactCost": 11,
-    "speedup": 1.1
+    "speedup": 1.2222222222222223,
+    "measured": {
+      "measuredSpeedup": 0.9992,
+      "nsFormula": 2.7286,
+      "nsExact": 2.7264,
+      "agreement": 0.8175,
+      "resolvable": false,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    },
+    "costProfile": "cpu-transcendental-20"
   },
   "tree": {
     "o": "add",
     "c": [
       {
-        "o": "mul",
+        "o": "add",
         "c": [
           {
             "o": "const",
-            "v": 7.763933157812422
+            "v": 1
           },
           {
-            "o": "pdiv",
+            "o": "mul",
             "c": [
               {
-                "o": "var",
-                "n": "x"
+                "o": "const",
+                "v": 2.70158
               },
               {
-                "o": "add",
+                "o": "cube",
                 "c": [
                   {
-                    "o": "add",
+                    "o": "sub",
                     "c": [
                       {
                         "o": "var",
@@ -41,25 +51,7 @@
                       },
                       {
                         "o": "const",
-                        "v": 1.821643
-                      }
-                    ]
-                  },
-                  {
-                    "o": "mul",
-                    "c": [
-                      {
-                        "o": "const",
-                        "v": 5.203625
-                      },
-                      {
-                        "o": "sq",
-                        "c": [
-                          {
-                            "o": "var",
-                            "n": "x"
-                          }
-                        ]
+                        "v": 1
                       }
                     ]
                   }
@@ -70,36 +62,17 @@
         ]
       },
       {
-        "o": "const",
-        "v": 0.011074755141712841
-      }
-    ]
-  },
-  "fast": {
-    "formula": "(x / ((x + (x + 2.158024)) + (5.987814 * (x)²)))",
-    "metric": 0.00005395668556911432,
-    "level": 3,
-    "formulaCost": 9
-  },
-  "fastTree": {
-    "o": "pdiv",
-    "c": [
-      {
-        "o": "var",
-        "n": "x"
-      },
-      {
-        "o": "add",
+        "o": "mul",
         "c": [
           {
-            "o": "add",
+            "o": "const",
+            "v": 1.70158
+          },
+          {
+            "o": "sq",
             "c": [
               {
-                "o": "var",
-                "n": "x"
-              },
-              {
-                "o": "add",
+                "o": "sub",
                 "c": [
                   {
                     "o": "var",
@@ -107,25 +80,7 @@
                   },
                   {
                     "o": "const",
-                    "v": 2.158024
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "o": "mul",
-            "c": [
-              {
-                "o": "const",
-                "v": 5.987814
-              },
-              {
-                "o": "sq",
-                "c": [
-                  {
-                    "o": "var",
-                    "n": "x"
+                    "v": 1
                   }
                 ]
               }

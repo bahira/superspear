@@ -10,7 +10,8 @@
   "speed": {
     "formulaCost": 65,
     "exactCost": 25,
-    "speedup": 0.38461538461538464
+    "speedup": 0.38461538461538464,
+    "costProfile": "cpu-transcendental-20"
   },
   "tree": {
     "o": "add",
@@ -77,14 +78,17 @@
     ]
   },
   "fast": {
-    "formula": "((0.747172 * log(max((-0.479425 / (-0.652482 / x)), 1e-30))) + -5.331985)",
-    "metric": 0.00027232367256511703,
+    "formula": "((-0.00013 * ((1.000082 * x) / (tanh(x) * -0.573718))) + -0.308487)",
+    "metric": 0.0015032930520104606,
     "level": 2,
-    "formulaCost": 30,
-    "speed": {
-      "formulaCost": 30,
-      "exactCost": 25,
-      "speedup": 0.8333333333333334
+    "formulaCost": 28,
+    "deploy": true,
+    "measured": {
+      "measuredSpeedup": 1.0823,
+      "nsChampion": 31.4875,
+      "nsFast": 29.0928,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
     }
   },
   "fastTree": {
@@ -95,30 +99,39 @@
         "c": [
           {
             "o": "const",
-            "v": 0.747172
+            "v": -0.00013020100068810925
           },
           {
-            "o": "log",
+            "o": "pdiv",
             "c": [
               {
-                "o": "pdiv",
+                "o": "mul",
                 "c": [
                   {
                     "o": "const",
-                    "v": -0.479425
+                    "v": 1.000082
                   },
                   {
-                    "o": "pdiv",
+                    "o": "var",
+                    "n": "x"
+                  }
+                ]
+              },
+              {
+                "o": "mul",
+                "c": [
+                  {
+                    "o": "tanh",
                     "c": [
-                      {
-                        "o": "const",
-                        "v": -0.652482
-                      },
                       {
                         "o": "var",
                         "n": "x"
                       }
                     ]
+                  },
+                  {
+                    "o": "const",
+                    "v": -0.573718
                   }
                 ]
               }
@@ -128,7 +141,7 @@
       },
       {
         "o": "const",
-        "v": -5.331985
+        "v": -0.3084865288732084
       }
     ]
   }

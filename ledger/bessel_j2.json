@@ -2,15 +2,27 @@
   "taskId": "bessel_j2",
   "title": "Bessel J₂ (membranes sym · 2e sideband)",
   "direction": "min",
-  "metric": 0.00010589472510666084,
+  "metric": 0.00010303824064693589,
+  "holdout": 0.00010161932879133565,
   "level": 2,
-  "formula": "((-0.355956 * cos(max((0.722591 * (x + 1.095797)), max(1.232444, x)))) + 0.1349)",
-  "seed": 1000031,
-  "iteration": 400,
+  "formula": "((-0.300904 * ((0.623176 * ((0.811946 * x) + (-0.613527 * x))) + cos(x))) + 0.306551)",
+  "seed": 90210,
+  "iteration": 23,
   "speed": {
-    "formulaCost": 26,
+    "formulaCost": 27,
     "exactCost": 40,
-    "speedup": 1.5384615384615385
+    "speedup": 1.913,
+    "costProfile": "cpu-transcendental-20",
+    "measured": {
+      "measuredSpeedup": 1.913,
+      "nsFormula": 8.0089,
+      "nsExact": 15.321,
+      "agreement": 1.2913,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    },
+    "speedupModelled": 1.4814814814814814,
+    "speedupSource": "measured"
   },
   "tree": {
     "o": "add",
@@ -20,48 +32,57 @@
         "c": [
           {
             "o": "const",
-            "v": -0.355956
+            "v": -0.300904
           },
           {
-            "o": "cos",
+            "o": "add",
             "c": [
               {
-                "o": "max",
+                "o": "mul",
                 "c": [
                   {
-                    "o": "mul",
+                    "o": "const",
+                    "v": 0.623176
+                  },
+                  {
+                    "o": "add",
                     "c": [
                       {
-                        "o": "const",
-                        "v": 0.722591
-                      },
-                      {
-                        "o": "add",
+                        "o": "mul",
                         "c": [
+                          {
+                            "o": "const",
+                            "v": 0.811946
+                          },
                           {
                             "o": "var",
                             "n": "x"
-                          },
+                          }
+                        ]
+                      },
+                      {
+                        "o": "mul",
+                        "c": [
                           {
                             "o": "const",
-                            "v": 1.095797
+                            "v": -0.613527
+                          },
+                          {
+                            "o": "var",
+                            "n": "x"
                           }
                         ]
                       }
                     ]
-                  },
+                  }
+                ]
+              },
+              {
+                "o": "cos",
+                "c": [
                   {
-                    "o": "max",
-                    "c": [
-                      {
-                        "o": "const",
-                        "v": 1.232444
-                      },
-                      {
-                        "o": "var",
-                        "n": "x"
-                      }
-                    ]
+                    "o": "var",
+                    "n": "x"
                   }
                 ]
               }
@@ -71,63 +92,83 @@
       },
       {
         "o": "const",
-        "v": 0.1349
+        "v": 0.306551
       }
     ]
   },
   "fast": {
-    "formula": "cos(max((0.794393 * (x + 0.979408)), max(1.234601, x)))",
-    "metric": 0.0002754846829909618,
+    "formula": "((-0.301178 * ((0.077109 * ((0.652891 * x) + x)) + cos(x))) + 0.311008)",
+    "metric": 0.0001003120533476376,
     "level": 2,
-    "formulaCost": 24,
-    "speed": {
-      "formulaCost": 24,
-      "exactCost": 40,
-      "speedup": 1.6666666666666667
+    "formulaCost": 26,
+    "measured": {
+      "measuredSpeedup": 1.0031,
+      "nsChampion": 8.7713,
+      "nsFast": 8.7439,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
     }
   },
   "fastTree": {
-    "o": "cos",
+    "o": "add",
     "c": [
       {
-        "o": "max",
+        "o": "mul",
         "c": [
           {
-            "o": "mul",
+            "o": "const",
+            "v": -0.3011775279616812
+          },
+          {
+            "o": "add",
             "c": [
               {
-                "o": "const",
-                "v": 0.794393
+                "o": "mul",
+                "c": [
+                  {
+                    "o": "const",
+                    "v": 0.077109
+                  },
+                  {
+                    "o": "add",
+                    "c": [
+                      {
+                        "o": "mul",
+                        "c": [
+                          {
+                            "o": "const",
+                            "v": 0.652891
+                          },
+                          {
+                            "o": "var",
+                            "n": "x"
+                          }
+                        ]
+                      },
+                      {
+                        "o": "var",
+                        "n": "x"
+                      }
+                    ]
+                  }
+                ]
               },
               {
-                "o": "add",
+                "o": "cos",
                 "c": [
                   {
                     "o": "var",
                     "n": "x"
-                  },
-                  {
-                    "o": "const",
-                    "v": 0.979408
                   }
                 ]
               }
             ]
-          },
-          {
-            "o": "max",
-            "c": [
-              {
-                "o": "const",
-                "v": 1.234601
-              },
-              {
-                "o": "var",
-                "n": "x"
-              }
-            ]
           }
         ]
+      },
+      {
+        "o": "const",
+        "v": 0.3110078542846149
       }
     ]
   }

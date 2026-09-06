@@ -14,8 +14,9 @@ strict MISRA-C:2012 C99, and PyTorch) under a machine-checked parity audit.
 Across a 48-task benchmark registry spanning neural-network activations,
 shader primitives, special functions, physics laws and control policies,
 SPEAR produced 9 exact solutions (machine-precision MSE), 18 kernels faster
-than their exact references in an ALU/SFU cost model, and 7 replacements of
-iterative numerical solvers with speedups from ×6 to ×1840. We contribute a
+than their exact references in an ALU/SFU cost model, and 3 replacements of
+iterative numerical solvers — where no closed form exists — with speedups from
+×1.7 to ×33. We contribute a
 taxonomy of four difficulty regimes for symbolic search, a scaffold-seeding
 methodology validated on adversarial optimality tests, and an honest failure
 case where an expert hand-fit (Narkowicz ACES) resists evolution at any
@@ -80,14 +81,26 @@ factor, Lambert W₀, 2-link IK elbow (1.1e-13), symmetric 3×3 λmax (3.3e-11,
 full Cardano trisection recovered through the atan identity).
 
 ### 4.2 Faster than the reference (selection)
-logsumexp2 ×8.57, KdV soliton ×7.57, GELU ×6.57, inverted-pendulum hybrid
+logsumexp2 ×2.47 measured (×8.57 modelled), KdV soliton ×6.94 measured, GELU ×6.57 modelled, inverted-pendulum hybrid
 ×3.76, IDM car-following ×3.33, SiLU ×2.43. Wall-clock cross-checks on WASM
 confirm direction and rough magnitude (e.g., KdV ×1.96 measured).
 
 ### 4.3 Iterative solver replacement (selection)
-Gaussian CDF vs Monte-Carlo estimation ×1840; damped oscillation trajectory
-vs RKF45 ×200; Kerr deflection vs RK4 geodesic integration ×185–133;
-damped pendulum vs Euler-Cromer ×33; 2-link IK vs Newton-DLS chains ×20.
+We report solver comparisons ONLY for tasks that genuinely have no closed form,
+since that is the premise that makes the comparison meaningful: damped pendulum
+vs Euler-Cromer ×33; 2-link IK vs Newton-DLS chains ×6.2; symmetric 3×3
+eigendecomposition vs Jacobi sweeps ×1.7.
+
+Earlier drafts of this work also priced tasks such as the Gaussian CDF against
+1000-draw Monte-Carlo (×1840) and Kerr deflection against RK4 geodesic
+integration (×185). We now consider those figures invalid and have withdrawn
+them. Both tasks have a closed-form reference kernel that any real
+implementation calls, so the solver is a strawman; measured against the actual
+reference the Gaussian CDF champion is ×1.48, not ×1840. The comparisons were
+also not like-for-like in accuracy: 1000-draw Monte-Carlo attains MSE ≈ 9e-5
+while the champion reaches 1e-34, so the cost ratio spanned kernels differing
+by ~29 orders of magnitude in error. Retained in the ledger as
+`speed.vsSolverContext`, never as a speed claim.
 
 ### 4.4 Edge measurements
 On a CPU-only machine, WASM-compiled discovered forms replace production

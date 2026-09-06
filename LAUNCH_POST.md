@@ -3,7 +3,7 @@
 I've been building a symbolic regression engine that replaces hot math kernels with closed-form formulas discovered by genetic programming. It's tagged v1.0.0 and MIT licensed. Numbers first:
 
 - **48-task registry. 14 exact solutions** (MSE ≤ 1e-8; 7 at exactly 0 — Lorentz factor, Lambert W₀, RoPE rotation, LayerNorm rsqrt, among others). **18 kernels are cheaper than their exact reference** in ALU/SFU units.
-- Where the textbook solution is an iterative solver, an O(1) formula wins: Gaussian CDF via 1000-draw Monte-Carlo estimation replaced by a 9-unit rational form, **×1840 fewer units** (documented replacements span ×6–×1840).
+- Where the textbook solution really is an iterative solver — no closed form available — an O(1) formula wins: damped pendulum vs Euler-Cromer **×33**, 2-link IK vs Newton-DLS **×6.2** (documented replacements span ×1.7–×33).
 - On this machine (WASM, 200k elements): algebraic SiLU runs **×2.12 faster** than the exp-based reference (409 vs 864 ns/el), GELU ×2.32. The fast sigmoid slot is *slower* here (×0.82) — reported as measured.
 - A 5-unit KV-cache eviction rule (`4.5·S + A + R`) was validated on real distilgpt2 attention traces: **80.31 % future attention mass retained vs 80.20 % for H2O**, 80.07 % StreamingLLM.
 

@@ -2,21 +2,121 @@
   "taskId": "kerr_spin",
   "title": "Déflexion Kerr avec spin (Lense-Thirring)",
   "direction": "min",
-  "metric": 7.518473348732604e-10,
+  "metric": 3.354125112578511e-15,
+  "holdout": 3.32420451971408e-15,
   "level": 2,
-  "formula": "((0.399181 * (((4.851947 / b) + (5.364206 / (-3.480154 + b))) + (0.368529 / (11.340686 + b)))) + -0.00039)",
-  "seed": 991203,
-  "iteration": 502,
+  "formula": "(((4 / b) + (((4 * s) - 2.70566) / (b)²)) / (1 - (3.62166 / b)))",
+  "seed": 260906,
+  "iteration": 7,
   "speed": {
-    "formulaCost": 18,
+    "formulaCost": 21,
     "exactCost": 21,
-    "speedup": 1.1666666666666667,
-    "vsIterative": {
-      "label": "RK4 géodésique · 200 pas",
-      "speedup": 133.3
-    }
+    "speedup": 1,
+    "measured": {
+      "measuredSpeedup": 1.0107,
+      "nsFormula": 28.894,
+      "nsExact": 29.2043,
+      "agreement": 1.0107,
+      "resolvable": false,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    },
+    "costProfile": "cpu-transcendental-20"
   },
   "tree": {
+    "o": "pdiv",
+    "c": [
+      {
+        "o": "add",
+        "c": [
+          {
+            "o": "pdiv",
+            "c": [
+              {
+                "o": "const",
+                "v": 4
+              },
+              {
+                "o": "var",
+                "n": "b"
+              }
+            ]
+          },
+          {
+            "o": "pdiv",
+            "c": [
+              {
+                "o": "sub",
+                "c": [
+                  {
+                    "o": "mul",
+                    "c": [
+                      {
+                        "o": "const",
+                        "v": 4
+                      },
+                      {
+                        "o": "var",
+                        "n": "s"
+                      }
+                    ]
+                  },
+                  {
+                    "o": "const",
+                    "v": 2.70566
+                  }
+                ]
+              },
+              {
+                "o": "sq",
+                "c": [
+                  {
+                    "o": "var",
+                    "n": "b"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "sub",
+        "c": [
+          {
+            "o": "const",
+            "v": 1
+          },
+          {
+            "o": "pdiv",
+            "c": [
+              {
+                "o": "const",
+                "v": 3.62166
+              },
+              {
+                "o": "var",
+                "n": "b"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "fast": {
+    "formula": "((-0.012886 * (-69.077553 / (1 - (3.62166 / b)))) + -0.864376)",
+    "metric": 0.00006044557112643241,
+    "level": 2,
+    "formulaCost": 11,
+    "measured": {
+      "measuredSpeedup": 1.8056,
+      "nsChampion": 29.4482,
+      "nsFast": 16.3097,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    }
+  },
+  "fastTree": {
     "o": "add",
     "c": [
       {
@@ -24,64 +124,28 @@
         "c": [
           {
             "o": "const",
-            "v": 0.3991806798322823
+            "v": -0.01288632542756101
           },
           {
-            "o": "add",
+            "o": "pdiv",
             "c": [
               {
-                "o": "add",
-                "c": [
-                  {
-                    "o": "pdiv",
-                    "c": [
-                      {
-                        "o": "const",
-                        "v": 4.851947
-                      },
-                      {
-                        "o": "var",
-                        "n": "b"
-                      }
-                    ]
-                  },
-                  {
-                    "o": "pdiv",
-                    "c": [
-                      {
-                        "o": "const",
-                        "v": 5.364206
-                      },
-                      {
-                        "o": "add",
-                        "c": [
-                          {
-                            "o": "const",
-                            "v": -3.480154
-                          },
-                          {
-                            "o": "var",
-                            "n": "b"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
+                "o": "const",
+                "v": -69.077553
               },
               {
-                "o": "pdiv",
+                "o": "sub",
                 "c": [
                   {
                     "o": "const",
-                    "v": 0.368529
+                    "v": 1
                   },
                   {
-                    "o": "add",
+                    "o": "pdiv",
                     "c": [
                       {
                         "o": "const",
-                        "v": 11.340686
+                        "v": 3.62166
                       },
                       {
                         "o": "var",
@@ -97,39 +161,7 @@
       },
       {
         "o": "const",
-        "v": -0.00039034216985437336
-      }
-    ]
-  },
-  "fast": {
-    "formula": "(s / b)",
-    "metric": 0.0001323874547581254,
-    "level": 2,
-    "formulaCost": 4,
-    "speed": {
-      "formulaCost": 4,
-      "exactCost": 21,
-      "speedup": 5.25,
-      "vsIterative": {
-        "label": "RK4 gÃ©odÃ©sique · 200 pas",
-        "speedup": 600
-      }
-    },
-    "vsIterative": {
-      "label": "RK4 géodésique · 200 pas",
-      "speedup": 600
-    }
-  },
-  "fastTree": {
-    "o": "pdiv",
-    "c": [
-      {
-        "o": "var",
-        "n": "s"
-      },
-      {
-        "o": "var",
-        "n": "b"
+        "v": -0.8643756117005296
       }
     ]
   }

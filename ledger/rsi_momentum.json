@@ -2,79 +2,54 @@
   "taskId": "rsi_momentum",
   "title": "RSI depuis moyennes lissées (TradingView)",
   "direction": "min",
-  "metric": 1.836172557108052e-29,
-  "level": 2,
-  "formula": "(100 * (g / (g + l)))",
-  "seed": 1000050,
-  "iteration": 1200,
+  "metric": 0,
+  "holdout": 0,
+  "level": 5,
+  "formula": "((100 * g) / (g + l))",
+  "seed": 260906,
+  "iteration": 8,
   "speed": {
     "formulaCost": 6,
     "exactCost": 4,
-    "speedup": 0.6666666666666666
+    "speedup": 1.0389,
+    "measured": {
+      "measuredSpeedup": 1.0389,
+      "nsFormula": 8.0878,
+      "nsExact": 8.4024,
+      "agreement": 1.5583,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    },
+    "costProfile": "cpu-transcendental-20",
+    "speedupModelled": 0.6666666666666666,
+    "speedupSource": "measured"
   },
   "tree": {
-    "o": "mul",
+    "o": "pdiv",
     "c": [
       {
-        "o": "const",
-        "v": 100
-      },
-      {
-        "o": "pdiv",
+        "o": "mul",
         "c": [
+          {
+            "o": "const",
+            "v": 100
+          },
           {
             "o": "var",
             "n": "g"
-          },
-          {
-            "o": "add",
-            "c": [
-              {
-                "o": "var",
-                "n": "g"
-              },
-              {
-                "o": "var",
-                "n": "l"
-              }
-            ]
           }
         ]
-      }
-    ]
-  },
-  "fast": {
-    "formula": "(85.981607 * (g / (g + l)))",
-    "metric": 1.836172557108052e-29,
-    "level": 2,
-    "formulaCost": 6
-  },
-  "fastTree": {
-    "o": "mul",
-    "c": [
-      {
-        "o": "const",
-        "v": 85.981607
       },
       {
-        "o": "pdiv",
+        "o": "add",
         "c": [
           {
             "o": "var",
             "n": "g"
           },
           {
-            "o": "add",
-            "c": [
-              {
-                "o": "var",
-                "n": "g"
-              },
-              {
-                "o": "var",
-                "n": "l"
-              }
-            ]
+            "o": "var",
+            "n": "l"
           }
         ]
       }

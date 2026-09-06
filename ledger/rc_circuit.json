@@ -2,15 +2,27 @@
   "taskId": "rc_circuit",
   "title": "Circuit RC · tension terminale",
   "direction": "min",
-  "metric": 0.00007258403509477666,
+  "metric": 0.00010966177677556906,
+  "holdout": 0.0002844062080868289,
   "level": 5,
-  "formula": "((-1.419873 * (2.239754 - log(max(atan(exp(t)), 1e-30)))) + 3.532699)",
-  "seed": 1000002,
-  "iteration": 202,
+  "formula": "((-0.999653 * exp((-t))) + 1.002685)",
+  "seed": 4242,
+  "iteration": 5,
   "speed": {
-    "formulaCost": 63,
+    "formulaCost": 23,
     "exactCost": 22,
-    "speedup": 0.3492063492063492
+    "speedup": 0.9637,
+    "costProfile": "cpu-transcendental-20",
+    "measured": {
+      "measuredSpeedup": 0.9637,
+      "nsFormula": 8.1605,
+      "nsExact": 7.8644,
+      "agreement": 1.0075,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    },
+    "speedupModelled": 0.9565217391304348,
+    "speedupSource": "measured"
   },
   "tree": {
     "o": "add",
@@ -20,31 +32,17 @@
         "c": [
           {
             "o": "const",
-            "v": -1.4198725250153843
+            "v": -0.999653
           },
           {
-            "o": "sub",
+            "o": "exp",
             "c": [
               {
-                "o": "const",
-                "v": 2.239754
-              },
-              {
-                "o": "log",
+                "o": "neg",
                 "c": [
                   {
-                    "o": "atan",
-                    "c": [
-                      {
-                        "o": "exp",
-                        "c": [
-                          {
-                            "o": "var",
-                            "n": "t"
-                          }
-                        ]
-                      }
-                    ]
+                    "o": "var",
+                    "n": "t"
                   }
                 ]
               }
@@ -54,27 +52,7 @@
       },
       {
         "o": "const",
-        "v": 3.5326988727281186
-      }
-    ]
-  },
-  "fast": {
-    "formula": "exp((-t))",
-    "metric": 0.00009652787283384027,
-    "level": 5,
-    "formulaCost": 2
-  },
-  "fastTree": {
-    "o": "exp",
-    "c": [
-      {
-        "o": "neg",
-        "c": [
-          {
-            "o": "var",
-            "n": "t"
-          }
-        ]
+        "v": 1.002685
       }
     ]
   }

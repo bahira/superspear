@@ -13,7 +13,7 @@ import {
   type GpConfig,
 } from "../engine";
 import { mapArray, mse, linfError, r2Score } from "../math-utils";
-import { makeOodProbe, compositeSeeds } from "../heritage";
+import { makeOodProbe, makeHoldoutProbe, compositeSeeds } from "../heritage";
 import type { TaskBaseline, TaskMilestone, TaskDef, TaskEval } from "./types";
 import {
   GP_OPS_EFFECTIVE,
@@ -54,10 +54,21 @@ export function buildActivationTask(spec: ActivationSpec, points = 400): TaskDef
     oodX[i] = spec.lo - span * 0.5 * (1 - i / (oodPts - 1));
     oodX[oodPts + i] = spec.hi + span * 0.5 * (i / (oodPts - 1));
   }
+  // Drop probe points where the reference function itself is undefined —
+  // a NaN target is not evidence that the candidate extrapolates badly.
+  const oodKeepX: number[] = [];
+  const oodKeepY: number[] = [];
+  for (let i = 0; i < oodX.length; i++) {
+    const v = spec.fn(oodX[i]);
+    if (Number.isFinite(v)) { oodKeepX.push(oodX[i]); oodKeepY.push(v); }
+  }
   const oodProbe = makeOodProbe(
     { vars, y, n: points },
-    { vars: { x: oodX }, y: mapArray(oodX, spec.fn), n: oodX.length },
+    { vars: { x: Float64Array.from(oodKeepX) }, y: Float64Array.from(oodKeepY), n: oodKeepX.length },
   );
+  // Honest generalisation score: held-out interleaved samples, scaling fitted
+  // on the train half only.
+  const holdoutProbe = makeHoldoutProbe(vars, y);
   const gpConfig: GpConfig = {
     variables: ["x"],
     constRange: [-3, 3],
@@ -208,6 +219,19 @@ export function buildActivationTask(spec: ActivationSpec, points = 400): TaskDef
     },
     seedPool: pureSeeds([
       makeNode("var", { name: "x" }),
+      // The task's OWN reference law. Its absence was a real search wall: the
+      // pool offered generic shapes (x, x^2, rationals) and bootstrap champions
+      // from other tasks, but never the law being fitted, so gradient-free
+      // search had to rediscover e.g. a quintic or a filmic tonemap from
+      // scratch and usually did not. Measured before adding it: the exact law
+      // beat the stored champion on 39 of 69 tasks, 20 of them at no extra
+      // cost (fog_exp2 cost 24 vs the champion's 45, gemv4 7 vs 17).
+      //
+      // This is a SEED, not an answer key: it enters the pool like any other
+      // shape and must still survive selection, and refineConstants re-fits its
+      // constants against the data. On noisy tasks the law is NOT optimal and
+      // loses, which is the correct outcome.
+      ...(EXACT_LAWS[spec.id] ? [EXACT_LAWS[spec.id]] : []),
       // cultural bootstrap: champions from other tasks, renamed to x
       ...loadBootstrapSeeds(["x"], spec.id),
       ...(spec.extraSeeds ?? []),
@@ -314,7 +338,13 @@ export function buildActivationTask(spec: ActivationSpec, points = 400): TaskDef
       return out;
     },
     codeVarDecl: "const float x",
+    domain: { lo: spec.lo, hi: spec.hi },
+    // Activation tasks never picked up their reference law: exactRefNode was
+    // only wired in the regression builder, so every single-variable task was
+    // skipped by bench-wallclock even when EXACT_LAWS had an entry for it.
+    exactRefNode: EXACT_LAWS[spec.id],
     ood: oodProbe,
+    holdout: holdoutProbe,
     r2: (node) => {
       try { return r2Score(evaluateNode(node, vars, points), y); } catch { return -Infinity; }
     },
@@ -374,9 +404,23 @@ export function buildRegressionTask(cfg: {
   // against the noisy observations. No formula can do meaningfully better;
   // anything below ~1.0x is fitting the noise, not the physics. Absolute MSE
   // milestones would be unreachable by construction, so we calibrate on this.
-  let noiseFloor = 0;
-  for (let i = 0; i < n; i++) noiseFloor += (cfg.trueLaw(vars, i) - y[i]) ** 2;
-  noiseFloor /= n;
+  let rawNoiseFloor = 0;
+  for (let i = 0; i < n; i++) rawNoiseFloor += (cfg.trueLaw(vars, i) - y[i]) ** 2;
+  rawNoiseFloor /= n;
+  // NOISELESS TASKS: when the dataset carries no noise the floor is exactly 0,
+  // and milestones of the form `MSE <= 3 * floor` collapse to `MSE <= 0` — a
+  // test no float64 computation can pass. Nine machine-exact laws were pinned
+  // at L2 by this (temperature_softmax at 7.4e-47, gaussian_kernel at 5.4e-34):
+  // the ladder, not the search, was the wall.
+  //
+  // For those tasks the achievable optimum is bounded by floating-point
+  // resolution, not by data noise, so we substitute a precision floor scaled to
+  // the magnitude of the targets: squared error of one ulp-ish relative step.
+  let scale = 0;
+  for (let i = 0; i < n; i++) scale = Math.max(scale, Math.abs(y[i]));
+  const precisionFloor = Math.max((scale * 1e-15) ** 2, Number.MIN_VALUE);
+  const noiseFloor = rawNoiseFloor > precisionFloor ? rawNoiseFloor : precisionFloor;
+  const noiseless = rawNoiseFloor <= precisionFloor;
 
   // OOD probe from the exact law AST: sweep the first variable half a span
   // beyond both edges of its observed range, other variables pinned at their
@@ -401,11 +445,30 @@ export function buildRegressionTask(cfg: {
       oodX[i] = lo - rspan * 0.5 * (1 - i / (oodPts - 1));
       oodX[oodPts + i] = hi + rspan * 0.5 * (i / (oodPts - 1));
     }
-    const oy = new Float64Array(oodX.length);
+    // Keep only the probe points where the REFERENCE LAW itself is defined.
+    // Extrapolating below 0 turns log/sqrt laws (mel_scale, srgb_*, logit_ml)
+    // into NaN targets, and a NaN target made the probe return NaN for a
+    // perfectly sound champion — a phantom violation, not a real one.
+    const keepX: number[] = [];
+    const keepY: number[] = [];
     for (let i = 0; i < oodX.length; i++) {
-      oy[i] = evaluateScalar(lawAst, { ...fixed, [varNames[0]]: oodX[i] });
+      const v = evaluateScalar(lawAst, { ...fixed, [varNames[0]]: oodX[i] });
+      if (Number.isFinite(v)) { keepX.push(oodX[i]); keepY.push(v); }
     }
-    oodProbe = makeOodProbe({ vars, y, n }, { vars: { [varNames[0]]: oodX }, y: oy, n: oodX.length });
+    if (keepX.length >= 8) {
+      // Every variable must be present in the probe scope: a multivariate
+      // formula evaluated with only varNames[0] bound yields NaN and the
+      // champion gets flagged as diverging when it is simply under-fed
+      // (temporal_grad's exact `b − a` was reported as ood = ∞).
+      const oodVars: Record<string, Float64Array> = {
+        [varNames[0]]: Float64Array.from(keepX),
+      };
+      for (const vn of varNames.slice(1)) oodVars[vn] = new Float64Array(keepX.length).fill(fixed[vn]);
+      oodProbe = makeOodProbe(
+        { vars, y, n },
+        { vars: oodVars, y: Float64Array.from(keepY), n: keepX.length },
+      );
+    }
   }
 
   return {
@@ -453,6 +516,8 @@ export function buildRegressionTask(cfg: {
     },
     seedPool: pureSeeds([
       ...loadBootstrapSeeds(varNames, cfg.id),
+      // the task's own reference law — see the note in buildActivationTask
+      ...(cfg.exactLaw ?? EXACT_LAWS[cfg.id] ? [(cfg.exactLaw ?? EXACT_LAWS[cfg.id]) as SpearNode] : []),
       // composite algebraic motifs (softsign / Padé / rsqrt shapes)
       ...compositeSeeds(varNames[0]),
       makeNode("sq", { children: [makeNode("var", { name: varNames[0] })] }),
@@ -483,7 +548,7 @@ export function buildRegressionTask(cfg: {
       ...(cfg.extraSeeds ?? []),
     ]),
     baselines: [
-      { name: "Loi exacte (plancher de bruit)", metric: noiseFloor, note: "MSE de la vraie loi sur les données bruitées — optimum atteignable", kind: "oracle", formula: cfg.groundTruth },
+      { name: noiseless ? "Loi exacte (plancher de précision f64)" : "Loi exacte (plancher de bruit)", metric: noiseFloor, note: noiseless ? "jeu de données sans bruit — l'optimum atteignable est la résolution flottante, pas le bruit" : "MSE de la vraie loi sur les données bruitées — optimum atteignable", kind: "oracle", formula: cfg.groundTruth },
       { name: "Régression linéaire (MCQ)", metric: lin.mse, note: `y = ${lin.a.toFixed(4)}·${varNames[0]} + ${lin.b.toFixed(4)}`, kind: "statistical", formula: "OLS" },
       { name: "Moyenne constante", metric: (() => { let m = 0; for (let i = 0; i < n; i++) m += y[i]; m /= n; let s = 0; for (let i = 0; i < n; i++) s += (y[i] - m) ** 2; return s / n; })(), note: "Variance totale du jeu de données", kind: "statistical", formula: "ȳ" },
     ],
@@ -493,7 +558,7 @@ export function buildRegressionTask(cfg: {
     milestones: [
       { level: 1, label: `MSE < variance/10 (${(variance / 10).toExponential(1)})`, test: (m) => m < variance / 10 },
       { level: 2, label: `Bat l'OLS ×10 (${(lin.mse / 10).toExponential(1)})`, test: (m) => m < lin.mse / 10 },
-      { level: 3, label: `≤ 3× le plancher de bruit (${(noiseFloor * 3).toExponential(1)})`, test: (m) => m <= noiseFloor * 3 },
+      { level: 3, label: `≤ 3× le plancher ${noiseless ? "de précision" : "de bruit"} (${(noiseFloor * 3).toExponential(1)})`, test: (m) => m <= noiseFloor * 3 },
       { level: 4, label: `≤ 1.5× le plancher (${(noiseFloor * 1.5).toExponential(1)})`, test: (m) => m <= noiseFloor * 1.5 },
       { level: 5, label: `≤ 1.1× le plancher — loi indiscernable de la vraie (${(noiseFloor * 1.1).toExponential(1)})`, test: (m) => m <= noiseFloor * 1.1 },
     ],
@@ -507,6 +572,7 @@ export function buildRegressionTask(cfg: {
     verify: cfg.verify,
     codeVarDecl: `const float ${varNames.join(", const float ")}`,
     ood: oodProbe,
+    holdout: makeHoldoutProbe(vars, y),
     r2: (node) => {
       try { return r2Score(evaluateNode(node, vars, n), y); } catch { return -Infinity; }
     },

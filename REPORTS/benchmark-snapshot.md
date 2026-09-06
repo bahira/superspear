@@ -14,7 +14,7 @@ gaussian_kernel (5.4e-34) · rope_rot (0) · atan_unit (0) · ema_smooth
 
 | Tâche | Speedup | | Tâche | Speedup |
 |---|---|---|---|---|
-| logsumexp2 | ×8.57 | | blackbody_r | ×1.79 |
+| logsumexp2 | ×2.47 meas. | | blackbody_r | ×1.79 |
 | kdv_soliton | ×7.57 | | tanh_sat | ×1.67 |
 | gelu | ×6.57 | | damped_oscillation | ×1.63 |
 | pendulum_hybrid | ×3.76 | | cosh_curve | ×1.38 |
@@ -26,7 +26,7 @@ gaussian_kernel (5.4e-34) · rope_rot (0) · atan_unit (0) · ema_smooth
 
 | Tâche | Solveur | Gain |
 |---|---|---|
-| gaussian_cdf | Monte-Carlo 1000 tirages | **×1840** |
+| ~~gaussian_cdf~~ | ~~Monte-Carlo 1000 tirages~~ | **retiré** — strawman (forme fermée existante ; honnête ×1.48) |
 | damped_oscillation | RKF45 300 pas | ×200 |
 | kerr | RK4 géodésique 200 pas | ×185 |
 | kerr_spin | RK4 géodésique | ×133 |

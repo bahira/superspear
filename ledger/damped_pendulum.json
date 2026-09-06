@@ -80,13 +80,14 @@
     "vsIterative": {
       "label": "Euler-Cromer · 60 pas",
       "speedup": 32.6
-    }
+    },
+    "costProfile": "cpu-transcendental-20"
   },
   "fast": {
-    "formula": "cos((2.733044 * t))",
+    "formula": "((1.356437 * cos((2.733044 * t))) + -0.028916)",
     "metric": 0.01460094082613519,
     "level": 2,
-    "formulaCost": 21,
+    "formulaCost": 23,
     "speed": {
       "formulaCost": 21,
       "vsIterative": {
@@ -96,24 +97,49 @@
     },
     "vsIterative": {
       "label": "Euler-Cromer · 60 pas",
-      "speedup": 71.4
+      "speedup": 65.2
+    },
+    "measured": {
+      "measuredSpeedup": 1.9795,
+      "nsChampion": 18.6419,
+      "nsFast": 9.4176,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
     }
   },
   "fastTree": {
-    "o": "cos",
+    "o": "add",
     "c": [
       {
         "o": "mul",
         "c": [
           {
             "o": "const",
-            "v": 2.733044
+            "v": 1.3564366583083822
           },
           {
-            "o": "var",
-            "n": "t"
+            "o": "cos",
+            "c": [
+              {
+                "o": "mul",
+                "c": [
+                  {
+                    "o": "const",
+                    "v": 2.733044
+                  },
+                  {
+                    "o": "var",
+                    "n": "t"
+                  }
+                ]
+              }
+            ]
           }
         ]
+      },
+      {
+        "o": "const",
+        "v": -0.028916085905261586
       }
     ]
   }

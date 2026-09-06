@@ -22,6 +22,7 @@ async function main() {
       title: t.title,
       direction: t.metricDirection,
       metric: t.best!.metric,
+      holdout: t.holdout ?? undefined,
       level: t.best!.level,
       formula: t.best!.formula,
       seed,

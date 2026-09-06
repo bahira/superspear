@@ -3,8 +3,8 @@
   "title": "IK analytique coude 2-link (BT33)",
   "direction": "min",
   "metric": 4.0626336618882106e-32,
-  "level": 2,
-  "formula": "(1.570796 - atan(((((d)² - ((l2)² + (l3)²)) / (2 * (l2 * l3))) / sqrt(||(1 - ((((d)² - ((l2)² + (l3)²)) / (2 * (l2 * l3))))²)||))))",
+  "level": 5,
+  "formula": "(1.5707963267948966 - atan(((((d)² - ((l2)² + (l3)²)) / (2 * (l2 * l3))) / sqrt(||(1 - ((((d)² - ((l2)² + (l3)²)) / (2 * (l2 * l3))))²)||))))",
   "seed": 1000001,
   "iteration": 199,
   "tree": {
@@ -180,114 +180,25 @@
   },
   "speed": {
     "formulaCost": 52,
-    "vsIterative": {
+    "costProfile": "cpu-transcendental-20",
+    "measured": {
+      "measuredSpeedup": 0.6823,
+      "nsFormula": 38.1336,
+      "nsExact": 26.0184,
+      "agreement": 1.1445,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    },
+    "exactCost": 31,
+    "speedup": 0.6823,
+    "speedupModelled": 0.5961538461538461,
+    "speedupSource": "measured",
+    "vsSolverContext": {
       "label": "Newton-DLS · 8 itérations",
-      "speedup": 6.2
+      "speedup": 6.2,
+      "note": "Context only — a closed-form reference exists for this task, so the solver is not what a real implementation runs. Not a like-for-like speedup: the solver's accuracy is orders of magnitude worse.",
+      "honestSpeedupVsReference": 0.5961538461538461
     }
   },
-  "fast": {
-    "formula": "((-0.160608 * (((4.080818 / l3) * (max(d, l3) - l2)) - ((5.542562 / l2) * (l3 - d)))) + 2.187926)",
-    "metric": 0.002245031097953282,
-    "level": 2,
-    "formulaCost": 16,
-    "seed": 960202,
-    "vsIterative": {
-      "label": "Newton-DLS · 8 itérations",
-      "speedup": 20
-    }
-  },
-  "fastTree": {
-    "o": "add",
-    "c": [
-      {
-        "o": "mul",
-        "c": [
-          {
-            "o": "const",
-            "v": -0.1606079676705464
-          },
-          {
-            "o": "sub",
-            "c": [
-              {
-                "o": "mul",
-                "c": [
-                  {
-                    "o": "pdiv",
-                    "c": [
-                      {
-                        "o": "const",
-                        "v": 4.080818
-                      },
-                      {
-                        "o": "var",
-                        "n": "l3"
-                      }
-                    ]
-                  },
-                  {
-                    "o": "sub",
-                    "c": [
-                      {
-                        "o": "max",
-                        "c": [
-                          {
-                            "o": "var",
-                            "n": "d"
-                          },
-                          {
-                            "o": "var",
-                            "n": "l3"
-                          }
-                        ]
-                      },
-                      {
-                        "o": "var",
-                        "n": "l2"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "o": "mul",
-                "c": [
-                  {
-                    "o": "pdiv",
-                    "c": [
-                      {
-                        "o": "const",
-                        "v": 5.542562
-                      },
-                      {
-                        "o": "var",
-                        "n": "l2"
-                      }
-                    ]
-                  },
-                  {
-                    "o": "sub",
-                    "c": [
-                      {
-                        "o": "var",
-                        "n": "l3"
-                      },
-                      {
-                        "o": "var",
-                        "n": "d"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "o": "const",
-        "v": 2.18792552115997
-      }
-    ]
-  }
+  "holdout": 1.0679490439746013e-13
 }

@@ -63,6 +63,85 @@ export function makeOodProbe(train: OodData, ood: OodData): (node: SpearNode) =>
 }
 
 // ---------------------------------------------------------------------------
+// Holdout splits
+// ---------------------------------------------------------------------------
+
+/**
+ * Deterministic interleaved train/test split.
+ *
+ * Every k-th sample is held out. On the dense, sorted grids SPEAR builds this
+ * is the honest split for interpolation: the test points sit strictly BETWEEN
+ * training points, so a formula that merely memorises grid nodes (a wiggly
+ * high-degree fit, a clamp lattice) is exposed, while a genuine law scores the
+ * same on both halves. A contiguous tail split would instead measure
+ * extrapolation — that is already the OOD probe's job, and conflating the two
+ * would double-punish honest laws near the domain edge.
+ *
+ * `stride = 5` holds out 20% — enough signal to be meaningful, small enough
+ * that the training grid stays dense.
+ */
+export function interleavedSplit(
+  vars: Record<string, Float64Array>,
+  y: Float64Array,
+  stride = 5,
+): { train: OodData; test: OodData } {
+  const n = y.length;
+  const names = Object.keys(vars);
+  const trainIdx: number[] = [];
+  const testIdx: number[] = [];
+  for (let i = 0; i < n; i++) (i % stride === Math.floor(stride / 2) ? testIdx : trainIdx).push(i);
+  const take = (idx: number[]): OodData => {
+    const v: Record<string, Float64Array> = {};
+    for (const nm of names) {
+      const src = vars[nm];
+      const dst = new Float64Array(idx.length);
+      for (let j = 0; j < idx.length; j++) dst[j] = src[idx[j]];
+      v[nm] = dst;
+    }
+    const yy = new Float64Array(idx.length);
+    for (let j = 0; j < idx.length; j++) yy[j] = y[idx[j]];
+    return { vars: v, y: yy, n: idx.length };
+  };
+  return { train: take(trainIdx), test: take(testIdx) };
+}
+
+/**
+ * Build an honest generalisation probe. The candidate is affine-rescaled on the
+ * TRAIN half only — fitting the scaling on all the data would leak the test
+ * half into the reported number — then scored on the held-out half.
+ *
+ * Returns the same {metric, secondary, finite} shape as `evaluate`, so the
+ * loop's `reportMetric` can use it directly.
+ */
+export function makeHoldoutProbe(
+  vars: Record<string, Float64Array>,
+  y: Float64Array,
+  stride = 5,
+): (node: SpearNode) => { metric: number; secondary?: number; finite: boolean } {
+  const { train, test } = interleavedSplit(vars, y, stride);
+  return (node: SpearNode) => {
+    try {
+      const p = evaluateNode(node, train.vars, train.n);
+      for (let i = 0; i < train.n; i++) if (!Number.isFinite(p[i])) return { metric: Infinity, finite: false };
+      const { a, b } = fitLinearScaling(p, train.y);
+      const q = evaluateNode(wrapAffine(node, a, b), test.vars, test.n);
+      let se = 0;
+      let linf = 0;
+      for (let i = 0; i < test.n; i++) {
+        if (!Number.isFinite(q[i])) return { metric: Infinity, finite: false };
+        const e = q[i] - test.y[i];
+        se += e * e;
+        const ae = Math.abs(e);
+        if (ae > linf) linf = ae;
+      }
+      return { metric: se / test.n, secondary: linf, finite: true };
+    } catch {
+      return { metric: Infinity, finite: false };
+    }
+  };
+}
+
+// ---------------------------------------------------------------------------
 // Composite seed shapes (shape-only doctrine: constants stay tunable)
 // ---------------------------------------------------------------------------
 
