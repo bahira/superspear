@@ -141,6 +141,10 @@ interface TaskRuntime {
   warmedUp: boolean;
   history: { i: number; metric: number; size: number }[];
   frontRaw: { node: SpearNode; metric: number; size: number }[];
+  /** Cost-sorted archive of validated forms — the fast-slot candidates. The
+   *  metric-elite front evicts cheap-but-less-precise shapes, so validated
+   *  forms are collected across the whole population each generation. */
+  fastArchive: { node: SpearNode; metric: number; cost: number; key: string; deploy: boolean }[];
 }
 
 const POP = 72;
@@ -153,6 +157,8 @@ const RELATIVE_IMPROVE = 0.04;
 /** A↔B migration cadence (per-task generations) and how many swap each time. */
 const MIGRATE_EVERY = 8;
 const MIGRATE_K = 3;
+/** Validated-form archive cap (fast-slot candidates), kept cost-sorted. */
+const FAST_ARCHIVE_MAX = 12;
 
 function directionSign(t: TaskDef): number {
   return t.metricDirection === "min" ? -1 : 1;
@@ -378,22 +384,13 @@ function snapshotTask(rt: TaskRuntime, full: boolean): LoopTaskSnapshot {
   // speed bench only run on the final full snapshot
   const speed = full && rt.bestNode ? benchmarkSpeed(t, rt.bestNode) : null;
 
-  // cheapest VALIDATED form (level >= 2) — the "fast" deployment variant.
-  // ponytail: frontRaw holds <=12 elite members, not the whole search — the
-  // true cheapest validated form may be missed; upgrade path is a dedicated
-  // cost-sorted archive in the loop.
-  let fastPick: { node: SpearNode; metric: number; deploy: boolean } | null = null;
-  for (const f of rt.frontRaw) {
-    // two validation doors: the record ladder (L≥2) OR the deployment grade
-    // (R² ≥ 0.98 on train data) — cheap approximants of transcendental laws
-    // are legitimately shippable even when absolute MSE milestones are out of reach
-    const lvl = levelOf(t, f.metric);
-    const deploy = lvl < 2 && !!t.r2 && t.r2(f.node) >= 0.98;
-    if (lvl < 2 && !deploy) continue;
-    if (!fastPick || estimateCost(f.node) < estimateCost(fastPick.node)) {
-      fastPick = { node: f.node, metric: f.metric, deploy };
-    }
-  }
+  // cheapest VALIDATED form (level >= 2) — the "fast" deployment variant,
+  // served by the cost-sorted archive: the whole population is screened each
+  // generation, so the cheapest validated shape ever bred wins even when the
+  // metric-elite front has long evicted it.
+  const fastPick: { node: SpearNode; metric: number; deploy: boolean } | null = rt.fastArchive.length > 0
+    ? { node: rt.fastArchive[0].node, metric: rt.fastArchive[0].metric, deploy: rt.fastArchive[0].deploy }
+    : null;
   const fast = fastPick
     ? { formula: nodeToString(fastPick.node), metric: fastPick.metric, level: Math.max(2, levelOf(t, fastPick.metric)), formulaCost: estimateCost(fastPick.node), deploy: fastPick.deploy || undefined }
     : null;
@@ -510,6 +507,7 @@ export async function runGroundedLoop(opts: GroundedLoopOptions = {}): Promise<L
     warmedUp: false,
     history: [],
     frontRaw: [],
+    fastArchive: [],
   }));
 
   const progress: LoopProgress = {
@@ -802,6 +800,27 @@ export async function runGroundedLoop(opts: GroundedLoopOptions = {}): Promise<L
       // the fast slot ships a raw AST labelled with someone else's error.
       const shaped = results[i].node;
       rt.frontRaw.push({ node: shaped, metric: results[i].metric, size: shaped.size });
+    }
+
+    // fast-archive maintenance: admit validated forms cheaper than the worst
+    // resident. Level door is free; the R² deployment door costs a full
+    // dataset pass, so it only runs for cheap candidates failing the level
+    // door while the archive still has room or a costlier resident.
+    for (let i = 0; i < rt.population.length; i++) {
+      if (!Number.isFinite(results[i].metric)) continue;
+      const cost = estimateCost(rt.population[i]);
+      const worst = rt.fastArchive.length < FAST_ARCHIVE_MAX
+        ? Infinity
+        : rt.fastArchive[rt.fastArchive.length - 1].cost;
+      if (cost >= worst) continue;
+      const lvl = levelOf(t, results[i].metric);
+      const deploy = lvl < 2 && !!t.r2 && t.r2(rt.population[i]) >= 0.98;
+      if (lvl < 2 && !deploy) continue;
+      const key = canonicalKey(rt.population[i]);
+      if (rt.fastArchive.some((e) => e.key === key)) continue;
+      rt.fastArchive.push({ node: rt.population[i], metric: results[i].metric, cost, key, deploy });
+      rt.fastArchive.sort((a, b) => a.cost - b.cost);
+      if (rt.fastArchive.length > FAST_ARCHIVE_MAX) rt.fastArchive.pop();
     }
 
     // ---- A↔B migration: every MIGRATE_EVERY generations, exchange elites for

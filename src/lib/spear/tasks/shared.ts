@@ -770,6 +770,10 @@ export const ITERATIVE_BASELINES: Record<string, { label: string; totalCost: num
   qfi_dephasing: { label: "BFGS optimisation", totalCost: 800 },
   amp_damp_fid: { label: "Kraus ops 4×4 matmul", totalCost: 48 },
   loschmidt_rate: { label: "Diag complète 128 modes", totalCost: 640 },
+  //  IV Newton-vega (impl. shared.ts: d1/d2/nd ×2 — la boucle refait bsCall
+  //  intégralement — + npdf + update ≈ 296 u/it; convergent mesure 4.79 it
+  //  de moyenne sur le dataset (max 13) → ~5 it × 296 ≈ 1480
+  implied_vol: { label: "Newton vega · ~5 itérations", totalCost: 1480 },
 };
 
 export function freeFallData(): { vars: Record<string, Float64Array>; y: Float64Array } {
