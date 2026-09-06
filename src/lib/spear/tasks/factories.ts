@@ -325,6 +325,7 @@ export function buildActivationTask(spec: ActivationSpec, points = 400): TaskDef
       return out;
     },
     codeVarDecl: "const float x",
+    domain: { lo: spec.lo, hi: spec.hi },
     ood: oodProbe,
     holdout: holdoutProbe,
     r2: (node) => {

@@ -68,6 +68,12 @@ jobs:
       # exact law to C99, time both, and fail if the model's predictions do not
       # survive contact with a real CPU. Rows whose two kernels differ by less
       # than measurement noise are excluded rather than counted as wins.
+      # The README advertises MISRA-C:2012 export with machine-checked C<->WASM
+      # parity. Nothing enforced it: this audit was never wired into CI, and
+      # when first run it failed 89/89 because it linked without -lm.
+      - name: MISRA-C export, gcc -std=c99 build, C<->WASM parity
+        run: npx tsx scripts/export-audit.ts
+
       - name: Wall-clock vs cost model
         run: npx tsx scripts/bench-wallclock.ts
 

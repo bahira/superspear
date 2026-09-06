@@ -31,6 +31,13 @@ export interface TaskDef {
   variables: string[];
   gpConfig: GpConfig;
   evaluate: (node: SpearNode) => TaskEval;
+  /**
+   * Training input range per variable, when the task samples a regular domain.
+   * Exported so downstream probes (notably the MISRA-C export parity audit)
+   * can exercise a kernel on the inputs it was actually fitted for instead of
+   * a hardcoded band.
+   */
+  domain?: { lo: number; hi: number };
   refine: (node: SpearNode) => { node: SpearNode; evals: number };
   baselines: TaskBaseline[];
   milestones: TaskMilestone[];

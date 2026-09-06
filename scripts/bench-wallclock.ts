@@ -51,6 +51,12 @@ interface Row {
 }
 
 /**
+ * Compiled with -std=gnu99, not -std=c99: the TIMING DRIVER calls
+ * clock_gettime(CLOCK_MONOTONIC), which is POSIX rather than ISO C99, so
+ * strict c99 fails to build the harness. The emitted kernels themselves are
+ * strict C99 and are verified as such by scripts/export-audit.ts, which
+ * compiles them with -std=c99 -Wall -Wextra -pedantic.
+ *
  * C body for a node. We use the MISRA-C:2012 emitter, not toC(): toC() targets
  * CUDA (`__device__`, `1f` literals) and does not compile with a host gcc,
  * whereas the MISRA path is strict C99 — and it is the actual artifact SPEAR
@@ -111,7 +117,7 @@ int main(void){
   const cp = join(dir, "floor.c");
   const bp = join(dir, "floor");
   writeFileSync(cp, c);
-  execFileSync("gcc", ["-O2", "-fno-lto", "-o", bp, cp, "-lm"], { stdio: "pipe" });
+  execFileSync("gcc", ["-std=gnu99", "-O2", "-fno-lto", "-o", bp, cp, "-lm"], { stdio: "pipe" });
   return Number(execFileSync(bp, { encoding: "utf8" }).trim());
 }
 
@@ -198,7 +204,7 @@ int main(void) {
   writeFileSync(mPath, main);
   try {
     // no -flto: keep the kernels opaque so the calls are really executed
-    execFileSync("gcc", ["-O2", "-fno-lto", "-o", bin, mPath, kPath, "-lm"], { stdio: "pipe" });
+    execFileSync("gcc", ["-std=gnu99", "-O2", "-fno-lto", "-o", bin, mPath, kPath, "-lm"], { stdio: "pipe" });
   } catch (e) {
     skipped.push(`${id} (compile failed)`);
     continue;
