@@ -7,7 +7,7 @@
 - [ ] Post HN/Reddit à partir de LAUNCH_POST.md
 
 ## Phase 2 — Science du papier (2 semaines)
-- [x] Validation KV-cache réelle distilgpt2 (80.31 % vs h2o 80.20 %)
+- [x] Validation KV-cache réelle distilgpt2 — **égalité avec H2O** (spear devant à 3 caps sur 4, H2O devant à cap=64) ; audit rejouable `scripts/audit-kv-claim.ts`
 - [x] kv_multiscale.py prêt (caps 64→320, table multi-échelle distilgpt2)
 - [ ] Llama-3.2-1B multiscale : accepter licence HF + `$env:HF_TOKEN` puis
       `--models distilgpt2,Llama-3.2-1B` (~2.5 GB téléchargement)

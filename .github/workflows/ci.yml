@@ -87,6 +87,12 @@ jobs:
       # The ledger reasons in f64 but the MISRA export emits float32_t. 30
       # kernels advertised as machine-exact are not exact on that target.
       # Reported, not failed: losing f64 exactness in f32 is expected physics.
+      # The KV-cache headline came from an external torch run and was never
+      # re-checked. Replays the stored sweep (no torch) and fails if the docs
+      # state the claim more strongly than the data supports.
+      - name: KV-cache claim matches the sweep
+        run: npx tsx scripts/audit-kv-claim.ts
+
       - name: float32 degradation disclosure
         run: npx tsx scripts/test-f32-degradation.ts
 

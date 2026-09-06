@@ -44,6 +44,21 @@
 
 ## Validations réelles
 
-- **KV-cache distilgpt2** (72 échantillons couches×prompts) : spear **80.31 %** vs h2o 80.20 %, streaming 80.07 %, oracle 90.85 %. Politique = `4.5·S + A + R`, 5 unités.
+- **KV-cache distilgpt2** (72 échantillons couches×prompts, politique `4.5·S + A + R`, 5 unités) — **à lire comme une égalité avec H2O, pas comme une victoire.**
+
+  | cap | spear | h2o | écart | random | oracle |
+  |---|---|---|---|---|---|
+  | 64 | 45.60 | **45.94** | −0.335 | 17.16 | 55.20 |
+  | 128 | 53.67 | 53.58 | +0.091 | 29.91 | 67.66 |
+  | 256 | 72.20 | 71.95 | +0.252 | 63.42 | 85.55 |
+  | 320 | **80.31** | 80.20 | +0.118 | 73.82 | 90.85 |
+
+  Le 80.31 % initialement mis en avant ne cite que `cap=320`. Deux réserves :
+  **H2O gagne à cap=64**, et à cap=320 une politique *aléatoire* retient déjà
+  73.8 %, donc le chiffre phare n'est qu'à 6.5 pts du hasard — contre 28.4 pts
+  à cap=64, le régime où la politique travaille vraiment. L'écart de +0.118 pt
+  est ~500× plus petit que la dispersion des échantillons (68.5 pts) : sans
+  écarts-types par échantillon, ce n'est pas une victoire démontrée.
+  Rejouable sans torch via `npx tsx scripts/audit-kv-claim.ts`.
 - **Edge CPU WASM** : SiLU ×2.12, GELU ×2.32 vs production ; bloc FFN +10.2 %.
 - **Honnête négatif** : swap GELU dans PyTorch = +0.56 ppl, −9.2 % tok/s — les kernels natifs fusionnés gagnent in-framework ; frontière de déploiement documentée.

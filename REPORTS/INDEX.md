@@ -14,5 +14,5 @@
 
 - **50 tâches** · 14 exactes · 37 slots rapides · 46/48 vitesses chiffrées
 - **×33** vs Euler-Cromer (damped_pendulum) — sommet vs solveurs itératifs *réels* (tâches sans forme fermée). L'ancien ×1840 vs Monte-Carlo est retiré : strawman, voir AUDIT-2026-09.md §7
-- **80.31 %** rétention KV-cache sur vraies attentions distilgpt2 (bat H2O)
+- KV-cache distilgpt2 : **égalité avec H2O**, pas une victoire. Le balayage complet donne spear devant à 3 budgets sur 4 (+0.09 à +0.25 pt) mais **H2O l'emporte à cap=64** (45.94 vs 45.60). Le 80.31 % souvent cité est le cap=320, celui où une politique *aléatoire* atteint déjà 73.8 % — voir `scripts/audit-kv-claim.ts`
 - 2 bugs critiques moteur exterminés · CI parité 47/47 à chaque push
