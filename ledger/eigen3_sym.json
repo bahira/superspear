@@ -607,6 +607,7 @@
     "vsIterative": {
       "label": "Jacobi · 4 balayages",
       "speedup": 1.7
-    }
+    },
+    "costProfile": "cpu-transcendental-20"
   }
 }

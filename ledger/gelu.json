@@ -8,9 +8,10 @@
   "seed": 4242,
   "iteration": 400,
   "speed": {
-    "formulaCost": 5,
+    "formulaCost": 24,
     "exactCost": 46,
-    "speedup": 9.2
+    "speedup": 1.9166666666666667,
+    "costProfile": "cpu-transcendental-20"
   },
   "tree": {
     "o": "mul",
@@ -58,18 +59,36 @@
     ]
   },
   "fast": {
-    "formula": "relu(x)",
+    "formula": "((1.010719 * relu(x)) + -0.057684)",
     "metric": 0.0029735142917741517,
     "level": 2,
-    "formulaCost": 1,
+    "formulaCost": 3,
     "deploy": true
   },
   "fastTree": {
-    "o": "relu",
+    "o": "add",
     "c": [
       {
-        "o": "var",
-        "n": "x"
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": 1.010718752548154
+          },
+          {
+            "o": "relu",
+            "c": [
+              {
+                "o": "var",
+                "n": "x"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": -0.05768408949876516
       }
     ]
   }

@@ -2,8 +2,8 @@
   "taskId": "kv_cache",
   "title": "Règle d'éviction du KV-cache",
   "direction": "max",
-  "metric": 69.97633394818372,
-  "level": 2,
+  "metric": 76.0786600441269,
+  "level": 5,
   "formula": "((4.5 * S) + (A + R))",
   "seed": 990303,
   "iteration": 153,
@@ -40,8 +40,8 @@
   },
   "fast": {
     "formula": "A",
-    "metric": 75.9807062969163,
-    "level": 4,
+    "metric": 77.22369944411342,
+    "level": 5,
     "formulaCost": 0
   },
   "fastTree": {

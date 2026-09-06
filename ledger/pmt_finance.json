@@ -10,7 +10,8 @@
   "speed": {
     "formulaCost": 34,
     "exactCost": 47,
-    "speedup": 1.3823529411764706
+    "speedup": 1.3823529411764706,
+    "costProfile": "cpu-transcendental-20"
   },
   "tree": {
     "o": "add",
@@ -94,10 +95,10 @@
     ]
   },
   "fast": {
-    "formula": "((r - atan((n - 2.963402))))³",
+    "formula": "((0.111791 * ((r - atan((n - 2.963402))))³) + 0.433012)",
     "metric": 5.568566032461893e-7,
     "level": 2,
-    "formulaCost": 24,
+    "formulaCost": 26,
     "speed": {
       "formulaCost": 24,
       "exactCost": 47,
@@ -105,34 +106,52 @@
     }
   },
   "fastTree": {
-    "o": "cube",
+    "o": "add",
     "c": [
       {
-        "o": "sub",
+        "o": "mul",
         "c": [
           {
-            "o": "var",
-            "n": "r"
+            "o": "const",
+            "v": 0.11179101145625918
           },
           {
-            "o": "atan",
+            "o": "cube",
             "c": [
               {
                 "o": "sub",
                 "c": [
                   {
                     "o": "var",
-                    "n": "n"
+                    "n": "r"
                   },
                   {
-                    "o": "const",
-                    "v": 2.963402
+                    "o": "atan",
+                    "c": [
+                      {
+                        "o": "sub",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "n"
+                          },
+                          {
+                            "o": "const",
+                            "v": 2.963402
+                          }
+                        ]
+                      }
+                    ]
                   }
                 ]
               }
             ]
           }
         ]
+      },
+      {
+        "o": "const",
+        "v": 0.4330117749300258
       }
     ]
   }

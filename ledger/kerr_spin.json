@@ -14,7 +14,8 @@
     "vsIterative": {
       "label": "RK4 géodésique · 200 pas",
       "speedup": 133.3
-    }
+    },
+    "costProfile": "cpu-transcendental-20"
   },
   "tree": {
     "o": "add",
@@ -102,10 +103,10 @@
     ]
   },
   "fast": {
-    "formula": "(s / b)",
+    "formula": "((-4.070137 * (s / b)) + 0.156233)",
     "metric": 0.0001323874547581254,
     "level": 2,
-    "formulaCost": 4,
+    "formulaCost": 6,
     "speed": {
       "formulaCost": 4,
       "exactCost": 21,
@@ -117,19 +118,37 @@
     },
     "vsIterative": {
       "label": "RK4 géodésique · 200 pas",
-      "speedup": 600
+      "speedup": 400
     }
   },
   "fastTree": {
-    "o": "pdiv",
+    "o": "add",
     "c": [
       {
-        "o": "var",
-        "n": "s"
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": -4.070137121190413
+          },
+          {
+            "o": "pdiv",
+            "c": [
+              {
+                "o": "var",
+                "n": "s"
+              },
+              {
+                "o": "var",
+                "n": "b"
+              }
+            ]
+          }
+        ]
       },
       {
-        "o": "var",
-        "n": "b"
+        "o": "const",
+        "v": 0.15623331931937626
       }
     ]
   }

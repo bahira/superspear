@@ -8,13 +8,14 @@
   "seed": 4242,
   "iteration": 400,
   "speed": {
-    "formulaCost": 4,
+    "formulaCost": 23,
     "exactCost": 34,
-    "speedup": 8.5,
+    "speedup": 1.4782608695652173,
     "vsIterative": {
       "label": "Monte-Carlo · 1000 tirages",
-      "speedup": 11500
-    }
+      "speedup": 2000
+    },
+    "costProfile": "cpu-transcendental-20"
   },
   "tree": {
     "o": "mul",
@@ -53,21 +54,39 @@
     ]
   },
   "fast": {
-    "formula": "tanh(x)",
+    "formula": "((0.493248 * tanh(x)) + 0.5)",
     "metric": 0.0002549921352995084,
     "level": 2,
-    "formulaCost": 1,
+    "formulaCost": 22,
     "vsIterative": {
       "label": "Monte-Carlo · 1000 tirages",
-      "speedup": 46000
+      "speedup": 2090.9
     }
   },
   "fastTree": {
-    "o": "tanh",
+    "o": "add",
     "c": [
       {
-        "o": "var",
-        "n": "x"
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": 0.4932482764546953
+          },
+          {
+            "o": "tanh",
+            "c": [
+              {
+                "o": "var",
+                "n": "x"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": 0.49999999999999944
       }
     ]
   }

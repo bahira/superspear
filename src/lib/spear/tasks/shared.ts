@@ -20,7 +20,7 @@ import {
   type GpConfig,
   type SpearNode,
 } from "../engine";
-import { mse, linfError, linspace, mapArray, gaussianRandom, erf } from "../math-utils";
+import { mse, linfError, linspace, mapArray, gaussianRandom, erf, withDataset, datasetUniform } from "../math-utils";
 import type { TaskBaseline, TaskDef } from "./types";
 
 export const GP_OPS = ALL_OPS;
@@ -82,13 +82,17 @@ export function softmaxInto(logits: Float64Array, out: Float64Array): void {
 }
 
 export function buildKvWorld(): KvWorld {
+  return withDataset("kv_world", buildKvWorldInner);
+}
+
+function buildKvWorldInner(): KvWorld {
   const w = new Float64Array(KV_SEQ);
-  for (let i = 0; i < KV_SINK; i++) w[i] = 3.2 + rand() * 1.2;              // attention sinks
+  for (let i = 0; i < KV_SINK; i++) w[i] = 3.2 + datasetUniform() * 1.2;    // attention sinks
   const heavy = new Set<number>();
   while (heavy.size < KV_HEAVY) {
-    heavy.add(KV_SINK + Math.floor(rand() * (KV_SEQ - KV_SINK - KV_RECENT)));
+    heavy.add(KV_SINK + Math.floor(datasetUniform() * (KV_SEQ - KV_SINK - KV_RECENT)));
   }
-  heavy.forEach((i) => { w[i] = 2.6 + rand() * 1.6; });                      // persistent heavy hitters
+  heavy.forEach((i) => { w[i] = 2.6 + datasetUniform() * 1.6; });            // persistent heavy hitters
   const mkSample = (recencyBoost: number): KvSample => {
     const logits = new Float64Array(KV_SEQ);
     for (let i = 0; i < KV_SEQ; i++) logits[i] = w[i] + gaussianRandom() * 0.9;
@@ -463,6 +467,10 @@ export const ITERATIVE_BASELINES: Record<string, { label: string; totalCost: num
 };
 
 export function freeFallData(): { vars: Record<string, Float64Array>; y: Float64Array } {
+  return withDataset("free_fall", freeFallDataInner);
+}
+
+function freeFallDataInner(): { vars: Record<string, Float64Array>; y: Float64Array } {
   const rows = 48;
   const t = linspace(0, 3, rows);
   const y = new Float64Array(rows);
@@ -481,6 +489,10 @@ export function gaussianCDFData(): { vars: Record<string, Float64Array>; y: Floa
 
 // ---------- Task 3 : Prime d'un call européen (Black-Scholes simplifié) ----------
 export function europeanCallData(): { vars: Record<string, Float64Array>; y: Float64Array } {
+  return withDataset("european_call", europeanCallDataInner);
+}
+
+function europeanCallDataInner(): { vars: Record<string, Float64Array>; y: Float64Array } {
   // Approximation par la formule de Black-Scholes at-the-money (F=100, r=0, T=1)
   // C ≈ 0.4σ + 0.16σ² (pour σ ∈ [0,0.5]); on ajoute un bruit modéré
   const rows = 200;
@@ -544,6 +556,10 @@ export function lambertWData(): { vars: Record<string, Float64Array>; y: Float64
 
 // ---------- Task 7 : Circuit RC · tension terminale ----------
 export function rcCircuitData(): { vars: Record<string, Float64Array>; y: Float64Array } {
+  return withDataset("rc_circuit", rcCircuitDataInner);
+}
+
+function rcCircuitDataInner(): { vars: Record<string, Float64Array>; y: Float64Array } {
   // Réponse première ordre : v(t) = V₀·(1 - e^(-t/τ)) avec V₀=1, τ=1
   // Données bruitées légèrement
   const rows = 50;
@@ -557,6 +573,10 @@ export function rcCircuitData(): { vars: Record<string, Float64Array>; y: Float6
 }
 
 export function keplerData(): { vars: Record<string, Float64Array>; y: Float64Array } {
+  return withDataset("kepler", keplerDataInner);
+}
+
+function keplerDataInner(): { vars: Record<string, Float64Array>; y: Float64Array } {
   const rows = 40;
   const a = linspace(0.3, 30, rows);
   const y = new Float64Array(rows);
@@ -615,6 +635,10 @@ export function interpWeightData(): { vars: Record<string, Float64Array>; y: Flo
 
 // ---------- Temporal gradient / optical-flow differencing primitive ----------
 export function temporalGradData(): { vars: Record<string, Float64Array>; y: Float64Array } {
+  return withDataset("temporal_grad", temporalGradDataInner);
+}
+
+function temporalGradDataInner(): { vars: Record<string, Float64Array>; y: Float64Array } {
   // For video, motion estimation needs ∂I/∂t between consecutive frames.
   // Regress a smooth 2-var law: y = (a - b) over small differences + noise floor.
   const rows = 400;

@@ -49,3 +49,17 @@ jobs:
           cp spear-hall-of-fame.json /tmp/ledger-a.json
           npx tsx scripts/price-fast.ts > /dev/null
           cmp spear-hall-of-fame.json /tmp/ledger-a.json
+
+      # Every champion must reproduce its own numbers. Recomputes metric,
+      # level, cost, speedup, holdout, OOD and r² from each stored AST and
+      # fails on any contradiction — this is what caught the ledger shipping
+      # un-shaped fast slots (`atan(x)` labelled with the MSE of
+      # `0.351631·atan(x) + 0.5`) and GPU-profile costs compared against
+      # CPU-profile references.
+      - name: Champion audit (records must reproduce)
+        run: npx tsx scripts/audit-champions.ts --strict
+
+      # Datasets must not depend on the search seed or on task-construction
+      # order, otherwise "best across all seeds" compares incomparable numbers.
+      - name: Dataset determinism
+        run: npx tsx scripts/test-dataset-determinism.ts

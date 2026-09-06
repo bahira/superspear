@@ -14,7 +14,8 @@
     "vsIterative": {
       "label": "Diag complète 128 modes",
       "speedup": 13.6
-    }
+    },
+    "costProfile": "cpu-transcendental-20"
   },
   "tree": {
     "o": "add",
@@ -94,10 +95,10 @@
     ]
   },
   "fast": {
-    "formula": "((-0.287877 + cos((t * 3.057635))))³",
+    "formula": "((-1.673987 * ((-0.287877 + cos((t * 3.057635))))³) + 0.484534)",
     "metric": 0.0613458418308354,
     "level": 2,
-    "formulaCost": 24,
+    "formulaCost": 26,
     "speed": {
       "formulaCost": 24,
       "exactCost": 18,
@@ -109,38 +110,56 @@
     },
     "vsIterative": {
       "label": "Diag complète 128 modes",
-      "speedup": 26.7
+      "speedup": 24.6
     }
   },
   "fastTree": {
-    "o": "cube",
+    "o": "add",
     "c": [
       {
-        "o": "add",
+        "o": "mul",
         "c": [
           {
             "o": "const",
-            "v": -0.287877
+            "v": -1.6739871695757627
           },
           {
-            "o": "cos",
+            "o": "cube",
             "c": [
               {
-                "o": "mul",
+                "o": "add",
                 "c": [
                   {
-                    "o": "var",
-                    "n": "t"
+                    "o": "const",
+                    "v": -0.287877
                   },
                   {
-                    "o": "const",
-                    "v": 3.057635
+                    "o": "cos",
+                    "c": [
+                      {
+                        "o": "mul",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "t"
+                          },
+                          {
+                            "o": "const",
+                            "v": 3.057635
+                          }
+                        ]
+                      }
+                    ]
                   }
                 ]
               }
             ]
           }
         ]
+      },
+      {
+        "o": "const",
+        "v": 0.48453383814599804
       }
     ]
   }

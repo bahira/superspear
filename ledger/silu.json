@@ -8,49 +8,12 @@
   "seed": 4242,
   "iteration": 400,
   "speed": {
-    "formulaCost": 7,
+    "formulaCost": 26,
     "exactCost": 34,
-    "speedup": 4.857142857142857
+    "speedup": 1.3076923076923077,
+    "costProfile": "cpu-transcendental-20"
   },
   "tree": {
-    "o": "pdiv",
-    "c": [
-      {
-        "o": "var",
-        "n": "x"
-      },
-      {
-        "o": "add",
-        "c": [
-          {
-            "o": "const",
-            "v": 1
-          },
-          {
-            "o": "exp",
-            "c": [
-              {
-                "o": "neg",
-                "c": [
-                  {
-                    "o": "var",
-                    "n": "x"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  },
-  "fast": {
-    "formula": "(x / (1 + exp((-x))))",
-    "metric": 0,
-    "level": 5,
-    "formulaCost": 7
-  },
-  "fastTree": {
     "o": "pdiv",
     "c": [
       {

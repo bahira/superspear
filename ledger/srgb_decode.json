@@ -2,7 +2,7 @@
   "taskId": "srgb_decode",
   "title": "Décode sRGB (affichage → linéaire)",
   "direction": "min",
-  "metric": 2.5435325790046406e-7,
+  "metric": 2.543532579004646e-7,
   "level": 5,
   "formula": "((-0.194813 * min(x, ((x)² * (-5.123166 - log(max(x, 1e-30)))))) + 0.001458)",
   "seed": 996001,
@@ -10,7 +10,8 @@
   "speed": {
     "formulaCost": 26,
     "exactCost": 22,
-    "speedup": 0.8461538461538461
+    "speedup": 0.8461538461538461,
+    "costProfile": "cpu-transcendental-20"
   },
   "tree": {
     "o": "add",
@@ -72,10 +73,10 @@
     ]
   },
   "fast": {
-    "formula": "(x)²",
-    "metric": 0.0001304377643047933,
+    "formula": "((0.99175 * (x)²) + -0.018028)",
+    "metric": 0.0001304377643047932,
     "level": 2,
-    "formulaCost": 1,
+    "formulaCost": 3,
     "speed": {
       "formulaCost": 1,
       "exactCost": 22,
@@ -83,11 +84,29 @@
     }
   },
   "fastTree": {
-    "o": "sq",
+    "o": "add",
     "c": [
       {
-        "o": "var",
-        "n": "x"
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": 0.991749952406062
+          },
+          {
+            "o": "sq",
+            "c": [
+              {
+                "o": "var",
+                "n": "x"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": -0.018027683549349617
       }
     ]
   }

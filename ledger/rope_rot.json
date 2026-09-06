@@ -14,7 +14,8 @@
     "vsIterative": {
       "label": "CORDIC · 16 micro-rotations",
       "speedup": 1.5
-    }
+    },
+    "costProfile": "cpu-transcendental-20"
   },
   "tree": {
     "o": "add",

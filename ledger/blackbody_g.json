@@ -2,7 +2,7 @@
   "taskId": "blackbody_g",
   "title": "Corps noir — canal vert (éclairage PBR)",
   "direction": "min",
-  "metric": 0.00012987872179127979,
+  "metric": 0.00012987872179127973,
   "level": 2,
   "formula": "((3896.479658 * ((log(max(sqrt(|x|), 1e-30)) - 2.971801) / ((-1.66618 * x) / atan(atan(x))))) + 1.501624)",
   "seed": 1000021,
@@ -10,7 +10,8 @@
   "speed": {
     "formulaCost": 74,
     "exactCost": 25,
-    "speedup": 0.33783783783783783
+    "speedup": 0.33783783783783783,
+    "costProfile": "cpu-transcendental-20"
   },
   "tree": {
     "o": "add",
@@ -91,10 +92,10 @@
     ]
   },
   "fast": {
-    "formula": "((-1.637862 + (-0.43866 * sqrt(|x|))) / (x / min(-0.661473, x)))",
-    "metric": 0.000249788870750738,
+    "formula": "((-130.479946 * ((-1.637862 + (-0.43866 * sqrt(|x|))) / (x / min(-0.661473, x)))) + 1.452089)",
+    "metric": 0.0002497888707507383,
     "level": 2,
-    "formulaCost": 13,
+    "formulaCost": 15,
     "speed": {
       "formulaCost": 13,
       "exactCost": 25,
@@ -102,28 +103,64 @@
     }
   },
   "fastTree": {
-    "o": "pdiv",
+    "o": "add",
     "c": [
       {
-        "o": "add",
+        "o": "mul",
         "c": [
           {
             "o": "const",
-            "v": -1.637862
+            "v": -130.47994597292242
           },
           {
-            "o": "mul",
+            "o": "pdiv",
             "c": [
               {
-                "o": "const",
-                "v": -0.43866
+                "o": "add",
+                "c": [
+                  {
+                    "o": "const",
+                    "v": -1.637862
+                  },
+                  {
+                    "o": "mul",
+                    "c": [
+                      {
+                        "o": "const",
+                        "v": -0.43866
+                      },
+                      {
+                        "o": "sqrt",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "x"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
               },
               {
-                "o": "sqrt",
+                "o": "pdiv",
                 "c": [
                   {
                     "o": "var",
                     "n": "x"
+                  },
+                  {
+                    "o": "min",
+                    "c": [
+                      {
+                        "o": "const",
+                        "v": -0.661473
+                      },
+                      {
+                        "o": "var",
+                        "n": "x"
+                      }
+                    ]
                   }
                 ]
               }
@@ -132,26 +169,8 @@
         ]
       },
       {
-        "o": "pdiv",
-        "c": [
-          {
-            "o": "var",
-            "n": "x"
-          },
-          {
-            "o": "min",
-            "c": [
-              {
-                "o": "const",
-                "v": -0.661473
-              },
-              {
-                "o": "var",
-                "n": "x"
-              }
-            ]
-          }
-        ]
+        "o": "const",
+        "v": 1.4520894090736707
       }
     ]
   }

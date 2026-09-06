@@ -2,7 +2,7 @@
   "taskId": "probit_quantile",
   "title": "Probit / quantile normal (finance · risque · z-scores)",
   "direction": "min",
-  "metric": 0.00001901761235141796,
+  "metric": 0.000019016893432652806,
   "level": 3,
   "formula": "((-4.274877 * (sqrt(|sqrt(|log(max(x, 1e-30))|)|) + (0.076417 * (x)²))) + 3.983949)",
   "seed": 1000010,
@@ -10,7 +10,8 @@
   "speed": {
     "formulaCost": 29,
     "exactCost": 28,
-    "speedup": 0.9655172413793104
+    "speedup": 0.9655172413793104,
+    "costProfile": "cpu-transcendental-20"
   },
   "tree": {
     "o": "add",
@@ -73,10 +74,10 @@
     ]
   },
   "fast": {
-    "formula": "sqrt(|sqrt(|log(max(x, 1e-30))|)|)",
-    "metric": 0.000608820558356222,
+    "formula": "((-3.882135 * sqrt(|sqrt(|log(max(x, 1e-30))|)|)) + 3.520872)",
+    "metric": 0.0006088170727700234,
     "level": 2,
-    "formulaCost": 24,
+    "formulaCost": 26,
     "speed": {
       "formulaCost": 24,
       "exactCost": 28,
@@ -84,21 +85,39 @@
     }
   },
   "fastTree": {
-    "o": "sqrt",
+    "o": "add",
     "c": [
       {
-        "o": "sqrt",
+        "o": "mul",
         "c": [
           {
-            "o": "log",
+            "o": "const",
+            "v": -3.8821349313145905
+          },
+          {
+            "o": "sqrt",
             "c": [
               {
-                "o": "var",
-                "n": "x"
+                "o": "sqrt",
+                "c": [
+                  {
+                    "o": "log",
+                    "c": [
+                      {
+                        "o": "var",
+                        "n": "x"
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           }
         ]
+      },
+      {
+        "o": "const",
+        "v": 3.520871526374326
       }
     ]
   }

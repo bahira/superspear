@@ -2,7 +2,7 @@
   "taskId": "european_call",
   "title": "Prime d'un call européen",
   "direction": "min",
-  "metric": 0.17682071689836543,
+  "metric": 0.23646392007958755,
   "level": 5,
   "formula": "((19.224472 * ((1 + sigma))²) + -19.114468)",
   "seed": 700001,
@@ -10,7 +10,8 @@
   "speed": {
     "formulaCost": 4,
     "exactCost": 4,
-    "speedup": 1
+    "speedup": 1,
+    "costProfile": "cpu-transcendental-20"
   },
   "tree": {
     "o": "add",
@@ -47,15 +48,5 @@
         "v": -19.1144678187698
       }
     ]
-  },
-  "fast": {
-    "formula": "sigma",
-    "metric": 0.3419711249861829,
-    "level": 4,
-    "formulaCost": 0
-  },
-  "fastTree": {
-    "o": "var",
-    "n": "sigma"
   }
 }

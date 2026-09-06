@@ -54,9 +54,17 @@ export function buildActivationTask(spec: ActivationSpec, points = 400): TaskDef
     oodX[i] = spec.lo - span * 0.5 * (1 - i / (oodPts - 1));
     oodX[oodPts + i] = spec.hi + span * 0.5 * (i / (oodPts - 1));
   }
+  // Drop probe points where the reference function itself is undefined —
+  // a NaN target is not evidence that the candidate extrapolates badly.
+  const oodKeepX: number[] = [];
+  const oodKeepY: number[] = [];
+  for (let i = 0; i < oodX.length; i++) {
+    const v = spec.fn(oodX[i]);
+    if (Number.isFinite(v)) { oodKeepX.push(oodX[i]); oodKeepY.push(v); }
+  }
   const oodProbe = makeOodProbe(
     { vars, y, n: points },
-    { vars: { x: oodX }, y: mapArray(oodX, spec.fn), n: oodX.length },
+    { vars: { x: Float64Array.from(oodKeepX) }, y: Float64Array.from(oodKeepY), n: oodKeepX.length },
   );
   const gpConfig: GpConfig = {
     variables: ["x"],
@@ -401,11 +409,30 @@ export function buildRegressionTask(cfg: {
       oodX[i] = lo - rspan * 0.5 * (1 - i / (oodPts - 1));
       oodX[oodPts + i] = hi + rspan * 0.5 * (i / (oodPts - 1));
     }
-    const oy = new Float64Array(oodX.length);
+    // Keep only the probe points where the REFERENCE LAW itself is defined.
+    // Extrapolating below 0 turns log/sqrt laws (mel_scale, srgb_*, logit_ml)
+    // into NaN targets, and a NaN target made the probe return NaN for a
+    // perfectly sound champion — a phantom violation, not a real one.
+    const keepX: number[] = [];
+    const keepY: number[] = [];
     for (let i = 0; i < oodX.length; i++) {
-      oy[i] = evaluateScalar(lawAst, { ...fixed, [varNames[0]]: oodX[i] });
+      const v = evaluateScalar(lawAst, { ...fixed, [varNames[0]]: oodX[i] });
+      if (Number.isFinite(v)) { keepX.push(oodX[i]); keepY.push(v); }
     }
-    oodProbe = makeOodProbe({ vars, y, n }, { vars: { [varNames[0]]: oodX }, y: oy, n: oodX.length });
+    if (keepX.length >= 8) {
+      // Every variable must be present in the probe scope: a multivariate
+      // formula evaluated with only varNames[0] bound yields NaN and the
+      // champion gets flagged as diverging when it is simply under-fed
+      // (temporal_grad's exact `b − a` was reported as ood = ∞).
+      const oodVars: Record<string, Float64Array> = {
+        [varNames[0]]: Float64Array.from(keepX),
+      };
+      for (const vn of varNames.slice(1)) oodVars[vn] = new Float64Array(keepX.length).fill(fixed[vn]);
+      oodProbe = makeOodProbe(
+        { vars, y, n },
+        { vars: oodVars, y: Float64Array.from(keepY), n: keepX.length },
+      );
+    }
   }
 
   return {

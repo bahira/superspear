@@ -85,14 +85,79 @@ export function r2Score(pred: Float64Array, target: Float64Array): number {
 }
 
 /**
- * Box-Muller on an injectable uniform source. The SPEAR loop wires this to its
- * seeded PRNG so that datasets — and therefore every reported metric — are
- * bit-for-bit reproducible from the seed alone.
+ * Dataset noise source.
+ *
+ * DESIGN RULE (learned the hard way): the noise that builds a task's dataset
+ * MUST NOT come from the search PRNG. When it did, every seed scored its
+ * champion against a *different* realisation of the data, so:
+ *   • "best across all seeds" compared numbers that were never comparable —
+ *     it systematically crowned whichever seed drew the friendliest noise;
+ *   • a stored record could not be reproduced, because re-evaluating the same
+ *     AST after a different number of PRNG draws regenerated different data
+ *     (free_fall wandered over 2.9e-4 … 5.1e-4 for one fixed formula).
+ *
+ * So the dataset stream is its own fixed-seed generator: identical in every
+ * run, on every seed, in every script. Metrics become a property of the
+ * formula alone — which is the only way a hall of fame means anything.
+ *
+ * `setUniformSource` remains for callers that deliberately want a different
+ * realisation (noise-sensitivity studies); it does not affect the default.
  */
-let uniformSource: () => number = Math.random;
+const DATASET_SEED = 0x5f3a_c91d;
+
+function makeLcg(seed: number): () => number {
+  let s = seed >>> 0;
+  return () => {
+    // xorshift32 — cheap, well-distributed, fully deterministic
+    s ^= s << 13; s >>>= 0;
+    s ^= s >>> 17;
+    s ^= s << 5; s >>>= 0;
+    return s / 0x1_0000_0000;
+  };
+}
+
+let uniformSource: () => number = makeLcg(DATASET_SEED);
 
 export function setUniformSource(fn: () => number): void {
   uniformSource = fn;
+}
+
+/**
+ * Rewind the dataset stream to its canonical start. Dataset builders call this
+ * so that task construction order never leaks into the data either.
+ */
+export function resetDatasetStream(seed: number = DATASET_SEED): void {
+  uniformSource = makeLcg(seed);
+}
+
+/** Stable 32-bit hash of a dataset tag (FNV-1a). */
+function hashTag(tag: string): number {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < tag.length; i++) {
+    h ^= tag.charCodeAt(i);
+    h = Math.imul(h, 0x01000193) >>> 0;
+  }
+  return h >>> 0;
+}
+
+/**
+ * Run a dataset builder on its OWN deterministic noise stream, keyed by a
+ * stable tag. Two consequences that make the ledger trustworthy:
+ *   • the data a task sees no longer depends on how many tasks were built
+ *     before it, nor on the search seed;
+ *   • re-evaluating a stored AST — in CI, in a script, a year later — hits
+ *     exactly the dataset the record was set on.
+ * The previous source is restored afterwards.
+ */
+export function withDataset<T>(tag: string, build: () => T): T {
+  const prev = uniformSource;
+  uniformSource = makeLcg((hashTag(tag) ^ DATASET_SEED) >>> 0);
+  try { return build(); } finally { uniformSource = prev; }
+}
+
+/** A uniform draw from the dataset stream (never the search PRNG). */
+export function datasetUniform(): number {
+  return uniformSource();
 }
 
 export function gaussianRandom(): number {

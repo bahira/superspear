@@ -10,7 +10,8 @@
   "speed": {
     "formulaCost": 24,
     "exactCost": 23,
-    "speedup": 0.9583333333333334
+    "speedup": 0.9583333333333334,
+    "costProfile": "cpu-transcendental-20"
   },
   "tree": {
     "o": "sqrt",
@@ -37,10 +38,10 @@
     ]
   },
   "fast": {
-    "formula": "|x|",
+    "formula": "((-0.391942 * |x|) + 1.005482)",
     "metric": 0.005657377567763322,
     "level": 2,
-    "formulaCost": 1,
+    "formulaCost": 3,
     "speed": {
       "formulaCost": 1,
       "exactCost": 23,
@@ -48,11 +49,29 @@
     }
   },
   "fastTree": {
-    "o": "abs",
+    "o": "add",
     "c": [
       {
-        "o": "var",
-        "n": "x"
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": -0.39194197324444907
+          },
+          {
+            "o": "abs",
+            "c": [
+              {
+                "o": "var",
+                "n": "x"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": 1.0054822682182918
       }
     ]
   }

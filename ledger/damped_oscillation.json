@@ -14,7 +14,8 @@
     "vsIterative": {
       "label": "RKF45 · 300 pas",
       "speedup": 200
-    }
+    },
+    "costProfile": "cpu-transcendental-20"
   },
   "tree": {
     "o": "add",

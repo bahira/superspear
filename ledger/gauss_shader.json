@@ -10,7 +10,8 @@
   "speed": {
     "formulaCost": 24,
     "exactCost": 22,
-    "speedup": 0.9166666666666666
+    "speedup": 0.9166666666666666,
+    "costProfile": "cpu-transcendental-20"
   },
   "tree": {
     "o": "sqrt",

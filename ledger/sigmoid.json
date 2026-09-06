@@ -10,20 +10,39 @@
   "speed": {
     "formulaCost": 27,
     "exactCost": 34,
-    "speedup": 1.2592592592592593
+    "speedup": 1.2592592592592593,
+    "costProfile": "cpu-transcendental-20"
   },
   "fast": {
-    "formula": "atan(x)",
+    "formula": "((0.351631 * atan(x)) + 0.5)",
     "metric": 0.00035539673000201734,
     "level": 2,
-    "formulaCost": 1
+    "formulaCost": 22
   },
   "fastTree": {
-    "o": "atan",
+    "o": "add",
     "c": [
       {
-        "o": "var",
-        "n": "x"
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": 0.3516313992726051
+          },
+          {
+            "o": "atan",
+            "c": [
+              {
+                "o": "var",
+                "n": "x"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": 0.5000000000000001
       }
     ]
   },

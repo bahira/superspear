@@ -2,7 +2,7 @@
   "taskId": "lennard_jones",
   "title": "Potentiel de Lennard-Jones 12-6",
   "direction": "min",
-  "metric": 0.00003245566387678721,
+  "metric": 0.000032455663876787264,
   "level": 2,
   "formula": "((-23.07526 * ((log(max(r, 1e-30)) / ((r)³)³) / cos(sqrt(|(r + -1.017418)|)))) + -0.001951)",
   "seed": 990303,
@@ -10,7 +10,8 @@
   "speed": {
     "formulaCost": 57,
     "exactCost": 17,
-    "speedup": 0.2982456140350877
+    "speedup": 0.2982456140350877,
+    "costProfile": "cpu-transcendental-20"
   },
   "tree": {
     "o": "add",
@@ -87,10 +88,10 @@
     ]
   },
   "fast": {
-    "formula": "(min(1, r) / (min((r - 0.970147), 0.939027) - -69.077553))",
+    "formula": "((-4659.001109 * (min(1, r) / (min((r - 0.970147), 0.939027) - -69.077553))) + 66.52367)",
     "metric": 0.020446232630864744,
     "level": 2,
-    "formulaCost": 8,
+    "formulaCost": 10,
     "speed": {
       "formulaCost": 8,
       "exactCost": 17,
@@ -98,51 +99,69 @@
     }
   },
   "fastTree": {
-    "o": "pdiv",
+    "o": "add",
     "c": [
       {
-        "o": "min",
+        "o": "mul",
         "c": [
           {
             "o": "const",
-            "v": 1
+            "v": -4659.001109016326
           },
           {
-            "o": "var",
-            "n": "r"
-          }
-        ]
-      },
-      {
-        "o": "sub",
-        "c": [
-          {
-            "o": "min",
+            "o": "pdiv",
             "c": [
               {
-                "o": "sub",
+                "o": "min",
                 "c": [
+                  {
+                    "o": "const",
+                    "v": 1
+                  },
                   {
                     "o": "var",
                     "n": "r"
-                  },
-                  {
-                    "o": "const",
-                    "v": 0.970147
                   }
                 ]
               },
               {
-                "o": "const",
-                "v": 0.939027
+                "o": "sub",
+                "c": [
+                  {
+                    "o": "min",
+                    "c": [
+                      {
+                        "o": "sub",
+                        "c": [
+                          {
+                            "o": "var",
+                            "n": "r"
+                          },
+                          {
+                            "o": "const",
+                            "v": 0.970147
+                          }
+                        ]
+                      },
+                      {
+                        "o": "const",
+                        "v": 0.939027
+                      }
+                    ]
+                  },
+                  {
+                    "o": "const",
+                    "v": -69.077553
+                  }
+                ]
               }
             ]
-          },
-          {
-            "o": "const",
-            "v": -69.077553
           }
         ]
+      },
+      {
+        "o": "const",
+        "v": 66.52366984658345
       }
     ]
   }

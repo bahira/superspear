@@ -8,7 +8,7 @@
 npm install spear-kernels
 ```
 
-Now shipping **74 verified kernels on npm** (`spear-kernels@latest`) — **65 fast slots**, **25 exact solves** — including the **SPEAR Quant Pack**: Kelly criterion, RSI, implied volatility, Gaussian CDF, probit — all parity-audited across JS/WASM/C/PyTorch. that discovers **closed-form mathematical laws** from data — then compiles them to **verified WebAssembly** and **MISRA-C:2012 C99**, with machine-checked parity.
+Now shipping **89 audited kernels on npm** (`spear-kernels@latest`) — **42 fast slots**, **34 exact solves**, every record reproducing its own numbers ([champion audit](./REPORTS/champion-audit.md)) — including the **SPEAR Quant Pack**: Kelly criterion, RSI, implied volatility, Gaussian CDF, probit — all parity-audited across JS/WASM/C/PyTorch. that discovers **closed-form mathematical laws** from data — then compiles them to **verified WebAssembly** and **MISRA-C:2012 C99**, with machine-checked parity.
 
 No neural networks, no black boxes: what comes out is a formula you can read, audit, and deploy on a microcontroller.
 

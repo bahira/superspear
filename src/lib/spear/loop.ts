@@ -120,7 +120,7 @@ export interface LoopProgress {
 interface TaskRuntime {
   def: TaskDef;
   population: SpearNode[];
-  cache: Map<string, { metric: number; secondary?: number; violation?: number }>;
+  cache: Map<string, { metric: number; secondary?: number; violation?: number; node: SpearNode }>;
   /** UCB bandits over child-producing operators (heritage / exploration zones) */
   banditH: OperatorBandit;
   banditE: OperatorBandit;
@@ -243,7 +243,11 @@ function cachedEval(rt: TaskRuntime, node: SpearNode): ShapedEval {
   const hit = rt.cache.get(key);
   if (hit) {
     rt.cacheHits++;
-    return { metric: hit.metric, secondary: hit.secondary, violation: hit.violation, node };
+    // CRITICAL: return the SHAPED node, not the raw one. `metric` belongs to
+    // the affine-wrapped formula; handing back the raw AST paired with the
+    // wrapped metric is what put un-shaped trees in the ledger's fast slots
+    // (a stored `atan(x)` claiming the MSE of `0.351631·atan(x) + 0.5`).
+    return { metric: hit.metric, secondary: hit.secondary, violation: hit.violation, node: hit.node };
   }
   const res = scored(rt, node);
   rt.evals++;
@@ -253,7 +257,7 @@ function cachedEval(rt: TaskRuntime, node: SpearNode): ShapedEval {
     // formula is what gets reported and deployed, so it is what must survive
     // extrapolation.
     violation = rt.def.ood ? rt.def.ood(res.node) : undefined;
-    rt.cache.set(key, { metric: res.metric, secondary: res.secondary, violation });
+    rt.cache.set(key, { metric: res.metric, secondary: res.secondary, violation, node: res.node });
     if (rt.cache.size > 20000) rt.cache.clear();
   }
   return { metric: res.metric, secondary: res.secondary, node: res.node, violation };
@@ -764,7 +768,11 @@ export async function runGroundedLoop(opts: GroundedLoopOptions = {}): Promise<L
       const key = canonicalKey(rt.population[i]);
       if (seen.has(key)) continue;
       seen.add(key);
-      rt.frontRaw.push({ node: rt.population[i], metric: results[i].metric, size: rt.population[i].size });
+      // store the SHAPED node from the evaluation: `results[i].metric` is the
+      // metric of that shaped formula, so the front must carry it — otherwise
+      // the fast slot ships a raw AST labelled with someone else's error.
+      const shaped = results[i].node;
+      rt.frontRaw.push({ node: shaped, metric: results[i].metric, size: shaped.size });
     }
 
     // ---- A↔B migration: every MIGRATE_EVERY generations, exchange elites for
