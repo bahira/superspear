@@ -6,19 +6,29 @@ import { KvCacheLab } from "./KvCacheLab";
 import { CustomRegressionLab } from "./CustomRegressionLab";
 import { RunHistory } from "./RunHistory";
 import { GroundedLoopConsole } from "./GroundedLoopConsole";
+import { HallOfFame } from "./HallOfFame";
 import type { SpearRunRecord } from "./types";
 
-type Tab = "loop" | "activation" | "kv_cache" | "custom";
+type Tab = "hall" | "loop" | "activation" | "kv_cache" | "custom";
 
 const TABS: { id: Tab; label: string; emoji: string }[] = [
+  // Hall of Fame first: it is the project's actual output, and it had no UI at
+  // all before — the results were only readable as JSON in the repo.
+  { id: "hall", label: "Hall of Fame", emoji: "🏆" },
   { id: "loop", label: "Boucle grounded", emoji: "🔬" },
   { id: "activation", label: "Activations LLM", emoji: "⚡" },
   { id: "kv_cache", label: "Éviction KV-Cache", emoji: "🧠" },
   { id: "custom", label: "Régression symbolique", emoji: "🧮" },
 ];
 
-export function SpearDashboard({ initialRuns }: { initialRuns: SpearRunRecord[] }) {
-  const [tab, setTab] = useState<Tab>("loop");
+export function SpearDashboard({
+  initialRuns,
+  historyEnabled = true,
+}: {
+  initialRuns: SpearRunRecord[];
+  historyEnabled?: boolean;
+}) {
+  const [tab, setTab] = useState<Tab>("hall");
   const [runs, setRuns] = useState<SpearRunRecord[]>(initialRuns);
 
   function handleRunComplete(run: SpearRunRecord) {
@@ -98,15 +108,25 @@ export function SpearDashboard({ initialRuns }: { initialRuns: SpearRunRecord[] 
       </nav>
 
       <section>
+        {tab === "hall" ? <HallOfFame /> : null}
         {tab === "loop" ? <GroundedLoopConsole /> : null}
         {tab === "activation" ? <ActivationLab onRunComplete={handleRunComplete} /> : null}
         {tab === "kv_cache" ? <KvCacheLab onRunComplete={handleRunComplete} /> : null}
         {tab === "custom" ? <CustomRegressionLab onRunComplete={handleRunComplete} /> : null}
       </section>
 
+      {/* Run history needs Postgres. Without it, say so once instead of
+          rendering a permanently empty section. */}
       <section className="flex flex-col gap-3">
         <h2 className="text-lg font-semibold text-slate-100">Historique des exécutions</h2>
-        <RunHistory runs={runs} onDelete={handleDelete} />
+        {historyEnabled ? (
+          <RunHistory runs={runs} onDelete={handleDelete} />
+        ) : (
+          <p className="rounded-xl border border-slate-800 bg-slate-900/40 px-4 py-3 text-sm text-slate-400">
+            Historique désactivé : aucune base de données configurée (<code className="font-mono text-[12px] text-slate-300">DATABASE_URL</code>).
+            Le Hall of Fame et tous les labs fonctionnent sans.
+          </p>
+        )}
       </section>
     </div>
   );

@@ -322,11 +322,21 @@ The engine (`src/lib/spear/`) combines:
 
 ```bash
 npm install
-# Postgres required (DATABASE_URL in .env)
 npm run dev          # → http://localhost:3000
 ```
 
-The dashboard offers the **Grounded Loop** (all tasks, budget 30–2000 iterations), per-preset labs (activations, KV-cache, custom CSV regression), and Postgres-persisted run history including breakthroughs.
+**No database needed.** Postgres is optional and only stores run history; without
+`DATABASE_URL` the app runs fine and says so instead of failing. (It used to
+throw `DATABASE_URL is required` at module scope, so a fresh clone answered
+HTTP 500 with a stacktrace on the home page.)
+
+The dashboard opens on the **Hall of Fame** — all 89 audited kernels, searchable
+and filterable, showing *measured* speedups rather than cost-model predictions,
+plus the caveats: which kernels are unsafe outside their training band, and
+whether a champion was found by the search or is simply the seeded reference law
+recovered. It also offers the **Grounded Loop** (all tasks, budget 30–2000
+iterations), per-preset labs (activations, KV-cache, custom CSV regression), and
+run history when Postgres is configured.
 
 ### Headless scripts
 
