@@ -2,15 +2,16 @@
   "taskId": "european_call",
   "title": "Prime d'un call européen",
   "direction": "min",
-  "metric": 0.23646392007958755,
+  "metric": 0.23308346247997982,
+  "holdout": 0.30038069359715264,
   "level": 5,
-  "formula": "((19.224472 * ((1 + sigma))²) + -19.114468)",
-  "seed": 700001,
-  "iteration": 128,
+  "formula": "((38.631133 * exp(asin(tanh(sigma)))) + -38.502372)",
+  "seed": 555111,
+  "iteration": 6,
   "speed": {
-    "formulaCost": 4,
+    "formulaCost": 62,
     "exactCost": 4,
-    "speedup": 1,
+    "speedup": 0.06451612903225806,
     "costProfile": "cpu-transcendental-20"
   },
   "tree": {
@@ -21,21 +22,22 @@
         "c": [
           {
             "o": "const",
-            "v": 19.224472260676723
+            "v": 38.63113321347928
           },
           {
-            "o": "sq",
+            "o": "exp",
             "c": [
               {
-                "o": "add",
+                "o": "asin",
                 "c": [
                   {
-                    "o": "const",
-                    "v": 1
-                  },
-                  {
-                    "o": "var",
-                    "n": "sigma"
+                    "o": "tanh",
+                    "c": [
+                      {
+                        "o": "var",
+                        "n": "sigma"
+                      }
+                    ]
                   }
                 ]
               }
@@ -45,7 +47,35 @@
       },
       {
         "o": "const",
-        "v": -19.1144678187698
+        "v": -38.50237204488785
+      }
+    ]
+  },
+  "fast": {
+    "formula": "((47.949899 * sigma) + -0.667061)",
+    "metric": 0.32994028054848007,
+    "level": 4,
+    "formulaCost": 2
+  },
+  "fastTree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": 47.94989936783262
+          },
+          {
+            "o": "var",
+            "n": "sigma"
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": -0.667061351071402
       }
     ]
   }

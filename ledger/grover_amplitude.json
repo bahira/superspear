@@ -3,7 +3,7 @@
   "title": "Amplification de Grover (recherche quantique)",
   "direction": "min",
   "metric": 8.312261599931228e-32,
-  "level": 2,
+  "level": 5,
   "formula": "(sin((asin(sqrt(|(m / n)|)) + (2 * (k * asin(sqrt(|(m / n)|)))))))²",
   "seed": 920605,
   "iteration": 1600,
@@ -91,5 +91,6 @@
         ]
       }
     ]
-  }
+  },
+  "holdout": 1.5339713212976391e-31
 }

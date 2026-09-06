@@ -21,5 +21,6 @@
     "exactCost": 34,
     "speedup": 1.7,
     "costProfile": "cpu-transcendental-20"
-  }
+  },
+  "holdout": 0
 }

@@ -138,11 +138,83 @@ buildRegressionTask({
             ] }),
           ] }),
         ] });
+        // DIAGNOSED GAP (bucketed residuals of the incumbent champion):
+        //   OTM/lowvol mse 3.10e-2, ITM/lowvol 2.47e-2  vs  ATM/lowvol 1.74e-3
+        // — an 18x spread. The incumbent is a Corrado-Miller form, which is an
+        // AT-THE-MONEY approximation: its correction term is linear in (s-k),
+        // so it degrades exactly where |log(s/k)| grows and vol is small.
+        //
+        // Every shape already in this pool ADDS or MULTIPLIES a moneyness term
+        // onto the ATM skeleton. None lets moneyness act as a DENOMINATOR, yet
+        // that is the structure of the BS inversion away from the money
+        // (sigma ~ price / vega, and vega collapses as |log(s/k)| grows). We
+        // seed that missing algebraic brick — shape only, constants tunable.
+        const L2 = makeNode("sq", { children: [L] });
+        // sigma0 / (1 + a*L^2)  — vega-collapse damping
+        const damp = makeNode("pdiv", {
+          children: [
+            bs,
+            makeNode("add", {
+              children: [S.C(1), makeNode("mul", { children: [S.C(2), L2] })],
+            }),
+          ],
+        });
+        // sqrt(sigma0^2 + a*L^2/t) — quadrature blend, the Manaster-Koehler
+        // floor fused with the ATM skeleton instead of competing with it
+        const blend = makeNode("sqrt", {
+          children: [
+            makeNode("abs", {
+              children: [
+                makeNode("add", {
+                  children: [
+                    makeNode("sq", { children: [bs] }),
+                    makeNode("mul", { children: [S.C(2), makeNode("pdiv", { children: [L2, t] })] }),
+                  ],
+                }),
+              ],
+            }),
+          ],
+        });
+        // SECOND DIAGNOSED GAP. Residual bucketing showed the incumbent (a
+        // refined Corrado-Miller) is weakest at LOW vol away from the money.
+        // Probing modulations of the CM core showed the effective lever is not
+        // moneyness at all but the NORMALISED PRICE u = c/s: CM*(1 + a*u) alone
+        // cuts MSE from 1.32e-2 to 1.01e-2, and combining it with a mild
+        // moneyness denominator reaches 7.4e-3. Neither shape was expressible
+        // from the existing pool, which only ever added moneyness terms.
+        // Shapes only — a, b stay tunable.
+        const uNorm = makeNode("pdiv", { children: [c, s] });          // c/s
+        const rMoney = makeNode("sub", { children: [makeNode("pdiv", { children: [s, k] }), S.C(1)] }); // s/k - 1
+        const cmScaled = makeNode("mul", {
+          children: [cm, makeNode("add", { children: [S.C(1), makeNode("mul", { children: [S.C(2), uNorm] })] })],
+        });
+        const cmScaledDamped = makeNode("pdiv", {
+          children: [
+            cmScaled,
+            makeNode("add", {
+              children: [S.C(1), makeNode("mul", { children: [S.C(0.3), makeNode("sq", { children: [rMoney] })] })],
+            }),
+          ],
+        });
+        // CM * (1 + a*u/sqrt(t)) — the same lever carried by the time scaling
+        const cmScaledT = makeNode("mul", {
+          children: [
+            cm,
+            makeNode("add", {
+              children: [S.C(1), makeNode("mul", { children: [S.C(2), makeNode("mul", { children: [uNorm, sqrtInvT] })] })],
+            }),
+          ],
+        });
         return [
           bs,
           cm,
           mk,
           corr,
+          damp,
+          blend,
+          cmScaled,
+          cmScaledDamped,
+          cmScaledT,
           simplify(makeNode("add", { children: [bs, makeNode("mul", { children: [S.C(1), ksTerm] })] })),
           makeNode("mul", { children: [bs, makeNode("add", { children: [S.C(1), makeNode("pdiv", { children: [makeNode("sq", { children: [cs] }), t] })] })] }),
         ];

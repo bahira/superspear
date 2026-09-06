@@ -2,11 +2,12 @@
   "taskId": "mel_scale",
   "title": "Échelle de Mel (MFCC · speech)",
   "direction": "min",
-  "metric": 1.4594066099947563e-12,
+  "metric": 2.591804276516316e-22,
+  "holdout": 2.603361247496618e-22,
   "level": 5,
   "formula": "(1126.994181 * log(max((1 + (x * 0.001429)), 1e-30)))",
-  "seed": 4242,
-  "iteration": 198,
+  "seed": 990601,
+  "iteration": 3,
   "speed": {
     "formulaCost": 23,
     "exactCost": 23,
@@ -18,7 +19,7 @@
     "c": [
       {
         "o": "const",
-        "v": 1126.994181
+        "v": 1126.9941805389446
       },
       {
         "o": "log",

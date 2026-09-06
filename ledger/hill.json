@@ -51,5 +51,6 @@
     "level": 2,
     "formulaCost": 5,
     "seed": 424242
-  }
+  },
+  "holdout": 0
 }

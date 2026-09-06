@@ -3,7 +3,7 @@
   "title": "Stefan-Boltzmann (radiation thermique)",
   "direction": "min",
   "metric": 2.382092673239445e-26,
-  "level": 2,
+  "level": 5,
   "formula": "(0.42 * (relu(t) * (t)³))",
   "seed": 1000080,
   "iteration": 400,
@@ -46,28 +46,23 @@
     ]
   },
   "fast": {
-    "formula": "((3.975387 * (t)³) + -170.638576)",
-    "metric": 19301.614380559196,
-    "level": 2,
-    "formulaCost": 4,
-    "speed": {
-      "formulaCost": 2,
-      "exactCost": 3,
-      "speedup": 1.5
-    }
+    "formula": "(0.42 * ((t)²)²)",
+    "metric": 4.4130687624948136e-26,
+    "level": 5,
+    "formulaCost": 3
   },
   "fastTree": {
-    "o": "add",
+    "o": "mul",
     "c": [
       {
-        "o": "mul",
+        "o": "const",
+        "v": 0.42
+      },
+      {
+        "o": "sq",
         "c": [
           {
-            "o": "const",
-            "v": 3.9753870240642724
-          },
-          {
-            "o": "cube",
+            "o": "sq",
             "c": [
               {
                 "o": "var",
@@ -76,10 +71,6 @@
             ]
           }
         ]
-      },
-      {
-        "o": "const",
-        "v": -170.63857572184324
       }
     ]
   }

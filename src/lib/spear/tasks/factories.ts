@@ -386,9 +386,23 @@ export function buildRegressionTask(cfg: {
   // against the noisy observations. No formula can do meaningfully better;
   // anything below ~1.0x is fitting the noise, not the physics. Absolute MSE
   // milestones would be unreachable by construction, so we calibrate on this.
-  let noiseFloor = 0;
-  for (let i = 0; i < n; i++) noiseFloor += (cfg.trueLaw(vars, i) - y[i]) ** 2;
-  noiseFloor /= n;
+  let rawNoiseFloor = 0;
+  for (let i = 0; i < n; i++) rawNoiseFloor += (cfg.trueLaw(vars, i) - y[i]) ** 2;
+  rawNoiseFloor /= n;
+  // NOISELESS TASKS: when the dataset carries no noise the floor is exactly 0,
+  // and milestones of the form `MSE <= 3 * floor` collapse to `MSE <= 0` — a
+  // test no float64 computation can pass. Nine machine-exact laws were pinned
+  // at L2 by this (temperature_softmax at 7.4e-47, gaussian_kernel at 5.4e-34):
+  // the ladder, not the search, was the wall.
+  //
+  // For those tasks the achievable optimum is bounded by floating-point
+  // resolution, not by data noise, so we substitute a precision floor scaled to
+  // the magnitude of the targets: squared error of one ulp-ish relative step.
+  let scale = 0;
+  for (let i = 0; i < n; i++) scale = Math.max(scale, Math.abs(y[i]));
+  const precisionFloor = Math.max((scale * 1e-15) ** 2, Number.MIN_VALUE);
+  const noiseFloor = rawNoiseFloor > precisionFloor ? rawNoiseFloor : precisionFloor;
+  const noiseless = rawNoiseFloor <= precisionFloor;
 
   // OOD probe from the exact law AST: sweep the first variable half a span
   // beyond both edges of its observed range, other variables pinned at their
@@ -514,7 +528,7 @@ export function buildRegressionTask(cfg: {
       ...(cfg.extraSeeds ?? []),
     ]),
     baselines: [
-      { name: "Loi exacte (plancher de bruit)", metric: noiseFloor, note: "MSE de la vraie loi sur les données bruitées — optimum atteignable", kind: "oracle", formula: cfg.groundTruth },
+      { name: noiseless ? "Loi exacte (plancher de précision f64)" : "Loi exacte (plancher de bruit)", metric: noiseFloor, note: noiseless ? "jeu de données sans bruit — l'optimum atteignable est la résolution flottante, pas le bruit" : "MSE de la vraie loi sur les données bruitées — optimum atteignable", kind: "oracle", formula: cfg.groundTruth },
       { name: "Régression linéaire (MCQ)", metric: lin.mse, note: `y = ${lin.a.toFixed(4)}·${varNames[0]} + ${lin.b.toFixed(4)}`, kind: "statistical", formula: "OLS" },
       { name: "Moyenne constante", metric: (() => { let m = 0; for (let i = 0; i < n; i++) m += y[i]; m /= n; let s = 0; for (let i = 0; i < n; i++) s += (y[i] - m) ** 2; return s / n; })(), note: "Variance totale du jeu de données", kind: "statistical", formula: "ȳ" },
     ],
@@ -524,7 +538,7 @@ export function buildRegressionTask(cfg: {
     milestones: [
       { level: 1, label: `MSE < variance/10 (${(variance / 10).toExponential(1)})`, test: (m) => m < variance / 10 },
       { level: 2, label: `Bat l'OLS ×10 (${(lin.mse / 10).toExponential(1)})`, test: (m) => m < lin.mse / 10 },
-      { level: 3, label: `≤ 3× le plancher de bruit (${(noiseFloor * 3).toExponential(1)})`, test: (m) => m <= noiseFloor * 3 },
+      { level: 3, label: `≤ 3× le plancher ${noiseless ? "de précision" : "de bruit"} (${(noiseFloor * 3).toExponential(1)})`, test: (m) => m <= noiseFloor * 3 },
       { level: 4, label: `≤ 1.5× le plancher (${(noiseFloor * 1.5).toExponential(1)})`, test: (m) => m <= noiseFloor * 1.5 },
       { level: 5, label: `≤ 1.1× le plancher — loi indiscernable de la vraie (${(noiseFloor * 1.1).toExponential(1)})`, test: (m) => m <= noiseFloor * 1.1 },
     ],

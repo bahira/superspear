@@ -3,7 +3,7 @@
   "title": "Softmax tempéré 2-logits (échantillonnage LLM)",
   "direction": "min",
   "metric": 7.439476402624881e-47,
-  "level": 2,
+  "level": 5,
   "formula": "(1 / (1 + exp((-(da / t)))))",
   "seed": 1000120,
   "iteration": 400,
@@ -51,6 +51,54 @@
             ]
           }
         ]
+      }
+    ]
+  },
+  "holdout": 0,
+  "fast": {
+    "formula": "((-0.341993 * atan((-(da / t)))) + 0.499472)",
+    "metric": 0.0005828352312459226,
+    "level": 2,
+    "formulaCost": 27
+  },
+  "fastTree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": -0.34199307033525794
+          },
+          {
+            "o": "atan",
+            "c": [
+              {
+                "o": "neg",
+                "c": [
+                  {
+                    "o": "pdiv",
+                    "c": [
+                      {
+                        "o": "var",
+                        "n": "da"
+                      },
+                      {
+                        "o": "var",
+                        "n": "t"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": 0.49947165953417866
       }
     ]
   }

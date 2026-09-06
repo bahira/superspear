@@ -609,5 +609,6 @@
       "speedup": 1.7
     },
     "costProfile": "cpu-transcendental-20"
-  }
+  },
+  "holdout": 1.7913231060066527e-12
 }

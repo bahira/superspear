@@ -21,5 +21,26 @@
     "exactCost": 28,
     "speedup": 1.4,
     "costProfile": "cpu-transcendental-20"
+  },
+  "holdout": 0,
+  "fast": {
+    "formula": "(1.143333 * x)",
+    "metric": 0.002170494475091841,
+    "level": 2,
+    "formulaCost": 1,
+    "deploy": true
+  },
+  "fastTree": {
+    "o": "mul",
+    "c": [
+      {
+        "o": "const",
+        "v": 1.14333278826324
+      },
+      {
+        "o": "var",
+        "n": "x"
+      }
+    ]
   }
 }

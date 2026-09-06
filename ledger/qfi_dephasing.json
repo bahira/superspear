@@ -3,7 +3,7 @@
   "title": "QFI GHZ déphasage collectif (métrologie quantique)",
   "direction": "min",
   "metric": 1.6734673238482507e-31,
-  "level": 2,
+  "level": 5,
   "formula": "((n)² * ((t)² * exp((-((n)² * (g * t))))))",
   "seed": 930701,
   "iteration": 1200,
@@ -14,7 +14,7 @@
     "costProfile": "cpu-transcendental-20",
     "vsSolverContext": {
       "label": "BFGS optimisation",
-      "speedup": 28.6,
+      "speedup": 28.571428571428573,
       "note": "Context only — a closed-form reference exists for this task, so the solver is not what a real implementation runs. Not a like-for-like speedup: the solver's accuracy is orders of magnitude worse.",
       "honestSpeedupVsReference": 0.7857142857142857
     }
@@ -83,5 +83,6 @@
         ]
       }
     ]
-  }
+  },
+  "holdout": 3.4988775734703503e-32
 }

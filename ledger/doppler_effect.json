@@ -2,16 +2,16 @@
   "taskId": "doppler_effect",
   "title": "Effet Doppler (audio · radar)",
   "direction": "min",
-  "metric": 9.281797631143672e-10,
+  "metric": 4.485374228210931e-12,
+  "holdout": 4.51190777681374e-12,
   "level": 2,
-  "formula": "((-700.007578 * ((vs + vo) / (0.049677 - (340.052626 - vs)))) + 699.999885)",
-  "seed": 1000090,
-  "iteration": 1600,
+  "formula": "((699.999473 * ((vs + vo) / (339.999795 - vs))) + 700.000008)",
+  "seed": 160218,
+  "iteration": 46,
   "speed": {
-    "formulaCost": 9,
+    "formulaCost": 8,
     "exactCost": 5,
-    "speedup": 0.5555555555555556,
-    "costProfile": "cpu-transcendental-20"
+    "speedup": 0.625
   },
   "tree": {
     "o": "add",
@@ -21,7 +21,7 @@
         "c": [
           {
             "o": "const",
-            "v": -700.007578094087
+            "v": 699.9994732081279
           },
           {
             "o": "pdiv",
@@ -44,20 +44,11 @@
                 "c": [
                   {
                     "o": "const",
-                    "v": 0.049677
+                    "v": 339.999795
                   },
                   {
-                    "o": "sub",
-                    "c": [
-                      {
-                        "o": "const",
-                        "v": 340.052626
-                      },
-                      {
-                        "o": "var",
-                        "n": "vs"
-                      }
-                    ]
+                    "o": "var",
+                    "n": "vs"
                   }
                 ]
               }
@@ -67,44 +58,7 @@
       },
       {
         "o": "const",
-        "v": 699.9998851514688
-      }
-    ]
-  },
-  "fast": {
-    "formula": "((2.579149 * (vo + vs)) + 687.591235)",
-    "metric": 11.408687912051402,
-    "level": 2,
-    "formulaCost": 3
-  },
-  "fastTree": {
-    "o": "add",
-    "c": [
-      {
-        "o": "mul",
-        "c": [
-          {
-            "o": "const",
-            "v": 2.579149167278826
-          },
-          {
-            "o": "add",
-            "c": [
-              {
-                "o": "var",
-                "n": "vo"
-              },
-              {
-                "o": "var",
-                "n": "vs"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "o": "const",
-        "v": 687.5912350674787
+        "v": 700.0000079837853
       }
     ]
   }

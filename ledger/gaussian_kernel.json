@@ -3,7 +3,7 @@
   "title": "Blur gaussien · noyau exp(−x²/2σ²)",
   "direction": "min",
   "metric": 5.356342194550095e-34,
-  "level": 2,
+  "level": 5,
   "formula": "sqrt(|exp((-(x)²))|)",
   "seed": 920101,
   "iteration": 400,

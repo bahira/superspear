@@ -4,32 +4,32 @@ Champion and exact reference law both emitted as C99, compiled `gcc -O2` (no LTO
 
 `agreement` = measured ÷ modelled. 1.00 means the ALU/SFU cost model predicted reality exactly; below 1 the model over-promises.
 
-**Resolution limit.** An out-of-line function that merely returns its argument costs **1.203 ns/elem** on this machine. Kernels close to that floor — or whose two variants differ by less than the run-to-run noise — are measuring call and loop overhead, not arithmetic. Those rows are marked ⚠ and their ratios are *not* evidence of anything. Trusting them would reintroduce exactly the kind of unearned number this audit removed.
+**Resolution limit.** An out-of-line function that merely returns its argument costs **1.199 ns/elem** on this machine. Kernels close to that floor — or whose two variants differ by less than the run-to-run noise — are measuring call and loop overhead, not arithmetic. Those rows are marked ⚠ and their ratios are *not* evidence of anything. Trusting them would reintroduce exactly the kind of unearned number this audit removed.
 
 | task | vars | ns/elem formula | ns/elem exact | measured ⚡ | modelled ⚡ | agreement |
 |---|---|---|---|---|---|---|
-| `kdv_soliton` | 2 | 5.881 | 40.919 | **×6.96** | ×7.57 | 0.92 |
-| `damped_oscillation` | 1 | 10.412 | 17.346 | **×1.67** | ×1.63 | 1.02 |
-| `kerr_spin` | 2 | 24.123 | 28.896 | **×1.20** | ×1.17 | 1.03 |
-| `free_fall` ⚠ | 1 | 2.850 | 3.037 | **×1.07** | ×0.67 | n/a |
-| `hill` ⚠ | 1 | 8.143 | 8.525 | **×1.05** | ×1.00 | n/a |
-| `logistic_growth` | 1 | 15.506 | 15.705 | **×1.01** | ×0.62 | 1.63 |
-| `pendulum_hybrid` ⚠ | 2 | 39.187 | 39.645 | **×1.01** | ×0.98 | n/a |
-| `diffusion_beta` ⚠ | 1 | 10.382 | 10.391 | **×1.00** | ×1.04 | n/a |
-| `lorentz` ⚠ | 1 | 8.274 | 8.279 | **×1.00** | ×0.89 | n/a |
-| `bilinear_interp` ⚠ | 1 | 2.727 | 2.726 | **×1.00** | ×0.50 | n/a |
-| `kepler` ⚠ | 1 | 2.732 | 2.729 | **×1.00** | ×0.60 | n/a |
-| `temporal_grad` ⚠ | 2 | 2.733 | 2.727 | **×1.00** | ×1.00 | n/a |
-| `european_call` ⚠ | 1 | 3.104 | 3.096 | **×1.00** | ×1.00 | n/a |
-| `layernorm_scale` ⚠ | 1 | 8.192 | 8.151 | **×0.99** | ×0.50 | n/a |
-| `softplus` | 1 | 13.327 | 12.727 | **×0.95** | ×0.95 | 1.00 |
-| `gaussian_kernel` | 1 | 8.189 | 7.570 | **×0.92** | ×0.96 | 0.96 |
-| `kerr` | 1 | 28.497 | 23.847 | **×0.84** | ×1.31 | 0.64 |
-| `lambert_w` | 1 | 10.825 | 7.855 | **×0.73** | ×0.95 | 0.76 |
-| `lennard_jones` | 1 | 30.771 | 8.737 | **×0.28** | ×0.30 | 0.95 |
-| `rc_circuit` | 1 | 30.717 | 8.143 | **×0.27** | ×0.35 | 0.76 |
+| `kdv_soliton` | 2 | 5.984 | 40.946 | **×6.84** | ×7.57 | 0.90 |
+| `damped_oscillation` | 1 | 10.374 | 17.404 | **×1.68** | ×1.63 | 1.03 |
+| `kerr_spin` | 2 | 23.922 | 28.738 | **×1.20** | ×1.17 | 1.03 |
+| `hill` ⚠ | 1 | 8.033 | 8.646 | **×1.08** | ×1.00 | n/a |
+| `pendulum_hybrid` | 2 | 38.828 | 39.553 | **×1.02** | ×0.98 | 1.04 |
+| `lorentz` ⚠ | 1 | 8.347 | 8.477 | **×1.02** | ×0.89 | n/a |
+| `logistic_growth` ⚠ | 1 | 15.585 | 15.746 | **×1.01** | ×0.62 | n/a |
+| `diffusion_beta` ⚠ | 1 | 10.458 | 10.493 | **×1.00** | ×1.04 | n/a |
+| `free_fall` ⚠ | 1 | 2.721 | 2.725 | **×1.00** | ×0.67 | n/a |
+| `temporal_grad` ⚠ | 2 | 2.726 | 2.725 | **×1.00** | ×1.00 | n/a |
+| `bilinear_interp` ⚠ | 1 | 2.727 | 2.725 | **×1.00** | ×0.50 | n/a |
+| `layernorm_scale` ⚠ | 1 | 8.173 | 8.108 | **×0.99** | ×0.50 | n/a |
+| `rc_circuit` | 1 | 8.153 | 7.846 | **×0.96** | ×0.96 | 1.01 |
+| `kepler` ⚠ | 1 | 2.985 | 2.861 | **×0.96** | ×0.60 | n/a |
+| `softplus` | 1 | 13.306 | 12.727 | **×0.96** | ×0.95 | 1.00 |
+| `gaussian_kernel` | 1 | 8.206 | 7.598 | **×0.93** | ×0.96 | 0.97 |
+| `kerr` | 1 | 28.407 | 23.740 | **×0.84** | ×1.31 | 0.64 |
+| `lambert_w` | 1 | 10.865 | 7.879 | **×0.73** | ×0.95 | 0.76 |
+| `lennard_jones` | 1 | 30.601 | 8.754 | **×0.29** | ×0.30 | 0.96 |
+| `european_call` | 1 | 59.651 | 2.724 | **×0.05** | ×0.06 | 0.71 |
 
-**Median agreement: 0.96** across the 10 resolvable tasks (10 of 20 were call-overhead bound and excluded).
+**Median agreement: 0.97** across the 11 resolvable tasks (9 of 20 were call-overhead bound and excluded).
 
 ## Not measurable
 

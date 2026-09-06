@@ -3,7 +3,7 @@
   "title": "Attente file M/M/1 (SRE · systèmes)",
   "direction": "min",
   "metric": 6.062690637388583e-33,
-  "level": 2,
+  "level": 5,
   "formula": "(-((l / m) / (l - m)))",
   "seed": 1000080,
   "iteration": 83,

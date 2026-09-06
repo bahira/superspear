@@ -124,7 +124,12 @@ for (const [id, entry] of Object.entries(ledger) as [string, any][]) {
       }
       const fmetric = t.evaluate(fnode).metric;
       const fcost = estimateCost(fnode);
-      if (!Number.isFinite(fmetric) || fcost >= cost) {
+      // identical to the champion => not an alternative operating point
+      const sameAsChampion = nodeToString(fnode) === nodeToString(champNode);
+      if (sameAsChampion) {
+        delete entry.fast; delete entry.fastTree;
+        changes.push(`[${id}] fast slot dropped (identical to the champion — not a distinct operating point)`);
+      } else if (!Number.isFinite(fmetric) || fcost >= cost) {
         delete entry.fast; delete entry.fastTree;
         changes.push(`[${id}] fast slot dropped (cost ${fcost} >= champion ${cost}: not a fast slot)`);
       } else {
