@@ -11,8 +11,18 @@
   "speed": {
     "formulaCost": 45,
     "exactCost": 55,
-    "speedup": 1.2222222222222223,
-    "costProfile": "cpu-transcendental-20"
+    "speedup": 0.9747,
+    "costProfile": "cpu-transcendental-20",
+    "measured": {
+      "measuredSpeedup": 0.9747,
+      "nsFormula": 14.5113,
+      "nsExact": 14.1445,
+      "agreement": 0.7975,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    },
+    "speedupModelled": 1.2222222222222223,
+    "speedupSource": "measured"
   },
   "tree": {
     "o": "add",
@@ -181,171 +191,6 @@
       {
         "o": "const",
         "v": 0.057610571673754406
-      }
-    ]
-  },
-  "fast": {
-    "formula": "((8.68589 * log(max((((148691236 * (x)²) * (x)²) / (((x)² + 424.36) * (sqrt(|(((x)² + 11599.29) * ((x)² + 544496.41))|) * ((x)² + 148691236)))), 1e-30))) + 2)",
-    "metric": 8.304404762092827e-14,
-    "level": 5,
-    "formulaCost": 43,
-    "measured": {
-      "measuredSpeedup": 1.0306,
-      "nsChampion": 14.2378,
-      "nsFast": 13.8156,
-      "resolvable": true,
-      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
-    }
-  },
-  "fastTree": {
-    "o": "add",
-    "c": [
-      {
-        "o": "mul",
-        "c": [
-          {
-            "o": "const",
-            "v": 8.68589
-          },
-          {
-            "o": "log",
-            "c": [
-              {
-                "o": "pdiv",
-                "c": [
-                  {
-                    "o": "mul",
-                    "c": [
-                      {
-                        "o": "mul",
-                        "c": [
-                          {
-                            "o": "const",
-                            "v": 148691236
-                          },
-                          {
-                            "o": "sq",
-                            "c": [
-                              {
-                                "o": "var",
-                                "n": "x"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "o": "sq",
-                        "c": [
-                          {
-                            "o": "var",
-                            "n": "x"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "o": "mul",
-                    "c": [
-                      {
-                        "o": "add",
-                        "c": [
-                          {
-                            "o": "sq",
-                            "c": [
-                              {
-                                "o": "var",
-                                "n": "x"
-                              }
-                            ]
-                          },
-                          {
-                            "o": "const",
-                            "v": 424.36
-                          }
-                        ]
-                      },
-                      {
-                        "o": "mul",
-                        "c": [
-                          {
-                            "o": "sqrt",
-                            "c": [
-                              {
-                                "o": "mul",
-                                "c": [
-                                  {
-                                    "o": "add",
-                                    "c": [
-                                      {
-                                        "o": "sq",
-                                        "c": [
-                                          {
-                                            "o": "var",
-                                            "n": "x"
-                                          }
-                                        ]
-                                      },
-                                      {
-                                        "o": "const",
-                                        "v": 11599.29
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "o": "add",
-                                    "c": [
-                                      {
-                                        "o": "sq",
-                                        "c": [
-                                          {
-                                            "o": "var",
-                                            "n": "x"
-                                          }
-                                        ]
-                                      },
-                                      {
-                                        "o": "const",
-                                        "v": 544496.41
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "o": "add",
-                            "c": [
-                              {
-                                "o": "sq",
-                                "c": [
-                                  {
-                                    "o": "var",
-                                    "n": "x"
-                                  }
-                                ]
-                              },
-                              {
-                                "o": "const",
-                                "v": 148691236
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "o": "const",
-        "v": 2
       }
     ]
   }

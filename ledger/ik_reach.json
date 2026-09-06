@@ -180,110 +180,25 @@
   },
   "speed": {
     "formulaCost": 52,
-    "vsIterative": {
-      "label": "Newton-DLS · 8 itérations",
-      "speedup": 6.2
-    },
-    "costProfile": "cpu-transcendental-20"
-  },
-  "fast": {
-    "formula": "((-1.149081 * (((d)² - ((l2)² + (l3)²)) / (2 * (l2 * l3)))) + 1.580331)",
-    "metric": 0.0031665264727150544,
-    "level": 2,
-    "formulaCost": 13,
-    "vsIterative": {
-      "label": "Newton-DLS · 8 itérations",
-      "speedup": 24.6
-    },
+    "costProfile": "cpu-transcendental-20",
     "measured": {
-      "measuredSpeedup": 4.5414,
-      "nsChampion": 39.9014,
-      "nsFast": 8.7861,
+      "measuredSpeedup": 0.6823,
+      "nsFormula": 38.1336,
+      "nsExact": 26.0184,
+      "agreement": 1.1445,
       "resolvable": true,
       "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    },
+    "exactCost": 31,
+    "speedup": 0.6823,
+    "speedupModelled": 0.5961538461538461,
+    "speedupSource": "measured",
+    "vsSolverContext": {
+      "label": "Newton-DLS · 8 itérations",
+      "speedup": 6.2,
+      "note": "Context only — a closed-form reference exists for this task, so the solver is not what a real implementation runs. Not a like-for-like speedup: the solver's accuracy is orders of magnitude worse.",
+      "honestSpeedupVsReference": 0.5961538461538461
     }
-  },
-  "fastTree": {
-    "o": "add",
-    "c": [
-      {
-        "o": "mul",
-        "c": [
-          {
-            "o": "const",
-            "v": -1.1490811129545486
-          },
-          {
-            "o": "pdiv",
-            "c": [
-              {
-                "o": "sub",
-                "c": [
-                  {
-                    "o": "sq",
-                    "c": [
-                      {
-                        "o": "var",
-                        "n": "d"
-                      }
-                    ]
-                  },
-                  {
-                    "o": "add",
-                    "c": [
-                      {
-                        "o": "sq",
-                        "c": [
-                          {
-                            "o": "var",
-                            "n": "l2"
-                          }
-                        ]
-                      },
-                      {
-                        "o": "sq",
-                        "c": [
-                          {
-                            "o": "var",
-                            "n": "l3"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "o": "mul",
-                "c": [
-                  {
-                    "o": "const",
-                    "v": 2
-                  },
-                  {
-                    "o": "mul",
-                    "c": [
-                      {
-                        "o": "var",
-                        "n": "l2"
-                      },
-                      {
-                        "o": "var",
-                        "n": "l3"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "o": "const",
-        "v": 1.5803305488563304
-      }
-    ]
   },
   "holdout": 1.0679490439746013e-13
 }

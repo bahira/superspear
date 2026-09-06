@@ -538,7 +538,13 @@ export function parseFormula(src: string): SpearNode {
     }
     if (t === "|") { eat("|"); const e = expr(); eat("|"); return makeNode("abs", { children: [e] }); }
     if (t === "-") { eat("-"); return makeNode("neg", { children: [atom()] }); }
-    if (/[a-z_]/.test(t[0])) {
+    // Case-insensitive, matching the tokenizer at the top of this function
+    // (/[a-z_]/i). Without the `i` flag an uppercase variable tokenised fine
+    // and then fell through to the numeric branch, silently becoming NaN:
+    // parseFormula("M - e*sin(M)") evaluated to NaN for every input, including
+    // M=0,e=0. Tasks using uppercase names (kepler_solver's M) could not have a
+    // reference law written for them at all.
+    if (/[a-z_]/i.test(t[0])) {
       eat();
       if (peek() === "(" && FUNCS.has(t)) {
         eat("(");

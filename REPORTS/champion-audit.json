@@ -3,13 +3,7 @@
     {
       "id": "a_weighting",
       "hasTask": true,
-      "issues": [
-        {
-          "code": "fast-slot-pointless",
-          "severity": "warn",
-          "detail": "fast slot measures ×1.03 — no usable gain, so its accuracy loss buys nothing"
-        }
-      ],
+      "issues": [],
       "storedMetric": 2.628534104818355e-30,
       "recomputedMetric": 2.628534104818355e-30,
       "metricDrift": 0,
@@ -23,9 +17,7 @@
       "holdout": 2.6482577941200677e-30,
       "overfitRatio": 1.0075036839984526,
       "ood": 0,
-      "r2": 1,
-      "fastCost": 43,
-      "fastMetric": 8.304404762092827e-14
+      "r2": 1
     },
     {
       "id": "aces_fit",
@@ -160,7 +152,18 @@
     {
       "id": "bessel_i0e",
       "hasTask": true,
-      "issues": [],
+      "issues": [
+        {
+          "code": "speedup-model-off",
+          "severity": "warn",
+          "detail": "modelled ×3.00 vs measured ×5.08 (agreement 1.69) — cite the measured figure"
+        },
+        {
+          "code": "ood-violation",
+          "severity": "warn",
+          "detail": "ood violation 5.00e-1 — extrapolates badly"
+        }
+      ],
       "storedMetric": 0.00003054886219191836,
       "recomputedMetric": 0.00003054886219191836,
       "metricDrift": 0,
@@ -173,12 +176,18 @@
       "provenance": "search",
       "holdout": 0.00003107218721220352,
       "overfitRatio": 1.0171307532502343,
+      "ood": 0.5,
       "r2": 0.9973227609847197
     },
     {
       "id": "bessel_j0",
       "hasTask": true,
       "issues": [
+        {
+          "code": "speedup-model-off",
+          "severity": "warn",
+          "detail": "modelled ×3.08 vs measured ×0.83 (agreement 0.27) — cite the measured figure"
+        },
         {
           "code": "ood-violation",
           "severity": "warn",
@@ -223,9 +232,7 @@
       "holdout": 0.0000051975595227719345,
       "overfitRatio": 0.9999178215479715,
       "ood": 0.481776797813946,
-      "r2": 0.9999541606898801,
-      "fastCost": 23,
-      "fastMetric": 0.0007509240227970247
+      "r2": 0.9999541606898801
     },
     {
       "id": "bessel_j2",
@@ -667,7 +674,18 @@
     {
       "id": "elliptic_k",
       "hasTask": true,
-      "issues": [],
+      "issues": [
+        {
+          "code": "speedup-model-off",
+          "severity": "warn",
+          "detail": "modelled ×0.38 vs measured ×2.46 (agreement 6.47) — cite the measured figure"
+        },
+        {
+          "code": "ood-violation",
+          "severity": "warn",
+          "detail": "ood violation 2.01e+1 — extrapolates badly"
+        }
+      ],
       "storedMetric": 0.0010426866886825285,
       "recomputedMetric": 0.0010426866886825285,
       "metricDrift": 0,
@@ -680,6 +698,7 @@
       "provenance": "search",
       "holdout": 0.0009718726334056787,
       "overfitRatio": 0.932085010727119,
+      "ood": 20.054170907505235,
       "r2": 0.9950656039625979,
       "fastCost": 8,
       "fastMetric": 0.005535101499306599
@@ -1108,7 +1127,13 @@
     {
       "id": "ik_reach",
       "hasTask": true,
-      "issues": [],
+      "issues": [
+        {
+          "code": "champion-equivalent-to-law",
+          "severity": "info",
+          "detail": "champion differs textually from the seeded law but is equally exact — an algebraic rewrite, not a new result (cost 52 vs 31)"
+        }
+      ],
       "storedMetric": 4.0626336618882106e-32,
       "recomputedMetric": 4.0626336618882106e-32,
       "metricDrift": 0,
@@ -1116,13 +1141,13 @@
       "recomputedLevel": 5,
       "cost": 52,
       "storedCost": 52,
+      "speedup": 0.5961538461538461,
       "transcendental": 2,
-      "provenance": "search",
+      "provenance": "rewrite-of-law",
       "holdout": 3.192421475816282e-32,
       "overfitRatio": 0.03192421475816282,
-      "r2": 1,
-      "fastCost": 13,
-      "fastMetric": 0.0031665264727150544
+      "ood": 0,
+      "r2": 1
     },
     {
       "id": "implied_vol",
@@ -2277,8 +2302,8 @@
   "missing": [],
   "summary": {
     "total": 89,
-    "clean": 55,
-    "warn": 34,
+    "clean": 54,
+    "warn": 35,
     "fail": 0,
     "recoveredSeed": 45,
     "searchFound": 44

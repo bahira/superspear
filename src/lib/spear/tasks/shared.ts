@@ -510,6 +510,64 @@ export const EXACT_LAWS: Record<string, SpearNode> = {
 
 
   // ---------------------------------------------------------------------
+  // Series- and solver-defined reference laws.
+  //
+  // These were previously left out on the grounds that Bessel/elliptic tasks
+  // are "series-defined, so no closed form exists". That reasoning conflated
+  // two different roles: a COMPETITOR must be cheap enough to beat the
+  // champion, but a REFERENCE only has to reproduce the target — it is
+  // allowed to be expensive, and an expensive exact law is precisely what
+  // makes a cheap champion valuable. Re-tested under the reference criterion,
+  // truncated series reach machine precision:
+  //   bessel_j0 1.6e-31, bessel_j1 3.9e-31, bessel_j2 1.8e-31, bessel_i0e 3.8e-34
+  //
+  // Built programmatically rather than pasted: the i0e series alone is 11 KB
+  // of literal, which nobody can review for a misplaced digit.
+  //
+  // NOT added: kepler_solver. Newton from Danby's guess needs 3 unrolled steps
+  // to reach 2.5e-7 and costs 3930 nodes — genuinely iterative, so it stays
+  // honestly unmeasured rather than carrying a 4000-node "reference".
+  // ---------------------------------------------------------------------
+  ...(() => {
+    const fact = (n: number): number => { let f = 1; for (let i = 2; i <= n; i++) f *= i; return f; };
+    const pw = (b: string, k: number): string => (k === 0 ? "1" : Array(k).fill(b).join("*"));
+    const series = (terms: number, coef: (k: number) => number, q: string, pre = ""): string => {
+      const parts: string[] = [];
+      for (let k = 0; k <= terms; k++) {
+        const c = coef(k);
+        if (c === 0) continue;
+        parts.push(`(${c.toExponential(17)}*${pw(q, k)})`);
+      }
+      return `${pre}(${parts.join(" + ")})`;
+    };
+    const q = "((x)\u00B2*0.25)";
+    // K(m) = pi / (2 * AGM(1, sqrt(1-m))) — 5 unrolled AGM steps converge to 3.8e-29
+    let agmA = "1";
+    let agmB = "sqrt((1 - m))";
+    for (let i = 0; i < 5; i++) {
+      const na = `((${agmA} + ${agmB})*0.5)`;
+      const nb = `sqrt((${agmA}*${agmB}))`;
+      agmA = na; agmB = nb;
+    }
+    const f2 = "((x)\u00B2)";
+    const ra =
+      `((12194*12194*${f2}*${f2}) / (((${f2} + 20.6*20.6)) * ` +
+      `sqrt(((${f2} + 107.7*107.7)*(${f2} + 737.9*737.9))) * (${f2} + 12194*12194)))`;
+    const src: Record<string, string> = {
+      bessel_j0: series(22, (k) => (-1) ** k / fact(k) ** 2, q),
+      bessel_j1: series(22, (k) => (-1) ** k / (fact(k) * fact(k + 1)), q, "(x*0.5)*"),
+      bessel_j2: series(22, (k) => (-1) ** k / (fact(k) * fact(k + 2)), q, `${q}*`),
+      // 40 terms: 24 gives 5.9e-5 and 48 degrades to 1.8e-14 through f64
+      // cancellation, so this is the sweet spot, not an arbitrary cut.
+      bessel_i0e: series(40, (k) => 1 / fact(k) ** 2, q, "exp(-x)*"),
+      ik_reach: "acos((((d)\u00B2 - ((l2)\u00B2 + (l3)\u00B2)) / (2*(l2*l3))))",
+      elliptic_k: `(1.5707963267948966/${agmA})`,
+      a_weighting: `((20/2.302585092994046)*log(${ra}) + 2)`,
+    };
+    return Object.fromEntries(Object.entries(src).map(([id, f]) => [id, parseFormula(f)]));
+  })(),
+
+  // ---------------------------------------------------------------------
   // Reference laws written as SOURCE STRINGS.
   //
   // Same purpose as the hand-built ASTs above: without a compilable reference
