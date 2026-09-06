@@ -169,7 +169,7 @@ Seeding the *shape of the trick* changed everything on the optimality tests:
 |---|---|---|---|---|
 | **probit_quantile** ⭐ | THE quantile kernel (VaR · z-scores · probit regression) | **1.9e-5, L3** gen-1 — novel √√log+x² hybrid at Acklam-cost parity | 29 | ×0.97 |
 | **pmt_finance** ⭐ | loan payment per unit, embedded fintech | **4.4e-7, L2** — discovered **atan(n) hybrid replaces e^(n·ln(1+r))**, ×1.38 faster than textbook | 34 | **×1.38** |
-| logsumexp2 (SPEAR² self-hunt) | beating our own ×8.57 record | record held — the 7-unit form resists its own engine | 7 | ×8.57 |
+| logsumexp2 (SPEAR² self-hunt) | beating our own record | record held — the 7-unit form resists its own engine | 7 | ×2.47 measured (×8.57 modelled) |
 
 The pmt discovery is the kind of surprise that justifies the whole method: nobody writes loan-payment kernels with arctangent, yet evolution found one that is cheaper than the textbook exponential form and exact-grade accurate.
 ### 🌈 Wave 5 — PBR trio completed & hardened references

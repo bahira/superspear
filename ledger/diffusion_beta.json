@@ -11,7 +11,15 @@
     "formulaCost": 23,
     "exactCost": 24,
     "speedup": 1.0434782608695652,
-    "costProfile": "cpu-transcendental-20"
+    "costProfile": "cpu-transcendental-20",
+    "measured": {
+      "measuredSpeedup": 0.9988,
+      "nsFormula": 10.4345,
+      "nsExact": 10.4217,
+      "agreement": 0.9572,
+      "resolvable": false,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    }
   },
   "tree": {
     "o": "add",

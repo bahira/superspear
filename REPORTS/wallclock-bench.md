@@ -8,35 +8,35 @@ Champion and exact reference law both emitted as C99, compiled `gcc -O2` (no LTO
 
 | task | vars | ns/elem formula | ns/elem exact | measured ⚡ | modelled ⚡ | agreement |
 |---|---|---|---|---|---|---|
-| `kdv_soliton` | 2 | 5.943 | 40.810 | **×6.87** | ×7.57 | 0.91 |
-| `logsumexp2` | 2 | 9.975 | 24.520 | **×2.46** | ×8.57 | 0.29 |
-| `damped_oscillation` | 1 | 10.375 | 17.516 | **×1.69** | ×1.63 | 1.04 |
-| `kerr_spin` | 2 | 23.974 | 28.795 | **×1.20** | ×1.17 | 1.03 |
-| `hill` | 1 | 8.173 | 8.424 | **×1.03** | ×1.00 | 1.03 |
-| `logistic_growth` | 1 | 15.486 | 15.694 | **×1.01** | ×0.62 | 1.63 |
-| `layernorm_scale` ⚠ | 1 | 8.126 | 8.200 | **×1.01** | ×0.50 | n/a |
-| `pendulum_hybrid` ⚠ | 2 | 39.867 | 40.165 | **×1.01** | ×0.98 | n/a |
-| `bilinear_interp` ⚠ | 1 | 2.719 | 2.728 | **×1.00** | ×0.50 | n/a |
-| `temporal_grad` ⚠ | 2 | 3.056 | 3.053 | **×1.00** | ×1.00 | n/a |
-| `free_fall` ⚠ | 1 | 2.723 | 2.719 | **×1.00** | ×0.67 | n/a |
-| `kepler` ⚠ | 1 | 2.726 | 2.717 | **×1.00** | ×0.60 | n/a |
-| `lorentz` ⚠ | 1 | 8.415 | 8.377 | **×1.00** | ×0.89 | n/a |
-| `diffusion_beta` ⚠ | 1 | 10.433 | 10.371 | **×0.99** | ×1.04 | n/a |
-| `softplus` | 1 | 13.348 | 12.707 | **×0.95** | ×0.95 | 1.00 |
-| `rc_circuit` ⚠ | 1 | 8.322 | 7.862 | **×0.94** | ×0.96 | n/a |
-| `gaussian_kernel` | 1 | 8.257 | 7.658 | **×0.93** | ×0.96 | 0.97 |
-| `kerr` | 1 | 28.484 | 23.830 | **×0.84** | ×1.31 | 0.64 |
-| `light_falloff_punctual` | 1 | 25.468 | 18.739 | **×0.74** | ×1.54 | 0.48 |
-| `lambert_w` | 1 | 10.896 | 7.873 | **×0.72** | ×0.95 | 0.76 |
-| `lennard_jones` | 1 | 30.686 | 8.737 | **×0.28** | ×0.30 | 0.95 |
-| `european_call` | 1 | 59.968 | 2.731 | **×0.05** | ×0.06 | 0.71 |
+| `kdv_soliton` | 2 | 5.947 | 40.755 | **×6.85** | ×7.57 | 0.91 |
+| `logsumexp2` | 2 | 10.041 | 24.710 | **×2.46** | ×8.57 | 0.29 |
+| `damped_oscillation` | 1 | 10.388 | 20.750 | **×2.00** | ×1.63 | 1.23 |
+| `kerr_spin` | 2 | 23.854 | 28.701 | **×1.20** | ×1.17 | 1.03 |
+| `hill` ⚠ | 1 | 8.537 | 9.122 | **×1.07** | ×1.00 | n/a |
+| `pendulum_hybrid` ⚠ | 2 | 39.071 | 40.075 | **×1.03** | ×0.98 | n/a |
+| `temporal_grad` ⚠ | 2 | 2.849 | 2.902 | **×1.02** | ×1.00 | n/a |
+| `logistic_growth` | 1 | 15.544 | 15.733 | **×1.01** | ×0.62 | 1.63 |
+| `layernorm_scale` ⚠ | 1 | 8.067 | 8.145 | **×1.01** | ×0.50 | n/a |
+| `bilinear_interp` ⚠ | 1 | 2.717 | 2.717 | **×1.00** | ×0.50 | n/a |
+| `free_fall` ⚠ | 1 | 2.725 | 2.720 | **×1.00** | ×0.67 | n/a |
+| `kepler` ⚠ | 1 | 2.729 | 2.721 | **×1.00** | ×0.60 | n/a |
+| `lorentz` ⚠ | 1 | 8.751 | 8.595 | **×0.98** | ×0.89 | n/a |
+| `rc_circuit` | 1 | 8.160 | 7.855 | **×0.96** | ×0.96 | 1.01 |
+| `softplus` | 1 | 13.298 | 12.689 | **×0.95** | ×0.95 | 1.00 |
+| `diffusion_beta` | 1 | 13.021 | 12.251 | **×0.94** | ×1.04 | 0.90 |
+| `gaussian_kernel` | 1 | 8.161 | 7.559 | **×0.93** | ×0.96 | 0.97 |
+| `kerr` ⚠ | 1 | 28.924 | 26.154 | **×0.90** | ×1.31 | n/a |
+| `light_falloff_punctual` | 1 | 25.655 | 18.783 | **×0.73** | ×1.54 | 0.48 |
+| `lambert_w` | 1 | 10.818 | 7.869 | **×0.73** | ×0.95 | 0.76 |
+| `lennard_jones` | 1 | 30.531 | 8.747 | **×0.29** | ×0.30 | 0.96 |
+| `european_call` | 1 | 59.596 | 2.725 | **×0.05** | ×0.06 | 0.71 |
 
-**Median agreement: 0.95** across the 13 resolvable tasks (9 of 22 were call-overhead bound and excluded).
+**Median agreement: 0.96** across the 13 resolvable tasks (9 of 22 were call-overhead bound and excluded).
 
 ## Where the model over-promises (agreement < 0.5)
 
 - `logsumexp2`: model says ×8.57, hardware says ×2.46
-- `light_falloff_punctual`: model says ×1.54, hardware says ×0.74
+- `light_falloff_punctual`: model says ×1.54, hardware says ×0.73
 
 ## Not measurable
 

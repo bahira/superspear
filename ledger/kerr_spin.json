@@ -10,14 +10,24 @@
   "speed": {
     "formulaCost": 18,
     "exactCost": 21,
-    "speedup": 1.1666666666666667,
+    "speedup": 1.2028,
     "costProfile": "cpu-transcendental-20",
     "vsSolverContext": {
       "label": "RK4 géodésique · 200 pas",
       "speedup": 133.3,
       "note": "Context only — a closed-form reference exists for this task, so the solver is not what a real implementation runs. Not a like-for-like speedup: the solver's accuracy is orders of magnitude worse.",
       "honestSpeedupVsReference": 1.1666666666666667
-    }
+    },
+    "measured": {
+      "measuredSpeedup": 1.2028,
+      "nsFormula": 23.8251,
+      "nsExact": 28.6564,
+      "agreement": 1.031,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    },
+    "speedupModelled": 1.1666666666666667,
+    "speedupSource": "measured"
   },
   "tree": {
     "o": "add",

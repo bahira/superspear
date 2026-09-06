@@ -68,6 +68,7 @@ function median(xs: number[]): number {
 
 const args = process.argv.slice(2);
 const asMd = args.includes("--md");
+const asJson = args.includes("--json");
 const only = new Set(args.filter((a) => !a.startsWith("--")));
 
 const ledger = loadLedger();
@@ -238,7 +239,11 @@ int main(void) {
 rmSync(dir, { recursive: true, force: true });
 rows.sort((a, b) => b.measured - a.measured);
 
-if (asMd) {
+if (asJson) {
+  // Machine-readable form so measurements can be written back into the ledger
+  // (scripts/write-measured-speed.ts) instead of living only in a report.
+  console.log(JSON.stringify({ rows, skipped, floorNs: FLOOR }, null, 2));
+} else if (asMd) {
   const lines: string[] = [];
   lines.push("# Wall-clock benchmark — does the cost model tell the truth?");
   lines.push("");

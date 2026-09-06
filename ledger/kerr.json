@@ -10,73 +10,24 @@
   "speed": {
     "formulaCost": 13,
     "exactCost": 17,
-    "speedup": 1.3076923076923077,
+    "speedup": 0.8359,
     "costProfile": "cpu-transcendental-20",
     "vsSolverContext": {
       "label": "RK4 géodésique · 200 pas",
       "speedup": 184.6,
       "note": "Context only — a closed-form reference exists for this task, so the solver is not what a real implementation runs. Not a like-for-like speedup: the solver's accuracy is orders of magnitude worse.",
       "honestSpeedupVsReference": 1.3076923076923077
-    }
-  },
-  "fast": {
-    "formula": "((93.828911 * ((0.630738 / b))²) + 0.119199)",
-    "metric": 0.0014679448665524788,
-    "level": 2,
-    "formulaCost": 7,
-    "speed": {
-      "formulaCost": 5,
-      "exactCost": 17,
-      "speedup": 3.4,
-      "vsSolverContext": {
-        "label": "RK4 gÃ©odÃ©sique · 200 pas",
-        "speedup": 480,
-        "note": "Context only — a closed-form reference exists for this task, so the solver is not what a real implementation runs. Not a like-for-like speedup: the solver's accuracy is orders of magnitude worse.",
-        "honestSpeedupVsReference": 3.4
-      }
     },
-    "vsSolverContext": {
-      "label": "RK4 géodésique · 200 pas",
-      "speedup": 342.9,
-      "note": "Context only — a closed-form reference exists for this task, so the solver is not what a real implementation runs. Not a like-for-like speedup: the solver's accuracy is orders of magnitude worse.",
-      "honestSpeedupVsReference": 2.4285714285714284
-    }
-  },
-  "fastTree": {
-    "o": "add",
-    "c": [
-      {
-        "o": "mul",
-        "c": [
-          {
-            "o": "const",
-            "v": 93.82891073079803
-          },
-          {
-            "o": "sq",
-            "c": [
-              {
-                "o": "pdiv",
-                "c": [
-                  {
-                    "o": "const",
-                    "v": 0.630738
-                  },
-                  {
-                    "o": "var",
-                    "n": "b"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "o": "const",
-        "v": 0.11919855582933934
-      }
-    ]
+    "measured": {
+      "measuredSpeedup": 0.8359,
+      "nsFormula": 28.5832,
+      "nsExact": 23.8922,
+      "agreement": 0.6392,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    },
+    "speedupModelled": 1.3076923076923077,
+    "speedupSource": "measured"
   },
   "tree": {
     "o": "add",

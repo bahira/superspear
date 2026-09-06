@@ -10,14 +10,24 @@
   "speed": {
     "formulaCost": 27,
     "exactCost": 44,
-    "speedup": 1.6296296296296295,
+    "speedup": 1.6652,
     "costProfile": "cpu-transcendental-20",
     "vsSolverContext": {
       "label": "RKF45 · 300 pas",
       "speedup": 200,
       "note": "Context only — a closed-form reference exists for this task, so the solver is not what a real implementation runs. Not a like-for-like speedup: the solver's accuracy is orders of magnitude worse.",
       "honestSpeedupVsReference": 1.6296296296296295
-    }
+    },
+    "measured": {
+      "measuredSpeedup": 1.6652,
+      "nsFormula": 10.3953,
+      "nsExact": 17.31,
+      "agreement": 1.0218,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    },
+    "speedupModelled": 1.6296296296296295,
+    "speedupSource": "measured"
   },
   "tree": {
     "o": "add",

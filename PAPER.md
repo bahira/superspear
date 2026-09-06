@@ -81,7 +81,7 @@ factor, Lambert W₀, 2-link IK elbow (1.1e-13), symmetric 3×3 λmax (3.3e-11,
 full Cardano trisection recovered through the atan identity).
 
 ### 4.2 Faster than the reference (selection)
-logsumexp2 ×8.57, KdV soliton ×7.57, GELU ×6.57, inverted-pendulum hybrid
+logsumexp2 ×2.47 measured (×8.57 modelled), KdV soliton ×6.94 measured, GELU ×6.57 modelled, inverted-pendulum hybrid
 ×3.76, IDM car-following ×3.33, SiLU ×2.43. Wall-clock cross-checks on WASM
 confirm direction and rough magnitude (e.g., KdV ×1.96 measured).
 

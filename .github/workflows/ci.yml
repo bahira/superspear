@@ -70,3 +70,16 @@ jobs:
       # than measurement noise are excluded rather than counted as wins.
       - name: Wall-clock vs cost model
         run: npx tsx scripts/bench-wallclock.ts
+
+      # Measured speedups must stay in sync with the ledger. If a kernel starts
+      # measuring slower than the law it replaces, audit-champions --strict
+      # fails on `speedup-not-real` rather than shipping a false claim.
+      - name: Measured speed is in sync with the ledger
+        run: |
+          npx tsx scripts/write-measured-speed.ts --dry > /tmp/measured.txt
+          cat /tmp/measured.txt
+          # --dry prints what WOULD change; on a clean tree that must be nothing
+          if ! grep -q "^0 entries updated" /tmp/measured.txt; then
+            echo "::error::ledger measured-speed block is stale — run: npx tsx scripts/write-measured-speed.ts && npx tsx scripts/repair-ledger.ts"
+            exit 1
+          fi

@@ -158,6 +158,30 @@ function auditEntry(id: string, entry: Record<string, any>, def: TaskDef | undef
     }
   }
 
+  // ---- the advertised speedup vs what the hardware actually did
+  // A modelled multiplier is a hypothesis. Where write-measured-speed.ts has
+  // recorded a real measurement, the model must agree with it; if the kernel
+  // measured SLOWER than the law it claims to accelerate, the claim is simply
+  // false and must not be shipped quietly.
+  const measured = (entry.speed as { measured?: { measuredSpeedup: number; agreement: number; resolvable: boolean } } | undefined)
+    ?.measured;
+  if (measured?.resolvable) {
+    const claimed = entry.speed?.speedup;
+    if (measured.measuredSpeedup < 1 && claimed !== undefined && claimed > 1) {
+      push(
+        "speedup-not-real",
+        "fail",
+        `advertises ×${claimed.toFixed(2)} but MEASURES ×${measured.measuredSpeedup.toFixed(2)} — slower than the law it replaces`,
+      );
+    } else if (measured.agreement > 1.5 || measured.agreement < 0.667) {
+      push(
+        "speedup-model-off",
+        "warn",
+        `modelled ×${(claimed ?? 0).toFixed(2)} vs measured ×${measured.measuredSpeedup.toFixed(2)} (agreement ${measured.agreement.toFixed(2)}) — cite the measured figure`,
+      );
+    }
+  }
+
   // ---- generalisation: holdout
   if (def.holdout) {
     const h = safe(() => def.holdout!(node));

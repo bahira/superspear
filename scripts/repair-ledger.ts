@@ -101,6 +101,30 @@ for (const [id, entry] of Object.entries(ledger) as [string, any][]) {
       }
       entry.speed.exactCost = exactCost;
       entry.speed.speedup = su;
+
+      // A resolvable wall-clock measurement OVERRIDES the model. The model is a
+      // hypothesis about hardware; where the hardware has actually answered,
+      // publishing the hypothesis instead is just publishing a wrong number.
+      // kerr modelled ×1.31 / measured ×0.84 and light_falloff_punctual
+      // modelled ×1.54 / measured ×0.73 both shipped as accelerations while
+      // being decelerations in reality.
+      const meas = entry.speed.measured;
+      if (meas?.resolvable) {
+        if (Math.abs(entry.speed.speedup - meas.measuredSpeedup) / Math.max(meas.measuredSpeedup, 1e-9) > 0.02) {
+          changes.push(
+            `[${id}] speedup ×${su.toFixed(2)} (modelled) -> ×${meas.measuredSpeedup.toFixed(2)} (measured, authoritative)`,
+          );
+        }
+        entry.speed.speedupModelled = su;
+        entry.speed.speedup = meas.measuredSpeedup;
+        entry.speed.speedupSource = "measured";
+        // and a "fast" slot that is slower than the exact law is not a fast slot
+        if (meas.measuredSpeedup < 1 && entry.fast) {
+          delete entry.fast;
+          delete entry.fastTree;
+          changes.push(`[${id}] fast slot dropped — measured ×${meas.measuredSpeedup.toFixed(2)}, slower than the exact law`);
+        }
+      }
     }
   }
 
