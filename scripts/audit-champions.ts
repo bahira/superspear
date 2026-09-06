@@ -41,7 +41,7 @@ interface Row {
   storedCost?: number;
   speedup?: number;
   /** "search" = found by the loop; "recovered-seed" = textually the seeded law. */
-  provenance?: "search" | "recovered-seed";
+  provenance?: "search" | "recovered-seed" | "rewrite-of-law";
   holdout?: number;
   overfitRatio?: number;
   ood?: number;
@@ -177,13 +177,33 @@ function auditEntry(id: string, entry: Record<string, any>, def: TaskDef | undef
   const seededLaw = EXACT_LAWS[id];
   if (seededLaw) {
     const same = nodeToString(node) === nodeToString(seededLaw);
-    row.provenance = same ? "recovered-seed" : "search";
     if (same) {
+      row.provenance = "recovered-seed";
       push(
         "champion-is-seeded-law",
         "info",
         `champion is textually the seeded reference law — a recovery, not a discovery`,
       );
+    } else {
+      // Textual difference is NOT novelty. A champion can be an algebraic
+      // rewrite of the seeded law — same function, different spelling — and
+      // calling that "search-found" overstates what the loop achieved. 15 of
+      // the 16 exact "search" champions were exactly this (gelu, legendre_p2,
+      // cosh_curve...). Only a champion that is exact where the law is NOT can
+      // be claimed as the search beating the reference.
+      const lawMetric = safe(() => def.evaluate(seededLaw).metric);
+      const bothExact = row.recomputedMetric !== undefined && row.recomputedMetric < 1e-25 && lawMetric !== undefined && lawMetric < 1e-25;
+      if (bothExact) {
+        row.provenance = "rewrite-of-law";
+        push(
+          "champion-equivalent-to-law",
+          "info",
+          `champion differs textually from the seeded law but is equally exact — an algebraic rewrite, not a new result` +
+            (row.cost !== undefined ? ` (cost ${row.cost} vs ${estimateCost(seededLaw)})` : ""),
+        );
+      } else {
+        row.provenance = "search";
+      }
     }
   } else {
     row.provenance = "search";
@@ -422,7 +442,11 @@ async function main() {
   console.log(`  warnings  : ${warns.length}`);
   console.log(`  failures  : ${fails.length}`);
   console.log(`  no champion: ${missing.length}${missing.length ? " → " + missing.join(", ") : ""}`);
-  console.log(`  provenance : ${rows.length - recovered.length} search-found | ${recovered.length} recovered seeded law`);
+  const rewrites = rows.filter((r) => r.provenance === "rewrite-of-law");
+  console.log(
+    `  provenance : ${rows.length - recovered.length - rewrites.length} search-found | ` +
+      `${rewrites.length} algebraic rewrite of the law | ${recovered.length} recovered seeded law`,
+  );
   const byCode = new Map<string, number>();
   for (const r of rows) for (const i of r.issues) byCode.set(i.code, (byCode.get(i.code) ?? 0) + 1);
   console.log(`\n== issue histogram ==`);
