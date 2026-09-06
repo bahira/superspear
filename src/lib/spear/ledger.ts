@@ -19,7 +19,6 @@ export const LEDGER_DIR = join(ROOT, "ledger");
 export const BUNDLE_PATH = join(ROOT, "spear-hall-of-fame.json");
 
 /** Permissive entry shape: scripts keep their own narrow views on top. */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type LedgerEntry = Record<string, any>;
 export type Ledger = Record<string, LedgerEntry>;
 

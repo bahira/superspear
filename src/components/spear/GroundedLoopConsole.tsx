@@ -465,16 +465,19 @@ export function GroundedLoopConsole() {
   const [cache, setCache] = useState<CachedBest[]>([]);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // hydrate local cache on mount
+  // hydrate local cache on mount (post-mount on purpose: reading localStorage
+  // during render would diverge from the SSR prerender)
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCache(loadBestCache());
   }, []);
 
   // every progress snapshot (streamed or final) feeds the local cache:
   // only strictly better formulas replace the incumbent per task.
-  useEffect(() => {
-    if (!progress || progress.tasks.length === 0) return;
-    const incoming: CachedBest[] = progress.tasks
+  const absorbProgress = useCallback((snap: Progress | null) => {
+    setProgress(snap);
+    if (!snap || snap.tasks.length === 0) return;
+    const incoming: CachedBest[] = snap.tasks
       .filter((t) => t.best)
       .map((t) => ({
         taskId: t.taskId,
@@ -490,14 +493,14 @@ export function GroundedLoopConsole() {
         wasm: t.wasm,
         verifyNote: t.verifyNote,
         speed: t.speed,
-        seed: progress.seed,
+        seed: snap.seed,
         savedAt: Date.now(),
       }));
     if (incoming.length === 0) return;
     const merged = mergeBestEntries(loadBestCache(), incoming);
     persistBestCache(merged);
     setCache(merged);
-  }, [progress]);
+  }, []);
 
   const poll = useCallback(async (id: number) => {
     try {
@@ -505,11 +508,11 @@ export function GroundedLoopConsole() {
       if (!res.ok) return;
       const data = await res.json();
       const snap = data.experiment?.snapshot as Progress | null;
-      if (snap) setProgress(snap);
+      if (snap) absorbProgress(snap);
     } catch {
       /* transient */
     }
-  }, []);
+  }, [absorbProgress]);
 
   useEffect(() => {
     return () => {
@@ -520,7 +523,7 @@ export function GroundedLoopConsole() {
   async function run() {
     setRunning(true);
     setError(null);
-    setProgress(null);
+    absorbProgress(null);
     try {
       const res = await fetch("/api/spear/loop", {
         method: "POST",
@@ -534,7 +537,7 @@ export function GroundedLoopConsole() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Échec de la boucle.");
       setExperimentId(data.experimentId ?? null);
-      setProgress(data.progress as Progress);
+      absorbProgress(data.progress as Progress);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Erreur inconnue.");
     } finally {

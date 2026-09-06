@@ -71,4 +71,5 @@ export function bonferroni(zScores, familyAlpha = 0.05) {
 /** Probit-link conversion probability from a linear score. */
 export const conversionProb = (score) => cdf(score);
 
-export default { pdf, cdf, probit, qfunc, berBpsk, berQam, varNormal, portfolioVar, pValue, bonferroni, conversionProb };
+const stats = { pdf, cdf, probit, qfunc, berBpsk, berQam, varNormal, portfolioVar, pValue, bonferroni, conversionProb };
+export default stats;
