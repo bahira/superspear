@@ -1245,7 +1245,13 @@
     {
       "id": "kepler_solver",
       "hasTask": true,
-      "issues": [],
+      "issues": [
+        {
+          "code": "speedup-model-off",
+          "severity": "warn",
+          "detail": "modelled ×2.91 vs measured ×17.96 (agreement 6.17) — cite the measured figure"
+        }
+      ],
       "storedMetric": 0.006134991867434414,
       "recomputedMetric": 0.006134991867434414,
       "metricDrift": 0,
@@ -1258,6 +1264,7 @@
       "provenance": "search",
       "holdout": 0.004641021324542897,
       "overfitRatio": 0.7564836962829947,
+      "ood": 0,
       "r2": 0.9915868815707831,
       "fastCost": 6,
       "fastMetric": 0.012893357865503231
@@ -2302,8 +2309,8 @@
   "missing": [],
   "summary": {
     "total": 89,
-    "clean": 54,
-    "warn": 35,
+    "clean": 53,
+    "warn": 36,
     "fail": 0,
     "recoveredSeed": 45,
     "searchFound": 44

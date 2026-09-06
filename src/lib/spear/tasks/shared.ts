@@ -510,6 +510,45 @@ export const EXACT_LAWS: Record<string, SpearNode> = {
 
 
   // ---------------------------------------------------------------------
+  // kepler_solver: E - e*sin(E) = M, solved by unrolled Halley iteration.
+  //
+  // I dismissed this task twice, both times for a bad reason.
+  //
+  // First I tried the classical Bessel-series solution
+  // E = M + 2*sum (1/n) J_n(n e) sin(n M). It stalls at 1.2e-4, and bucketing
+  // the residual by eccentricity shows exactly why: mse is 1.5e-12 for e<0.3
+  // but 1.4e-3 for e>0.8. The series diverges past the Laplace limit
+  // e = 0.6627, and this dataset samples e up to 0.95. Mathematically the
+  // wrong tool here, not a tuning problem.
+  //
+  // Then I rejected unrolled Newton as "3930 nodes, genuinely iterative". That
+  // conflated cost with viability again: a REFERENCE is allowed to be
+  // expensive. Halley converges cubically, so 3 steps from Danby's starting
+  // guess reach 6.1e-25 — machine-exact, in 45909 nodes and 193 KB of C.
+  //
+  // But 3 steps is NOT what ships here. gcc compiles that fine (0.3 s), yet
+  // export-audit.ts runs every champion through the MISRA lint + WASM parity
+  // path and a 193 KB expression exhausts the V8 heap: the audit died with
+  // "Ineffective mark-compacts near heap limit" after 4 minutes. A reference
+  // that breaks the verification pipeline is not usable, however exact it is.
+  //
+  // 2 Halley steps give 1.8e-10 at 5085 nodes (14 KB of C) — comfortably below
+  // the task's own noise, and the whole audit chain stays green. Precision we
+  // cannot verify is worth less than precision we can.
+  // ---------------------------------------------------------------------
+  kepler_solver: (() => {
+    // Danby's initial guess: E0 = M + e*sin(M)*(1 + e*cos(M))
+    let E = "(M + (e*sin(M))*(1 + (e*cos(M))))";
+    for (let i = 0; i < 2; i++) {
+      const f = `((${E} - (e*sin(${E}))) - M)`;
+      const d1 = `(1 - (e*cos(${E})))`;
+      const d2 = `(e*sin(${E}))`;
+      E = `(${E} - ((2*${f}*${d1}) / ((2*${d1}*${d1}) - (${f}*${d2}))))`;
+    }
+    return parseFormula(E);
+  })(),
+
+  // ---------------------------------------------------------------------
   // Series- and solver-defined reference laws.
   //
   // These were previously left out on the grounds that Bessel/elliptic tasks

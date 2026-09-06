@@ -1538,7 +1538,7 @@ export const kernels = {
       level: 1,
       formulaCost: 11,
       exactCost: 32,
-      speedupVsExact: 2.909090909090909,
+      speedupVsExact: 17.9554,
       vsIterative: null,
     },
   },
