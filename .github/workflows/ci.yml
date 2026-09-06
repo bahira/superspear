@@ -84,6 +84,12 @@ jobs:
       # The public GitHub Pages site is generated from the ledger and nothing
       # re-ran the generator: 46 of 89 kernels on the landing page disagreed
       # with the ledger. That is the only number most visitors ever see.
+      # The ledger reasons in f64 but the MISRA export emits float32_t. 30
+      # kernels advertised as machine-exact are not exact on that target.
+      # Reported, not failed: losing f64 exactness in f32 is expected physics.
+      - name: float32 degradation disclosure
+        run: npx tsx scripts/test-f32-degradation.ts
+
       - name: Public site data matches the ledger
         run: npx tsx scripts/test-site-data-fresh.ts
 
