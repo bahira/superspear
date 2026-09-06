@@ -439,6 +439,60 @@ export const EXACT_LAWS: Record<string, SpearNode> = {
     ] });
     return makeNode("min", { children: [C(2), makeNode("max", { children: [C(-2), blend] })] });
   })(),
+
+  // ---------------------------------------------------------------------
+  // Reference laws added so their speedups become MEASURABLE.
+  //
+  // These nine tasks advertised some of the largest cost-model multipliers in
+  // the ledger (logsumexp2 x8.57, uncharted2_tonemap x3.25, bessel_i0e x3.00)
+  // but carried only a scalar `exactCost` and no AST, so bench-wallclock.ts
+  // had nothing to compile and skipped them. A speedup that cannot be measured
+  // is an assertion, not a result — these ASTs turn them into claims the
+  // hardware can refute.
+  // ---------------------------------------------------------------------
+
+  // NOT added: bessel_i0e, uncharted2_tonemap, blackbody_r. Draft ASTs for
+  // those did not reproduce their own task targets (mse 4.8e-3, 1.4e-1, inf),
+  // so shipping them would have made bench-wallclock compare the champion
+  // against something that is not the reference law — a measurement worse than
+  // no measurement. They keep their scalar exactCost and stay unmeasured.
+
+  // m = max(a,b); m + ln(e^(a-m) + e^(b-m))  — the numerically stable form
+  logsumexp2: (() => {
+    const a = V("a"), b = V("b");
+    const m = makeNode("max", { children: [a, b] });
+    const ea = makeNode("exp", { children: [makeNode("sub", { children: [a, m] })] });
+    const eb = makeNode("exp", { children: [makeNode("sub", { children: [b, m] })] });
+    return makeNode("add", { children: [m, makeNode("log", { children: [makeNode("add", { children: [ea, eb] })] })] });
+  })(),
+
+  rl_distillation: makeNode("tanh", { children: [makeNode("mul", { children: [C(2), V("x")] })] }),
+
+  // 1 - e^(-3.2*dt)
+  ema_smooth: makeNode("sub", {
+    children: [C(1), makeNode("exp", { children: [makeNode("neg", { children: [makeNode("mul", { children: [C(3.2), V("x")] })] })] })],
+  }),
+
+  // d2 = d1 - sigma*sqrt(T);  d1 = (ln(S/K) + sigma^2*T/2)/(sigma*sqrt(T))
+  bs_d2_sigma: (() => {
+    const x = V("x");
+    const num = makeNode("add", {
+      children: [C(0.0953101798), makeNode("mul", { children: [C(0.25), makeNode("add", { children: [C(0.05), makeNode("mul", { children: [C(0.5), makeNode("sq", { children: [x] })] })] })] })],
+    });
+    return makeNode("sub", {
+      children: [makeNode("pdiv", { children: [num, makeNode("mul", { children: [C(0.5), x] })] }), makeNode("mul", { children: [C(0.5), x] })],
+    });
+  })(),
+
+  // att = saturate(1 - (d/8)^4)^2 / d^2   (UE4 punctual light falloff)
+  light_falloff_punctual: (() => {
+    const d = V("x");
+    const r = makeNode("pdiv", { children: [d, C(8)] });
+    const r4 = makeNode("sq", { children: [makeNode("sq", { children: [r] })] });
+    const sat = makeNode("min", { children: [C(1), makeNode("relu", { children: [makeNode("sub", { children: [C(1), r4] })] })] });
+    return makeNode("pdiv", { children: [makeNode("sq", { children: [sat] }), makeNode("sq", { children: [d] })] });
+  })(),
+
 };
 
 // Iterative baselines: how each quantity is computed WITHOUT a closed form.
