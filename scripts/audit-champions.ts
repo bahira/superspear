@@ -123,7 +123,14 @@ function auditEntry(id: string, entry: Record<string, any>, def: TaskDef | undef
   if (exactCost) {
     const su = exactCost / Math.max(1, cost);
     row.speedup = su;
-    if (entry.speed?.speedup !== undefined && Math.abs(entry.speed.speedup - su) / Math.max(su, 1e-9) > 0.02) {
+    // Compare like with like. Where a resolvable wall-clock measurement exists
+    // it is deliberately published INSTEAD of the model (speedupSource =
+    // "measured"), so diffing it against the model re-derivation flags the
+    // intended substitution as staleness — it fired on all 12 measured
+    // kernels. Only model-sourced figures are checked for drift here; the
+    // model-vs-measured gap is reported separately by `speedup-model-off`.
+    const isMeasured = (entry.speed as { speedupSource?: string } | undefined)?.speedupSource === "measured";
+    if (!isMeasured && entry.speed?.speedup !== undefined && Math.abs(entry.speed.speedup - su) / Math.max(su, 1e-9) > 0.02) {
       push("speedup-stale", "warn", `stored ×${entry.speed.speedup} vs recomputed ×${su.toFixed(2)}`);
     }
   }
@@ -177,7 +184,10 @@ function auditEntry(id: string, entry: Record<string, any>, def: TaskDef | undef
       push(
         "speedup-model-off",
         "warn",
-        `modelled ×${(claimed ?? 0).toFixed(2)} vs measured ×${measured.measuredSpeedup.toFixed(2)} (agreement ${measured.agreement.toFixed(2)}) — cite the measured figure`,
+        // `claimed` is already the measured value once substitution happened,
+        // which printed "modelled ×0.84 vs measured ×0.84". Report the model
+        // figure from speedupModelled so the gap is actually visible.
+        `modelled ×${((entry.speed as { speedupModelled?: number } | undefined)?.speedupModelled ?? claimed ?? 0).toFixed(2)} vs measured ×${measured.measuredSpeedup.toFixed(2)} (agreement ${measured.agreement.toFixed(2)}) — cite the measured figure`,
       );
     }
   }
