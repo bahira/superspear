@@ -2,21 +2,21 @@
   "taskId": "srgb_gamma",
   "title": "Transfert sRGB (encodage linéaire→affichage)",
   "direction": "min",
-  "metric": 2.729882945820195e-28,
-  "holdout": 1.6016039436055328e-30,
+  "metric": 2.7231034629710704e-28,
+  "holdout": 2.0360738779067418e-30,
   "level": 5,
-  "formula": "((1.206233 * ((0.874624 * exp((log(max(x, 1e-30)) * 0.416667))) - 0.055)) + 0.011343)",
-  "seed": 260906,
+  "formula": "((1.186022 * ((0.889528 * exp((log(max(x, 1e-30)) * 0.416667))) - 0.055)) + 0.010231)",
+  "seed": 555111,
   "iteration": 8,
   "speed": {
     "formulaCost": 45,
     "exactCost": 22,
-    "speedup": 1.3916,
+    "speedup": 1.3782,
     "measured": {
-      "measuredSpeedup": 1.3916,
-      "nsFormula": 13.8718,
-      "nsExact": 19.3034,
-      "agreement": 2.8464,
+      "measuredSpeedup": 1.3782,
+      "nsFormula": 13.8447,
+      "nsExact": 19.0806,
+      "agreement": 2.819,
       "resolvable": true,
       "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
     },
@@ -32,7 +32,7 @@
         "c": [
           {
             "o": "const",
-            "v": 1.206232621103474
+            "v": 1.186022250002255
           },
           {
             "o": "sub",
@@ -42,7 +42,7 @@
                 "c": [
                   {
                     "o": "const",
-                    "v": 0.874624
+                    "v": 0.889528
                   },
                   {
                     "o": "exp",
@@ -79,15 +79,15 @@
       },
       {
         "o": "const",
-        "v": 0.011342794160686936
+        "v": 0.010231223750119227
       }
     ]
   },
   "fast": {
-    "formula": "((1.73775 * (x * (0.935818 / (0.985 + |x|)))) + 0.18558)",
-    "metric": 0.0005591285528887888,
+    "formula": "((0.973051 * sqrt(|x|)) + 0.040841)",
+    "metric": 0.00011551060259047263,
     "level": 2,
-    "formulaCost": 9
+    "formulaCost": 4
   },
   "fastTree": {
     "o": "add",
@@ -97,41 +97,14 @@
         "c": [
           {
             "o": "const",
-            "v": 1.7377499703284485
+            "v": 0.9730507444073812
           },
           {
-            "o": "mul",
+            "o": "sqrt",
             "c": [
               {
                 "o": "var",
                 "n": "x"
-              },
-              {
-                "o": "pdiv",
-                "c": [
-                  {
-                    "o": "const",
-                    "v": 0.935818
-                  },
-                  {
-                    "o": "add",
-                    "c": [
-                      {
-                        "o": "const",
-                        "v": 0.985
-                      },
-                      {
-                        "o": "abs",
-                        "c": [
-                          {
-                            "o": "var",
-                            "n": "x"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
               }
             ]
           }
@@ -139,7 +112,7 @@
       },
       {
         "o": "const",
-        "v": 0.1855796897420953
+        "v": 0.040840870014255015
       }
     ]
   }

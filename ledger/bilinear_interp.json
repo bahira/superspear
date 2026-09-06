@@ -39,5 +39,24 @@
       }
     ]
   },
-  "holdout": 0
+  "holdout": 0,
+  "fast": {
+    "formula": "(1 - u)",
+    "metric": 0,
+    "level": 5,
+    "formulaCost": 1
+  },
+  "fastTree": {
+    "o": "sub",
+    "c": [
+      {
+        "o": "const",
+        "v": 1
+      },
+      {
+        "o": "var",
+        "n": "u"
+      }
+    ]
+  }
 }

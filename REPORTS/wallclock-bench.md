@@ -4,81 +4,81 @@ Champion and exact reference law both emitted as C99, compiled `gcc -O2` (no LTO
 
 `agreement` = measured ÷ modelled. 1.00 means the ALU/SFU cost model predicted reality exactly; below 1 the model over-promises.
 
-**Resolution limit.** An out-of-line function that merely returns its argument costs **1.203 ns/elem** on this machine. Kernels close to that floor — or whose two variants differ by less than the run-to-run noise — are measuring call and loop overhead, not arithmetic. Those rows are marked ⚠ and their ratios are *not* evidence of anything. Trusting them would reintroduce exactly the kind of unearned number this audit removed.
+**Resolution limit.** An out-of-line function that merely returns its argument costs **1.198 ns/elem** on this machine. Kernels close to that floor — or whose two variants differ by less than the run-to-run noise — are measuring call and loop overhead, not arithmetic. Those rows are marked ⚠ and their ratios are *not* evidence of anything. Trusting them would reintroduce exactly the kind of unearned number this audit removed.
 
 | task | vars | ns/elem formula | ns/elem exact | measured ⚡ | modelled ⚡ | agreement |
 |---|---|---|---|---|---|---|
-| `laguerre_l2` | 1 | 2.731 | 5.471 | **×2.00** | ×1.00 | 2.00 |
-| `mel_scale` | 1 | 6.392 | 10.336 | **×1.62** | ×1.00 | 1.62 |
-| `bs_d1_sigma` | 1 | 8.417 | 13.235 | **×1.57** | ×0.82 | 1.92 |
-| `gauss_shader` | 1 | 7.936 | 12.451 | **×1.57** | ×0.96 | 1.64 |
-| `srgb_gamma` | 1 | 13.885 | 19.344 | **×1.39** | ×0.49 | 2.85 |
-| `light_falloff_punctual` | 1 | 13.802 | 18.825 | **×1.36** | ×1.67 | 0.82 |
-| `cosh_curve` | 1 | 16.393 | 21.624 | **×1.32** | ×1.02 | 1.29 |
-| `huber_loss` | 1 | 3.353 | 3.654 | **×1.09** | ×0.56 | 1.96 |
-| `uncharted2_tonemap` | 1 | 8.158 | 8.708 | **×1.07** | ×1.53 | 0.70 |
-| `mm1_queue_wait` | 2 | 7.968 | 8.369 | **×1.05** | ×1.00 | 1.05 |
-| `michaelis_menten` | 1 | 8.098 | 8.449 | **×1.04** | ×1.17 | 0.89 |
-| `lennard_jones` | 1 | 8.419 | 8.758 | **×1.04** | ×1.00 | 1.04 |
-| `doppler_effect` | 2 | 7.886 | 8.201 | **×1.04** | ×0.71 | 1.46 |
-| `hill` | 1 | 8.078 | 8.374 | **×1.04** | ×1.00 | 1.04 |
-| `rsi_momentum` | 2 | 8.134 | 8.389 | **×1.03** | ×0.67 | 1.55 |
-| `softplus` | 1 | 12.787 | 13.147 | **×1.03** | ×1.00 | 1.03 |
-| `kelly_criterion` | 2 | 10.611 | 10.901 | **×1.03** | ×0.75 | 1.37 |
-| `srgb_decode` | 1 | 13.175 | 13.522 | **×1.03** | ×0.54 | 1.91 |
-| `amp_damp_fid` | 3 | 19.148 | 19.532 | **×1.02** | ×0.27 | 3.83 |
-| `kerr_spin` | 2 | 28.811 | 29.188 | **×1.01** | ×1.00 | 1.01 |
-| `logsumexp2` | 2 | 23.678 | 23.976 | **×1.01** | ×0.90 | 1.13 |
-| `kerr` | 1 | 23.959 | 24.245 | **×1.01** | ×1.00 | 1.01 |
-| `aces_fit` ⚠ | 1 | 13.640 | 13.782 | **×1.01** | ×0.62 | n/a |
-| `erf_prob` ⚠ | 1 | 14.890 | 15.045 | **×1.01** | ×1.30 | n/a |
-| `temperature_softmax` | 2 | 23.312 | 23.543 | **×1.01** | ×0.87 | 1.17 |
-| `mish` ⚠ | 1 | 39.885 | 40.182 | **×1.01** | ×1.00 | n/a |
-| `kdv_soliton` ⚠ | 2 | 41.118 | 41.424 | **×1.01** | ×1.00 | n/a |
-| `pmt_finance` ⚠ | 2 | 44.887 | 45.161 | **×1.01** | ×0.52 | n/a |
-| `atan_unit` ⚠ | 1 | 11.455 | 11.517 | **×1.01** | ×1.00 | n/a |
-| `damped_oscillation` ⚠ | 1 | 18.046 | 18.139 | **×1.01** | ×1.00 | n/a |
-| `smoothstep` ⚠ | 1 | 2.730 | 2.744 | **×1.01** | ×1.25 | n/a |
-| `logistic_growth` ⚠ | 1 | 16.018 | 16.094 | **×1.00** | ×1.00 | n/a |
-| `layernorm_scale` ⚠ | 1 | 8.142 | 8.180 | **×1.00** | ×0.50 | n/a |
-| `logit_ml` ⚠ | 1 | 13.513 | 13.563 | **×1.00** | ×1.08 | n/a |
-| `bilinear_interp` ⚠ | 1 | 2.720 | 2.729 | **×1.00** | ×0.50 | n/a |
-| `temporal_grad` ⚠ | 2 | 2.727 | 2.734 | **×1.00** | ×1.00 | n/a |
-| `chsh_correlation` ⚠ | 4 | 28.978 | 29.052 | **×1.00** | ×0.95 | n/a |
-| `gaussian_cdf` ⚠ | 1 | 11.201 | 11.228 | **×1.00** | ×1.48 | n/a |
-| `tanh_sat` ⚠ | 1 | 19.223 | 19.262 | **×1.00** | ×1.00 | n/a |
-| `rayleigh_phase` ⚠ | 1 | 7.768 | 7.781 | **×1.00** | ×0.21 | n/a |
-| `grover_amplitude` ⚠ | 3 | 47.167 | 47.197 | **×1.00** | ×0.96 | n/a |
-| `qfi_dephasing` ⚠ | 3 | 8.517 | 8.521 | **×1.00** | ×0.79 | n/a |
-| `free_fall` ⚠ | 1 | 2.718 | 2.718 | **×1.00** | ×0.67 | n/a |
-| `sigmoid` ⚠ | 1 | 14.527 | 14.526 | **×1.00** | ×1.31 | n/a |
-| `lorentz` ⚠ | 1 | 8.362 | 8.360 | **×1.00** | ×0.89 | n/a |
-| `ema_smooth` ⚠ | 1 | 7.911 | 7.907 | **×1.00** | ×1.00 | n/a |
-| `silu` ⚠ | 1 | 14.599 | 14.589 | **×1.00** | ×1.31 | n/a |
-| `smootherstep` ⚠ | 1 | 2.732 | 2.729 | **×1.00** | ×0.75 | n/a |
-| `diffusion_beta` ⚠ | 1 | 10.320 | 10.306 | **×1.00** | ×1.12 | n/a |
-| `back_ease_out` ⚠ | 1 | 2.755 | 2.751 | **×1.00** | ×1.22 | n/a |
-| `legendre_p2` ⚠ | 1 | 2.737 | 2.731 | **×1.00** | ×1.67 | n/a |
-| `kepler` ⚠ | 1 | 2.743 | 2.737 | **×1.00** | ×0.60 | n/a |
-| `gemv4` ⚠ | 4 | 2.729 | 2.722 | **×1.00** | ×1.00 | n/a |
-| `concurrence_pure` ⚠ | 4 | 2.734 | 2.725 | **×1.00** | ×1.40 | n/a |
-| `fresnel_schlick` ⚠ | 1 | 2.738 | 2.726 | **×1.00** | ×1.33 | n/a |
-| `rl_distillation` ⚠ | 1 | 18.768 | 18.662 | **×0.99** | ×1.62 | n/a |
-| `rope_rot` ⚠ | 3 | 9.287 | 9.224 | **×0.99** | ×0.98 | n/a |
-| `bs_d2_sigma` ⚠ | 1 | 17.905 | 17.772 | **×0.99** | ×1.57 | n/a |
-| `bias_slope` ⚠ | 1 | 8.461 | 8.392 | **×0.99** | ×1.00 | n/a |
-| `gelu` ⚠ | 1 | 11.415 | 11.315 | **×0.99** | ×1.92 | n/a |
-| `asin_hard` | 1 | 13.975 | 13.550 | **×0.97** | ×1.40 | 0.69 |
-| `rc_circuit` | 1 | 8.202 | 7.890 | **×0.96** | ×0.96 | 1.01 |
-| `fog_exp2` | 1 | 8.193 | 7.876 | **×0.96** | ×0.92 | 1.05 |
-| `bilateral_weight` | 1 | 15.974 | 15.338 | **×0.96** | ×1.50 | 0.64 |
-| `gaussian_kernel` | 1 | 7.903 | 7.585 | **×0.96** | ×1.00 | 0.96 |
-| `fast_exp_alu` | 1 | 7.915 | 7.292 | **×0.92** | ×1.70 | 0.54 |
-| `stefan_boltzmann` | 1 | 3.026 | 2.732 | **×0.90** | ×0.60 | 1.50 |
-| `lambert_w` | 1 | 10.834 | 7.923 | **×0.73** | ×0.95 | 0.77 |
-| `european_call` | 1 | 59.567 | 2.725 | **×0.05** | ×0.06 | 0.71 |
+| `laguerre_l2` | 1 | 2.716 | 5.421 | **×2.00** | ×1.00 | 2.00 |
+| `mel_scale` | 1 | 6.368 | 10.282 | **×1.61** | ×1.00 | 1.61 |
+| `gauss_shader` | 1 | 7.872 | 12.371 | **×1.57** | ×0.96 | 1.64 |
+| `bs_d1_sigma` | 1 | 8.462 | 13.265 | **×1.57** | ×0.82 | 1.92 |
+| `srgb_gamma` | 1 | 13.790 | 19.171 | **×1.39** | ×0.49 | 2.84 |
+| `light_falloff_punctual` | 1 | 13.881 | 18.804 | **×1.35** | ×1.67 | 0.81 |
+| `cosh_curve` | 1 | 16.272 | 21.556 | **×1.32** | ×1.02 | 1.29 |
+| `huber_loss` | 1 | 3.321 | 3.622 | **×1.09** | ×0.56 | 1.96 |
+| `uncharted2_tonemap` | 1 | 8.165 | 8.741 | **×1.07** | ×1.53 | 0.70 |
+| `mm1_queue_wait` | 2 | 8.049 | 8.383 | **×1.04** | ×1.00 | 1.04 |
+| `rsi_momentum` | 2 | 8.061 | 8.387 | **×1.04** | ×0.67 | 1.56 |
+| `hill` | 1 | 8.140 | 8.467 | **×1.04** | ×1.00 | 1.04 |
+| `doppler_effect` | 2 | 7.860 | 8.147 | **×1.04** | ×0.71 | 1.45 |
+| `lennard_jones` | 1 | 8.459 | 8.760 | **×1.04** | ×1.00 | 1.04 |
+| `michaelis_menten` | 1 | 8.092 | 8.366 | **×1.03** | ×1.17 | 0.89 |
+| `srgb_decode` | 1 | 13.062 | 13.470 | **×1.03** | ×0.54 | 1.92 |
+| `kelly_criterion` | 2 | 10.602 | 10.896 | **×1.03** | ×0.75 | 1.37 |
+| `layernorm_scale` | 1 | 7.948 | 8.149 | **×1.03** | ×0.50 | 2.05 |
+| `softplus` | 1 | 12.744 | 13.042 | **×1.02** | ×1.00 | 1.02 |
+| `amp_damp_fid` | 3 | 19.020 | 19.405 | **×1.02** | ×0.27 | 3.83 |
+| `temperature_softmax` | 2 | 23.056 | 23.465 | **×1.02** | ×0.87 | 1.17 |
+| `logistic_growth` | 1 | 15.887 | 16.155 | **×1.02** | ×1.00 | 1.02 |
+| `damped_oscillation` ⚠ | 1 | 17.958 | 18.224 | **×1.01** | ×1.00 | n/a |
+| `kerr_spin` | 2 | 28.692 | 29.057 | **×1.01** | ×1.00 | 1.01 |
+| `kerr` | 1 | 23.953 | 24.246 | **×1.01** | ×1.00 | 1.01 |
+| `logsumexp2` | 2 | 23.564 | 23.836 | **×1.01** | ×0.90 | 1.13 |
+| `gaussian_cdf` ⚠ | 1 | 11.156 | 11.238 | **×1.01** | ×1.48 | n/a |
+| `atan_unit` ⚠ | 1 | 11.365 | 11.434 | **×1.01** | ×1.00 | n/a |
+| `kdv_soliton` ⚠ | 2 | 41.013 | 41.259 | **×1.01** | ×1.00 | n/a |
+| `pmt_finance` ⚠ | 2 | 44.714 | 44.978 | **×1.01** | ×0.52 | n/a |
+| `erf_prob` ⚠ | 1 | 14.901 | 14.968 | **×1.00** | ×1.30 | n/a |
+| `mish` ⚠ | 1 | 39.905 | 40.084 | **×1.00** | ×1.00 | n/a |
+| `ema_smooth` ⚠ | 1 | 7.841 | 7.869 | **×1.00** | ×1.00 | n/a |
+| `back_ease_out` ⚠ | 1 | 2.715 | 2.723 | **×1.00** | ×1.22 | n/a |
+| `smoothstep` ⚠ | 1 | 2.721 | 2.728 | **×1.00** | ×1.25 | n/a |
+| `tanh_sat` ⚠ | 1 | 20.102 | 20.149 | **×1.00** | ×1.00 | n/a |
+| `concurrence_pure` ⚠ | 4 | 2.714 | 2.720 | **×1.00** | ×1.40 | n/a |
+| `free_fall` ⚠ | 1 | 2.726 | 2.732 | **×1.00** | ×0.67 | n/a |
+| `bias_slope` ⚠ | 1 | 8.412 | 8.428 | **×1.00** | ×1.00 | n/a |
+| `smootherstep` ⚠ | 1 | 2.718 | 2.723 | **×1.00** | ×0.75 | n/a |
+| `temporal_grad` ⚠ | 2 | 2.721 | 2.723 | **×1.00** | ×1.00 | n/a |
+| `bilinear_interp` ⚠ | 1 | 2.721 | 2.723 | **×1.00** | ×0.50 | n/a |
+| `fresnel_schlick` ⚠ | 1 | 2.726 | 2.728 | **×1.00** | ×1.33 | n/a |
+| `gemv4` ⚠ | 4 | 2.719 | 2.721 | **×1.00** | ×1.00 | n/a |
+| `grover_amplitude` ⚠ | 3 | 47.071 | 47.079 | **×1.00** | ×0.96 | n/a |
+| `aces_fit` ⚠ | 1 | 13.640 | 13.641 | **×1.00** | ×0.62 | n/a |
+| `chsh_correlation` ⚠ | 4 | 28.914 | 28.903 | **×1.00** | ×0.95 | n/a |
+| `sigmoid` ⚠ | 1 | 14.546 | 14.532 | **×1.00** | ×1.31 | n/a |
+| `rl_distillation` ⚠ | 1 | 18.840 | 18.821 | **×1.00** | ×1.62 | n/a |
+| `kepler` ⚠ | 1 | 2.751 | 2.748 | **×1.00** | ×0.60 | n/a |
+| `legendre_p2` ⚠ | 1 | 2.723 | 2.719 | **×1.00** | ×1.67 | n/a |
+| `silu` ⚠ | 1 | 14.529 | 14.504 | **×1.00** | ×1.31 | n/a |
+| `logit_ml` ⚠ | 1 | 13.585 | 13.552 | **×1.00** | ×1.08 | n/a |
+| `qfi_dephasing` ⚠ | 3 | 8.529 | 8.502 | **×1.00** | ×0.79 | n/a |
+| `bs_d2_sigma` ⚠ | 1 | 17.815 | 17.748 | **×1.00** | ×1.57 | n/a |
+| `lorentz` ⚠ | 1 | 8.378 | 8.336 | **×0.99** | ×0.89 | n/a |
+| `diffusion_beta` ⚠ | 1 | 10.285 | 10.234 | **×0.99** | ×1.12 | n/a |
+| `gelu` ⚠ | 1 | 11.336 | 11.274 | **×0.99** | ×1.92 | n/a |
+| `rope_rot` ⚠ | 3 | 9.273 | 9.200 | **×0.99** | ×0.98 | n/a |
+| `rayleigh_phase` | 1 | 7.727 | 7.612 | **×0.99** | ×0.11 | 9.06 |
+| `asin_hard` | 1 | 13.895 | 13.438 | **×0.97** | ×1.40 | 0.69 |
+| `fog_exp2` | 1 | 8.184 | 7.880 | **×0.96** | ×0.92 | 1.05 |
+| `rc_circuit` | 1 | 8.193 | 7.885 | **×0.96** | ×0.96 | 1.01 |
+| `bilateral_weight` | 1 | 15.835 | 15.223 | **×0.96** | ×1.50 | 0.64 |
+| `gaussian_kernel` | 1 | 7.875 | 7.567 | **×0.96** | ×1.00 | 0.96 |
+| `fast_exp_alu` | 1 | 7.880 | 7.272 | **×0.92** | ×1.70 | 0.54 |
+| `stefan_boltzmann` | 1 | 3.023 | 2.717 | **×0.90** | ×0.60 | 1.50 |
+| `lambert_w` | 1 | 10.887 | 7.890 | **×0.72** | ×0.95 | 0.76 |
+| `european_call` | 1 | 59.658 | 2.725 | **×0.05** | ×0.06 | 0.71 |
 
-**Median agreement: 1.05** across the 32 resolvable tasks (37 of 69 were call-overhead bound and excluded).
+**Median agreement: 1.05** across the 35 resolvable tasks (34 of 69 were call-overhead bound and excluded).
 
 ## Not measurable
 
