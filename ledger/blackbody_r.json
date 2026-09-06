@@ -94,6 +94,13 @@
       "formulaCost": 1,
       "exactCost": 25,
       "speedup": 25
+    },
+    "measured": {
+      "measuredSpeedup": 7.7475,
+      "nsChampion": 21.1178,
+      "nsFast": 2.7258,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
     }
   },
   "fastTree": {

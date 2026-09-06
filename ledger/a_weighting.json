@@ -188,7 +188,14 @@
     "formula": "((8.68589 * log(max((((148691236 * (x)²) * (x)²) / (((x)² + 424.36) * (sqrt(|(((x)² + 11599.29) * ((x)² + 544496.41))|) * ((x)² + 148691236)))), 1e-30))) + 2)",
     "metric": 8.304404762092827e-14,
     "level": 5,
-    "formulaCost": 43
+    "formulaCost": 43,
+    "measured": {
+      "measuredSpeedup": 1.0306,
+      "nsChampion": 14.2378,
+      "nsFast": 13.8156,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    }
   },
   "fastTree": {
     "o": "add",

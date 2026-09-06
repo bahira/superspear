@@ -194,6 +194,13 @@
     "vsIterative": {
       "label": "Newton-DLS · 8 itérations",
       "speedup": 24.6
+    },
+    "measured": {
+      "measuredSpeedup": 4.5414,
+      "nsChampion": 39.9014,
+      "nsFast": 8.7861,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
     }
   },
   "fastTree": {

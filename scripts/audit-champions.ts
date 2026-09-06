@@ -189,6 +189,29 @@ function auditEntry(id: string, entry: Record<string, any>, def: TaskDef | undef
     row.provenance = "search";
   }
 
+  // ---- is the fast slot actually fast?
+  // A fast slot exists to trade accuracy for speed. If it is not measurably
+  // faster, the accuracy loss buys nothing and it should not ship. Measured:
+  // smootherstep's slot is x0.25 (four times SLOWER) because its min/max
+  // branches cost more than the five pipelined multiplies they replace, which
+  // the ALU cost model prices at 4 units vs 12.
+  const fastMeasured = (entry.fast as { measured?: { measuredSpeedup: number; resolvable: boolean } } | undefined)?.measured;
+  if (fastMeasured?.resolvable) {
+    if (fastMeasured.measuredSpeedup < 1) {
+      push(
+        "fast-slot-slower",
+        "fail",
+        `fast slot MEASURES ×${fastMeasured.measuredSpeedup.toFixed(2)} — slower than the champion it is supposed to accelerate, while also being less accurate`,
+      );
+    } else if (fastMeasured.measuredSpeedup < 1.05) {
+      push(
+        "fast-slot-pointless",
+        "warn",
+        `fast slot measures ×${fastMeasured.measuredSpeedup.toFixed(2)} — no usable gain, so its accuracy loss buys nothing`,
+      );
+    }
+  }
+
   // ---- the advertised speedup vs what the hardware actually did
   // A modelled multiplier is a hypothesis. Where write-measured-speed.ts has
   // recorded a real measurement, the model must agree with it; if the kernel

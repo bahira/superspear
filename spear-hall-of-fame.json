@@ -60,7 +60,14 @@
       "metric": 0.007335732937479303,
       "level": 2,
       "formulaCost": 3,
-      "deploy": true
+      "deploy": true,
+      "measured": {
+        "measuredSpeedup": 5.4343,
+        "nsChampion": 14.8216,
+        "nsFast": 2.7274,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      }
     },
     "fastTree": {
       "o": "add",
@@ -163,7 +170,14 @@
       "metric": 0.0029735142917741517,
       "level": 2,
       "formulaCost": 3,
-      "deploy": true
+      "deploy": true,
+      "measured": {
+        "measuredSpeedup": 6.4889,
+        "nsChampion": 17.7787,
+        "nsFast": 2.7399,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      }
     },
     "fastTree": {
       "o": "add",
@@ -254,7 +268,14 @@
       "formula": "((0.605014 * (x / (1.24384 + |x|))) + 0.5)",
       "metric": 0.000487056042875682,
       "level": 2,
-      "formulaCost": 8
+      "formulaCost": 8,
+      "measured": {
+        "measuredSpeedup": 1.9032,
+        "nsChampion": 14.5659,
+        "nsFast": 7.6536,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      }
     },
     "fastTree": {
       "o": "add",
@@ -434,7 +455,14 @@
       "metric": 31.04917940596365,
       "level": 2,
       "formulaCost": 3,
-      "deploy": true
+      "deploy": true,
+      "measured": {
+        "measuredSpeedup": 1.0276,
+        "nsChampion": 1.2393,
+        "nsFast": 1.206,
+        "resolvable": false,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      }
     },
     "fastTree": {
       "o": "add",
@@ -533,7 +561,14 @@
       "formula": "((0.625605 * (x / (0.912761 + |x|))) + 0.5)",
       "metric": 0.0009034064270384005,
       "level": 2,
-      "formulaCost": 8
+      "formulaCost": 8,
+      "measured": {
+        "measuredSpeedup": 2.5209,
+        "nsChampion": 17.5579,
+        "nsFast": 6.965,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      }
     },
     "fastTree": {
       "o": "add",
@@ -682,6 +717,13 @@
       "vsIterative": {
         "label": "Euler-Cromer · 60 pas",
         "speedup": 65.2
+      },
+      "measured": {
+        "measuredSpeedup": 1.9795,
+        "nsChampion": 18.6419,
+        "nsFast": 9.4176,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
       }
     },
     "fastTree": {
@@ -1006,7 +1048,14 @@
       "metric": 0.0005060200458450411,
       "level": 2,
       "formulaCost": 24,
-      "deploy": true
+      "deploy": true,
+      "measured": {
+        "measuredSpeedup": 1.1059,
+        "nsChampion": 10.5753,
+        "nsFast": 9.5626,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      }
     },
     "fastTree": {
       "o": "add",
@@ -1096,7 +1145,14 @@
       "formula": "(1 - u)",
       "metric": 0,
       "level": 5,
-      "formulaCost": 1
+      "formulaCost": 1,
+      "measured": {
+        "measuredSpeedup": 1.0002,
+        "nsChampion": 1.2074,
+        "nsFast": 1.2072,
+        "resolvable": false,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      }
     },
     "fastTree": {
       "o": "sub",
@@ -1279,7 +1335,14 @@
       "formula": "(1 / sqrt(|(1 - (b)²)|))",
       "metric": 0,
       "level": 5,
-      "formulaCost": 8
+      "formulaCost": 8,
+      "measured": {
+        "measuredSpeedup": 1.0121,
+        "nsChampion": 8.17,
+        "nsFast": 8.0719,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      }
     },
     "fastTree": {
       "o": "pdiv",
@@ -1630,7 +1693,14 @@
       "formula": "((0.00696 * ((t - 16.41765) * ((t - 8.280135) * cos((t * 2.996281))))) + -0.000501)",
       "metric": 0.00030630571172772763,
       "level": 2,
-      "formulaCost": 27
+      "formulaCost": 27,
+      "measured": {
+        "measuredSpeedup": 1.7793,
+        "nsChampion": 18.0291,
+        "nsFast": 10.1329,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      }
     },
     "fastTree": {
       "o": "add",
@@ -1786,7 +1856,14 @@
       "metric": 0.0017566807184006097,
       "level": 2,
       "formulaCost": 5,
-      "deploy": true
+      "deploy": true,
+      "measured": {
+        "measuredSpeedup": 5.2028,
+        "nsChampion": 15.7201,
+        "nsFast": 3.0215,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      }
     },
     "fastTree": {
       "o": "add",
@@ -1890,7 +1967,14 @@
       "metric": 0.02868721493659664,
       "level": 2,
       "formulaCost": 3,
-      "deploy": true
+      "deploy": true,
+      "measured": {
+        "measuredSpeedup": 4.659,
+        "nsChampion": 12.7011,
+        "nsFast": 2.7261,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      }
     },
     "fastTree": {
       "o": "add",
@@ -2044,7 +2128,14 @@
       "formula": "((-1.553578 * max(sqrt(|(6.660595 - max(3.1671, x))|), 0.603662)) + 2.906087)",
       "metric": 0.0017117911533114868,
       "level": 2,
-      "formulaCost": 7
+      "formulaCost": 7,
+      "measured": {
+        "measuredSpeedup": 7.6943,
+        "nsChampion": 41.6161,
+        "nsFast": 5.4087,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      }
     },
     "fastTree": {
       "o": "add",
@@ -2210,7 +2301,14 @@
       "formula": "((-0.012886 * (-69.077553 / (1 - (3.62166 / b)))) + -0.864376)",
       "metric": 0.00006044557112643241,
       "level": 2,
-      "formulaCost": 11
+      "formulaCost": 11,
+      "measured": {
+        "measuredSpeedup": 1.8056,
+        "nsChampion": 29.4482,
+        "nsFast": 16.3097,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      }
     },
     "fastTree": {
       "o": "add",
@@ -2596,7 +2694,14 @@
       "formula": "((0.999629 * max(-2, min(2, (((1 - (1 / (1 + exp((-(9.909064 * (cos(th) - 0.7))))))) * (-4.33 * (d * (((0.5 * (d)²) + ((6 * (1 - cos(th))) - 12)) * cos(th))))) + ((1 / (1 + exp((-(9.909064 * (cos(th) - 0.7)))))) * (-((1.72 * sin(th)) + (8.04 * d)))))))) + -0.001431)",
       "metric": 0.0016450044687864698,
       "level": 2,
-      "formulaCost": 177
+      "formulaCost": 177,
+      "measured": {
+        "measuredSpeedup": 1.0066,
+        "nsChampion": 41.9489,
+        "nsFast": 41.6743,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      }
     },
     "fastTree": {
       "o": "add",
@@ -3408,6 +3513,13 @@
       "vsIterative": {
         "label": "Jacobi · 4 balayages",
         "speedup": 18.2
+      },
+      "measured": {
+        "measuredSpeedup": 17.3196,
+        "nsChampion": 52.6754,
+        "nsFast": 3.0414,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
       }
     },
     "fastTree": {
@@ -3711,6 +3823,13 @@
       "vsIterative": {
         "label": "Newton-DLS · 8 itérations",
         "speedup": 24.6
+      },
+      "measured": {
+        "measuredSpeedup": 4.5414,
+        "nsChampion": 39.9014,
+        "nsFast": 8.7861,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
       }
     },
     "fastTree": {
@@ -4124,53 +4243,6 @@
           ]
         }
       ]
-    },
-    "fast": {
-      "formula": "((x * cos(th)) - (y * sin(th)))",
-      "metric": 0,
-      "level": 5,
-      "formulaCost": 43
-    },
-    "fastTree": {
-      "o": "sub",
-      "c": [
-        {
-          "o": "mul",
-          "c": [
-            {
-              "o": "var",
-              "n": "x"
-            },
-            {
-              "o": "cos",
-              "c": [
-                {
-                  "o": "var",
-                  "n": "th"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "o": "mul",
-          "c": [
-            {
-              "o": "var",
-              "n": "y"
-            },
-            {
-              "o": "sin",
-              "c": [
-                {
-                  "o": "var",
-                  "n": "th"
-                }
-              ]
-            }
-          ]
-        }
-      ]
     }
   },
   "gauss_shader": {
@@ -4288,7 +4360,14 @@
       "formula": "((2.733882 * x) + 0.007503)",
       "metric": 0.0000107285951384828,
       "level": 3,
-      "formulaCost": 2
+      "formulaCost": 2,
+      "measured": {
+        "measuredSpeedup": 6.0214,
+        "nsChampion": 7.2841,
+        "nsFast": 1.2097,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      }
     },
     "fastTree": {
       "o": "add",
@@ -4463,7 +4542,14 @@
       "formula": "((0.973051 * sqrt(|x|)) + 0.040841)",
       "metric": 0.00011551060259047263,
       "level": 2,
-      "formulaCost": 4
+      "formulaCost": 4,
+      "measured": {
+        "measuredSpeedup": 10.5805,
+        "nsChampion": 13.0416,
+        "nsFast": 1.2326,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      }
     },
     "fastTree": {
       "o": "add",
@@ -4563,7 +4649,14 @@
       "formula": "(0.855664 * x)",
       "metric": 0.0009350974646082436,
       "level": 2,
-      "formulaCost": 1
+      "formulaCost": 1,
+      "measured": {
+        "measuredSpeedup": 10.9764,
+        "nsChampion": 13.2923,
+        "nsFast": 1.211,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      }
     },
     "fastTree": {
       "o": "mul",
@@ -4633,7 +4726,14 @@
       "formula": "((0.99175 * (x)²) + -0.018028)",
       "metric": 0.0001304377643047932,
       "level": 2,
-      "formulaCost": 3
+      "formulaCost": 3,
+      "measured": {
+        "measuredSpeedup": 10.9732,
+        "nsChampion": 13.2462,
+        "nsFast": 1.2071,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      }
     },
     "fastTree": {
       "o": "add",
@@ -4797,7 +4897,14 @@
       "metric": 0.006767969139784184,
       "level": 2,
       "formulaCost": 3,
-      "deploy": true
+      "deploy": true,
+      "measured": {
+        "measuredSpeedup": 2.2477,
+        "nsChampion": 2.7212,
+        "nsFast": 1.2106,
+        "resolvable": false,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      }
     },
     "fastTree": {
       "o": "add",
@@ -4895,7 +5002,14 @@
       "metric": 0.003777734011353794,
       "level": 2,
       "formulaCost": 3,
-      "deploy": true
+      "deploy": true,
+      "measured": {
+        "measuredSpeedup": 13.3348,
+        "nsChampion": 16.2241,
+        "nsFast": 1.2167,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      }
     },
     "fastTree": {
       "o": "add",
@@ -5140,7 +5254,14 @@
       "formula": "((0.46095 * sin((x * 0.868511))) + 0.09533)",
       "metric": 0.0007509240227970247,
       "level": 2,
-      "formulaCost": 23
+      "formulaCost": 23,
+      "measured": {
+        "measuredSpeedup": 2.3268,
+        "nsChampion": 18.7288,
+        "nsFast": 8.0493,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      }
     },
     "fastTree": {
       "o": "add",
@@ -5275,6 +5396,13 @@
         "formulaCost": 1,
         "exactCost": 25,
         "speedup": 25
+      },
+      "measured": {
+        "measuredSpeedup": 7.7475,
+        "nsChampion": 21.1178,
+        "nsFast": 2.7258,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
       }
     },
     "fastTree": {
@@ -5431,7 +5559,14 @@
       "formula": "((-0.342505 * (1.228056 / (|x| + 0.338283))) + 1.112889)",
       "metric": 0.0003534610806656422,
       "level": 2,
-      "formulaCost": 8
+      "formulaCost": 8,
+      "measured": {
+        "measuredSpeedup": 1.737,
+        "nsChampion": 13.6952,
+        "nsFast": 7.8842,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      }
     },
     "fastTree": {
       "o": "add",
@@ -5591,7 +5726,14 @@
       "formula": "((0.968206 * max(a, b)) + 0.199848)",
       "metric": 0.030249371156328322,
       "level": 2,
-      "formulaCost": 3
+      "formulaCost": 3,
+      "measured": {
+        "measuredSpeedup": 8.5246,
+        "nsChampion": 26.2969,
+        "nsFast": 3.0848,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      }
     },
     "fastTree": {
       "o": "add",
@@ -5705,7 +5847,14 @@
       "metric": 0.010600724117111038,
       "level": 2,
       "formulaCost": 5,
-      "deploy": true
+      "deploy": true,
+      "measured": {
+        "measuredSpeedup": 2.4596,
+        "nsChampion": 6.6733,
+        "nsFast": 2.7132,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      }
     },
     "fastTree": {
       "o": "add",
@@ -5868,7 +6017,14 @@
       "formula": "((-0.646901 * ((n / (r + (n * 0.269972))) / ((r * 0.810197) - atan(n)))) + -1.526075)",
       "metric": 4.3680216924352057e-7,
       "level": 2,
-      "formulaCost": 34
+      "formulaCost": 34,
+      "measured": {
+        "measuredSpeedup": 1.5263,
+        "nsChampion": 44.0899,
+        "nsFast": 28.8867,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      }
     },
     "fastTree": {
       "o": "add",
@@ -6054,6 +6210,13 @@
         "formulaCost": 13,
         "exactCost": 25,
         "speedup": 1.9230769230769231
+      },
+      "measured": {
+        "measuredSpeedup": 2.5515,
+        "nsChampion": 49.403,
+        "nsFast": 19.3621,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
       }
     },
     "fastTree": {
@@ -6213,7 +6376,14 @@
       "metric": 0.0015032930520104606,
       "level": 2,
       "formulaCost": 28,
-      "deploy": true
+      "deploy": true,
+      "measured": {
+        "measuredSpeedup": 1.0823,
+        "nsChampion": 31.4875,
+        "nsFast": 29.0928,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      }
     },
     "fastTree": {
       "o": "add",
@@ -6362,7 +6532,14 @@
       "formula": "((-0.301178 * ((0.077109 * ((0.652891 * x) + x)) + cos(x))) + 0.311008)",
       "metric": 0.0001003120533476376,
       "level": 2,
-      "formulaCost": 26
+      "formulaCost": 26,
+      "measured": {
+        "measuredSpeedup": 1.0031,
+        "nsChampion": 8.7713,
+        "nsFast": 8.7439,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      }
     },
     "fastTree": {
       "o": "add",
@@ -6953,49 +7130,7 @@
         }
       ]
     },
-    "holdout": 0,
-    "fast": {
-      "formula": "((0.341993 * atan((da / t))) + 0.499472)",
-      "metric": 0.0005828352312459226,
-      "level": 2,
-      "formulaCost": 26
-    },
-    "fastTree": {
-      "o": "add",
-      "c": [
-        {
-          "o": "mul",
-          "c": [
-            {
-              "o": "const",
-              "v": 0.34199307033525794
-            },
-            {
-              "o": "atan",
-              "c": [
-                {
-                  "o": "pdiv",
-                  "c": [
-                    {
-                      "o": "var",
-                      "n": "da"
-                    },
-                    {
-                      "o": "var",
-                      "n": "t"
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "o": "const",
-          "v": 0.49947165953417866
-        }
-      ]
-    }
+    "holdout": 0
   },
   "doppler_effect": {
     "taskId": "doppler_effect",
@@ -7067,7 +7202,14 @@
       "formula": "((2.579149 * (vs + vo)) + 687.591235)",
       "metric": 11.408687912051402,
       "level": 2,
-      "formulaCost": 3
+      "formulaCost": 3,
+      "measured": {
+        "measuredSpeedup": 6.9613,
+        "nsChampion": 8.4351,
+        "nsFast": 1.2117,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      }
     },
     "fastTree": {
       "o": "add",
@@ -7617,7 +7759,14 @@
       "metric": 0.4004357201082086,
       "level": 2,
       "formulaCost": 4,
-      "deploy": true
+      "deploy": true,
+      "measured": {
+        "measuredSpeedup": 1.0247,
+        "nsChampion": 1.289,
+        "nsFast": 1.2579,
+        "resolvable": false,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      }
     },
     "fastTree": {
       "o": "add",
@@ -8023,6 +8172,13 @@
         "speedup": 24.6,
         "note": "Context only — a closed-form reference exists for this task, so the solver is not what a real implementation runs. Not a like-for-like speedup: the solver's accuracy is orders of magnitude worse.",
         "honestSpeedupVsReference": 0.6923076923076923
+      },
+      "measured": {
+        "measuredSpeedup": 1.9692,
+        "nsChampion": 19.8504,
+        "nsFast": 10.0805,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
       }
     },
     "fastTree": {
@@ -8136,52 +8292,6 @@
           "v": 1.00707591962074
         }
       ]
-    },
-    "fast": {
-      "formula": "((1.142731 * (0.626843 / (0.722571 + x))) + 0.051598)",
-      "metric": 0.000039852501436568656,
-      "level": 2,
-      "formulaCost": 7
-    },
-    "fastTree": {
-      "o": "add",
-      "c": [
-        {
-          "o": "mul",
-          "c": [
-            {
-              "o": "const",
-              "v": 1.1427310955894954
-            },
-            {
-              "o": "pdiv",
-              "c": [
-                {
-                  "o": "const",
-                  "v": 0.626843
-                },
-                {
-                  "o": "add",
-                  "c": [
-                    {
-                      "o": "const",
-                      "v": 0.722571
-                    },
-                    {
-                      "o": "var",
-                      "n": "x"
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "o": "const",
-          "v": 0.05159800165874908
-        }
-      ]
     }
   },
   "elliptic_k": {
@@ -8236,7 +8346,14 @@
       "formula": "((0.209784 * (m / (1.091589 + (-m)))) + 1.64262)",
       "metric": 0.005535101499306599,
       "level": 2,
-      "formulaCost": 8
+      "formulaCost": 8,
+      "measured": {
+        "measuredSpeedup": 2.3931,
+        "nsChampion": 20.1313,
+        "nsFast": 8.4123,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      }
     },
     "fastTree": {
       "o": "add",
@@ -8407,7 +8524,14 @@
       "metric": 0.012893357865503231,
       "level": 2,
       "formulaCost": 6,
-      "deploy": true
+      "deploy": true,
+      "measured": {
+        "measuredSpeedup": 2.46,
+        "nsChampion": 3.0283,
+        "nsFast": 1.231,
+        "resolvable": false,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      }
     },
     "fastTree": {
       "o": "add",
@@ -8596,7 +8720,14 @@
       "formula": "((1.184227 * ((1.091197 * ((0.844934 - x))²) * ((1 - x))²)) + 0.031456)",
       "metric": 0.0001697292959297894,
       "level": 2,
-      "formulaCost": 8
+      "formulaCost": 8,
+      "measured": {
+        "measuredSpeedup": 0.8836,
+        "nsChampion": 1.2551,
+        "nsFast": 1.4204,
+        "resolvable": false,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      }
     },
     "fastTree": {
       "o": "add",
@@ -8736,7 +8867,14 @@
       "formula": "0.089599",
       "metric": 0.0004463666351605404,
       "level": 2,
-      "formulaCost": 0
+      "formulaCost": 0,
+      "measured": {
+        "measuredSpeedup": 6.8098,
+        "nsChampion": 8.225,
+        "nsFast": 1.2078,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      }
     },
     "fastTree": {
       "o": "const",
@@ -8856,52 +8994,6 @@
               ]
             }
           ]
-        }
-      ]
-    },
-    "fast": {
-      "formula": "((1.593609 * max(0.195325, min(x, 0.805))) + -0.296433)",
-      "metric": 0.00032318543387844427,
-      "level": 2,
-      "formulaCost": 4
-    },
-    "fastTree": {
-      "o": "add",
-      "c": [
-        {
-          "o": "mul",
-          "c": [
-            {
-              "o": "const",
-              "v": 1.593609
-            },
-            {
-              "o": "max",
-              "c": [
-                {
-                  "o": "const",
-                  "v": 0.195325
-                },
-                {
-                  "o": "min",
-                  "c": [
-                    {
-                      "o": "var",
-                      "n": "x"
-                    },
-                    {
-                      "o": "const",
-                      "v": 0.805
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "o": "const",
-          "v": -0.296433
         }
       ]
     }
@@ -9158,7 +9250,14 @@
       "formula": "((39.463781 * (0.025493 / (x)²)) + -0.010761)",
       "metric": 0.000022254134884792464,
       "level": 2,
-      "formulaCost": 7
+      "formulaCost": 7,
+      "measured": {
+        "measuredSpeedup": 1.7422,
+        "nsChampion": 13.5525,
+        "nsFast": 7.7788,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      }
     },
     "fastTree": {
       "o": "add",
@@ -9252,45 +9351,7 @@
         }
       ]
     },
-    "holdout": 0,
-    "fast": {
-      "formula": "((1.337013 * (0.944542 / x)) + -0.858714)",
-      "metric": 0.00860859407861808,
-      "level": 2,
-      "formulaCost": 6,
-      "deploy": true
-    },
-    "fastTree": {
-      "o": "add",
-      "c": [
-        {
-          "o": "mul",
-          "c": [
-            {
-              "o": "const",
-              "v": 1.3370125452212
-            },
-            {
-              "o": "pdiv",
-              "c": [
-                {
-                  "o": "const",
-                  "v": 0.944542
-                },
-                {
-                  "o": "var",
-                  "n": "x"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "o": "const",
-          "v": -0.8587141737013937
-        }
-      ]
-    }
+    "holdout": 0
   },
   "uncharted2_tonemap": {
     "taskId": "uncharted2_tonemap",
@@ -9452,7 +9513,14 @@
       "formula": "(1.379064 * (((((2 * x) * ((0.3 * x) + 0.05)) + 0.004) / (((2 * x) * ((0.3 * x) + 0.5)) + 0.06)) - 0.066667))",
       "metric": 2.664376972745578e-14,
       "level": 2,
-      "formulaCost": 16
+      "formulaCost": 16,
+      "measured": {
+        "measuredSpeedup": 1.0667,
+        "nsChampion": 8.6976,
+        "nsFast": 8.1534,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      }
     },
     "fastTree": {
       "o": "mul",
@@ -9641,7 +9709,14 @@
       "metric": 0.005653078807284052,
       "level": 2,
       "formulaCost": 3,
-      "deploy": true
+      "deploy": true,
+      "measured": {
+        "measuredSpeedup": 16.0142,
+        "nsChampion": 44.8039,
+        "nsFast": 2.7978,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      }
     },
     "fastTree": {
       "o": "add",
@@ -9759,7 +9834,14 @@
       "formula": "((0.999946 * cos((1023.994 * exp((-0.28782 * x))))) + -0.000019)",
       "metric": 8.450097215948873e-7,
       "level": 5,
-      "formulaCost": 44
+      "formulaCost": 44,
+      "measured": {
+        "measuredSpeedup": 1.0121,
+        "nsChampion": 24.2911,
+        "nsFast": 24.0002,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      }
     },
     "fastTree": {
       "o": "add",
@@ -9902,7 +9984,14 @@
       "metric": 0.0010740557349480262,
       "level": 2,
       "formulaCost": 24,
-      "deploy": true
+      "deploy": true,
+      "measured": {
+        "measuredSpeedup": 1.8822,
+        "nsChampion": 16.0525,
+        "nsFast": 8.5284,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      }
     },
     "fastTree": {
       "o": "add",
@@ -10043,44 +10132,6 @@
           ]
         }
       ]
-    },
-    "fast": {
-      "formula": "((0.862993 * (0.21562 / x)) + 0.231746)",
-      "metric": 0.002472221592113376,
-      "level": 2,
-      "formulaCost": 6,
-      "deploy": true
-    },
-    "fastTree": {
-      "o": "add",
-      "c": [
-        {
-          "o": "mul",
-          "c": [
-            {
-              "o": "const",
-              "v": 0.8629928511751063
-            },
-            {
-              "o": "pdiv",
-              "c": [
-                {
-                  "o": "const",
-                  "v": 0.21562
-                },
-                {
-                  "o": "var",
-                  "n": "x"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "o": "const",
-          "v": 0.23174575336749953
-        }
-      ]
     }
   },
   "mel_scale": {
@@ -10210,7 +10261,14 @@
       "metric": 0.0024722215921133715,
       "level": 2,
       "formulaCost": 6,
-      "deploy": true
+      "deploy": true,
+      "measured": {
+        "measuredSpeedup": 1.9573,
+        "nsChampion": 15.8586,
+        "nsFast": 8.1024,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      }
     },
     "fastTree": {
       "o": "add",
@@ -10434,7 +10492,14 @@
       "formula": "((8.68589 * log(max((((148691236 * (x)²) * (x)²) / (((x)² + 424.36) * (sqrt(|(((x)² + 11599.29) * ((x)² + 544496.41))|) * ((x)² + 148691236)))), 1e-30))) + 2)",
       "metric": 8.304404762092827e-14,
       "level": 5,
-      "formulaCost": 43
+      "formulaCost": 43,
+      "measured": {
+        "measuredSpeedup": 1.0306,
+        "nsChampion": 14.2378,
+        "nsFast": 13.8156,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      }
     },
     "fastTree": {
       "o": "add",

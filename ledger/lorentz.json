@@ -63,7 +63,14 @@
     "formula": "(1 / sqrt(|(1 - (b)²)|))",
     "metric": 0,
     "level": 5,
-    "formulaCost": 8
+    "formulaCost": 8,
+    "measured": {
+      "measuredSpeedup": 1.0121,
+      "nsChampion": 8.17,
+      "nsFast": 8.0719,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    }
   },
   "fastTree": {
     "o": "pdiv",

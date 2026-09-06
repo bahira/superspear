@@ -103,7 +103,14 @@
     "formula": "((0.46095 * sin((x * 0.868511))) + 0.09533)",
     "metric": 0.0007509240227970247,
     "level": 2,
-    "formulaCost": 23
+    "formulaCost": 23,
+    "measured": {
+      "measuredSpeedup": 2.3268,
+      "nsChampion": 18.7288,
+      "nsFast": 8.0493,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    }
   },
   "fastTree": {
     "o": "add",

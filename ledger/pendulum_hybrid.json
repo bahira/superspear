@@ -332,7 +332,14 @@
     "formula": "((0.999629 * max(-2, min(2, (((1 - (1 / (1 + exp((-(9.909064 * (cos(th) - 0.7))))))) * (-4.33 * (d * (((0.5 * (d)²) + ((6 * (1 - cos(th))) - 12)) * cos(th))))) + ((1 / (1 + exp((-(9.909064 * (cos(th) - 0.7)))))) * (-((1.72 * sin(th)) + (8.04 * d)))))))) + -0.001431)",
     "metric": 0.0016450044687864698,
     "level": 2,
-    "formulaCost": 177
+    "formulaCost": 177,
+    "measured": {
+      "measuredSpeedup": 1.0066,
+      "nsChampion": 41.9489,
+      "nsFast": 41.6743,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    }
   },
   "fastTree": {
     "o": "add",

@@ -63,7 +63,14 @@
     "metric": 0.005653078807284052,
     "level": 2,
     "formulaCost": 3,
-    "deploy": true
+    "deploy": true,
+    "measured": {
+      "measuredSpeedup": 16.0142,
+      "nsChampion": 44.8039,
+      "nsFast": 2.7978,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    }
   },
   "fastTree": {
     "o": "add",

@@ -90,7 +90,14 @@
     "formula": "((-0.301178 * ((0.077109 * ((0.652891 * x) + x)) + cos(x))) + 0.311008)",
     "metric": 0.0001003120533476376,
     "level": 2,
-    "formulaCost": 26
+    "formulaCost": 26,
+    "measured": {
+      "measuredSpeedup": 1.0031,
+      "nsChampion": 8.7713,
+      "nsFast": 8.7439,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    }
   },
   "fastTree": {
     "o": "add",

@@ -44,7 +44,14 @@
     "formula": "(1 - u)",
     "metric": 0,
     "level": 5,
-    "formulaCost": 1
+    "formulaCost": 1,
+    "measured": {
+      "measuredSpeedup": 1.0002,
+      "nsChampion": 1.2074,
+      "nsFast": 1.2072,
+      "resolvable": false,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    }
   },
   "fastTree": {
     "o": "sub",

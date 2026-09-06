@@ -67,7 +67,14 @@
     "formula": "((0.625605 * (x / (0.912761 + |x|))) + 0.5)",
     "metric": 0.0009034064270384005,
     "level": 2,
-    "formulaCost": 8
+    "formulaCost": 8,
+    "measured": {
+      "measuredSpeedup": 2.5209,
+      "nsChampion": 17.5579,
+      "nsFast": 6.965,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    }
   },
   "fastTree": {
     "o": "add",

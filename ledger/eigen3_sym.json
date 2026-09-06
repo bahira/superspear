@@ -505,6 +505,13 @@
     "vsIterative": {
       "label": "Jacobi · 4 balayages",
       "speedup": 18.2
+    },
+    "measured": {
+      "measuredSpeedup": 17.3196,
+      "nsChampion": 52.6754,
+      "nsFast": 3.0414,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
     }
   },
   "fastTree": {

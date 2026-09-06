@@ -87,6 +87,13 @@ jobs:
       - name: MISRA-C export, gcc -std=c99 build, C<->WASM parity
         run: npx tsx scripts/export-audit.ts
 
+      # Fast slots trade accuracy for speed. bench-wallclock only ever timed
+      # champion vs exact law, so their advertised ratios (up to x24) had never
+      # been checked against a CPU. Six turned out to be SLOWER than the
+      # champion they accelerate, while also being less accurate.
+      - name: Fast slots are actually fast
+        run: npx tsx scripts/bench-fast-slots.ts
+
       - name: Wall-clock vs cost model
         run: npx tsx scripts/bench-wallclock.ts
 

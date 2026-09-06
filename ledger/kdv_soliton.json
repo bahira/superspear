@@ -122,7 +122,14 @@
     "formula": "((-1.553578 * max(sqrt(|(6.660595 - max(3.1671, x))|), 0.603662)) + 2.906087)",
     "metric": 0.0017117911533114868,
     "level": 2,
-    "formulaCost": 7
+    "formulaCost": 7,
+    "measured": {
+      "measuredSpeedup": 7.6943,
+      "nsChampion": 41.6161,
+      "nsFast": 5.4087,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    }
   },
   "fastTree": {
     "o": "add",

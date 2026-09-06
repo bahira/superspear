@@ -49,6 +49,42 @@ function main(): void {
   const ledger = loadLedger();
   const changes: string[] = [];
 
+  // Fast slots are measured by a separate harness (bench-fast-slots.ts): the
+  // main bench compares champion vs EXACT LAW, so it never times the fast slot
+  // at all. Their advertised ratios were pure cost-model output until now.
+  let fastRows: { id: string; measured: number; bound: boolean; nsChamp: number; nsFast: number; modelled: number }[] = [];
+  try {
+    fastRows = JSON.parse(
+      execFileSync("npx", ["tsx", "scripts/bench-fast-slots.ts", "--json"], {
+        encoding: "utf8", cwd: process.cwd(), maxBuffer: 1 << 24,
+      }),
+    ).rows;
+  } catch {
+    console.error("warning: fast-slot bench failed; leaving fast slots unmeasured");
+  }
+  for (const r of fastRows) {
+    const entry = ledger[r.id] as { fast?: Record<string, unknown> } | undefined;
+    if (!entry?.fast) continue;
+    const block = {
+      measuredSpeedup: Number(r.measured.toFixed(4)),
+      nsChampion: Number(r.nsChamp.toFixed(4)),
+      nsFast: Number(r.nsFast.toFixed(4)),
+      resolvable: !r.bound,
+      harness: "gcc -O2 · scalar x86-64 · median of 9×40 passes",
+    };
+    const prev = entry.fast.measured as { measuredSpeedup: number } | undefined;
+    if (prev && Math.abs(prev.measuredSpeedup - block.measuredSpeedup) / Math.max(prev.measuredSpeedup, 1e-9) <= 0.12) continue;
+    entry.fast.measured = block;
+    const verdict = !block.resolvable
+      ? "unresolvable"
+      : block.measuredSpeedup < 1
+        ? `SLOWER THAN THE CHAMPION (modelled ×${r.modelled.toFixed(2)})`
+        : block.measuredSpeedup < 1.05
+          ? "no usable gain"
+          : "ok";
+    changes.push(`[${r.id}] fast slot measured ×${block.measuredSpeedup} vs modelled ×${r.modelled.toFixed(2)} — ${verdict}`);
+  }
+
   for (const r of rows) {
     const entry = ledger[r.id];
     if (!entry?.speed) continue;

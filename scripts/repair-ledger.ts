@@ -128,6 +128,23 @@ for (const [id, entry] of Object.entries(ledger) as [string, any][]) {
     }
   }
 
+  // A fast slot that MEASURES slower than the champion is indefensible: it is
+  // both slower AND less accurate, so nothing justifies shipping it. Six were
+  // in that state (smootherstep ×0.25, bs_d1_sigma ×0.93, bessel_i0e ×0.92):
+  // the cost model priced their min/max and rational forms as cheap, but
+  // branches and divisions cost more on real hardware than the multiplies they
+  // replaced.
+  {
+    const fm = (entry.fast as { measured?: { measuredSpeedup: number; resolvable: boolean } } | undefined)?.measured;
+    if (fm?.resolvable && fm.measuredSpeedup < 1) {
+      changes.push(
+        `[${id}] fast slot dropped — measured ×${fm.measuredSpeedup.toFixed(2)}, slower than the champion AND less accurate`,
+      );
+      delete entry.fast;
+      delete entry.fastTree;
+    }
+  }
+
   // ---------- fast slot ----------
   if (entry.fastTree) {
     let fnode: SpearNode | null = null;

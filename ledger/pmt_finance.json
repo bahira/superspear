@@ -113,7 +113,14 @@
     "formula": "((-0.646901 * ((n / (r + (n * 0.269972))) / ((r * 0.810197) - atan(n)))) + -1.526075)",
     "metric": 4.3680216924352057e-7,
     "level": 2,
-    "formulaCost": 34
+    "formulaCost": 34,
+    "measured": {
+      "measuredSpeedup": 1.5263,
+      "nsChampion": 44.0899,
+      "nsFast": 28.8867,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    }
   },
   "fastTree": {
     "o": "add",

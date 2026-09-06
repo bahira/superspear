@@ -117,6 +117,13 @@
       "speedup": 24.6,
       "note": "Context only — a closed-form reference exists for this task, so the solver is not what a real implementation runs. Not a like-for-like speedup: the solver's accuracy is orders of magnitude worse.",
       "honestSpeedupVsReference": 0.6923076923076923
+    },
+    "measured": {
+      "measuredSpeedup": 1.9692,
+      "nsChampion": 19.8504,
+      "nsFast": 10.0805,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
     }
   },
   "fastTree": {

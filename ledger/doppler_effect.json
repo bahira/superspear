@@ -68,7 +68,14 @@
     "formula": "((2.579149 * (vs + vo)) + 687.591235)",
     "metric": 11.408687912051402,
     "level": 2,
-    "formulaCost": 3
+    "formulaCost": 3,
+    "measured": {
+      "measuredSpeedup": 6.9613,
+      "nsChampion": 8.4351,
+      "nsFast": 1.2117,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    }
   },
   "fastTree": {
     "o": "add",

@@ -72,52 +72,5 @@
         ]
       }
     ]
-  },
-  "fast": {
-    "formula": "((x * cos(th)) - (y * sin(th)))",
-    "metric": 0,
-    "level": 5,
-    "formulaCost": 43
-  },
-  "fastTree": {
-    "o": "sub",
-    "c": [
-      {
-        "o": "mul",
-        "c": [
-          {
-            "o": "var",
-            "n": "x"
-          },
-          {
-            "o": "cos",
-            "c": [
-              {
-                "o": "var",
-                "n": "th"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "o": "mul",
-        "c": [
-          {
-            "o": "var",
-            "n": "y"
-          },
-          {
-            "o": "sin",
-            "c": [
-              {
-                "o": "var",
-                "n": "th"
-              }
-            ]
-          }
-        ]
-      }
-    ]
   }
 }
