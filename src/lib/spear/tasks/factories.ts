@@ -13,7 +13,7 @@ import {
   type GpConfig,
 } from "../engine";
 import { mapArray, mse, linfError, r2Score } from "../math-utils";
-import { makeOodProbe, compositeSeeds } from "../heritage";
+import { makeOodProbe, makeHoldoutProbe, compositeSeeds } from "../heritage";
 import type { TaskBaseline, TaskMilestone, TaskDef, TaskEval } from "./types";
 import {
   GP_OPS_EFFECTIVE,
@@ -66,6 +66,9 @@ export function buildActivationTask(spec: ActivationSpec, points = 400): TaskDef
     { vars, y, n: points },
     { vars: { x: Float64Array.from(oodKeepX) }, y: Float64Array.from(oodKeepY), n: oodKeepX.length },
   );
+  // Honest generalisation score: held-out interleaved samples, scaling fitted
+  // on the train half only.
+  const holdoutProbe = makeHoldoutProbe(vars, y);
   const gpConfig: GpConfig = {
     variables: ["x"],
     constRange: [-3, 3],
@@ -323,6 +326,7 @@ export function buildActivationTask(spec: ActivationSpec, points = 400): TaskDef
     },
     codeVarDecl: "const float x",
     ood: oodProbe,
+    holdout: holdoutProbe,
     r2: (node) => {
       try { return r2Score(evaluateNode(node, vars, points), y); } catch { return -Infinity; }
     },
@@ -534,6 +538,7 @@ export function buildRegressionTask(cfg: {
     verify: cfg.verify,
     codeVarDecl: `const float ${varNames.join(", const float ")}`,
     ood: oodProbe,
+    holdout: makeHoldoutProbe(vars, y),
     r2: (node) => {
       try { return r2Score(evaluateNode(node, vars, n), y); } catch { return -Infinity; }
     },

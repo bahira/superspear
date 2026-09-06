@@ -63,3 +63,10 @@ jobs:
       # order, otherwise "best across all seeds" compares incomparable numbers.
       - name: Dataset determinism
         run: npx tsx scripts/test-dataset-determinism.ts
+
+      # The cost model is a hypothesis about hardware. Compile champion and
+      # exact law to C99, time both, and fail if the model's predictions do not
+      # survive contact with a real CPU. Rows whose two kernels differ by less
+      # than measurement noise are excluded rather than counted as wins.
+      - name: Wall-clock vs cost model
+        run: npx tsx scripts/bench-wallclock.ts
