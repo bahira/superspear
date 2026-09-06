@@ -71,15 +71,38 @@ jobs:
       - name: Wall-clock vs cost model
         run: npx tsx scripts/bench-wallclock.ts
 
-      # Measured speedups must stay in sync with the ledger. If a kernel starts
-      # measuring slower than the law it replaces, audit-champions --strict
-      # fails on `speedup-not-real` rather than shipping a false claim.
-      - name: Measured speed is in sync with the ledger
+      # NOTE: we deliberately do NOT diff stored wall-clock numbers against a
+      # fresh run here. Those numbers are hardware-specific (they were measured
+      # on the machine that produced them) and a GitHub runner is a different
+      # CPU, so any equality/tolerance check would compare two machines and
+      # fail for reasons that say nothing about the code. An earlier version of
+      # this step did exactly that and failed on CI while passing locally.
+      #
+      # The portable invariant is checked instead: no kernel may advertise a
+      # speedup it does not have. audit-champions --strict enforces it via the
+      # `speedup-not-real` rule, and it re-derives everything from the ASTs, so
+      # it is machine-independent. Refreshing the measurements is an explicit
+      # local action: npx tsx scripts/write-measured-speed.ts && npx tsx scripts/repair-ledger.ts
+      - name: Measured-speed blocks are well-formed
         run: |
-          npx tsx scripts/write-measured-speed.ts --dry > /tmp/measured.txt
-          cat /tmp/measured.txt
-          # --dry prints what WOULD change; on a clean tree that must be nothing
-          if ! grep -q "^0 entries updated" /tmp/measured.txt; then
-            echo "::error::ledger measured-speed block is stale — run: npx tsx scripts/write-measured-speed.ts && npx tsx scripts/repair-ledger.ts"
-            exit 1
-          fi
+          npx tsx -e '
+            import { loadLedger } from "./src/lib/spear/ledger";
+            const led: any = loadLedger();
+            let bad = 0;
+            for (const [id, e] of Object.entries(led) as [string, any][]) {
+              const m = e.speed?.measured;
+              if (!m) continue;
+              const ok =
+                typeof m.measuredSpeedup === "number" && m.measuredSpeedup > 0 &&
+                typeof m.nsFormula === "number" && m.nsFormula > 0 &&
+                typeof m.nsExact === "number" && m.nsExact > 0 &&
+                typeof m.resolvable === "boolean" && typeof m.harness === "string";
+              if (!ok) { console.error(`[${id}] malformed speed.measured block`); bad++; }
+              if (m.resolvable && e.speed.speedupSource !== "measured") {
+                console.error(`[${id}] has a resolvable measurement but speedup is not sourced from it`);
+                bad++;
+              }
+            }
+            if (bad) { console.error(`::error::${bad} malformed measured-speed entries`); process.exit(1); }
+            console.log("measured-speed blocks: all well-formed and authoritative where resolvable");
+          '
