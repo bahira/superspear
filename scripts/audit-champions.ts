@@ -172,6 +172,22 @@ function auditEntry(id: string, entry: Record<string, any>, def: TaskDef | undef
   // false and must not be shipped quietly.
   const measured = (entry.speed as { measured?: { measuredSpeedup: number; agreement: number; resolvable: boolean } } | undefined)
     ?.measured;
+  // Even an UNRESOLVABLE measurement carries information: it means both kernels
+  // sit at the call-overhead floor, so the speedup is ~1.0 whatever the model
+  // predicts. gelu kept advertising ×1.92 while measuring ×0.99 because the
+  // substitution only fires on resolvable rows. Publishing a multiplier the
+  // hardware could not reproduce is exactly the class of claim this audit
+  // exists to stop.
+  if (measured && !measured.resolvable) {
+    const claimed = entry.speed?.speedup;
+    if (claimed !== undefined && claimed > 1.25 && measured.measuredSpeedup < 1.1) {
+      push(
+        "speedup-unmeasurable",
+        "warn",
+        `advertises ×${claimed.toFixed(2)} but both kernels sit at the call-overhead floor (measured ×${measured.measuredSpeedup.toFixed(2)}) — the gain is not observable`,
+      );
+    }
+  }
   if (measured?.resolvable) {
     const claimed = entry.speed?.speedup;
     if (measured.measuredSpeedup < 1 && claimed !== undefined && claimed > 1) {

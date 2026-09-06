@@ -326,6 +326,10 @@ export function buildActivationTask(spec: ActivationSpec, points = 400): TaskDef
     },
     codeVarDecl: "const float x",
     domain: { lo: spec.lo, hi: spec.hi },
+    // Activation tasks never picked up their reference law: exactRefNode was
+    // only wired in the regression builder, so every single-variable task was
+    // skipped by bench-wallclock even when EXACT_LAWS had an entry for it.
+    exactRefNode: EXACT_LAWS[spec.id],
     ood: oodProbe,
     holdout: holdoutProbe,
     r2: (node) => {

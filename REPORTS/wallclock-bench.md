@@ -4,56 +4,62 @@ Champion and exact reference law both emitted as C99, compiled `gcc -O2` (no LTO
 
 `agreement` = measured ÷ modelled. 1.00 means the ALU/SFU cost model predicted reality exactly; below 1 the model over-promises.
 
-**Resolution limit.** An out-of-line function that merely returns its argument costs **1.198 ns/elem** on this machine. Kernels close to that floor — or whose two variants differ by less than the run-to-run noise — are measuring call and loop overhead, not arithmetic. Those rows are marked ⚠ and their ratios are *not* evidence of anything. Trusting them would reintroduce exactly the kind of unearned number this audit removed.
+**Resolution limit.** An out-of-line function that merely returns its argument costs **1.208 ns/elem** on this machine. Kernels close to that floor — or whose two variants differ by less than the run-to-run noise — are measuring call and loop overhead, not arithmetic. Those rows are marked ⚠ and their ratios are *not* evidence of anything. Trusting them would reintroduce exactly the kind of unearned number this audit removed.
 
 | task | vars | ns/elem formula | ns/elem exact | measured ⚡ | modelled ⚡ | agreement |
 |---|---|---|---|---|---|---|
-| `kdv_soliton` | 2 | 5.947 | 40.755 | **×6.85** | ×7.57 | 0.91 |
-| `logsumexp2` | 2 | 10.041 | 24.710 | **×2.46** | ×8.57 | 0.29 |
-| `damped_oscillation` | 1 | 10.388 | 20.750 | **×2.00** | ×1.63 | 1.23 |
-| `kerr_spin` | 2 | 23.854 | 28.701 | **×1.20** | ×1.17 | 1.03 |
-| `hill` ⚠ | 1 | 8.537 | 9.122 | **×1.07** | ×1.00 | n/a |
-| `pendulum_hybrid` ⚠ | 2 | 39.071 | 40.075 | **×1.03** | ×0.98 | n/a |
-| `temporal_grad` ⚠ | 2 | 2.849 | 2.902 | **×1.02** | ×1.00 | n/a |
-| `logistic_growth` | 1 | 15.544 | 15.733 | **×1.01** | ×0.62 | 1.63 |
-| `layernorm_scale` ⚠ | 1 | 8.067 | 8.145 | **×1.01** | ×0.50 | n/a |
-| `bilinear_interp` ⚠ | 1 | 2.717 | 2.717 | **×1.00** | ×0.50 | n/a |
-| `free_fall` ⚠ | 1 | 2.725 | 2.720 | **×1.00** | ×0.67 | n/a |
-| `kepler` ⚠ | 1 | 2.729 | 2.721 | **×1.00** | ×0.60 | n/a |
-| `lorentz` ⚠ | 1 | 8.751 | 8.595 | **×0.98** | ×0.89 | n/a |
-| `rc_circuit` | 1 | 8.160 | 7.855 | **×0.96** | ×0.96 | 1.01 |
-| `softplus` | 1 | 13.298 | 12.689 | **×0.95** | ×0.95 | 1.00 |
-| `diffusion_beta` | 1 | 13.021 | 12.251 | **×0.94** | ×1.04 | 0.90 |
-| `gaussian_kernel` | 1 | 8.161 | 7.559 | **×0.93** | ×0.96 | 0.97 |
-| `kerr` ⚠ | 1 | 28.924 | 26.154 | **×0.90** | ×1.31 | n/a |
-| `light_falloff_punctual` | 1 | 25.655 | 18.783 | **×0.73** | ×1.54 | 0.48 |
-| `lambert_w` | 1 | 10.818 | 7.869 | **×0.73** | ×0.95 | 0.76 |
-| `lennard_jones` | 1 | 30.531 | 8.747 | **×0.29** | ×0.30 | 0.96 |
-| `european_call` | 1 | 59.596 | 2.725 | **×0.05** | ×0.06 | 0.71 |
+| `kdv_soliton` | 2 | 5.894 | 41.984 | **×7.12** | ×7.57 | 0.94 |
+| `logsumexp2` | 2 | 9.995 | 24.525 | **×2.45** | ×8.57 | 0.29 |
+| `rl_distillation` | 1 | 8.727 | 18.290 | **×2.10** | ×2.83 | 0.74 |
+| `damped_oscillation` | 1 | 10.391 | 17.385 | **×1.67** | ×1.63 | 1.03 |
+| `kerr_spin` | 2 | 23.881 | 28.728 | **×1.20** | ×1.17 | 1.03 |
+| `pendulum_hybrid` | 2 | 38.887 | 39.589 | **×1.02** | ×0.98 | 1.04 |
+| `layernorm_scale` | 1 | 8.027 | 8.161 | **×1.02** | ×0.50 | 2.03 |
+| `logistic_growth` | 1 | 15.581 | 15.751 | **×1.01** | ×0.62 | 1.62 |
+| `lorentz` ⚠ | 1 | 8.356 | 8.397 | **×1.00** | ×0.89 | n/a |
+| `bilinear_interp` ⚠ | 1 | 2.730 | 2.736 | **×1.00** | ×0.50 | n/a |
+| `kepler` ⚠ | 1 | 2.731 | 2.736 | **×1.00** | ×0.60 | n/a |
+| `legendre_p2` ⚠ | 1 | 2.727 | 2.728 | **×1.00** | ×1.67 | n/a |
+| `free_fall` ⚠ | 1 | 3.073 | 3.067 | **×1.00** | ×0.67 | n/a |
+| `temporal_grad` ⚠ | 2 | 2.737 | 2.729 | **×1.00** | ×1.00 | n/a |
+| `gelu` ⚠ | 1 | 11.363 | 11.299 | **×0.99** | ×1.92 | n/a |
+| `bs_d2_sigma` ⚠ | 1 | 17.812 | 17.708 | **×0.99** | ×1.57 | n/a |
+| `diffusion_beta` | 1 | 10.471 | 10.359 | **×0.99** | ×1.04 | 0.95 |
+| `hill` ⚠ | 1 | 8.806 | 8.496 | **×0.96** | ×1.00 | n/a |
+| `rc_circuit` | 1 | 8.182 | 7.883 | **×0.96** | ×0.96 | 1.01 |
+| `softplus` | 1 | 13.339 | 12.781 | **×0.96** | ×0.95 | 1.00 |
+| `fast_exp_alu` | 1 | 7.887 | 7.310 | **×0.93** | ×1.70 | 0.55 |
+| `gaussian_kernel` | 1 | 8.169 | 7.552 | **×0.92** | ×0.96 | 0.96 |
+| `kerr` | 1 | 28.447 | 23.809 | **×0.84** | ×1.31 | 0.64 |
+| `light_falloff_punctual` | 1 | 25.690 | 18.764 | **×0.73** | ×1.54 | 0.47 |
+| `lambert_w` | 1 | 10.821 | 7.860 | **×0.73** | ×0.95 | 0.76 |
+| `ema_smooth` | 1 | 11.135 | 7.872 | **×0.71** | ×1.92 | 0.37 |
+| `smootherstep` | 1 | 5.449 | 2.724 | **×0.50** | ×2.25 | 0.22 |
+| `lennard_jones` | 1 | 30.571 | 8.725 | **×0.29** | ×0.30 | 0.96 |
+| `european_call` | 1 | 59.691 | 2.726 | **×0.05** | ×0.06 | 0.71 |
 
-**Median agreement: 0.96** across the 13 resolvable tasks (9 of 22 were call-overhead bound and excluded).
+**Median agreement: 0.95** across the 20 resolvable tasks (9 of 29 were call-overhead bound and excluded).
 
 ## Where the model over-promises (agreement < 0.5)
 
-- `logsumexp2`: model says ×8.57, hardware says ×2.46
+- `logsumexp2`: model says ×8.57, hardware says ×2.45
 - `light_falloff_punctual`: model says ×1.54, hardware says ×0.73
+- `ema_smooth`: model says ×1.92, hardware says ×0.71
+- `smootherstep`: model says ×2.25, hardware says ×0.50
 
 ## Not measurable
 
 - silu (no exact reference AST to compile against)
-- gelu (no exact reference AST to compile against)
 - sigmoid (no exact reference AST to compile against)
 - kv_cache (no exact reference AST to compile against)
 - gaussian_cdf (no exact reference AST to compile against)
 - damped_pendulum (no exact reference AST to compile against)
-- rl_distillation (no exact reference AST to compile against)
 - eigen3_sym (no exact reference AST to compile against)
 - ik_reach (no exact reference AST to compile against)
 - idm_following (no exact reference AST to compile against)
 - gemv4 (no exact reference AST to compile against)
 - rope_rot (no exact reference AST to compile against)
 - gauss_shader (no exact reference AST to compile against)
-- ema_smooth (no exact reference AST to compile against)
 - smoothstep (no exact reference AST to compile against)
 - srgb_gamma (no exact reference AST to compile against)
 - tanh_sat (no exact reference AST to compile against)
@@ -83,7 +89,6 @@ Champion and exact reference law both emitted as C99, compiled `gcc -O2` (no LTO
 - grover_amplitude (no exact reference AST to compile against)
 - concurrence_pure (no exact reference AST to compile against)
 - chsh_correlation (no exact reference AST to compile against)
-- legendre_p2 (no exact reference AST to compile against)
 - laguerre_l2 (no exact reference AST to compile against)
 - asin_hard (no exact reference AST to compile against)
 - qfi_dephasing (no exact reference AST to compile against)
@@ -92,10 +97,8 @@ Champion and exact reference law both emitted as C99, compiled `gcc -O2` (no LTO
 - bessel_i0e (no exact reference AST to compile against)
 - elliptic_k (no exact reference AST to compile against)
 - kepler_solver (no exact reference AST to compile against)
-- fast_exp_alu (no exact reference AST to compile against)
 - fresnel_schlick (no exact reference AST to compile against)
 - rayleigh_phase (no exact reference AST to compile against)
-- smootherstep (no exact reference AST to compile against)
 - fog_exp2 (no exact reference AST to compile against)
 - back_ease_out (no exact reference AST to compile against)
 - bias_slope (no exact reference AST to compile against)
@@ -105,5 +108,4 @@ Champion and exact reference law both emitted as C99, compiled `gcc -O2` (no LTO
 - bilateral_weight (no exact reference AST to compile against)
 - bs_d1_sigma (no exact reference AST to compile against)
 - mel_scale (no exact reference AST to compile against)
-- bs_d2_sigma (no exact reference AST to compile against)
 - a_weighting (no exact reference AST to compile against)

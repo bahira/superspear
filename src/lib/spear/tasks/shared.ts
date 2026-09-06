@@ -457,6 +457,39 @@ export const EXACT_LAWS: Record<string, SpearNode> = {
   // against something that is not the reference law — a measurement worse than
   // no measurement. They keep their scalar exactCost and stay unmeasured.
 
+  // fade(t) = 6t^5 - 15t^4 + 10t^3  (Perlin smootherstep)
+  smootherstep: (() => {
+    const x = V("x");
+    const x2 = makeNode("sq", { children: [x] });
+    const x3 = makeNode("mul", { children: [x2, x] });
+    const x4 = makeNode("sq", { children: [x2] });
+    const x5 = makeNode("mul", { children: [x4, x] });
+    return makeNode("add", {
+      children: [
+        makeNode("sub", { children: [makeNode("mul", { children: [C(6), x5] }), makeNode("mul", { children: [C(15), x4] })] }),
+        makeNode("mul", { children: [C(10), x3] }),
+      ],
+    });
+  })(),
+
+  // P2(x) = (3x^2 - 1)/2
+  legendre_p2: makeNode("sub", {
+    children: [makeNode("mul", { children: [C(1.5), makeNode("sq", { children: [V("x")] })] }), C(0.5)],
+  }),
+
+  // GELU(x) = 0.5x(1 + erf(x/sqrt(2)))
+  gelu: (() => {
+    const x = V("x");
+    return makeNode("mul", {
+      children: [
+        makeNode("mul", { children: [C(0.5), x] }),
+        makeNode("add", { children: [C(1), makeNode("erf", { children: [makeNode("mul", { children: [C(0.7071067811865476), x] })] })] }),
+      ],
+    });
+  })(),
+
+  fast_exp_alu: makeNode("exp", { children: [V("x")] }),
+
   // m = max(a,b); m + ln(e^(a-m) + e^(b-m))  — the numerically stable form
   logsumexp2: (() => {
     const a = V("a"), b = V("b");
