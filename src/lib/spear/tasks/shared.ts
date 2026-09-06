@@ -19,6 +19,7 @@ import {
   type NodeOp,
   type GpConfig,
   type SpearNode,
+  parseFormula,
 } from "../engine";
 import { mse, linfError, linspace, mapArray, gaussianRandom, erf, withDataset, datasetUniform } from "../math-utils";
 import type { TaskBaseline, TaskDef } from "./types";
@@ -368,13 +369,11 @@ export const EXACT_LAWS: Record<string, SpearNode> = {
   rc_circuit: makeNode("sub", { children: [C(1), makeNode("exp", { children: [makeNode("neg", { children: [V("t")] })] })] }),
   layernorm_scale: makeNode("pdiv", { children: [C(1), makeNode("sqrt", { children: [V("x")] })] }),
   gaussian_kernel: makeNode("exp", { children: [makeNode("neg", { children: [makeNode("mul", { children: [C(0.5), makeNode("sq", { children: [V("x")] })] })] })] }),
-  diffusion_beta: (() => {
-    // cost model only cares about structure, not constant values
-    const inner = makeNode("add", { children: [V("t"), C(0.01)] });
-    const scaled = makeNode("mul", { children: [C(1.56), inner] });
-    const wave = makeNode("cos", { children: [scaled] });
-    return makeNode("sub", { children: [C(1), makeNode("sq", { children: [wave] })] });
-  })(),
+  // beta(t) = 1 - cos^2((t+0.008)*pi/(2*1.008)). The previous entry used the
+  // rounded 1.56*(t+0.01) and scored 8.1e-6 — worse than the champion, so it
+  // was not the law it claimed to be. Exact constants: 4.0e-33.
+  diffusion_beta: parseFormula("(1 - (cos(((t + 0.008)*(3.141592653589793/2.016))))²)"),
+
   bilinear_interp: makeNode("sub", { children: [C(1), V("u")] }),
   temporal_grad: makeNode("sub", { children: [V("b"), V("a")] }),
   lorentz: makeNode("pdiv", { children: [C(1), makeNode("sqrt", { children: [makeNode("sub", { children: [C(1), makeNode("sq", { children: [V("b")] })] })] })] }),
@@ -417,28 +416,11 @@ export const EXACT_LAWS: Record<string, SpearNode> = {
     ] });
     return makeNode("pdiv", { children: [num, makeNode("sub", { children: [C(1), makeNode("pdiv", { children: [C(3.62166), V("b")] })] })] });
   })(),
-  pendulum_hybrid: (() => {
-    // clamp((1−w)·uswing + w·ucatch, −2, 2) with w = σ(10.1786(cosθ − 0.7))
-    const th = V("th"); const d = V("d");
-    const c = makeNode("cos", { children: [th] });
-    const s = makeNode("sin", { children: [th] });
-    const EErr = makeNode("sub", { children: [
-      makeNode("add", { children: [makeNode("sq", { children: [makeNode("mul", { children: [C(0.5), d] })] }), makeNode("mul", { children: [C(6), makeNode("sub", { children: [C(1), c] })] })] }),
-      C(12),
-    ] });
-    const uSwing = makeNode("mul", { children: [
-      makeNode("mul", { children: [makeNode("mul", { children: [C(-4.3278), d] }), EErr] }),
-      c,
-    ] });
-    const uCatch = makeNode("neg", { children: [makeNode("add", { children: [makeNode("mul", { children: [C(1.7222), s] }), makeNode("mul", { children: [C(8.0402), d] })] })] });
-    const sigArg = makeNode("mul", { children: [C(10.1786), makeNode("sub", { children: [c, C(0.7)] })] });
-    const w = makeNode("pdiv", { children: [C(1), makeNode("add", { children: [C(1), makeNode("exp", { children: [sigArg] })] })] });
-    const blend = makeNode("add", { children: [
-      makeNode("mul", { children: [makeNode("sub", { children: [C(1), w] }), uSwing] }),
-      makeNode("mul", { children: [w, uCatch] }),
-    ] });
-    return makeNode("min", { children: [C(2), makeNode("max", { children: [C(-2), blend] })] });
-  })(),
+  // pendulum_hybrid: REMOVED. The hand-built control law scored mse 1.07e+1
+  // while the champion reaches 5.0e-7, so it was not this task's reference and
+  // any speedup measured against it would have been fiction. The task is an
+  // ODE-derived hybrid controller with no compact closed form; it stays
+  // honestly unmeasured rather than carrying a wrong reference.
 
   // ---------------------------------------------------------------------
   // Reference laws added so their speedups become MEASURABLE.
@@ -525,6 +507,75 @@ export const EXACT_LAWS: Record<string, SpearNode> = {
     const sat = makeNode("min", { children: [C(1), makeNode("relu", { children: [makeNode("sub", { children: [C(1), r4] })] })] });
     return makeNode("pdiv", { children: [makeNode("sq", { children: [sat] }), makeNode("sq", { children: [d] })] });
   })(),
+
+
+  // ---------------------------------------------------------------------
+  // Reference laws written as SOURCE STRINGS.
+  //
+  // Same purpose as the hand-built ASTs above: without a compilable reference
+  // bench-wallclock has nothing to compare against and silently skips the
+  // task, so its advertised speedup is an assertion no hardware ever checked.
+  // 60 tasks were in that state.
+  //
+  // Written as strings because makeNode trees for laws this size are
+  // unreviewable, and every entry is machine-verified: scripts/verify-exact-laws.ts
+  // scores each law against its own task and fails if it does not reproduce
+  // the target. Laws that could not be expressed exactly were NOT added
+  // (probit_quantile has no elementary closed form; bessel_j0/j1/j2,
+  // elliptic_k, blackbody_*, kepler_solver, implied_vol and the ODE tasks are
+  // series/solver-defined and stay honestly unmeasured).
+  //
+  // Constants come from the task definitions, not from memory: fog_exp2 needs
+  // its 1.2 density factor, uncharted2_tonemap applies g(2x) and a whiteScale
+  // normalisation, and huber_loss is NOT min(x^2/2, |x|-0.5) — that branch is
+  // wrong below |x|=1 (at x=0 it gives -0.5 instead of 0). The exact
+  // branchless form is 0.5*m^2 + (|x|-m) with m = min(|x|,1).
+  // ---------------------------------------------------------------------
+  ...Object.fromEntries(
+    Object.entries({
+    smoothstep: "(x)²*(3-2*x)",
+    tanh_sat: "tanh(x)",
+    atan_unit: "atan(x)",
+    asin_hard: "asin(x)",
+    erf_prob: "erf(x)",
+    sigmoid: "1/(1+exp(-x))",
+    silu: "x/(1+exp(-x))",
+    mish: "x*tanh(log(1+exp(x)))",
+    logit_ml: "log(x/(1-x))",
+    gaussian_cdf: "0.5*(1+erf(x*0.7071067811865476))",
+    gauss_shader: "exp(-(x)²/2)",
+    cosh_curve: "(exp(x)+exp(-x))/2",
+    bias_slope: "sqrt(1-(x)²)/x",
+    laguerre_l2: "1-2*x+(x)²/2",
+    mel_scale: "1126.9941805389383*log(1+x/700)",
+    srgb_decode: "exp(2.2*log(x))",
+    srgb_gamma: "((1.055*exp(log(x)/2.4)) - 0.055)",
+    huber_loss: "((0.5*((min(|x|, 1)))²) + (|x| - min(|x|, 1)))",
+    fresnel_schlick: "0.04+0.96*((1-x))²*((1-x))²*(1-x)",
+    fog_exp2: "(1 - exp(-((1.2*x)²)))",
+    michaelis_menten: "100*s/(4+s)",
+    rayleigh_phase: "0.05968310365946075*(1+(cos(x))²)",
+    stefan_boltzmann: "0.42*(t)²*(t)²",
+    mm1_queue_wait: "l/(m*(m-l))",
+    rsi_momentum: "100*g/(g+l)",
+    kelly_criterion: "relu(((p*(b + 1)) - 1)/b)",
+    doppler_effect: "700*(340+vo)/(340-vs)",
+    temperature_softmax: "1/(1+exp(-(da/t)))",
+    concurrence_pure: "2*|a*d-b*c|",
+    chsh_correlation: "|cos(a-b)-cos(a-bp)+cos(ap-b)+cos(ap-bp)|",
+    qfi_dephasing: "(n)²*(t)²*exp(-((n)²*g*t))",
+    amp_damp_fid: "(cos(th))²*exp(-(g*t))+(sin(th))²*(2-exp(-(g*t)))",
+    grover_amplitude: "(sin((2*k+1)*asin(sqrt(m/n))))²",
+    rope_rot: "x*cos(th)-y*sin(th)",
+    gemv4: "0.837*x0-0.482*x1+1.117*x2-0.296*x3",
+    bilateral_weight: "exp(-(x)²*50)/(1+(x)²*2)",
+    pmt_finance: "(r*exp(n*log(1 + r)))/((exp(n*log(1 + r))) - 1)",
+    aces_fit: "min(1,max(0,x*(2.51*x+0.03)/(x*(2.43*x+0.59)+0.14)))",
+    uncharted2_tonemap: "1.3790642466494378*((((2*x)*((0.15*(2*x)) + 0.05)) + 0.004)/(((2*x)*((0.15*(2*x)) + 0.5)) + 0.06) - 0.06666666666666667)",
+    back_ease_out: "1+2.70158*((x-1))³+1.70158*((x-1))²",
+    bs_d1_sigma: "(0.09531017980432493+(0.05+(x)²/2)*0.25)/(x*0.5)",
+    } as Record<string, string>).map(([id, src]) => [id, parseFormula(src)]),
+  ),
 
 };
 

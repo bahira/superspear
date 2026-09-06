@@ -9,8 +9,8 @@
   "iteration": 117,
   "speed": {
     "formulaCost": 23,
-    "exactCost": 24,
-    "speedup": 1.0434782608695652,
+    "exactCost": 28,
+    "speedup": 1.2173913043478262,
     "costProfile": "cpu-transcendental-20",
     "measured": {
       "measuredSpeedup": 0.9988,

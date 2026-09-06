@@ -71,6 +71,13 @@ jobs:
       # The README advertises MISRA-C:2012 export with machine-checked C<->WASM
       # parity. Nothing enforced it: this audit was never wired into CI, and
       # when first run it failed 89/89 because it linked without -lm.
+      # EXACT_LAWS is what bench-wallclock compiles as the reference a champion
+      # is timed against. A wrong entry makes every speedup measured against it
+      # fiction, so each law must reproduce its own task target. This caught two
+      # pre-existing wrong laws (diffusion_beta, pendulum_hybrid).
+      - name: Reference laws reproduce their targets
+        run: npx tsx scripts/verify-exact-laws.ts
+
       - name: MISRA-C export, gcc -std=c99 build, C<->WASM parity
         run: npx tsx scripts/export-audit.ts
 

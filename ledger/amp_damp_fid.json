@@ -10,14 +10,24 @@
   "speed": {
     "formulaCost": 90,
     "exactCost": 24,
-    "speedup": 0.26666666666666666,
+    "speedup": 1.0174,
     "costProfile": "cpu-transcendental-20",
     "vsSolverContext": {
       "label": "Kraus ops 4×4 matmul",
       "speedup": 0.5333333333333333,
       "note": "Context only — a closed-form reference exists for this task, so the solver is not what a real implementation runs. Not a like-for-like speedup: the solver's accuracy is orders of magnitude worse.",
       "honestSpeedupVsReference": 0.26666666666666666
-    }
+    },
+    "measured": {
+      "measuredSpeedup": 1.0174,
+      "nsFormula": 19.1457,
+      "nsExact": 19.4788,
+      "agreement": 3.8152,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    },
+    "speedupModelled": 0.26666666666666666,
+    "speedupSource": "measured"
   },
   "tree": {
     "o": "add",

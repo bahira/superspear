@@ -10,8 +10,18 @@
   "speed": {
     "formulaCost": 12,
     "exactCost": 5,
-    "speedup": 0.4166666666666667,
-    "costProfile": "cpu-transcendental-20"
+    "speedup": 0.3142,
+    "costProfile": "cpu-transcendental-20",
+    "measured": {
+      "measuredSpeedup": 0.3142,
+      "nsFormula": 10.5812,
+      "nsExact": 3.3248,
+      "agreement": 0.7541,
+      "resolvable": true,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    },
+    "speedupModelled": 0.4166666666666667,
+    "speedupSource": "measured"
   },
   "tree": {
     "o": "add",
@@ -87,40 +97,6 @@
       {
         "o": "const",
         "v": 0.4859425929345538
-      }
-    ]
-  },
-  "fast": {
-    "formula": "((0.945573 * |x|) + -0.349314)",
-    "metric": 0.006767969139784184,
-    "level": 2,
-    "formulaCost": 3,
-    "deploy": true
-  },
-  "fastTree": {
-    "o": "add",
-    "c": [
-      {
-        "o": "mul",
-        "c": [
-          {
-            "o": "const",
-            "v": 0.945572617228969
-          },
-          {
-            "o": "abs",
-            "c": [
-              {
-                "o": "var",
-                "n": "x"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "o": "const",
-        "v": -0.3493141024207563
       }
     ]
   }
