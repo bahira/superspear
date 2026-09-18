@@ -1,9 +1,33 @@
-import { makeNode, evaluateScalar, type SpearNode, type NodeOp } from "../../engine";
+import { makeNode, evaluateScalar, parseNode, type SpearNode, type NodeOp, type SerializedNode } from "../../engine";
+import { readFileSync } from "node:fs";
 import { simplify } from "../../engine";
 import { erf, silu, linspace } from "../../math-utils";
 import type { TaskDef } from "../types";
 import { buildActivationTask, buildRegressionTask } from "../factories";
 import * as S from "../shared";
+
+// One Newton correction σ₁ = σ₀ − (BS(σ₀)−c)/Vega(σ₀) around a start skeleton.
+// This is what S.impliedVol iterates 40×; kepler_solver fell the same way
+// (unfolded Newton beat the iteration). BS uses r = 0.02 exactly like
+// S.bsCall; Φ via erf, φ via exp, d1/d2 algebra — all served ops, so the
+// full step is expressible. pdiv's protection floors the vega-collapse
+// zones for free. Shape only — polish re-fits the constants.
+// Exported so the brick can be validated (R² vs incumbent) before farm budget.
+export function newtonIvSeed(s0: SpearNode): SpearNode {
+  const c = S.V("c"), s = S.V("s"), k = S.V("k"), t = S.V("t");
+  const B = (op: NodeOp, a: SpearNode, b: SpearNode): SpearNode => makeNode(op, { children: [a, b] });
+  const U = (op: NodeOp, a: SpearNode): SpearNode => makeNode(op, { children: [a] });
+  const lsk = U("log", B("pdiv", s, k));
+  const s0sq = U("sq", s0);
+  const sqT = U("sqrt", t);
+  const d1 = B("pdiv", B("add", lsk, B("mul", B("add", S.C(0.02), B("mul", S.C(0.5), s0sq)), t)), B("mul", s0, sqT));
+  const d2 = B("sub", d1, B("mul", s0, sqT));
+  const Phi = (x: SpearNode): SpearNode => B("mul", S.C(0.5), B("add", S.C(1), U("erf", B("mul", x, S.C(0.70710678)))));
+  const phi = (x: SpearNode): SpearNode => B("pdiv", U("exp", B("mul", U("sq", x), S.C(-0.5))), S.C(2.5066283));
+  const price = B("sub", B("mul", s, Phi(d1)), B("mul", k, B("mul", U("exp", B("mul", S.C(-0.02), t)), Phi(d2))));
+  const vega = B("mul", s, B("mul", phi(d1), sqT));
+  return B("sub", s0, B("pdiv", B("sub", price, c), vega));
+}
 
 export function defs(): TaskDef[] {
   return [
@@ -217,6 +241,21 @@ buildRegressionTask({
           cmScaledT,
           simplify(makeNode("add", { children: [bs, makeNode("mul", { children: [S.C(1), ksTerm] })] })),
           makeNode("mul", { children: [bs, makeNode("add", { children: [S.C(1), makeNode("pdiv", { children: [makeNode("sq", { children: [cs] }), t] })] })] }),
+          // Self-refinement: one Newton step on the LEDGER incumbent.
+          // Validated before farm budget (R² 0.952 → 0.994, smoke-iv.ts).
+          // Refinement, not discovery — the loop must still beat it by evolving.
+          // Falls back to nothing when no champion tree exists yet (the CM
+          // start was measured toxic: one Newton step from raw CM diverges).
+          ...(() => {
+            try {
+              const ledPath = process.env.SPEAR_LEDGER ?? "spear-hall-of-fame.json";
+              const led = JSON.parse(readFileSync(ledPath, "utf8")) as Record<string, { tree?: SerializedNode }>;
+              const inc = led["implied_vol"]?.tree;
+              return inc ? [newtonIvSeed(parseNode(inc))] : [];
+            } catch {
+              return [];
+            }
+          })(),
         ];
       })(),
       verify: (node) => {

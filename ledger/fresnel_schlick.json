@@ -2,24 +2,16 @@
   "taskId": "fresnel_schlick",
   "title": "Fresnel-Schlick (réflexion PBR)",
   "direction": "min",
-  "metric": 1.1352153315947514e-33,
-  "holdout": 1.2133358649639586e-33,
+  "metric": 1.1192060389320325e-33,
+  "holdout": 1.3270861023043297e-33,
   "level": 5,
   "formula": "(0.04 + (((0.96 * ((1 - x))²) * ((1 - x))²) * (1 - x)))",
-  "seed": 260906,
-  "iteration": 7,
+  "seed": 20260917,
+  "iteration": 8,
   "speed": {
     "formulaCost": 9,
     "exactCost": 12,
     "speedup": 1.3333333333333333,
-    "measured": {
-      "measuredSpeedup": 1.0021,
-      "nsFormula": 2.7242,
-      "nsExact": 2.7298,
-      "agreement": 0.7516,
-      "resolvable": false,
-      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
-    },
     "costProfile": "cpu-transcendental-20"
   },
   "tree": {
@@ -96,87 +88,6 @@
             ]
           }
         ]
-      }
-    ]
-  },
-  "fast": {
-    "formula": "((1.184227 * ((1.091197 * ((0.844934 - x))²) * ((1 - x))²)) + 0.031456)",
-    "metric": 0.0001697292959297894,
-    "level": 2,
-    "formulaCost": 8,
-    "measured": {
-      "measuredSpeedup": 0.8836,
-      "nsChampion": 1.2551,
-      "nsFast": 1.4204,
-      "resolvable": false,
-      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
-    }
-  },
-  "fastTree": {
-    "o": "add",
-    "c": [
-      {
-        "o": "mul",
-        "c": [
-          {
-            "o": "const",
-            "v": 1.184226830941758
-          },
-          {
-            "o": "mul",
-            "c": [
-              {
-                "o": "mul",
-                "c": [
-                  {
-                    "o": "const",
-                    "v": 1.091197
-                  },
-                  {
-                    "o": "sq",
-                    "c": [
-                      {
-                        "o": "sub",
-                        "c": [
-                          {
-                            "o": "const",
-                            "v": 0.844934
-                          },
-                          {
-                            "o": "var",
-                            "n": "x"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "o": "sq",
-                "c": [
-                  {
-                    "o": "sub",
-                    "c": [
-                      {
-                        "o": "const",
-                        "v": 1
-                      },
-                      {
-                        "o": "var",
-                        "n": "x"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "o": "const",
-        "v": 0.0314564907115161
       }
     ]
   }

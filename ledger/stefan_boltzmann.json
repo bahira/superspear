@@ -2,7 +2,7 @@
   "taskId": "stefan_boltzmann",
   "title": "Stefan-Boltzmann (radiation thermique)",
   "direction": "min",
-  "metric": 2.382092673239445e-26,
+  "metric": 2.1322035895929197e-26,
   "level": 5,
   "formula": "(0.42 * (relu(t) * (t)³))",
   "seed": 1000080,
