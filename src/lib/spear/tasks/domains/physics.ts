@@ -1,9 +1,100 @@
-import { makeNode, evaluateNode, evaluateScalar, type SpearNode, type NodeOp } from "../../engine";
+import { makeNode, evaluateNode, evaluateScalar, parseNode, type SpearNode, type NodeOp, type SerializedNode } from "../../engine";
+import { readFileSync } from "node:fs";
 import { simplify } from "../../engine";
 import { erf, silu, linspace } from "../../math-utils";
 import type { TaskDef } from "../types";
 import { buildActivationTask, buildRegressionTask } from "../factories";
 import * as S from "../shared";
+
+// Gated two-regime J0 seed (Cephes pattern, validated before farm budget,
+// smoke-j0.ts: 3.0e-5 vs champion 2.6e-4): A&S 9.4.1 series below x=3,
+// damped-cosine carrier above (steep min/max ramp does the switching —
+// GP can't branch, so the switch is a tunable steep ramp, not an if).
+// Plus the bare carrier: the engine already owns the series genes, the
+// carrier is the brick it was missing (zone [4,6]: 5e-5 vs 3.8e-4).
+// Shape only — polish re-fits constants. Exported for pre-budget validation.
+export function besselJ0GatedSeed(): SpearNode {
+  const x = S.V("x");
+  const B = (op: NodeOp, a: SpearNode, b: SpearNode): SpearNode => makeNode(op, { children: [a, b] });
+  const U = (op: NodeOp, a: SpearNode): SpearNode => makeNode(op, { children: [a] });
+  const z2 = U("sq", B("pdiv", x, S.C(3)));
+  const z4 = U("sq", z2);
+  const series = B("add",
+    B("sub", B("add", B("sub", S.C(1), B("mul", S.C(2.25), z2)), B("mul", S.C(1.2656208), z4)),
+      B("mul", S.C(0.3163866), B("mul", z4, z2))),
+    B("mul", S.C(0.0444479), U("sq", z4)));
+  const carrier = B("mul", S.C(0.8), B("pdiv", U("cos", B("sub", x, S.C(0.785))), U("sqrt", x)));
+  const w = B("min", S.C(1), B("max", S.C(0), B("mul", S.C(100), B("sub", S.C(3), x))));
+  return B("add", B("mul", series, w), B("mul", carrier, B("sub", S.C(1), w)));
+}
+
+export function besselJ0CarrierSeed(): SpearNode {
+  const x = S.V("x");
+  const B = (op: NodeOp, a: SpearNode, b: SpearNode): SpearNode => makeNode(op, { children: [a, b] });
+  const U = (op: NodeOp, a: SpearNode): SpearNode => makeNode(op, { children: [a] });
+  return B("mul", S.C(0.8), B("pdiv", U("cos", B("sub", x, S.C(0.785))), U("sqrt", x)));
+}
+
+// Dual-structure i0e seed (validated before farm budget, smoke-i0e.ts:
+// 2.4e-6 vs champion 3.05e-5): short-series head × exp(−x) below x≈3,
+// A&S 9.7.1 asymptotic (1+1/8x+9/128x²)/√(2πx) above — the e^x cancels the
+// e^(−x) scaling, leaving pure algebra outside sqrt. Steep min/max ramp
+// does the switching (tunable). Shape only — polish re-fits constants.
+// Exported for pre-budget validation.
+export function besselI0eGatedSeed(): SpearNode {
+  const x = S.V("x");
+  const B = (op: NodeOp, a: SpearNode, b: SpearNode): SpearNode => makeNode(op, { children: [a, b] });
+  const U = (op: NodeOp, a: SpearNode): SpearNode => makeNode(op, { children: [a] });
+  const x2 = U("sq", x);
+  const head = B("mul",
+    B("add", B("add", S.C(1), B("mul", S.C(0.25), x2)), B("mul", S.C(1 / 64), U("sq", x2))),
+    U("exp", U("neg", x)));
+  const invx = B("pdiv", S.C(1), x);
+  const asym = B("mul",
+    B("pdiv", S.C(0.39894228), U("sqrt", x)),
+    B("add", B("add", S.C(1), B("mul", S.C(0.125), invx)), B("mul", S.C(9 / 128), U("sq", invx))));
+  const w = B("min", S.C(1), B("max", S.C(0), B("mul", S.C(100), B("sub", S.C(3), x))));
+  return B("add", B("mul", head, w), B("mul", asym, B("sub", S.C(1), w)));
+}
+
+// Cross-task recurrence seed for J2 (A&S 9.1.27: J₂ = (2/x)·J₁ − J₀).
+// Composes the LEDGER champions of bessel_j0/bessel_j1 — zero invented
+// constants — under a short-series head below x≈2.5 (the recurrence
+// suffers catastrophic cancellation at 0, diagnosed without the gate).
+// Living seed: it auto-upgrades when J0/J1 improve, like newtonIvSeed
+// tracks the IV incumbent. Validated before farm budget (smoke-j2rec.ts:
+// 2.7e-5 vs champion 1.0e-4). Falls back to the series head alone when
+// a champion tree is missing.
+export function besselJ2RecurrenceSeed(): SpearNode {
+  const x = S.V("x");
+  const B = (op: NodeOp, a: SpearNode, b: SpearNode): SpearNode => makeNode(op, { children: [a, b] });
+  const U = (op: NodeOp, a: SpearNode): SpearNode => makeNode(op, { children: [a] });
+  const tm = (c: number, n: SpearNode): SpearNode => B("mul", S.C(c), n);
+  const x2 = U("sq", x);
+  const x4 = U("sq", x2);
+  let head: SpearNode = B("add", tm(1 / 8, x2), U("neg", tm(1 / 96, x4)));
+  head = B("add", head, tm(1 / 3072, B("mul", x4, x2)));
+  head = B("add", head, U("neg", tm(1 / 184320, B("mul", x4, x4))));
+  let rec: SpearNode | null = null;
+  try {
+    const ledPath = process.env.SPEAR_LEDGER ?? "spear-hall-of-fame.json";
+    const led = JSON.parse(readFileSync(ledPath, "utf8")) as Record<string, { tree?: SerializedNode }>;
+    const t0 = led["bessel_j0"]?.tree;
+    const t1 = led["bessel_j1"]?.tree;
+    if (t0 && t1) {
+      const rename = (nd: SpearNode): SpearNode =>
+        nd.op === "var" ? makeNode("var", { name: "x" }) : makeNode(nd.op, { value: nd.value, children: (nd.children ?? []).map(rename) });
+      const J0 = rename(parseNode(t0));
+      const J1 = rename(parseNode(t1));
+      rec = B("sub", B("mul", B("pdiv", S.C(2), x), J1), J0);
+    }
+  } catch {
+    rec = null;
+  }
+  if (!rec) return head;
+  const w = B("min", S.C(1), B("max", S.C(0), B("mul", S.C(100), B("sub", S.C(2.5), x))));
+  return B("add", B("mul", head, w), B("mul", rec, B("sub", S.C(1), w)));
+}
 
 export function defs(): TaskDef[] {
   return [
@@ -130,6 +221,9 @@ buildActivationTask({
         })()),
         // even-series tail for contrast
         simplify(makeNode("pdiv", { children: [makeNode("var", { name: "x" }), makeNode("const", { value: 3 })] })),
+        // gated two-regime (series × ramp + carrier) + bare carrier — see above
+        besselJ0GatedSeed(),
+        besselJ0CarrierSeed(),
       ],
     }),
 
@@ -156,6 +250,8 @@ buildRegressionTask({
       },
       trueLaw: (v, i) => S.besselI0e(v.x[i]),
       verify: () => null,
+      // dual-structure seed: series-head below x≈3, A&S 9.7 asymptotic above
+      extraSeeds: [besselI0eGatedSeed()],
     }),
 
     // Complete elliptic integral K(m): pendulum period, geodesics. The log
@@ -365,6 +461,8 @@ buildActivationTask({
       hi: 6,
       groundTruth: "J₂(x)",
       exactCost: 40,
+      // cross-task recurrence J₂=(2/x)J₁−J₀ on ledger champions + series head
+      extraSeeds: [besselJ2RecurrenceSeed()],
     }),
 buildRegressionTask({
       id: "free_fall",
