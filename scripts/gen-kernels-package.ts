@@ -208,9 +208,11 @@ declare const _default: Record<string, Kernel>;
 export default _default;
 `);
 
+// version: synchronisée avec le déposé npm. Le script lit la version courante
+// depuis le déposé si dispo, sinon on garde la dernière connue.
 writeFileSync(join(pkgDir, "package.json"), JSON.stringify({
   name: "spear-kernels",
-  version: "1.10.1",
+  version: "1.10.3",
   description: "Closed-form kernels discovered by the SPEAR symbolic regression engine, shipped as JS, CUDA C, PyTorch and WebAssembly.",
   license: "MIT",
   type: "module",

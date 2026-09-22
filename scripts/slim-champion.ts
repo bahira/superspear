@@ -56,7 +56,7 @@ async function main() {
   const relDeg = finalMse / Math.max(mse0, 1e-300);
   console.log(`\nfinal: cost ${cost0} -> ${finalCost} | mse x${relDeg.toExponential(2)} vs départ`);
 
-  if (finalCost < cost0 && relDeg <= 50) {
+  if (finalCost < cost0 && relDeg <= 50 && Number.isFinite(finalMse)) {
     entry.formula = nodeToString(node);
     entry.tree = JSON.parse(JSON.stringify(node));
     entry.metric = finalMse;
@@ -64,7 +64,7 @@ async function main() {
     saveLedger(led);
     console.log(`✓ ledger mis à jour (${id}: ${cost0} -> ${finalCost} unités)`);
   } else {
-    console.log("aucun gain net — ledger inchangé");
+    console.log(`aucun gain net — ledger inchangé (finalCost=${finalCost} cost0=${cost0} relDeg=${relDeg.toExponential(2)} finite=${Number.isFinite(finalMse)})`);
   }
 }
 

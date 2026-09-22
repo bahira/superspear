@@ -364,6 +364,14 @@ function rand01(): number {
   return rand();
 }
 
+/** ponytail: try/catch sur l'encodeur WASM récursif — un arbre trop profond ne
+ *  doit pas faire planter le run complet. L'AST reste dans le ledger, seul
+ *  le binaire wasm est perdu (regénéré au prochain cycle). */
+function safeWasm(node: SpearNode): string | null {
+  try { return Buffer.from(toWasmBytes(node)).toString("base64"); }
+  catch { return null; }
+}
+
 
 function snapshotTask(rt: TaskRuntime, full: boolean): LoopTaskSnapshot {
   const t = rt.def;
@@ -418,7 +426,7 @@ function snapshotTask(rt: TaskRuntime, full: boolean): LoopTaskSnapshot {
     c99: full && rt.bestNode
       ? toMisraC(rt.bestNode, `spear_${t.id.replace(/[^a-z0-9_]/gi, "_")}`, `const float32_t ${t.variables.join(", const float32_t ")}`)
       : null,
-    wasm: full && rt.bestNode ? Buffer.from(toWasmBytes(rt.bestNode)).toString("base64") : null,
+    wasm: full && rt.bestNode ? safeWasm(rt.bestNode) : null,
     tree: full && rt.bestNode ? serializeNode(rt.bestNode) : null,
     fast,
     fastTree: full && fastPick ? serializeNode(fastPick.node) : null,

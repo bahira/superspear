@@ -1,6 +1,6 @@
 {
   "name": "superspear",
-  "version": "1.0.0",
+  "version": "1.10.3",
   "description": "SPEAR Lab - symbolic regression engine that discovers closed-form laws and compiles them to verified WASM/MISRA-C",
   "license": "MIT",
   "private": true,

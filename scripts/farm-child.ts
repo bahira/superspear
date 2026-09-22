@@ -13,35 +13,47 @@ async function main() {
     setTranscendentalCost(Number(process.argv[6]));
   }
 
+  const { writeFileSync } = await import("node:fs");
   const { runGroundedLoop } = await import("../src/lib/spear/loop");
-  const progress = await runGroundedLoop({ seed, budget, deadlineMs: 45_000 });
-  const partial = progress.tasks
-    .filter((t) => t.best)
-    .map((t) => ({
-      taskId: t.taskId,
-      title: t.title,
-      direction: t.metricDirection,
-      metric: t.best!.metric,
-      holdout: t.holdout ?? undefined,
-      level: t.best!.level,
-      formula: t.best!.formula,
-      seed,
-      iteration: t.iterations,
-      speed: t.speed
-        ? {
-            formulaCost: t.speed.formulaCost,
-            exactCost: t.speed.exactCost,
-            speedup: t.speed.estimatedSpeedup,
-            vsIterative: t.speed.vsIterative,
-          }
-        : undefined,
-      tree: t.tree ?? undefined,
-      fast: t.fast ?? undefined,
-      fastTree: t.fastTree ?? undefined,
-    }));
-  writeFileSync(outPath, JSON.stringify(partial));
-  console.log(`[child ${process.pid}] ${partial.length} tâches, status=${progress.status}, iters=${progress.iterationsUsed}`);
+
+  const snapshot = (progress: Awaited<ReturnType<typeof runGroundedLoop>>) => {
+    const partial = progress.tasks
+      .filter((t) => t.best)
+      .map((t) => ({
+        taskId: t.taskId,
+        title: t.title,
+        direction: t.metricDirection,
+        metric: t.best!.metric,
+        holdout: t.holdout ?? undefined,
+        level: t.best!.level,
+        formula: t.best!.formula,
+        seed,
+        iteration: t.iterations,
+        speed: t.speed
+          ? {
+              formulaCost: t.speed.formulaCost,
+              exactCost: t.speed.exactCost,
+              speedup: t.speed.estimatedSpeedup,
+              vsIterative: t.speed.vsIterative,
+            }
+          : undefined,
+        tree: t.tree ?? undefined,
+        fast: t.fast ?? undefined,
+        fastTree: t.fastTree ?? undefined,
+      }));
+    writeFileSync(outPath, JSON.stringify(partial));
+    return partial.length;
+  };
+
+  const progress = await runGroundedLoop({
+    seed,
+    budget,
+    deadlineMs: 45_000,
+    // periodic partial persistence: a killed child still contributes its breakthroughs
+    onProgress: (p) => { snapshot(p); },
+  });
+  const n = snapshot(progress);
+  console.log(`[child ${process.pid}] ${n} tâches, status=${progress.status}, iters=${progress.iterationsUsed}`);
 }
 
-import { writeFileSync } from "node:fs";
 main().catch((e) => { console.error(e); process.exit(1); });
