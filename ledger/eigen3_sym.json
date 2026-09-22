@@ -8,835 +8,447 @@
   "seed": 1000090,
   "iteration": 643,
   "tree": {
-    "op": "add",
-    "value": 0,
-    "name": "",
-    "children": [
+    "o": "add",
+    "c": [
       {
-        "op": "mul",
-        "value": 0,
-        "name": "",
-        "children": [
+        "o": "mul",
+        "c": [
           {
-            "op": "const",
-            "value": 1.000001,
-            "name": "",
-            "children": [],
-            "size": 1,
-            "depth": 1
+            "o": "const",
+            "v": 1.000001
           },
           {
-            "op": "add",
-            "value": 0,
-            "name": "",
-            "children": [
+            "o": "add",
+            "c": [
               {
-                "op": "mul",
-                "value": 0,
-                "name": "",
-                "children": [
+                "o": "mul",
+                "c": [
                   {
-                    "op": "var",
-                    "value": 0,
-                    "name": "t",
-                    "children": [],
-                    "size": 1,
-                    "depth": 1
+                    "o": "var",
+                    "n": "t"
                   },
                   {
-                    "op": "const",
-                    "value": 0.3333333333333333,
-                    "name": "",
-                    "children": [],
-                    "size": 1,
-                    "depth": 1
+                    "o": "const",
+                    "v": 0.3333333333333333
                   }
-                ],
-                "size": 3,
-                "depth": 2
+                ]
               },
               {
-                "op": "mul",
-                "value": 0,
-                "name": "",
-                "children": [
+                "o": "mul",
+                "c": [
                   {
-                    "op": "mul",
-                    "value": 0,
-                    "name": "",
-                    "children": [
+                    "o": "mul",
+                    "c": [
                       {
-                        "op": "const",
-                        "value": 2,
-                        "name": "",
-                        "children": [],
-                        "size": 1,
-                        "depth": 1
+                        "o": "const",
+                        "v": 2
                       },
                       {
-                        "op": "sqrt",
-                        "value": 0,
-                        "name": "",
-                        "children": [
+                        "o": "sqrt",
+                        "c": [
                           {
-                            "op": "mul",
-                            "value": 0,
-                            "name": "",
-                            "children": [
+                            "o": "mul",
+                            "c": [
                               {
-                                "op": "sub",
-                                "value": 0,
-                                "name": "",
-                                "children": [
+                                "o": "sub",
+                                "c": [
                                   {
-                                    "op": "var",
-                                    "value": 0,
-                                    "name": "u",
-                                    "children": [],
-                                    "size": 1,
-                                    "depth": 1
+                                    "o": "var",
+                                    "n": "u"
                                   },
                                   {
-                                    "op": "mul",
-                                    "value": 0,
-                                    "name": "",
-                                    "children": [
+                                    "o": "mul",
+                                    "c": [
                                       {
-                                        "op": "sq",
-                                        "value": 0,
-                                        "name": "",
-                                        "children": [
+                                        "o": "sq",
+                                        "c": [
                                           {
-                                            "op": "var",
-                                            "value": 0,
-                                            "name": "t",
-                                            "children": [],
-                                            "size": 1,
-                                            "depth": 1
+                                            "o": "var",
+                                            "n": "t"
                                           }
-                                        ],
-                                        "size": 2,
-                                        "depth": 2
+                                        ]
                                       },
                                       {
-                                        "op": "const",
-                                        "value": 0.3333333333333333,
-                                        "name": "",
-                                        "children": [],
-                                        "size": 1,
-                                        "depth": 1
+                                        "o": "const",
+                                        "v": 0.3333333333333333
                                       }
-                                    ],
-                                    "size": 4,
-                                    "depth": 3
+                                    ]
                                   }
-                                ],
-                                "size": 6,
-                                "depth": 4
+                                ]
                               },
                               {
-                                "op": "const",
-                                "value": 0.3333333333333333,
-                                "name": "",
-                                "children": [],
-                                "size": 1,
-                                "depth": 1
+                                "o": "const",
+                                "v": 0.3333333333333333
                               }
-                            ],
-                            "size": 8,
-                            "depth": 5
+                            ]
                           }
-                        ],
-                        "size": 9,
-                        "depth": 6
+                        ]
                       }
-                    ],
-                    "size": 11,
-                    "depth": 7
+                    ]
                   },
                   {
-                    "op": "cos",
-                    "value": 0,
-                    "name": "",
-                    "children": [
+                    "o": "cos",
+                    "c": [
                       {
-                        "op": "mul",
-                        "value": 0,
-                        "name": "",
-                        "children": [
+                        "o": "mul",
+                        "c": [
                           {
-                            "op": "sub",
-                            "value": 0,
-                            "name": "",
-                            "children": [
+                            "o": "sub",
+                            "c": [
                               {
-                                "op": "const",
-                                "value": 1.5707963267948966,
-                                "name": "",
-                                "children": [],
-                                "size": 1,
-                                "depth": 1
+                                "o": "const",
+                                "v": 1.5707963267948966
                               },
                               {
-                                "op": "atan",
-                                "value": 0,
-                                "name": "",
-                                "children": [
+                                "o": "atan",
+                                "c": [
                                   {
-                                    "op": "pdiv",
-                                    "value": 0,
-                                    "name": "",
-                                    "children": [
+                                    "o": "pdiv",
+                                    "c": [
                                       {
-                                        "op": "mul",
-                                        "value": 0,
-                                        "name": "",
-                                        "children": [
+                                        "o": "mul",
+                                        "c": [
                                           {
-                                            "op": "pdiv",
-                                            "value": 0,
-                                            "name": "",
-                                            "children": [
+                                            "o": "pdiv",
+                                            "c": [
                                               {
-                                                "op": "mul",
-                                                "value": 0,
-                                                "name": "",
-                                                "children": [
+                                                "o": "mul",
+                                                "c": [
                                                   {
-                                                    "op": "const",
-                                                    "value": 3,
-                                                    "name": "",
-                                                    "children": [],
-                                                    "size": 1,
-                                                    "depth": 1
+                                                    "o": "const",
+                                                    "v": 3
                                                   },
                                                   {
-                                                    "op": "sub",
-                                                    "value": 0,
-                                                    "name": "",
-                                                    "children": [
+                                                    "o": "sub",
+                                                    "c": [
                                                       {
-                                                        "op": "mul",
-                                                        "value": 0,
-                                                        "name": "",
-                                                        "children": [
+                                                        "o": "mul",
+                                                        "c": [
                                                           {
-                                                            "op": "mul",
-                                                            "value": 0,
-                                                            "name": "",
-                                                            "children": [
+                                                            "o": "mul",
+                                                            "c": [
                                                               {
-                                                                "op": "var",
-                                                                "value": 0,
-                                                                "name": "t",
-                                                                "children": [],
-                                                                "size": 1,
-                                                                "depth": 1
+                                                                "o": "var",
+                                                                "n": "t"
                                                               },
                                                               {
-                                                                "op": "var",
-                                                                "value": 0,
-                                                                "name": "u",
-                                                                "children": [],
-                                                                "size": 1,
-                                                                "depth": 1
+                                                                "o": "var",
+                                                                "n": "u"
                                                               }
-                                                            ],
-                                                            "size": 3,
-                                                            "depth": 2
+                                                            ]
                                                           },
                                                           {
-                                                            "op": "const",
-                                                            "value": 0.3333333333333333,
-                                                            "name": "",
-                                                            "children": [],
-                                                            "size": 1,
-                                                            "depth": 1
+                                                            "o": "const",
+                                                            "v": 0.3333333333333333
                                                           }
-                                                        ],
-                                                        "size": 5,
-                                                        "depth": 3
+                                                        ]
                                                       },
                                                       {
-                                                        "op": "add",
-                                                        "value": 0,
-                                                        "name": "",
-                                                        "children": [
+                                                        "o": "add",
+                                                        "c": [
                                                           {
-                                                            "op": "mul",
-                                                            "value": 0,
-                                                            "name": "",
-                                                            "children": [
+                                                            "o": "mul",
+                                                            "c": [
                                                               {
-                                                                "op": "cube",
-                                                                "value": 0,
-                                                                "name": "",
-                                                                "children": [
+                                                                "o": "cube",
+                                                                "c": [
                                                                   {
-                                                                    "op": "var",
-                                                                    "value": 0,
-                                                                    "name": "t",
-                                                                    "children": [],
-                                                                    "size": 1,
-                                                                    "depth": 1
+                                                                    "o": "var",
+                                                                    "n": "t"
                                                                   }
-                                                                ],
-                                                                "size": 2,
-                                                                "depth": 2
+                                                                ]
                                                               },
                                                               {
-                                                                "op": "const",
-                                                                "value": 0.074074,
-                                                                "name": "",
-                                                                "children": [],
-                                                                "size": 1,
-                                                                "depth": 1
+                                                                "o": "const",
+                                                                "v": 0.074074
                                                               }
-                                                            ],
-                                                            "size": 4,
-                                                            "depth": 3
+                                                            ]
                                                           },
                                                           {
-                                                            "op": "var",
-                                                            "value": 0,
-                                                            "name": "w",
-                                                            "children": [],
-                                                            "size": 1,
-                                                            "depth": 1
+                                                            "o": "var",
+                                                            "n": "w"
                                                           }
-                                                        ],
-                                                        "size": 6,
-                                                        "depth": 4
+                                                        ]
                                                       }
-                                                    ],
-                                                    "size": 12,
-                                                    "depth": 5
+                                                    ]
                                                   }
-                                                ],
-                                                "size": 14,
-                                                "depth": 6
+                                                ]
                                               },
                                               {
-                                                "op": "mul",
-                                                "value": 0,
-                                                "name": "",
-                                                "children": [
+                                                "o": "mul",
+                                                "c": [
                                                   {
-                                                    "op": "const",
-                                                    "value": 2,
-                                                    "name": "",
-                                                    "children": [],
-                                                    "size": 1,
-                                                    "depth": 1
+                                                    "o": "const",
+                                                    "v": 2
                                                   },
                                                   {
-                                                    "op": "sub",
-                                                    "value": 0,
-                                                    "name": "",
-                                                    "children": [
+                                                    "o": "sub",
+                                                    "c": [
                                                       {
-                                                        "op": "var",
-                                                        "value": 0,
-                                                        "name": "u",
-                                                        "children": [],
-                                                        "size": 1,
-                                                        "depth": 1
+                                                        "o": "var",
+                                                        "n": "u"
                                                       },
                                                       {
-                                                        "op": "mul",
-                                                        "value": 0,
-                                                        "name": "",
-                                                        "children": [
+                                                        "o": "mul",
+                                                        "c": [
                                                           {
-                                                            "op": "sq",
-                                                            "value": 0,
-                                                            "name": "",
-                                                            "children": [
+                                                            "o": "sq",
+                                                            "c": [
                                                               {
-                                                                "op": "var",
-                                                                "value": 0,
-                                                                "name": "t",
-                                                                "children": [],
-                                                                "size": 1,
-                                                                "depth": 1
+                                                                "o": "var",
+                                                                "n": "t"
                                                               }
-                                                            ],
-                                                            "size": 2,
-                                                            "depth": 2
+                                                            ]
                                                           },
                                                           {
-                                                            "op": "const",
-                                                            "value": 0.3333333333333333,
-                                                            "name": "",
-                                                            "children": [],
-                                                            "size": 1,
-                                                            "depth": 1
+                                                            "o": "const",
+                                                            "v": 0.3333333333333333
                                                           }
-                                                        ],
-                                                        "size": 4,
-                                                        "depth": 3
+                                                        ]
                                                       }
-                                                    ],
-                                                    "size": 6,
-                                                    "depth": 4
+                                                    ]
                                                   }
-                                                ],
-                                                "size": 8,
-                                                "depth": 5
+                                                ]
                                               }
-                                            ],
-                                            "size": 23,
-                                            "depth": 7
+                                            ]
                                           },
                                           {
-                                            "op": "sqrt",
-                                            "value": 0,
-                                            "name": "",
-                                            "children": [
+                                            "o": "sqrt",
+                                            "c": [
                                               {
-                                                "op": "pdiv",
-                                                "value": 0,
-                                                "name": "",
-                                                "children": [
+                                                "o": "pdiv",
+                                                "c": [
                                                   {
-                                                    "op": "const",
-                                                    "value": -3,
-                                                    "name": "",
-                                                    "children": [],
-                                                    "size": 1,
-                                                    "depth": 1
+                                                    "o": "const",
+                                                    "v": -3
                                                   },
                                                   {
-                                                    "op": "sub",
-                                                    "value": 0,
-                                                    "name": "",
-                                                    "children": [
+                                                    "o": "sub",
+                                                    "c": [
                                                       {
-                                                        "op": "var",
-                                                        "value": 0,
-                                                        "name": "u",
-                                                        "children": [],
-                                                        "size": 1,
-                                                        "depth": 1
+                                                        "o": "var",
+                                                        "n": "u"
                                                       },
                                                       {
-                                                        "op": "mul",
-                                                        "value": 0,
-                                                        "name": "",
-                                                        "children": [
+                                                        "o": "mul",
+                                                        "c": [
                                                           {
-                                                            "op": "sq",
-                                                            "value": 0,
-                                                            "name": "",
-                                                            "children": [
+                                                            "o": "sq",
+                                                            "c": [
                                                               {
-                                                                "op": "var",
-                                                                "value": 0,
-                                                                "name": "t",
-                                                                "children": [],
-                                                                "size": 1,
-                                                                "depth": 1
+                                                                "o": "var",
+                                                                "n": "t"
                                                               }
-                                                            ],
-                                                            "size": 2,
-                                                            "depth": 2
+                                                            ]
                                                           },
                                                           {
-                                                            "op": "const",
-                                                            "value": 0.3333333333333333,
-                                                            "name": "",
-                                                            "children": [],
-                                                            "size": 1,
-                                                            "depth": 1
+                                                            "o": "const",
+                                                            "v": 0.3333333333333333
                                                           }
-                                                        ],
-                                                        "size": 4,
-                                                        "depth": 3
+                                                        ]
                                                       }
-                                                    ],
-                                                    "size": 6,
-                                                    "depth": 4
+                                                    ]
                                                   }
-                                                ],
-                                                "size": 8,
-                                                "depth": 5
+                                                ]
                                               }
-                                            ],
-                                            "size": 9,
-                                            "depth": 6
+                                            ]
                                           }
-                                        ],
-                                        "size": 33,
-                                        "depth": 8
+                                        ]
                                       },
                                       {
-                                        "op": "sqrt",
-                                        "value": 0,
-                                        "name": "",
-                                        "children": [
+                                        "o": "sqrt",
+                                        "c": [
                                           {
-                                            "op": "sub",
-                                            "value": 0,
-                                            "name": "",
-                                            "children": [
+                                            "o": "sub",
+                                            "c": [
                                               {
-                                                "op": "const",
-                                                "value": 1,
-                                                "name": "",
-                                                "children": [],
-                                                "size": 1,
-                                                "depth": 1
+                                                "o": "const",
+                                                "v": 1
                                               },
                                               {
-                                                "op": "sq",
-                                                "value": 0,
-                                                "name": "",
-                                                "children": [
+                                                "o": "sq",
+                                                "c": [
                                                   {
-                                                    "op": "mul",
-                                                    "value": 0,
-                                                    "name": "",
-                                                    "children": [
+                                                    "o": "mul",
+                                                    "c": [
                                                       {
-                                                        "op": "pdiv",
-                                                        "value": 0,
-                                                        "name": "",
-                                                        "children": [
+                                                        "o": "pdiv",
+                                                        "c": [
                                                           {
-                                                            "op": "mul",
-                                                            "value": 0,
-                                                            "name": "",
-                                                            "children": [
+                                                            "o": "mul",
+                                                            "c": [
                                                               {
-                                                                "op": "const",
-                                                                "value": 2.9999999999999996,
-                                                                "name": "",
-                                                                "children": [],
-                                                                "size": 1,
-                                                                "depth": 1
+                                                                "o": "const",
+                                                                "v": 2.9999999999999996
                                                               },
                                                               {
-                                                                "op": "sub",
-                                                                "value": 0,
-                                                                "name": "",
-                                                                "children": [
+                                                                "o": "sub",
+                                                                "c": [
                                                                   {
-                                                                    "op": "mul",
-                                                                    "value": 0,
-                                                                    "name": "",
-                                                                    "children": [
+                                                                    "o": "mul",
+                                                                    "c": [
                                                                       {
-                                                                        "op": "mul",
-                                                                        "value": 0,
-                                                                        "name": "",
-                                                                        "children": [
+                                                                        "o": "mul",
+                                                                        "c": [
                                                                           {
-                                                                            "op": "var",
-                                                                            "value": 0,
-                                                                            "name": "t",
-                                                                            "children": [],
-                                                                            "size": 1,
-                                                                            "depth": 1
+                                                                            "o": "var",
+                                                                            "n": "t"
                                                                           },
                                                                           {
-                                                                            "op": "var",
-                                                                            "value": 0,
-                                                                            "name": "u",
-                                                                            "children": [],
-                                                                            "size": 1,
-                                                                            "depth": 1
+                                                                            "o": "var",
+                                                                            "n": "u"
                                                                           }
-                                                                        ],
-                                                                        "size": 3,
-                                                                        "depth": 2
+                                                                        ]
                                                                       },
                                                                       {
-                                                                        "op": "const",
-                                                                        "value": 0.3333333333333333,
-                                                                        "name": "",
-                                                                        "children": [],
-                                                                        "size": 1,
-                                                                        "depth": 1
+                                                                        "o": "const",
+                                                                        "v": 0.3333333333333333
                                                                       }
-                                                                    ],
-                                                                    "size": 5,
-                                                                    "depth": 3
+                                                                    ]
                                                                   },
                                                                   {
-                                                                    "op": "add",
-                                                                    "value": 0,
-                                                                    "name": "",
-                                                                    "children": [
+                                                                    "o": "add",
+                                                                    "c": [
                                                                       {
-                                                                        "op": "mul",
-                                                                        "value": 0,
-                                                                        "name": "",
-                                                                        "children": [
+                                                                        "o": "mul",
+                                                                        "c": [
                                                                           {
-                                                                            "op": "cube",
-                                                                            "value": 0,
-                                                                            "name": "",
-                                                                            "children": [
+                                                                            "o": "cube",
+                                                                            "c": [
                                                                               {
-                                                                                "op": "var",
-                                                                                "value": 0,
-                                                                                "name": "t",
-                                                                                "children": [],
-                                                                                "size": 1,
-                                                                                "depth": 1
+                                                                                "o": "var",
+                                                                                "n": "t"
                                                                               }
-                                                                            ],
-                                                                            "size": 2,
-                                                                            "depth": 2
+                                                                            ]
                                                                           },
                                                                           {
-                                                                            "op": "const",
-                                                                            "value": 0.07407407407407407,
-                                                                            "name": "",
-                                                                            "children": [],
-                                                                            "size": 1,
-                                                                            "depth": 1
+                                                                            "o": "const",
+                                                                            "v": 0.07407407407407407
                                                                           }
-                                                                        ],
-                                                                        "size": 4,
-                                                                        "depth": 3
+                                                                        ]
                                                                       },
                                                                       {
-                                                                        "op": "var",
-                                                                        "value": 0,
-                                                                        "name": "w",
-                                                                        "children": [],
-                                                                        "size": 1,
-                                                                        "depth": 1
+                                                                        "o": "var",
+                                                                        "n": "w"
                                                                       }
-                                                                    ],
-                                                                    "size": 6,
-                                                                    "depth": 4
+                                                                    ]
                                                                   }
-                                                                ],
-                                                                "size": 12,
-                                                                "depth": 5
+                                                                ]
                                                               }
-                                                            ],
-                                                            "size": 14,
-                                                            "depth": 6
+                                                            ]
                                                           },
                                                           {
-                                                            "op": "mul",
-                                                            "value": 0,
-                                                            "name": "",
-                                                            "children": [
+                                                            "o": "mul",
+                                                            "c": [
                                                               {
-                                                                "op": "const",
-                                                                "value": 2.0000000000000004,
-                                                                "name": "",
-                                                                "children": [],
-                                                                "size": 1,
-                                                                "depth": 1
+                                                                "o": "const",
+                                                                "v": 2.0000000000000004
                                                               },
                                                               {
-                                                                "op": "sub",
-                                                                "value": 0,
-                                                                "name": "",
-                                                                "children": [
+                                                                "o": "sub",
+                                                                "c": [
                                                                   {
-                                                                    "op": "var",
-                                                                    "value": 0,
-                                                                    "name": "u",
-                                                                    "children": [],
-                                                                    "size": 1,
-                                                                    "depth": 1
+                                                                    "o": "var",
+                                                                    "n": "u"
                                                                   },
                                                                   {
-                                                                    "op": "mul",
-                                                                    "value": 0,
-                                                                    "name": "",
-                                                                    "children": [
+                                                                    "o": "mul",
+                                                                    "c": [
                                                                       {
-                                                                        "op": "sq",
-                                                                        "value": 0,
-                                                                        "name": "",
-                                                                        "children": [
+                                                                        "o": "sq",
+                                                                        "c": [
                                                                           {
-                                                                            "op": "var",
-                                                                            "value": 0,
-                                                                            "name": "t",
-                                                                            "children": [],
-                                                                            "size": 1,
-                                                                            "depth": 1
+                                                                            "o": "var",
+                                                                            "n": "t"
                                                                           }
-                                                                        ],
-                                                                        "size": 2,
-                                                                        "depth": 2
+                                                                        ]
                                                                       },
                                                                       {
-                                                                        "op": "const",
-                                                                        "value": 0.3333333333333333,
-                                                                        "name": "",
-                                                                        "children": [],
-                                                                        "size": 1,
-                                                                        "depth": 1
+                                                                        "o": "const",
+                                                                        "v": 0.3333333333333333
                                                                       }
-                                                                    ],
-                                                                    "size": 4,
-                                                                    "depth": 3
+                                                                    ]
                                                                   }
-                                                                ],
-                                                                "size": 6,
-                                                                "depth": 4
+                                                                ]
                                                               }
-                                                            ],
-                                                            "size": 8,
-                                                            "depth": 5
+                                                            ]
                                                           }
-                                                        ],
-                                                        "size": 23,
-                                                        "depth": 7
+                                                        ]
                                                       },
                                                       {
-                                                        "op": "sqrt",
-                                                        "value": 0,
-                                                        "name": "",
-                                                        "children": [
+                                                        "o": "sqrt",
+                                                        "c": [
                                                           {
-                                                            "op": "pdiv",
-                                                            "value": 0,
-                                                            "name": "",
-                                                            "children": [
+                                                            "o": "pdiv",
+                                                            "c": [
                                                               {
-                                                                "op": "const",
-                                                                "value": -3,
-                                                                "name": "",
-                                                                "children": [],
-                                                                "size": 1,
-                                                                "depth": 1
+                                                                "o": "const",
+                                                                "v": -3
                                                               },
                                                               {
-                                                                "op": "sub",
-                                                                "value": 0,
-                                                                "name": "",
-                                                                "children": [
+                                                                "o": "sub",
+                                                                "c": [
                                                                   {
-                                                                    "op": "var",
-                                                                    "value": 0,
-                                                                    "name": "u",
-                                                                    "children": [],
-                                                                    "size": 1,
-                                                                    "depth": 1
+                                                                    "o": "var",
+                                                                    "n": "u"
                                                                   },
                                                                   {
-                                                                    "op": "mul",
-                                                                    "value": 0,
-                                                                    "name": "",
-                                                                    "children": [
+                                                                    "o": "mul",
+                                                                    "c": [
                                                                       {
-                                                                        "op": "sq",
-                                                                        "value": 0,
-                                                                        "name": "",
-                                                                        "children": [
+                                                                        "o": "sq",
+                                                                        "c": [
                                                                           {
-                                                                            "op": "var",
-                                                                            "value": 0,
-                                                                            "name": "t",
-                                                                            "children": [],
-                                                                            "size": 1,
-                                                                            "depth": 1
+                                                                            "o": "var",
+                                                                            "n": "t"
                                                                           }
-                                                                        ],
-                                                                        "size": 2,
-                                                                        "depth": 2
+                                                                        ]
                                                                       },
                                                                       {
-                                                                        "op": "const",
-                                                                        "value": 0.3333333333333333,
-                                                                        "name": "",
-                                                                        "children": [],
-                                                                        "size": 1,
-                                                                        "depth": 1
+                                                                        "o": "const",
+                                                                        "v": 0.3333333333333333
                                                                       }
-                                                                    ],
-                                                                    "size": 4,
-                                                                    "depth": 3
+                                                                    ]
                                                                   }
-                                                                ],
-                                                                "size": 6,
-                                                                "depth": 4
+                                                                ]
                                                               }
-                                                            ],
-                                                            "size": 8,
-                                                            "depth": 5
+                                                            ]
                                                           }
-                                                        ],
-                                                        "size": 9,
-                                                        "depth": 6
+                                                        ]
                                                       }
-                                                    ],
-                                                    "size": 33,
-                                                    "depth": 8
+                                                    ]
                                                   }
-                                                ],
-                                                "size": 34,
-                                                "depth": 9
+                                                ]
                                               }
-                                            ],
-                                            "size": 36,
-                                            "depth": 10
+                                            ]
                                           }
-                                        ],
-                                        "size": 37,
-                                        "depth": 11
+                                        ]
                                       }
-                                    ],
-                                    "size": 71,
-                                    "depth": 12
+                                    ]
                                   }
-                                ],
-                                "size": 72,
-                                "depth": 13
+                                ]
                               }
-                            ],
-                            "size": 74,
-                            "depth": 14
+                            ]
                           },
                           {
-                            "op": "const",
-                            "value": 0.3333333333333333,
-                            "name": "",
-                            "children": [],
-                            "size": 1,
-                            "depth": 1
+                            "o": "const",
+                            "v": 0.3333333333333333
                           }
-                        ],
-                        "size": 76,
-                        "depth": 15
+                        ]
                       }
-                    ],
-                    "size": 77,
-                    "depth": 16
+                    ]
                   }
-                ],
-                "size": 89,
-                "depth": 17
+                ]
               }
-            ],
-            "size": 93,
-            "depth": 18
+            ]
           }
-        ],
-        "size": 95,
-        "depth": 19
+        ]
       },
       {
-        "op": "const",
-        "value": -0.0000019009293118870118,
-        "name": "",
-        "children": [],
-        "size": 1,
-        "depth": 1
+        "o": "const",
+        "v": -0.0000019009293118870118
       }
-    ],
-    "size": 97,
-    "depth": 20
+    ]
   },
   "fast": {
     "formula": "((-0.073807 * (min(((-7.599615 * t) - (-u)), |t|) - (t + (w - (2.202856 * u))))) + 0.941245)",

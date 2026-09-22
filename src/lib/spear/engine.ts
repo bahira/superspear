@@ -611,7 +611,9 @@ export function parseFormula(src: string): SpearNode {
 const PY: Record<NodeOp, string> = {
   var: "", const: "",
   add: "({a} + {b})", sub: "({a} - {b})", mul: "({a} * {b})",
-  pdiv: "({a} / (abs({b}) < 1e-4 ? 1e-4 : {b}))",
+  // protected division — bit-faithful to evaluateNode: denominator floored
+  // at ±1e-4 (sign preserved), result clamped ±1e4. Valid Python (no C ternary).
+  pdiv: "min(1e4, max(-1e4, ({a}) / (({b}) if abs(({b})) >= 1e-4 else (1e-4 if ({b}) >= 0 else -1e-4))))",
   relu: "torch.relu({a})", abs: "torch.abs({a})", neg: "(-{a})",
   sq: "({a} * {a})", cube: "({a} * {a} * {a})", sqrt: "torch.sqrt(torch.abs({a}))",
   max: "torch.maximum({a}, {b})", min: "torch.minimum({a}, {b})",

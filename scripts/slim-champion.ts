@@ -6,7 +6,7 @@ import { loadLedger, saveLedger } from "../src/lib/spear/ledger";
 // Usage: npx tsx scripts/slim-champion.ts <taskId> [--max-mse-rel 1e-6]
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { parseNode, simplify, prune, refineConstants, nodeToString, estimateCost } from "../src/lib/spear/engine";
+import { parseNode, simplify, prune, refineConstants, nodeToString, estimateCost, serializeNode } from "../src/lib/spear/engine";
 import { buildTasks } from "../src/lib/spear/benchmarks";
 
 async function main() {
@@ -58,7 +58,8 @@ async function main() {
 
   if (finalCost < cost0 && relDeg <= 50 && Number.isFinite(finalMse)) {
     entry.formula = nodeToString(node);
-    entry.tree = JSON.parse(JSON.stringify(node));
+    // serializeNode (format {o,v,n,c}) — un SpearNode brut casse tous les lecteurs
+    entry.tree = serializeNode(node);
     entry.metric = finalMse;
     if (entry.speed?.formulaCost) entry.speed.formulaCost = finalCost;
     saveLedger(led);
