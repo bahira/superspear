@@ -327,7 +327,7 @@ export function loadBootstrapSeeds(varNames: string[], excludeId: string, maxSee
   if (process.env.SPEAR_NO_BOOTSTRAP === "1") return [];
   try {
     const path = process.env.SPEAR_LEDGER ?? "spear-hall-of-fame.json";
-    const ledger = JSON.parse(readFileSync(path, "utf8")) as Record<string, { tree?: SerializedNode; taskId?: string }>;
+    const ledger = JSON.parse(readFileSync(/*turbopackIgnore: true*/ path, "utf8")) as Record<string, { tree?: SerializedNode; taskId?: string }>;
     const candidates: SpearNode[] = [];
     for (const [id, entry] of Object.entries(ledger)) {
       if (id === excludeId || !entry.tree) continue;
