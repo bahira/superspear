@@ -212,7 +212,7 @@ export default _default;
 // depuis le déposé si dispo, sinon on garde la dernière connue.
 writeFileSync(join(pkgDir, "package.json"), JSON.stringify({
   name: "spear-kernels",
-  version: "1.10.3",
+  version: "1.11.0",
   description: "Closed-form kernels discovered by the SPEAR symbolic regression engine, shipped as JS, CUDA C, PyTorch and WebAssembly.",
   license: "MIT",
   type: "module",
