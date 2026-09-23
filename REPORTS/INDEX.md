@@ -12,8 +12,10 @@
 
 ## Chiffres maîtres (v1.10 — mesure 2026-09-06)
 
-- **89 tâches** · 44 exactes · 85 slots rapides · 88/89 vitesses chiffrées
+- **89 tâches** · 42 exactes · 63 slots rapides · 88/89 vitesses chiffrées
 - **×46000** vs Monte-Carlo (gaussian_cdf fast) — sommet vs solveurs itératifs
 - **×54.8** vs Newton (implied_vol, champion L2 3.18e-3 — v1.10)
-- **80.31 %** rétention KV-cache sur vraies attentions distilgpt2 (bat H2O)
+- **80.31 %** rétention KV-cache sur vraies attentions distilgpt2 — bat H2O à 3/4 budgets,
+  mais H2O l'emporte à cap=64 (45.94 vs 45.60) et la marge cap=320 (+0.118 pts, n=72)
+  est un tie statistique : citer le sweep complet (validation/kv-multiscale-results.json)
 - CI parité 89/89 à chaque push · archive fast-slot cost-sorted dans le loop
