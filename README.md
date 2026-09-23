@@ -1,6 +1,6 @@
 # SPEAR Lab — Symbolic Pareto Evolutionary Algorithm for Research
 
-[![npm](https://img.shields.io/npm/v/spear-kernels)](https://www.npmjs.com/package/spear-kernels) [![CI](https://img.shields.io/github/actions/workflow/dw/91c8e4f81a2c2f70b0c549a8f8b75a4b/badge)](https://github.com/bahira/superspear/actions) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE) [![Kernels](https://img.shields.io/badge/kernels-89-brightgreen)](./ledger) [![Parity](https://img.shields.io/badge/WASM%E2%86%94C%20parity-100%25-green)](#the-misra-c-export-pipeline)
+[![npm](https://img.shields.io/npm/v/spear-kernels)](https://www.npmjs.com/package/spear-kernels) [![CI](https://img.shields.io/github/actions/workflow/bahira/superspear/ci.yml/badge.svg)](https://github.com/bahira/superspear/actions) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE) [![Kernels](https://img.shields.io/badge/kernels-89-brightgreen)](./ledger) [![Parity](https://img.shields.io/badge/WASM%E2%86%94C%20parity-100%25-green)](#the-misra-c-export-pipeline)
 
 **Project page**: [bahira.github.io/superspear](https://bahira.github.io/superspear/) — static landing served from [`docs/`](./docs).
 **Source**: [github.com/bahira/superspear](https://github.com/bahira/superspear) — MIT, full history, reproducible seeds.
@@ -46,14 +46,14 @@ npm install spear-kernels
 | Metric | Value |
 |---|---|
 | Registered tasks | **89** |
-| Exact solves (MSE < 1e-30) | **44** |
-| Validated fast slots (level ≥ 2) | **85** |
+| Exact solves (MSE < 1e-30) | **42** |
+| Validated fast slots (level ≥ 2) | **63** |
 | Max vs-iterative speedup | **×5111** (Gaussian CDF vs Monte-Carlo) |
 | MISRA-C lint pass | **100 %** |
 | WASM↔C parity (rel.) | **≤ 1e-6** |
 | Reproducibility | deterministic (one seed ⇒ same data, same formula) |
 
-**What shipped in the last release line (v1.10 → v1.10.3):** `implied_vol` L2 ×54.8 vs Newton-vega, `gauss_shader` fast slot, `eigen3_sym` + `ik_reach` machine-precision via the new `atan` primitive, `simplify()` bugfix on nested-constant subtrees, CI hardened with `--strict` scaffold audit + ledger idempotency check.
+**What shipped in the last release line (v1.11.0):** fast-slot coverage 42 → 63 (farm + Padé/Taylor substitution), `root-cause fix` on the fast-slot archive (shaped-node metric, was shipping fast-metric-drift records), `gauss_shader` recalibrated, numbered op-by-op unit tests (`scripts/test-operators.ts` — JS/WASM/C/torch parity, 20/20), `toPython` protected-division fix (was emitting invalid C ternary), audit abs-floor on cancellation-limited metrics.
 
 ---
 
@@ -186,7 +186,7 @@ With `blackbody_r` (L4), the full PBR color-temperature trio is discovered and r
 |---|---|---|---|
 | **concurrence_pure** ✅ | entanglement measure | **EXACT (MSE=0, L5) at 5 units** — better than hand-written estimate | 5 |
 | **chsh_correlation** ✅ | Bell inequality · Nobel Physics 2022 | **2.1e-32 EXACT** — full CHSH expression recovered via scaffold | 92 |
-| **grover_amplitude** | quadratic speedup law | 1.07e-1, L0 — now that `asin` is served, hard mode is open | 30 |
+| **grover_amplitude** ✅ | quadratic speedup law | **EXACT (MSE=0, L5) @50u** — `asin` served + `(2k+1)·θ` scaffold | 50 |
 
 The concurrence solve is remarkable: the engine found the optimal 5-unit form (`2·|ad−bc|`) — *cheaper than the hand-written estimate*. The CHSH expression (Nobel-grade Bell test) was recovered to machine precision via explicit-form scaffold seeding.
 
@@ -201,10 +201,10 @@ The concurrence solve is remarkable: the engine found the optimal 5-unit form (`
 
 | Task | Replaces | Record | vs Solver |
 |---|---|---|---|
-| **qfi_dephasing** | BFGS optimization over measurement bases | 1.47, L0 | **×15 vs BFGS** |
-| **amp_damp_fid** | Kraus operator evaluation for QEC | 2.1e-2, L2 | ×0.19 (needs slimming) |
-| **loschmidt_rate** | Exact diagonalization of TFIM modes | 5.3e-2, L2 | **×14 vs full diag** |
-| **grover_amplitude** | asin-based Grover phase computation | 1.07e-1, L0 — hard mode open; `asin` now served | 30 |
+| **qfi_dephasing** ✅ | BFGS optimization over measurement bases | **EXACT (1.5e-32, L5) @28u** | **×15 vs BFGS** |
+| **amp_damp_fid** ✅ | Kraus operator evaluation for QEC | **EXACT (MSE=0, L5) @90u** | ×0.19 (needs slimming) |
+| **loschmidt_rate** | Exact diagonalization of TFIM modes | 2.4e-11, L2 @69u | **×14 vs full diag** |
+| **grover_amplitude** ✅ | asin-based Grover phase computation | **EXACT (MSE=0, L5) @50u** | — |
 
 ### ⚙️ Ultra-common operations registry (new)
 
@@ -248,19 +248,19 @@ Arithmetic is documented in [`src/lib/spear/benchmarks.ts`](./src/lib/spear/benc
 
 ### 🎚️ Two operating points per law: `precise` and `fast`
 
-One formula per task hides the accuracy/latency trade-off that real deployments live by. The ledger keeps **two validated forms per task**: the *precise* champion (lowest error ever found) and the *fast* variant (cheapest form that still passes the engine's level-2 validation gate). **19 of 27 tasks** have a genuinely cheaper second form; the rest have champions already at minimal cost.
+One formula per task hides the accuracy/latency trade-off that real deployments live by. The ledger keeps **two validated forms per task**: the *precise* champion (lowest error ever found) and the *fast* variant (cheapest form that still passes the engine's level-2 validation gate). **63 of 89 tasks** have a genuinely cheaper second form; the rest have champions already at minimal algebraic cost (nothing cheaper passes the validation gate).
 
 Biggest fast-slot wins (cost = precise → fast, in ALU/SFU units):
 
 | Task | Precise | Fast | Cost cut |
 |---|---|---|---|
-| **Lambert W₀** | exact, 22 units | 1.1e-2, 1 unit | **×22** |
-| **Gaussian blur kernel** | exact e^(−x²/2), 24 units | 5.7e-3, 1 unit | **×24** |
-| **Hill dose-response** | 1.16e-4, 9 units | 1.8e-3, 1 unit | **×9** |
-| **Gaussian CDF Φ(x)** | 2.1e-4, 29 units | 7.6e-4, 6 units | ×4.8 |
-| **Softplus** | 2.3e-4, 9 units | 3.2e-3, 2 units | ×4.5 |
-| **Sigmoid** | exact, 27 units | 7.2e-4, 7 units — `x/(1+|x|)` | ×3.9 |
-| **Kerr deflection w/ spin** | 7.5e-10, 18 units (×133 vs RK4) | `10.49/(s+b)`, 3.6e-5, 5 units | **×480 vs RK4** |
+| **Rayleigh phase** | exact, 24 units | 4.5e-4, 0 units — pure algebra | **×∞** |
+| **European call** | 2.3e-1, 62 units | 3.3e-1, 2 units | **×31** |
+| **logsumexp2** | exact, 67 units | 3.0e-2, 3 units | **×22** |
+| **Mish** | exact, 62 units | 5.7e-3, 3 units | **×21** |
+| **atan unit** | exact, 20 units | 9.4e-4, 1 unit | **×20** |
+| **softplus** | exact, 41 units | 2.9e-2, 3 units — `relu` ramp | ×14 |
+| **cosh curve** | exact, 43 units | 3.8e-3, 3 units | ×14 |
 
 Displaced champions are never lost: when a more accurate form takes over, the old one is demoted to the fast slot, [`scripts/backfill-fast.ts`](./scripts/backfill-fast.ts) resurrects historical forms from git archaeology, and every ledger refresh prunes any "fast" variant that is no longer actually cheaper than its champion.
 
@@ -346,6 +346,13 @@ npx tsx scripts/test-simplify.ts
 
 # Resurrect cheap validated forms from git history into the `fast` slot
 npx tsx scripts/backfill-fast.ts
+
+# Give every champion without a fast slot the best honest algebraic approximant
+# (Padé/Taylor substitution + constant refinement, validation-gated)
+npx tsx scripts/fill-fast-slots.ts
+
+# Numbered op-by-op unit tests: JS/WASM/C/torch parity, OP_COST, rails
+npx tsx scripts/test-operators.ts
 
 # Live mode runs the full publication chain automatically:
 #   merge → backfill-fast → price-fast → gen-site-data  (skip: SPEAR_NO_POSTCHAIN=1)
