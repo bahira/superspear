@@ -101,7 +101,11 @@ function auditEntry(id: string, entry: Record<string, any>, def: TaskDef | undef
     if (typeof entry.metric === "number") {
       const d = relDiff(entry.metric, ev.metric);
       row.metricDrift = d;
-      if (d > 1e-2) push("metric-drift", "fail", `stored ${entry.metric.toExponential(3)} vs recomputed ${ev.metric.toExponential(3)} (rel ${d.toExponential(1)})`);
+      // Below ~1e-20 the metric is cancellation-limited and Math.cos/exp/sin
+      // differ by ULPs across libm implementations (Windows msvcrt vs Linux
+      // glibc) — relative drift there is platform noise, not record rot.
+      const meaningful = Math.max(Math.abs(entry.metric), Math.abs(ev.metric)) > 1e-20;
+      if (d > 1e-2 && meaningful) push("metric-drift", "fail", `stored ${entry.metric.toExponential(3)} vs recomputed ${ev.metric.toExponential(3)} (rel ${d.toExponential(1)})`);
       else if (d > REL_TOL) push("metric-drift", "warn", `stored ${entry.metric.toExponential(3)} vs recomputed ${ev.metric.toExponential(3)} (rel ${d.toExponential(1)})`);
     }
 
