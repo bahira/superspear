@@ -32,5 +32,42 @@
     "speedupModelled": 1.7,
     "speedupSource": "measured"
   },
-  "holdout": 0
+  "holdout": 0,
+  "fast": {
+    "formula": "((0.366908 * max(-2.199254, x)) + 0.814196)",
+    "metric": 0.000988971304494804,
+    "level": 2,
+    "formulaCost": 3
+  },
+  "fastTree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": 0.3669077958441258
+          },
+          {
+            "o": "max",
+            "c": [
+              {
+                "o": "const",
+                "v": -2.199254
+              },
+              {
+                "o": "var",
+                "n": "x"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": 0.8141959256763748
+      }
+    ]
+  }
 }

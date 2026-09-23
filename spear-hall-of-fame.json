@@ -804,6 +804,35 @@
           ]
         }
       ]
+    },
+    "fast": {
+      "formula": "(0.000103 * (x / 0))",
+      "metric": 0.010817185135812394,
+      "level": 2,
+      "formulaCost": 5,
+      "deploy": true
+    },
+    "fastTree": {
+      "o": "mul",
+      "c": [
+        {
+          "o": "const",
+          "v": 0.000103
+        },
+        {
+          "o": "pdiv",
+          "c": [
+            {
+              "o": "var",
+              "n": "x"
+            },
+            {
+              "o": "const",
+              "v": 0
+            }
+          ]
+        }
+      ]
     }
   },
   "lambert_w": {
@@ -851,6 +880,39 @@
               ]
             }
           ]
+        }
+      ]
+    },
+    "fast": {
+      "formula": "((2.800324 * (x)²) + 0.060825)",
+      "metric": 0.011194370036126207,
+      "level": 2,
+      "formulaCost": 3
+    },
+    "fastTree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 2.800323692605901
+            },
+            {
+              "o": "sq",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "x"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.06082470818924624
         }
       ]
     }
@@ -912,6 +974,57 @@
           "v": 1.002685
         }
       ]
+    },
+    "fast": {
+      "formula": "((1.251678 * (t / (1.182626 + |t|))) + 0.041128)",
+      "metric": 0.0010246292124107812,
+      "level": 2,
+      "formulaCost": 8
+    },
+    "fastTree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 1.2516775022273208
+            },
+            {
+              "o": "pdiv",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "t"
+                },
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 1.182626
+                    },
+                    {
+                      "o": "abs",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "t"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.04112788021578424
+        }
+      ]
     }
   },
   "gaussian_kernel": {
@@ -965,6 +1078,39 @@
               ]
             }
           ]
+        }
+      ]
+    },
+    "fast": {
+      "formula": "((-0.391942 * |x|) + 1.005482)",
+      "metric": 0.005657377567763322,
+      "level": 2,
+      "formulaCost": 3
+    },
+    "fastTree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": -0.39194197324444907
+            },
+            {
+              "o": "abs",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "x"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 1.0054822682182918
         }
       ]
     }
@@ -1228,6 +1374,34 @@
         {
           "o": "const",
           "v": -38.50237204488785
+        }
+      ]
+    },
+    "fast": {
+      "formula": "((47.949899 * sigma) + -0.667061)",
+      "metric": 0.32994028054848007,
+      "level": 4,
+      "formulaCost": 2
+    },
+    "fastTree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 47.94989936783262
+            },
+            {
+              "o": "var",
+              "n": "sigma"
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": -0.667061351071402
         }
       ]
     }
@@ -1525,33 +1699,64 @@
           ]
         }
       ]
+    },
+    "fast": {
+      "formula": "((27.235821 * ((1.170704 / b))²) + 0.119199)",
+      "metric": 0.0014679448665524792,
+      "level": 2,
+      "formulaCost": 7
+    },
+    "fastTree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 27.235820512914692
+            },
+            {
+              "o": "sq",
+              "c": [
+                {
+                  "o": "pdiv",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 1.170704
+                    },
+                    {
+                      "o": "var",
+                      "n": "b"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.1191985558293386
+        }
+      ]
     }
   },
   "lennard_jones": {
     "taskId": "lennard_jones",
     "title": "Potentiel de Lennard-Jones 12-6",
     "direction": "min",
-    "metric": 1.6853372386857923e-31,
-    "holdout": 1.0120972506342592e-32,
+    "metric": 1.6764908706907693e-31,
+    "holdout": 6.241231772357577e-33,
     "level": 5,
     "formula": "(4 * (((((1 / r))²)³)² - (((1 / r))²)³))",
-    "seed": 260906,
-    "iteration": 7,
+    "seed": 918273,
+    "iteration": 133,
     "speed": {
       "formulaCost": 17,
       "exactCost": 17,
-      "speedup": 1.0487,
-      "measured": {
-        "measuredSpeedup": 1.0487,
-        "nsFormula": 8.6074,
-        "nsExact": 9.0264,
-        "agreement": 1.0487,
-        "resolvable": true,
-        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
-      },
-      "costProfile": "cpu-transcendental-20",
-      "speedupModelled": 1,
-      "speedupSource": "measured"
+      "speedup": 1
     },
     "tree": {
       "o": "mul",
@@ -3601,78 +3806,132 @@
     "taskId": "ik_reach",
     "title": "IK analytique coude 2-link (BT33)",
     "direction": "min",
-    "metric": 4.0626336618882106e-32,
+    "metric": 2.6673359357785463e-32,
+    "holdout": 2.2556491508663307e-32,
     "level": 5,
-    "formula": "(1.5707963267948966 - atan(((((d)² - ((l2)² + (l3)²)) / (2 * (l2 * l3))) / sqrt(||(1 - ((((d)² - ((l2)² + (l3)²)) / (2 * (l2 * l3))))²)||))))",
-    "seed": 1000001,
-    "iteration": 199,
+    "formula": "acos((((d)² - ((l2)² + (l3)²)) / (2 * (l2 * l3))))",
+    "seed": 918273,
+    "iteration": 109,
+    "speed": {
+      "formulaCost": 31,
+      "exactCost": 31,
+      "speedup": 1
+    },
     "tree": {
-      "o": "sub",
+      "o": "acos",
       "c": [
         {
-          "o": "const",
-          "v": 1.5707963267948966
-        },
-        {
-          "o": "atan",
+          "o": "pdiv",
           "c": [
+            {
+              "o": "sub",
+              "c": [
+                {
+                  "o": "sq",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "d"
+                    }
+                  ]
+                },
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "sq",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "l2"
+                        }
+                      ]
+                    },
+                    {
+                      "o": "sq",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "l3"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "o": "mul",
+              "c": [
+                {
+                  "o": "const",
+                  "v": 2
+                },
+                {
+                  "o": "mul",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "l2"
+                    },
+                    {
+                      "o": "var",
+                      "n": "l3"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "fast": {
+      "formula": "((-1.149081 * (((d)² - ((l2)² + (l3)²)) / (2 * (l2 * l3)))) + 1.580331)",
+      "metric": 0.0031665264727150544,
+      "level": 2,
+      "formulaCost": 13
+    },
+    "fastTree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": -1.1490811129545486
+            },
             {
               "o": "pdiv",
               "c": [
                 {
-                  "o": "pdiv",
+                  "o": "sub",
                   "c": [
                     {
-                      "o": "sub",
+                      "o": "sq",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "d"
+                        }
+                      ]
+                    },
+                    {
+                      "o": "add",
                       "c": [
                         {
                           "o": "sq",
                           "c": [
                             {
                               "o": "var",
-                              "n": "d"
-                            }
-                          ]
-                        },
-                        {
-                          "o": "add",
-                          "c": [
-                            {
-                              "o": "sq",
-                              "c": [
-                                {
-                                  "o": "var",
-                                  "n": "l2"
-                                }
-                              ]
-                            },
-                            {
-                              "o": "sq",
-                              "c": [
-                                {
-                                  "o": "var",
-                                  "n": "l3"
-                                }
-                              ]
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "o": "mul",
-                      "c": [
-                        {
-                          "o": "const",
-                          "v": 2
-                        },
-                        {
-                          "o": "mul",
-                          "c": [
-                            {
-                              "o": "var",
                               "n": "l2"
-                            },
+                            }
+                          ]
+                        },
+                        {
+                          "o": "sq",
+                          "c": [
                             {
                               "o": "var",
                               "n": "l3"
@@ -3684,278 +3943,22 @@
                   ]
                 },
                 {
-                  "o": "sqrt",
-                  "c": [
-                    {
-                      "o": "abs",
-                      "c": [
-                        {
-                          "o": "sub",
-                          "c": [
-                            {
-                              "o": "const",
-                              "v": 1
-                            },
-                            {
-                              "o": "sq",
-                              "c": [
-                                {
-                                  "o": "pdiv",
-                                  "c": [
-                                    {
-                                      "o": "sub",
-                                      "c": [
-                                        {
-                                          "o": "sq",
-                                          "c": [
-                                            {
-                                              "o": "var",
-                                              "n": "d"
-                                            }
-                                          ]
-                                        },
-                                        {
-                                          "o": "add",
-                                          "c": [
-                                            {
-                                              "o": "sq",
-                                              "c": [
-                                                {
-                                                  "o": "var",
-                                                  "n": "l2"
-                                                }
-                                              ]
-                                            },
-                                            {
-                                              "o": "sq",
-                                              "c": [
-                                                {
-                                                  "o": "var",
-                                                  "n": "l3"
-                                                }
-                                              ]
-                                            }
-                                          ]
-                                        }
-                                      ]
-                                    },
-                                    {
-                                      "o": "mul",
-                                      "c": [
-                                        {
-                                          "o": "const",
-                                          "v": 2
-                                        },
-                                        {
-                                          "o": "mul",
-                                          "c": [
-                                            {
-                                              "o": "var",
-                                              "n": "l2"
-                                            },
-                                            {
-                                              "o": "var",
-                                              "n": "l3"
-                                            }
-                                          ]
-                                        }
-                                      ]
-                                    }
-                                  ]
-                                }
-                              ]
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    "speed": {
-      "formulaCost": 52,
-      "costProfile": "cpu-transcendental-20",
-      "measured": {
-        "measuredSpeedup": 0.6823,
-        "nsFormula": 38.1336,
-        "nsExact": 26.0184,
-        "agreement": 1.1445,
-        "resolvable": true,
-        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
-      },
-      "exactCost": 31,
-      "speedup": 0.6823,
-      "speedupModelled": 0.5961538461538461,
-      "speedupSource": "measured",
-      "vsSolverContext": {
-        "label": "Newton-DLS · 8 itérations",
-        "speedup": 6.2,
-        "note": "Context only — a closed-form reference exists for this task, so the solver is not what a real implementation runs. Not a like-for-like speedup: the solver's accuracy is orders of magnitude worse.",
-        "honestSpeedupVsReference": 0.5961538461538461
-      }
-    },
-    "holdout": 1.0679490439746013e-13
-  },
-  "idm_following": {
-    "taskId": "idm_following",
-    "title": "Suivi IDM trafic urbain (city.ts)",
-    "direction": "min",
-    "metric": 0.002938652617546022,
-    "level": 2,
-    "formula": "((1.825166 * min(1.9, max(-5.198308, ((0.840532 - (((v)²)² * 0.000001)) - (((2.393229 + max(-0.435303, ((v * 1.543892) + ((v * dv) * 0.212766)))) / s))²)))) + 0.486206)",
-    "seed": 910502,
-    "iteration": 800,
-    "speed": {
-      "formulaCost": 20,
-      "exactCost": 30,
-      "speedup": 1.1002,
-      "costProfile": "cpu-transcendental-20",
-      "measured": {
-        "measuredSpeedup": 1.1002,
-        "nsFormula": 24.2023,
-        "nsExact": 26.6284,
-        "agreement": 0.7335,
-        "resolvable": true,
-        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
-      },
-      "speedupModelled": 1.5,
-      "speedupSource": "measured"
-    },
-    "tree": {
-      "o": "add",
-      "c": [
-        {
-          "o": "mul",
-          "c": [
-            {
-              "o": "const",
-              "v": 1.825166
-            },
-            {
-              "o": "min",
-              "c": [
-                {
-                  "o": "const",
-                  "v": 1.9
-                },
-                {
-                  "o": "max",
+                  "o": "mul",
                   "c": [
                     {
                       "o": "const",
-                      "v": -5.198308
+                      "v": 2
                     },
                     {
-                      "o": "sub",
+                      "o": "mul",
                       "c": [
                         {
-                          "o": "sub",
-                          "c": [
-                            {
-                              "o": "const",
-                              "v": 0.840532
-                            },
-                            {
-                              "o": "mul",
-                              "c": [
-                                {
-                                  "o": "sq",
-                                  "c": [
-                                    {
-                                      "o": "sq",
-                                      "c": [
-                                        {
-                                          "o": "var",
-                                          "n": "v"
-                                        }
-                                      ]
-                                    }
-                                  ]
-                                },
-                                {
-                                  "o": "const",
-                                  "v": 0.000001
-                                }
-                              ]
-                            }
-                          ]
+                          "o": "var",
+                          "n": "l2"
                         },
                         {
-                          "o": "sq",
-                          "c": [
-                            {
-                              "o": "pdiv",
-                              "c": [
-                                {
-                                  "o": "add",
-                                  "c": [
-                                    {
-                                      "o": "const",
-                                      "v": 2.393229
-                                    },
-                                    {
-                                      "o": "max",
-                                      "c": [
-                                        {
-                                          "o": "const",
-                                          "v": -0.435303
-                                        },
-                                        {
-                                          "o": "add",
-                                          "c": [
-                                            {
-                                              "o": "mul",
-                                              "c": [
-                                                {
-                                                  "o": "var",
-                                                  "n": "v"
-                                                },
-                                                {
-                                                  "o": "const",
-                                                  "v": 1.543892
-                                                }
-                                              ]
-                                            },
-                                            {
-                                              "o": "mul",
-                                              "c": [
-                                                {
-                                                  "o": "mul",
-                                                  "c": [
-                                                    {
-                                                      "o": "var",
-                                                      "n": "v"
-                                                    },
-                                                    {
-                                                      "o": "var",
-                                                      "n": "dv"
-                                                    }
-                                                  ]
-                                                },
-                                                {
-                                                  "o": "const",
-                                                  "v": 0.212766
-                                                }
-                                              ]
-                                            }
-                                          ]
-                                        }
-                                      ]
-                                    }
-                                  ]
-                                },
-                                {
-                                  "o": "var",
-                                  "n": "s"
-                                }
-                              ]
-                            }
-                          ]
+                          "o": "var",
+                          "n": "l3"
                         }
                       ]
                     }
@@ -3967,7 +3970,159 @@
         },
         {
           "o": "const",
-          "v": 0.4862064122902764
+          "v": 1.5803305488563304
+        }
+      ]
+    }
+  },
+  "idm_following": {
+    "taskId": "idm_following",
+    "title": "Suivi IDM trafic urbain (city.ts)",
+    "direction": "min",
+    "metric": 2.3253215925344832e-31,
+    "holdout": 6.6412227458293935e-31,
+    "level": 5,
+    "formula": "max(-9, min(2, (2 * ((1 - (((v * 0.030303))²)²) - (((2 + max(0, ((v * 1.5) + ((v * dv) * 0.204124)))) / s))²))))",
+    "seed": 918273,
+    "iteration": 26,
+    "speed": {
+      "formulaCost": 19,
+      "exactCost": 30,
+      "speedup": 1.5789473684210527
+    },
+    "tree": {
+      "o": "max",
+      "c": [
+        {
+          "o": "const",
+          "v": -9
+        },
+        {
+          "o": "min",
+          "c": [
+            {
+              "o": "const",
+              "v": 2
+            },
+            {
+              "o": "mul",
+              "c": [
+                {
+                  "o": "const",
+                  "v": 2
+                },
+                {
+                  "o": "sub",
+                  "c": [
+                    {
+                      "o": "sub",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 1
+                        },
+                        {
+                          "o": "sq",
+                          "c": [
+                            {
+                              "o": "sq",
+                              "c": [
+                                {
+                                  "o": "mul",
+                                  "c": [
+                                    {
+                                      "o": "var",
+                                      "n": "v"
+                                    },
+                                    {
+                                      "o": "const",
+                                      "v": 0.030303030303030304
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "o": "sq",
+                      "c": [
+                        {
+                          "o": "pdiv",
+                          "c": [
+                            {
+                              "o": "add",
+                              "c": [
+                                {
+                                  "o": "const",
+                                  "v": 2
+                                },
+                                {
+                                  "o": "max",
+                                  "c": [
+                                    {
+                                      "o": "const",
+                                      "v": 0
+                                    },
+                                    {
+                                      "o": "add",
+                                      "c": [
+                                        {
+                                          "o": "mul",
+                                          "c": [
+                                            {
+                                              "o": "var",
+                                              "n": "v"
+                                            },
+                                            {
+                                              "o": "const",
+                                              "v": 1.5
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "o": "mul",
+                                          "c": [
+                                            {
+                                              "o": "mul",
+                                              "c": [
+                                                {
+                                                  "o": "var",
+                                                  "n": "v"
+                                                },
+                                                {
+                                                  "o": "var",
+                                                  "n": "dv"
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "o": "const",
+                                              "v": 0.20412414523193154
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "o": "var",
+                              "n": "s"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         }
       ]
     }
@@ -4138,6 +4293,53 @@
           ]
         }
       ]
+    },
+    "fast": {
+      "formula": "((x * cos(th)) - (y * sin(th)))",
+      "metric": 0,
+      "level": 5,
+      "formulaCost": 43
+    },
+    "fastTree": {
+      "o": "sub",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "var",
+              "n": "x"
+            },
+            {
+              "o": "cos",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "th"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "var",
+              "n": "y"
+            },
+            {
+              "o": "sin",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "th"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   },
   "gauss_shader": {
@@ -4196,7 +4398,7 @@
     },
     "fast": {
       "formula": "((x)² / ((x)² + 1.489797))",
-      "metric": 0.000903040989818639,
+      "metric": 0.5036868977291588,
       "level": 2,
       "formulaCost": 7
     },
@@ -4384,6 +4586,35 @@
           ]
         }
       ]
+    },
+    "fast": {
+      "formula": "((1.198499 * x) + -0.099249)",
+      "metric": 0.0014500618683260635,
+      "level": 2,
+      "formulaCost": 2,
+      "deploy": true
+    },
+    "fastTree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 1.1984987531485352
+            },
+            {
+              "o": "var",
+              "n": "x"
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": -0.09924937657426745
+        }
+      ]
     }
   },
   "srgb_gamma": {
@@ -4544,7 +4775,54 @@
         }
       ]
     },
-    "holdout": 0
+    "holdout": 0,
+    "fast": {
+      "formula": "((1.007047 * max(-0.808092, min(x, 1))) + -0.067587)",
+      "metric": 0.0071993705979729195,
+      "level": 2,
+      "formulaCost": 4,
+      "deploy": true
+    },
+    "fastTree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 1.0070474451247151
+            },
+            {
+              "o": "max",
+              "c": [
+                {
+                  "o": "const",
+                  "v": -0.808092
+                },
+                {
+                  "o": "min",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "x"
+                    },
+                    {
+                      "o": "const",
+                      "v": 1
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": -0.06758707203347343
+        }
+      ]
+    }
   },
   "atan_unit": {
     "taskId": "atan_unit",
@@ -4728,7 +5006,50 @@
         }
       ]
     },
-    "holdout": 0
+    "holdout": 0,
+    "fast": {
+      "formula": "(1.641225 * (x / (1.276786 + |x|)))",
+      "metric": 0.007081600351482861,
+      "level": 2,
+      "formulaCost": 7,
+      "deploy": true
+    },
+    "fastTree": {
+      "o": "mul",
+      "c": [
+        {
+          "o": "const",
+          "v": 1.641224943675893
+        },
+        {
+          "o": "pdiv",
+          "c": [
+            {
+              "o": "var",
+              "n": "x"
+            },
+            {
+              "o": "add",
+              "c": [
+                {
+                  "o": "const",
+                  "v": 1.276786
+                },
+                {
+                  "o": "abs",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "x"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
   },
   "huber_loss": {
     "taskId": "huber_loss",
@@ -7011,7 +7332,58 @@
         }
       ]
     },
-    "holdout": 0
+    "holdout": 0,
+    "fast": {
+      "formula": "((0.556217 * (da / (t + |da|))) + 0.499371)",
+      "metric": 0.0012468930208583595,
+      "level": 2,
+      "formulaCost": 8
+    },
+    "fastTree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 0.556217
+            },
+            {
+              "o": "pdiv",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "da"
+                },
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "var",
+                      "n": "t"
+                    },
+                    {
+                      "o": "abs",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "da"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.4993710551759818
+        }
+      ]
+    }
   },
   "doppler_effect": {
     "taskId": "doppler_effect",
@@ -7128,26 +7500,16 @@
     "taskId": "stefan_boltzmann",
     "title": "Stefan-Boltzmann (radiation thermique)",
     "direction": "min",
-    "metric": 2.382092673239445e-26,
+    "metric": 2.1322035895929197e-26,
+    "holdout": 1.812117330027826e-26,
     "level": 5,
-    "formula": "(0.42 * (relu(t) * (t)³))",
-    "seed": 1000080,
-    "iteration": 400,
+    "formula": "(0.42 * (t * (t)³))",
+    "seed": 918273,
+    "iteration": 25,
     "speed": {
-      "formulaCost": 5,
+      "formulaCost": 4,
       "exactCost": 3,
-      "speedup": 0.9002,
-      "costProfile": "cpu-transcendental-20",
-      "measured": {
-        "measuredSpeedup": 0.9002,
-        "nsFormula": 3.0308,
-        "nsExact": 2.7282,
-        "agreement": 1.5003,
-        "resolvable": true,
-        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
-      },
-      "speedupModelled": 0.6,
-      "speedupSource": "measured"
+      "speedup": 0.75
     },
     "tree": {
       "o": "mul",
@@ -7160,13 +7522,8 @@
           "o": "mul",
           "c": [
             {
-              "o": "relu",
-              "c": [
-                {
-                  "o": "var",
-                  "n": "t"
-                }
-              ]
+              "o": "var",
+              "n": "t"
             },
             {
               "o": "cube",
@@ -7711,7 +8068,27 @@
       "speedupModelled": 1.4,
       "speedupSource": "measured"
     },
-    "holdout": 0
+    "holdout": 0,
+    "fast": {
+      "formula": "(1.143333 * x)",
+      "metric": 0.002170494475091841,
+      "level": 2,
+      "formulaCost": 1,
+      "deploy": true
+    },
+    "fastTree": {
+      "o": "mul",
+      "c": [
+        {
+          "o": "const",
+          "v": 1.14333278826324
+        },
+        {
+          "o": "var",
+          "n": "x"
+        }
+      ]
+    }
   },
   "qfi_dephasing": {
     "taskId": "qfi_dephasing",
@@ -7932,40 +8309,542 @@
         }
       ]
     },
-    "holdout": 0
+    "holdout": 0,
+    "fast": {
+      "formula": "(((((0.945 - ((th)² * 0.5)) + (((th)²)² * 0.041667)))² * (((1 + (0.5 * (-(g * t)))) + (((g * t))² * 0.033333)) / (1 + (((g * t))² * 0.299999)))) + ((((th - ((th)³ * 0.16666666666666666)) + (((th)³ * (th)²) * 0.008333)))² * (2 - (((1 + (0.5 * (-(g * t)))) + (((-(g * t)))² * 0.08333333333333333)) / ((1 + (-(0.375 * (-(g * t))))) + (((-(g * t)))² * 0.033333))))))",
+      "metric": 0.020782634270969432,
+      "level": 2,
+      "formulaCost": 62
+    },
+    "fastTree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "sq",
+              "c": [
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "sub",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 0.945
+                        },
+                        {
+                          "o": "mul",
+                          "c": [
+                            {
+                              "o": "sq",
+                              "c": [
+                                {
+                                  "o": "var",
+                                  "n": "th"
+                                }
+                              ]
+                            },
+                            {
+                              "o": "const",
+                              "v": 0.5
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "o": "mul",
+                      "c": [
+                        {
+                          "o": "sq",
+                          "c": [
+                            {
+                              "o": "sq",
+                              "c": [
+                                {
+                                  "o": "var",
+                                  "n": "th"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "o": "const",
+                          "v": 0.041666666666666664
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "o": "pdiv",
+              "c": [
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "add",
+                      "c": [
+                        {
+                          "o": "const",
+                          "v": 1
+                        },
+                        {
+                          "o": "mul",
+                          "c": [
+                            {
+                              "o": "const",
+                              "v": 0.5
+                            },
+                            {
+                              "o": "neg",
+                              "c": [
+                                {
+                                  "o": "mul",
+                                  "c": [
+                                    {
+                                      "o": "var",
+                                      "n": "g"
+                                    },
+                                    {
+                                      "o": "var",
+                                      "n": "t"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "o": "mul",
+                      "c": [
+                        {
+                          "o": "sq",
+                          "c": [
+                            {
+                              "o": "mul",
+                              "c": [
+                                {
+                                  "o": "var",
+                                  "n": "g"
+                                },
+                                {
+                                  "o": "var",
+                                  "n": "t"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "o": "const",
+                          "v": 0.033333
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 1
+                    },
+                    {
+                      "o": "mul",
+                      "c": [
+                        {
+                          "o": "sq",
+                          "c": [
+                            {
+                              "o": "mul",
+                              "c": [
+                                {
+                                  "o": "var",
+                                  "n": "g"
+                                },
+                                {
+                                  "o": "var",
+                                  "n": "t"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "o": "const",
+                          "v": 0.299999
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "sq",
+              "c": [
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "sub",
+                      "c": [
+                        {
+                          "o": "var",
+                          "n": "th"
+                        },
+                        {
+                          "o": "mul",
+                          "c": [
+                            {
+                              "o": "cube",
+                              "c": [
+                                {
+                                  "o": "var",
+                                  "n": "th"
+                                }
+                              ]
+                            },
+                            {
+                              "o": "const",
+                              "v": 0.16666666666666666
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "o": "mul",
+                      "c": [
+                        {
+                          "o": "mul",
+                          "c": [
+                            {
+                              "o": "cube",
+                              "c": [
+                                {
+                                  "o": "var",
+                                  "n": "th"
+                                }
+                              ]
+                            },
+                            {
+                              "o": "sq",
+                              "c": [
+                                {
+                                  "o": "var",
+                                  "n": "th"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "o": "const",
+                          "v": 0.008333333333333333
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "o": "sub",
+              "c": [
+                {
+                  "o": "const",
+                  "v": 2.0000000000000004
+                },
+                {
+                  "o": "pdiv",
+                  "c": [
+                    {
+                      "o": "add",
+                      "c": [
+                        {
+                          "o": "add",
+                          "c": [
+                            {
+                              "o": "const",
+                              "v": 1
+                            },
+                            {
+                              "o": "mul",
+                              "c": [
+                                {
+                                  "o": "const",
+                                  "v": 0.5
+                                },
+                                {
+                                  "o": "neg",
+                                  "c": [
+                                    {
+                                      "o": "mul",
+                                      "c": [
+                                        {
+                                          "o": "var",
+                                          "n": "g"
+                                        },
+                                        {
+                                          "o": "var",
+                                          "n": "t"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "o": "mul",
+                          "c": [
+                            {
+                              "o": "sq",
+                              "c": [
+                                {
+                                  "o": "neg",
+                                  "c": [
+                                    {
+                                      "o": "mul",
+                                      "c": [
+                                        {
+                                          "o": "var",
+                                          "n": "g"
+                                        },
+                                        {
+                                          "o": "var",
+                                          "n": "t"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "o": "const",
+                              "v": 0.08333333333333333
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "o": "add",
+                      "c": [
+                        {
+                          "o": "add",
+                          "c": [
+                            {
+                              "o": "const",
+                              "v": 1
+                            },
+                            {
+                              "o": "neg",
+                              "c": [
+                                {
+                                  "o": "mul",
+                                  "c": [
+                                    {
+                                      "o": "const",
+                                      "v": 0.375
+                                    },
+                                    {
+                                      "o": "neg",
+                                      "c": [
+                                        {
+                                          "o": "mul",
+                                          "c": [
+                                            {
+                                              "o": "var",
+                                              "n": "g"
+                                            },
+                                            {
+                                              "o": "var",
+                                              "n": "t"
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "o": "mul",
+                          "c": [
+                            {
+                              "o": "sq",
+                              "c": [
+                                {
+                                  "o": "neg",
+                                  "c": [
+                                    {
+                                      "o": "mul",
+                                      "c": [
+                                        {
+                                          "o": "var",
+                                          "n": "g"
+                                        },
+                                        {
+                                          "o": "var",
+                                          "n": "t"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "o": "const",
+                              "v": 0.033333
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
   },
   "loschmidt_rate": {
     "taskId": "loschmidt_rate",
     "title": "Loschmidt echo rate TFIM (DQPT)",
     "direction": "min",
-    "metric": 0.052925894381018135,
+    "metric": 2.35598126531155e-11,
+    "holdout": 1.7154903426993986e-11,
     "level": 2,
-    "formula": "((3.270734 * (min(cos((t * 3.130638)), 3.047207) * min(-0.185459, cos((t * 3.047207))))) + 0.594297)",
-    "seed": 1000095,
-    "iteration": 1600,
+    "formula": "((0.999994 * (-log(max(((cos((1.551735 * t)))² + (0.007908 * (sin((1.551735 * t)))²)), 1e-30)))) + 0.000003)",
+    "seed": 918273,
+    "iteration": 25,
     "speed": {
-      "formulaCost": 47,
+      "formulaCost": 69,
       "exactCost": 18,
-      "speedup": 0.943,
-      "costProfile": "cpu-transcendental-20",
-      "vsSolverContext": {
-        "label": "Diag complète 128 modes",
-        "speedup": 13.6,
-        "note": "Context only — a closed-form reference exists for this task, so the solver is not what a real implementation runs. Not a like-for-like speedup: the solver's accuracy is orders of magnitude worse.",
-        "honestSpeedupVsReference": 0.3829787234042553
-      },
-      "measured": {
-        "measuredSpeedup": 0.943,
-        "nsFormula": 19.0858,
-        "nsExact": 17.9975,
-        "agreement": 2.4622,
-        "resolvable": true,
-        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
-      },
-      "speedupModelled": 0.3829787234042553,
-      "speedupSource": "measured"
+      "speedup": 0.2608695652173913
     },
     "tree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 0.999994133687705
+            },
+            {
+              "o": "neg",
+              "c": [
+                {
+                  "o": "log",
+                  "c": [
+                    {
+                      "o": "add",
+                      "c": [
+                        {
+                          "o": "sq",
+                          "c": [
+                            {
+                              "o": "cos",
+                              "c": [
+                                {
+                                  "o": "mul",
+                                  "c": [
+                                    {
+                                      "o": "const",
+                                      "v": 1.551735
+                                    },
+                                    {
+                                      "o": "var",
+                                      "n": "t"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "o": "mul",
+                          "c": [
+                            {
+                              "o": "const",
+                              "v": 0.007908
+                            },
+                            {
+                              "o": "sq",
+                              "c": [
+                                {
+                                  "o": "sin",
+                                  "c": [
+                                    {
+                                      "o": "mul",
+                                      "c": [
+                                        {
+                                          "o": "const",
+                                          "v": 1.551735
+                                        },
+                                        {
+                                          "o": "var",
+                                          "n": "t"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.0000029641262703989923
+        }
+      ]
+    },
+    "fast": {
+      "formula": "((3.270734 * (min(cos((t * 3.130638)), 3.047207) * min(-0.185459, cos((t * 3.047207))))) + 0.594297)",
+      "metric": 0.052925894381018135,
+      "level": 2,
+      "formulaCost": 47
+    },
+    "fastTree": {
       "o": "add",
       "c": [
         {
@@ -8111,6 +8990,52 @@
         {
           "o": "const",
           "v": 1.00707591962074
+        }
+      ]
+    },
+    "fast": {
+      "formula": "((-0.829805 * (x / (1.203759 + x))) + 0.867644)",
+      "metric": 0.00017679687784649873,
+      "level": 2,
+      "formulaCost": 7
+    },
+    "fastTree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": -0.8298048563365554
+            },
+            {
+              "o": "pdiv",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "x"
+                },
+                {
+                  "o": "add",
+                  "c": [
+                    {
+                      "o": "const",
+                      "v": 1.203759
+                    },
+                    {
+                      "o": "var",
+                      "n": "x"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.8676439350220412
         }
       ]
     }
@@ -8454,7 +9379,44 @@
       "speedupModelled": 1.7,
       "speedupSource": "measured"
     },
-    "holdout": 0
+    "holdout": 0,
+    "fast": {
+      "formula": "((0.366908 * max(-2.199254, x)) + 0.814196)",
+      "metric": 0.000988971304494804,
+      "level": 2,
+      "formulaCost": 3
+    },
+    "fastTree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 0.3669077958441258
+            },
+            {
+              "o": "max",
+              "c": [
+                {
+                  "o": "const",
+                  "v": -2.199254
+                },
+                {
+                  "o": "var",
+                  "n": "x"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.8141959256763748
+        }
+      ]
+    }
   },
   "fresnel_schlick": {
     "taskId": "fresnel_schlick",
@@ -8901,6 +9863,39 @@
           ]
         }
       ]
+    },
+    "fast": {
+      "formula": "((0.641555 * asin(x)) + -0.039928)",
+      "metric": 0.002558196493761146,
+      "level": 2,
+      "formulaCost": 22
+    },
+    "fastTree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 0.6415550916738473
+            },
+            {
+              "o": "asin",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "x"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": -0.03992831861457859
+        }
+      ]
     }
   },
   "back_ease_out": {
@@ -9192,7 +10187,41 @@
         }
       ]
     },
-    "holdout": 0
+    "holdout": 0,
+    "fast": {
+      "formula": "((-6.007697 * sqrt(|x|)) + 6.095905)",
+      "metric": 0.010622275576492781,
+      "level": 2,
+      "formulaCost": 4,
+      "deploy": true
+    },
+    "fastTree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": -6.0076967105621915
+            },
+            {
+              "o": "sqrt",
+              "c": [
+                {
+                  "o": "var",
+                  "n": "x"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 6.095905438251901
+        }
+      ]
+    }
   },
   "uncharted2_tonemap": {
     "taskId": "uncharted2_tonemap",
@@ -9592,96 +10621,54 @@
     "taskId": "rope_freq",
     "title": "Spectre RoPE (ω par lane · base 10⁴ · d=64 · m=1024)",
     "direction": "min",
-    "metric": 8.450097215948882e-7,
+    "metric": 3.1966472337884372e-28,
+    "holdout": 2.930304438630152e-28,
     "level": 5,
-    "formula": "((0.999999 * ((0.999947 * cos((1023.994 * exp((-0.28782 * x))))) + -0.000038)) + 0.000019)",
-    "seed": 4242,
-    "iteration": 201,
+    "formula": "cos((1024 * exp(((-x) * 0.28782313662425574))))",
+    "seed": 918273,
+    "iteration": 37,
     "speed": {
-      "formulaCost": 46,
+      "formulaCost": 43,
       "exactCost": 43,
-      "speedup": 0.9539,
-      "costProfile": "cpu-transcendental-20",
-      "measured": {
-        "measuredSpeedup": 0.9539,
-        "nsFormula": 24.5626,
-        "nsExact": 23.4294,
-        "agreement": 1.0204,
-        "resolvable": true,
-        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
-      },
-      "speedupModelled": 0.9347826086956522,
-      "speedupSource": "measured"
+      "speedup": 1
     },
     "tree": {
-      "o": "add",
+      "o": "cos",
       "c": [
         {
           "o": "mul",
           "c": [
             {
               "o": "const",
-              "v": 0.9999991529919943
+              "v": 1024
             },
             {
-              "o": "add",
+              "o": "exp",
               "c": [
                 {
                   "o": "mul",
                   "c": [
                     {
-                      "o": "const",
-                      "v": 0.999947
-                    },
-                    {
-                      "o": "cos",
+                      "o": "neg",
                       "c": [
                         {
-                          "o": "mul",
-                          "c": [
-                            {
-                              "o": "const",
-                              "v": 1023.994
-                            },
-                            {
-                              "o": "exp",
-                              "c": [
-                                {
-                                  "o": "mul",
-                                  "c": [
-                                    {
-                                      "o": "const",
-                                      "v": -0.28782
-                                    },
-                                    {
-                                      "o": "var",
-                                      "n": "x"
-                                    }
-                                  ]
-                                }
-                              ]
-                            }
-                          ]
+                          "o": "var",
+                          "n": "x"
                         }
                       ]
+                    },
+                    {
+                      "o": "const",
+                      "v": 0.28782313662425574
                     }
                   ]
-                },
-                {
-                  "o": "const",
-                  "v": -0.000038
                 }
               ]
             }
           ]
-        },
-        {
-          "o": "const",
-          "v": 0.00001879512303862185
         }
       ]
-    },
-    "holdout": 7.946056930424431e-7
+    }
   },
   "bilateral_weight": {
     "taskId": "bilateral_weight",
@@ -9918,6 +10905,44 @@
               ]
             }
           ]
+        }
+      ]
+    },
+    "fast": {
+      "formula": "((0.749902 * (0.248137 / x)) + 0.231746)",
+      "metric": 0.0024722215921133754,
+      "level": 2,
+      "formulaCost": 6,
+      "deploy": true
+    },
+    "fastTree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 0.7499023465681304
+            },
+            {
+              "o": "pdiv",
+              "c": [
+                {
+                  "o": "const",
+                  "v": 0.248137
+                },
+                {
+                  "o": "var",
+                  "n": "x"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 0.2317457533675008
         }
       ]
     }
@@ -10283,6 +11308,164 @@
         {
           "o": "const",
           "v": 0.057610571673754406
+        }
+      ]
+    },
+    "fast": {
+      "formula": "((8.68589 * log(max((((148691236 * (x)²) * (x)²) / (((x)² + 424.36) * (sqrt(|(((x)² + 11599.29) * ((x)² + 544496.41))|) * ((x)² + 148691236.246267)))), 1e-30))) + 2)",
+      "metric": 1.1237237499428525e-16,
+      "level": 5,
+      "formulaCost": 43
+    },
+    "fastTree": {
+      "o": "add",
+      "c": [
+        {
+          "o": "mul",
+          "c": [
+            {
+              "o": "const",
+              "v": 8.68588964
+            },
+            {
+              "o": "log",
+              "c": [
+                {
+                  "o": "pdiv",
+                  "c": [
+                    {
+                      "o": "mul",
+                      "c": [
+                        {
+                          "o": "mul",
+                          "c": [
+                            {
+                              "o": "const",
+                              "v": 148691236
+                            },
+                            {
+                              "o": "sq",
+                              "c": [
+                                {
+                                  "o": "var",
+                                  "n": "x"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "o": "sq",
+                          "c": [
+                            {
+                              "o": "var",
+                              "n": "x"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "o": "mul",
+                      "c": [
+                        {
+                          "o": "add",
+                          "c": [
+                            {
+                              "o": "sq",
+                              "c": [
+                                {
+                                  "o": "var",
+                                  "n": "x"
+                                }
+                              ]
+                            },
+                            {
+                              "o": "const",
+                              "v": 424.36
+                            }
+                          ]
+                        },
+                        {
+                          "o": "mul",
+                          "c": [
+                            {
+                              "o": "sqrt",
+                              "c": [
+                                {
+                                  "o": "mul",
+                                  "c": [
+                                    {
+                                      "o": "add",
+                                      "c": [
+                                        {
+                                          "o": "sq",
+                                          "c": [
+                                            {
+                                              "o": "var",
+                                              "n": "x"
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "o": "const",
+                                          "v": 11599.29
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "o": "add",
+                                      "c": [
+                                        {
+                                          "o": "sq",
+                                          "c": [
+                                            {
+                                              "o": "var",
+                                              "n": "x"
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "o": "const",
+                                          "v": 544496.41
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "o": "add",
+                              "c": [
+                                {
+                                  "o": "sq",
+                                  "c": [
+                                    {
+                                      "o": "var",
+                                      "n": "x"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "o": "const",
+                                  "v": 148691236.246267
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "o": "const",
+          "v": 2
         }
       ]
     }

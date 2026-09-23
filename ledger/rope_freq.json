@@ -2,94 +2,52 @@
   "taskId": "rope_freq",
   "title": "Spectre RoPE (ω par lane · base 10⁴ · d=64 · m=1024)",
   "direction": "min",
-  "metric": 8.450097215948882e-7,
+  "metric": 3.1966472337884372e-28,
+  "holdout": 2.930304438630152e-28,
   "level": 5,
-  "formula": "((0.999999 * ((0.999947 * cos((1023.994 * exp((-0.28782 * x))))) + -0.000038)) + 0.000019)",
-  "seed": 4242,
-  "iteration": 201,
+  "formula": "cos((1024 * exp(((-x) * 0.28782313662425574))))",
+  "seed": 918273,
+  "iteration": 37,
   "speed": {
-    "formulaCost": 46,
+    "formulaCost": 43,
     "exactCost": 43,
-    "speedup": 0.9539,
-    "costProfile": "cpu-transcendental-20",
-    "measured": {
-      "measuredSpeedup": 0.9539,
-      "nsFormula": 24.5626,
-      "nsExact": 23.4294,
-      "agreement": 1.0204,
-      "resolvable": true,
-      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
-    },
-    "speedupModelled": 0.9347826086956522,
-    "speedupSource": "measured"
+    "speedup": 1
   },
   "tree": {
-    "o": "add",
+    "o": "cos",
     "c": [
       {
         "o": "mul",
         "c": [
           {
             "o": "const",
-            "v": 0.9999991529919943
+            "v": 1024
           },
           {
-            "o": "add",
+            "o": "exp",
             "c": [
               {
                 "o": "mul",
                 "c": [
                   {
-                    "o": "const",
-                    "v": 0.999947
-                  },
-                  {
-                    "o": "cos",
+                    "o": "neg",
                     "c": [
                       {
-                        "o": "mul",
-                        "c": [
-                          {
-                            "o": "const",
-                            "v": 1023.994
-                          },
-                          {
-                            "o": "exp",
-                            "c": [
-                              {
-                                "o": "mul",
-                                "c": [
-                                  {
-                                    "o": "const",
-                                    "v": -0.28782
-                                  },
-                                  {
-                                    "o": "var",
-                                    "n": "x"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
+                        "o": "var",
+                        "n": "x"
                       }
                     ]
+                  },
+                  {
+                    "o": "const",
+                    "v": 0.28782313662425574
                   }
                 ]
-              },
-              {
-                "o": "const",
-                "v": -0.000038
               }
             ]
           }
         ]
-      },
-      {
-        "o": "const",
-        "v": 0.00001879512303862185
       }
     ]
-  },
-  "holdout": 7.946056930424431e-7
+  }
 }

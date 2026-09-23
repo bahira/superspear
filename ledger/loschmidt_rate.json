@@ -2,34 +2,112 @@
   "taskId": "loschmidt_rate",
   "title": "Loschmidt echo rate TFIM (DQPT)",
   "direction": "min",
-  "metric": 0.052925894381018135,
+  "metric": 2.35598126531155e-11,
+  "holdout": 1.7154903426993986e-11,
   "level": 2,
-  "formula": "((3.270734 * (min(cos((t * 3.130638)), 3.047207) * min(-0.185459, cos((t * 3.047207))))) + 0.594297)",
-  "seed": 1000095,
-  "iteration": 1600,
+  "formula": "((0.999994 * (-log(max(((cos((1.551735 * t)))² + (0.007908 * (sin((1.551735 * t)))²)), 1e-30)))) + 0.000003)",
+  "seed": 918273,
+  "iteration": 25,
   "speed": {
-    "formulaCost": 47,
+    "formulaCost": 69,
     "exactCost": 18,
-    "speedup": 0.943,
-    "costProfile": "cpu-transcendental-20",
-    "vsSolverContext": {
-      "label": "Diag complète 128 modes",
-      "speedup": 13.6,
-      "note": "Context only — a closed-form reference exists for this task, so the solver is not what a real implementation runs. Not a like-for-like speedup: the solver's accuracy is orders of magnitude worse.",
-      "honestSpeedupVsReference": 0.3829787234042553
-    },
-    "measured": {
-      "measuredSpeedup": 0.943,
-      "nsFormula": 19.0858,
-      "nsExact": 17.9975,
-      "agreement": 2.4622,
-      "resolvable": true,
-      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
-    },
-    "speedupModelled": 0.3829787234042553,
-    "speedupSource": "measured"
+    "speedup": 0.2608695652173913
   },
   "tree": {
+    "o": "add",
+    "c": [
+      {
+        "o": "mul",
+        "c": [
+          {
+            "o": "const",
+            "v": 0.999994133687705
+          },
+          {
+            "o": "neg",
+            "c": [
+              {
+                "o": "log",
+                "c": [
+                  {
+                    "o": "add",
+                    "c": [
+                      {
+                        "o": "sq",
+                        "c": [
+                          {
+                            "o": "cos",
+                            "c": [
+                              {
+                                "o": "mul",
+                                "c": [
+                                  {
+                                    "o": "const",
+                                    "v": 1.551735
+                                  },
+                                  {
+                                    "o": "var",
+                                    "n": "t"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "o": "mul",
+                        "c": [
+                          {
+                            "o": "const",
+                            "v": 0.007908
+                          },
+                          {
+                            "o": "sq",
+                            "c": [
+                              {
+                                "o": "sin",
+                                "c": [
+                                  {
+                                    "o": "mul",
+                                    "c": [
+                                      {
+                                        "o": "const",
+                                        "v": 1.551735
+                                      },
+                                      {
+                                        "o": "var",
+                                        "n": "t"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "o": "const",
+        "v": 0.0000029641262703989923
+      }
+    ]
+  },
+  "fast": {
+    "formula": "((3.270734 * (min(cos((t * 3.130638)), 3.047207) * min(-0.185459, cos((t * 3.047207))))) + 0.594297)",
+    "metric": 0.052925894381018135,
+    "level": 2,
+    "formulaCost": 47
+  },
+  "fastTree": {
     "o": "add",
     "c": [
       {

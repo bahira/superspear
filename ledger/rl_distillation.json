@@ -39,5 +39,34 @@
         ]
       }
     ]
+  },
+  "fast": {
+    "formula": "(0.000103 * (x / 0))",
+    "metric": 0.010817185135812394,
+    "level": 2,
+    "formulaCost": 5,
+    "deploy": true
+  },
+  "fastTree": {
+    "o": "mul",
+    "c": [
+      {
+        "o": "const",
+        "v": 0.000103
+      },
+      {
+        "o": "pdiv",
+        "c": [
+          {
+            "o": "var",
+            "n": "x"
+          },
+          {
+            "o": "const",
+            "v": 0
+          }
+        ]
+      }
+    ]
   }
 }

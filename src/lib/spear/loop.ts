@@ -822,11 +822,15 @@ export async function runGroundedLoop(opts: GroundedLoopOptions = {}): Promise<L
         : rt.fastArchive[rt.fastArchive.length - 1].cost;
       if (cost >= worst) continue;
       const lvl = levelOf(t, results[i].metric);
-      const deploy = lvl < 2 && !!t.r2 && t.r2(rt.population[i]) >= 0.98;
+      // store the SHAPED node from the evaluation (same rule as the front
+      // snapshot): results[i].metric belongs to that shaped formula — a raw
+      // AST labelled with the shaped error ships fast-metric-drift records.
+      const shaped = results[i].node;
+      const deploy = lvl < 2 && !!t.r2 && t.r2(shaped) >= 0.98;
       if (lvl < 2 && !deploy) continue;
-      const key = canonicalKey(rt.population[i]);
+      const key = canonicalKey(shaped);
       if (rt.fastArchive.some((e) => e.key === key)) continue;
-      rt.fastArchive.push({ node: rt.population[i], metric: results[i].metric, cost, key, deploy });
+      rt.fastArchive.push({ node: shaped, metric: results[i].metric, cost, key, deploy });
       rt.fastArchive.sort((a, b) => a.cost - b.cost);
       if (rt.fastArchive.length > FAST_ARCHIVE_MAX) rt.fastArchive.pop();
     }
