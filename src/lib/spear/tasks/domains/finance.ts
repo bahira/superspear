@@ -5,6 +5,33 @@ import type { TaskDef } from "../types";
 import { buildActivationTask, buildRegressionTask } from "../factories";
 import * as S from "../shared";
 
+// One Newton correction σ₁ = σ₀ − (BS(σ₀)−c)/Vega(σ₀) around a start skeleton.
+// This is what S.impliedVol iterates 40×; kepler_solver fell the same way
+// (unfolded Newton beat the iteration). BS uses r = 0.02 exactly like
+// S.bsCall; Φ via erf, φ via exp, d1/d2 algebra — all served ops, so the
+// full step is expressible. pdiv's protection floors the vega-collapse
+// zones for free.
+// ponytail: NOT wired as an extraSeed. Wrapping the incumbent embeds it 5×
+// -> ~2k ops, 25x the largest other seed, and the 25 s loop smoke then
+// reaches 27/89 tasks instead of 60/89 (test-heritage fails). The implied_vol
+// record it produced (L2 2.11e-4) stays in the ledger; re-wire behind a
+// size cap if the farm ever needs the self-refinement path.
+export function newtonIvSeed(s0: SpearNode): SpearNode {
+  const c = S.V("c"), s = S.V("s"), k = S.V("k"), t = S.V("t");
+  const B = (op: NodeOp, a: SpearNode, b: SpearNode): SpearNode => makeNode(op, { children: [a, b] });
+  const U = (op: NodeOp, a: SpearNode): SpearNode => makeNode(op, { children: [a] });
+  const lsk = U("log", B("pdiv", s, k));
+  const s0sq = U("sq", s0);
+  const sqT = U("sqrt", t);
+  const d1 = B("pdiv", B("add", lsk, B("mul", B("add", S.C(0.02), B("mul", S.C(0.5), s0sq)), t)), B("mul", s0, sqT));
+  const d2 = B("sub", d1, B("mul", s0, sqT));
+  const Phi = (x: SpearNode): SpearNode => B("mul", S.C(0.5), B("add", S.C(1), U("erf", B("mul", x, S.C(0.70710678)))));
+  const phi = (x: SpearNode): SpearNode => B("pdiv", U("exp", B("mul", U("sq", x), S.C(-0.5))), S.C(2.5066283));
+  const price = B("sub", B("mul", s, Phi(d1)), B("mul", k, B("mul", U("exp", B("mul", S.C(-0.02), t)), Phi(d2))));
+  const vega = B("mul", s, B("mul", phi(d1), sqT));
+  return B("sub", s0, B("pdiv", B("sub", price, c), vega));
+}
+
 export function defs(): TaskDef[] {
   return [
 

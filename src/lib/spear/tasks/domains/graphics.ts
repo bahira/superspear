@@ -5,6 +5,32 @@ import type { TaskDef } from "../types";
 import { buildActivationTask, buildRegressionTask } from "../factories";
 import * as S from "../shared";
 
+// Two-regime blackbody seeds (validated before farm budget, smoke-bb.ts:
+// G-shape 6.7e-5 vs champion 1.3e-4, B-shape 2.9e-7 vs champion 2.3e-4).
+// G = ln-branch below 6600K, power-branch above (min-gate does the switch,
+// the Helland fits cross near 6600K by design); B = hard-zero below 1900K,
+// ln-branch above, 255-cap (min/max do the switching). Shape only — polish
+// re-fits the constants. Activation var is "x" (= tempK). Exported so the
+// bricks can be validated before farm budget, like newtonIvSeed (finance).
+export function blackbodyGSeed(): SpearNode {
+  const x = S.V("x");
+  const B = (op: NodeOp, a: SpearNode, b: SpearNode): SpearNode => makeNode(op, { children: [a, b] });
+  const U = (op: NodeOp, a: SpearNode): SpearNode => makeNode(op, { children: [a] });
+  const x100 = B("pdiv", x, S.C(100));
+  const g1 = B("add", B("mul", S.C(100), U("log", x100)), S.C(-160));
+  const g2 = B("mul", S.C(288), U("exp", B("mul", S.C(-0.075), U("log", B("sub", x100, S.C(60))))));
+  return B("pdiv", B("min", S.C(255), B("max", S.C(0), B("min", g1, g2))), S.C(255));
+}
+
+export function blackbodyBSeed(): SpearNode {
+  const x = S.V("x");
+  const B = (op: NodeOp, a: SpearNode, b: SpearNode): SpearNode => makeNode(op, { children: [a, b] });
+  const U = (op: NodeOp, a: SpearNode): SpearNode => makeNode(op, { children: [a] });
+  const x100 = B("pdiv", x, S.C(100));
+  const b1 = B("add", B("mul", S.C(138.5), U("log", B("sub", x100, S.C(10)))), S.C(-305));
+  return B("pdiv", B("min", S.C(255), B("max", S.C(0), b1)), S.C(255));
+}
+
 export function defs(): TaskDef[] {
   return [
 
@@ -106,6 +132,8 @@ buildActivationTask({
       hi: 12000,
       groundTruth: "G(T) — fit Tanner Helland",
       exactCost: 25,
+      // two-regime seed: ln-branch below 6600K, power-branch above
+      extraSeeds: [blackbodyGSeed()],
     }),
 
     // Blackbody blue channel — hard-zero below 1900K then ln growth: the
@@ -119,6 +147,8 @@ buildActivationTask({
       hi: 12000,
       groundTruth: "B(T) — fit Tanner Helland",
       exactCost: 25,
+      // hard-zero below 1900K, ln-branch above, 255-cap — min/max switch
+      extraSeeds: [blackbodyBSeed()],
     }),
 
     // Narkowicz ACES fitted curve as TARGET: production reference is already

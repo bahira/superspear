@@ -2,27 +2,17 @@
   "taskId": "light_falloff_punctual",
   "title": "Atténuation punctual (three.js)",
   "direction": "min",
-  "metric": 1.5032920443487647e-36,
-  "holdout": 7.890505829894605e-37,
+  "metric": 1.1122418080286529e-36,
+  "holdout": 9.050204475377717e-37,
   "level": 5,
   "formula": "((min(1, relu((1 - (((x * 0.125))²)²))))² / (x)²)",
-  "seed": 260906,
-  "iteration": 7,
+  "seed": 20260917,
+  "iteration": 8,
   "speed": {
     "formulaCost": 12,
     "exactCost": 20,
-    "speedup": 1.3562,
-    "measured": {
-      "measuredSpeedup": 1.3562,
-      "nsFormula": 13.8687,
-      "nsExact": 18.8088,
-      "agreement": 0.8137,
-      "resolvable": true,
-      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
-    },
-    "costProfile": "cpu-transcendental-20",
-    "speedupModelled": 1.6666666666666667,
-    "speedupSource": "measured"
+    "speedup": 1.6666666666666667,
+    "costProfile": "cpu-transcendental-20"
   },
   "tree": {
     "o": "pdiv",
@@ -90,17 +80,10 @@
     ]
   },
   "fast": {
-    "formula": "((39.463781 * (0.025493 / (x)²)) + -0.010761)",
-    "metric": 0.000022254134884792464,
+    "formula": "((1.006314 * (0.999738 / (x)²)) + -0.010761)",
+    "metric": 0.000022254134884792508,
     "level": 2,
-    "formulaCost": 7,
-    "measured": {
-      "measuredSpeedup": 1.7422,
-      "nsChampion": 13.5525,
-      "nsFast": 7.7788,
-      "resolvable": true,
-      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
-    }
+    "formulaCost": 7
   },
   "fastTree": {
     "o": "add",
@@ -110,14 +93,14 @@
         "c": [
           {
             "o": "const",
-            "v": 39.46378068909496
+            "v": 1.0063138153267113
           },
           {
             "o": "pdiv",
             "c": [
               {
                 "o": "const",
-                "v": 0.025493
+                "v": 0.999738
               },
               {
                 "o": "sq",
@@ -134,7 +117,7 @@
       },
       {
         "o": "const",
-        "v": -0.010760922650096667
+        "v": -0.010760922650096205
       }
     ]
   }
