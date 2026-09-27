@@ -48,6 +48,23 @@ const PARITY_BUDGET: Record<string, number> = {
   mel_scale: 1e-3,
   smoothstep: 1e-3,
   srgb_decode: 1e-3,
+  // Wall-assault champions (PR #2) are cancellation-limited: near-perfect in
+  // f64, ~4 digits gone in f32, because the win comes from *subtracting*
+  // near-equal quantities.
+  //   blackbody_b 3.2e-4 — min/max-gated ln branch: 255 − cap leaves little
+  //                        headroom above the clamp, so f32 rounding of the
+  //                        gate argument is amplified by the switch itself.
+  //   bessel_j2  1.4e-4 — J₂ = (2/x)·J₁ − J₀ recurrence: textbook
+  //                        catastrophic cancellation as x → 0.
+  //   blackbody_r 1.1e-4 — exp(−0.133·log(max(T/100,66) − 60)) subtracts 60
+  //                        from T/100 before the log, losing digits at the
+  //                        cold end where the argument approaches 0.06.
+  // Same physics as the entries above, same bucket: documented, not waved
+  // through. f32 consumers must read test-f32-degradation.ts before shipping
+  // any of these three as an "exact" kernel.
+  blackbody_b: 1e-3,
+  bessel_j2: 1e-3,
+  blackbody_r: 1e-3,
 };
 
 interface Row {

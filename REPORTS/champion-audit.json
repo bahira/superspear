@@ -17,7 +17,9 @@
       "holdout": 2.6482577941200677e-30,
       "overfitRatio": 1.0075036839984526,
       "ood": 0,
-      "r2": 1
+      "r2": 1,
+      "fastCost": 43,
+      "fastMetric": 1.1237237499428525e-16
     },
     {
       "id": "aces_fit",
@@ -72,7 +74,9 @@
       "provenance": "recovered-seed",
       "holdout": 0,
       "ood": 0,
-      "r2": 1
+      "r2": 1,
+      "fastCost": 62,
+      "fastMetric": 0.020782634270969432
     },
     {
       "id": "asin_hard",
@@ -96,7 +100,9 @@
       "provenance": "recovered-seed",
       "holdout": 0,
       "ood": 0,
-      "r2": 1
+      "r2": 1,
+      "fastCost": 1,
+      "fastMetric": 0.002170494475091841
     },
     {
       "id": "atan_unit",
@@ -154,60 +160,48 @@
       "hasTask": true,
       "issues": [
         {
-          "code": "speedup-model-off",
-          "severity": "warn",
-          "detail": "modelled ×3.00 vs measured ×5.08 (agreement 1.69) — cite the measured figure"
-        },
-        {
           "code": "ood-violation",
           "severity": "warn",
           "detail": "ood violation 5.00e-1 — extrapolates badly"
         }
       ],
-      "storedMetric": 0.00003054886219191836,
-      "recomputedMetric": 0.00003054886219191836,
+      "storedMetric": 0.0000021628512296161852,
+      "recomputedMetric": 0.0000021628512296161852,
       "metricDrift": 0,
       "storedLevel": 2,
       "recomputedLevel": 2,
-      "cost": 8,
-      "storedCost": 8,
-      "speedup": 3,
-      "transcendental": 0,
+      "cost": 65,
+      "storedCost": 65,
+      "speedup": 0.36923076923076925,
+      "transcendental": 2,
       "provenance": "search",
-      "holdout": 0.00003107218721220352,
-      "overfitRatio": 1.0171307532502343,
-      "ood": 0.5,
-      "r2": 0.9973227609847197
+      "holdout": 7.104437524192948e-7,
+      "overfitRatio": 0.32847555240559406,
+      "ood": 0.49999883787389343,
+      "r2": 0.9998104521975386,
+      "fastCost": 8,
+      "fastMetric": 0.00003054886219191836
     },
     {
       "id": "bessel_j0",
       "hasTask": true,
-      "issues": [
-        {
-          "code": "speedup-model-off",
-          "severity": "warn",
-          "detail": "modelled ×3.08 vs measured ×0.83 (agreement 0.27) — cite the measured figure"
-        },
-        {
-          "code": "ood-violation",
-          "severity": "warn",
-          "detail": "ood violation 2.70e-1 — extrapolates badly"
-        }
-      ],
-      "storedMetric": 0.00026389864276618125,
-      "recomputedMetric": 0.00026389864276618125,
+      "issues": [],
+      "storedMetric": 0.00002910583732933224,
+      "recomputedMetric": 0.00002910583732933224,
       "metricDrift": 0,
-      "storedLevel": 2,
-      "recomputedLevel": 2,
-      "cost": 13,
-      "storedCost": 13,
-      "speedup": 3.076923076923077,
-      "transcendental": 0,
+      "storedLevel": 3,
+      "recomputedLevel": 3,
+      "cost": 67,
+      "storedCost": 67,
+      "speedup": 0.5970149253731343,
+      "transcendental": 2,
       "provenance": "search",
-      "holdout": 0.00026243153751230304,
-      "overfitRatio": 0.9944406487335439,
-      "ood": 0.26950896862039175,
-      "r2": 0.9987966048183532
+      "holdout": 0.000029132158530174385,
+      "overfitRatio": 1.000904327216026,
+      "ood": 0,
+      "r2": 0.9998672754659411,
+      "fastCost": 13,
+      "fastMetric": 0.00026389864276618125
     },
     {
       "id": "bessel_j1",
@@ -242,27 +236,22 @@
           "code": "fast-slot-pointless",
           "severity": "warn",
           "detail": "fast slot measures ×1.00 — no usable gain, so its accuracy loss buys nothing"
-        },
-        {
-          "code": "ood-violation",
-          "severity": "warn",
-          "detail": "ood violation 6.99e-3 — extrapolates badly"
         }
       ],
-      "storedMetric": 0.00010303824064693589,
-      "recomputedMetric": 0.00010303824064693589,
+      "storedMetric": 0.000005714635301672624,
+      "recomputedMetric": 0.000005714635301672624,
       "metricDrift": 0,
-      "storedLevel": 2,
-      "recomputedLevel": 2,
-      "cost": 27,
-      "storedCost": 27,
-      "speedup": 1.4814814814814814,
-      "transcendental": 1,
+      "storedLevel": 4,
+      "recomputedLevel": 4,
+      "cost": 154,
+      "storedCost": 154,
+      "speedup": 0.2597402597402597,
+      "transcendental": 4,
       "provenance": "search",
-      "holdout": 0.00010161932879133565,
-      "overfitRatio": 0.9862292693791017,
-      "ood": 0.006993241391331173,
-      "r2": 0.997680586729149,
+      "holdout": 0.000006391876538119389,
+      "overfitRatio": 1.1185099662000377,
+      "ood": 0,
+      "r2": 0.9998713623129282,
       "fastCost": 26,
       "fastMetric": 0.0001003120533476376
     },
@@ -288,7 +277,9 @@
       "provenance": "recovered-seed",
       "holdout": 0,
       "ood": 0,
-      "r2": 1
+      "r2": 1,
+      "fastCost": 6,
+      "fastMetric": 0.008608594078618083
     },
     {
       "id": "bilateral_weight",
@@ -351,77 +342,69 @@
     {
       "id": "blackbody_b",
       "hasTask": true,
-      "issues": [
-        {
-          "code": "ood-violation",
-          "severity": "warn",
-          "detail": "ood violation 6.52e-1 — extrapolates badly"
-        }
-      ],
-      "storedMetric": 0.00022595735189612456,
-      "recomputedMetric": 0.00022595735189612456,
+      "issues": [],
+      "storedMetric": 3.5456804077141775e-7,
+      "recomputedMetric": 3.5456804077141775e-7,
       "metricDrift": 0,
-      "storedLevel": 2,
-      "recomputedLevel": 2,
-      "cost": 65,
-      "storedCost": 65,
-      "speedup": 0.38461538461538464,
-      "transcendental": 3,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 31,
+      "storedCost": 31,
+      "speedup": 0.8064516129032258,
+      "transcendental": 1,
       "provenance": "search",
-      "holdout": 0.00021404318248463452,
-      "overfitRatio": 0.9472724861062847,
-      "ood": 0.6524696080177088,
-      "r2": 0.9974553581295283,
-      "fastCost": 28,
-      "fastMetric": 0.0015032930520104606
+      "holdout": 3.072018692535486e-8,
+      "overfitRatio": 0.08664116161884848,
+      "ood": 0,
+      "r2": 0.999996006995679,
+      "fastCost": 29,
+      "fastMetric": 3.5310241292332687e-7
     },
     {
       "id": "blackbody_g",
       "hasTask": true,
-      "issues": [
-        {
-          "code": "ood-violation",
-          "severity": "warn",
-          "detail": "ood violation 1.58e+0 — extrapolates badly"
-        }
-      ],
-      "storedMetric": 0.00012987872179127973,
-      "recomputedMetric": 0.00012987872179127973,
+      "issues": [],
+      "storedMetric": 3.0936725525470907e-7,
+      "recomputedMetric": 3.0936725525470907e-7,
       "metricDrift": 0,
-      "storedLevel": 2,
-      "recomputedLevel": 2,
-      "cost": 74,
-      "storedCost": 74,
-      "speedup": 0.33783783783783783,
-      "transcendental": 4,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 72,
+      "storedCost": 72,
+      "speedup": 0.3472222222222222,
+      "transcendental": 3,
       "provenance": "search",
-      "holdout": 0.00013265337376721829,
-      "overfitRatio": 1.0213634068588813,
-      "ood": 1.5798634913592813,
-      "r2": 0.9915796347232397,
-      "fastCost": 15,
-      "fastMetric": 0.0002497888707507383
+      "holdout": 3.2030737569378875e-7,
+      "overfitRatio": 1.0353628907172883,
+      "ood": 0,
+      "r2": 0.9999799429401677
     },
     {
       "id": "blackbody_r",
       "hasTask": true,
-      "issues": [],
-      "storedMetric": 0.000003643325039992557,
-      "recomputedMetric": 0.000003643325039992557,
+      "issues": [
+        {
+          "code": "champion-equivalent-to-law",
+          "severity": "info",
+          "detail": "champion differs textually from the seeded law but is equally exact — an algebraic rewrite, not a new result (cost 47 vs 53)"
+        }
+      ],
+      "storedMetric": 2.742524240807424e-33,
+      "recomputedMetric": 2.742524240807424e-33,
       "metricDrift": 0,
-      "storedLevel": 4,
-      "recomputedLevel": 4,
-      "cost": 14,
-      "storedCost": 14,
-      "speedup": 1.7857142857142858,
-      "transcendental": 0,
-      "provenance": "search",
-      "holdout": 0.000004120299494718398,
-      "overfitRatio": 1.130917348710346,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 47,
+      "storedCost": 47,
+      "speedup": 0.5319148936170213,
+      "transcendental": 2,
+      "provenance": "rewrite-of-law",
+      "holdout": 2.7733391199176197e-33,
+      "overfitRatio": 0.0027733391199176193,
       "ood": 0,
-      "r2": 0.9996174828495048,
-      "fastCost": 3,
-      "fastMetric": 0.00034741754943065336
+      "r2": 1,
+      "fastCost": 14,
+      "fastMetric": 0.0000036433250399925394
     },
     {
       "id": "bs_d1_sigma",
@@ -431,15 +414,10 @@
           "code": "champion-equivalent-to-law",
           "severity": "info",
           "detail": "champion differs textually from the seeded law but is equally exact — an algebraic rewrite, not a new result (cost 11 vs 13)"
-        },
-        {
-          "code": "speedup-model-off",
-          "severity": "warn",
-          "detail": "modelled ×0.82 vs measured ×1.57 (agreement 1.92) — cite the measured figure"
         }
       ],
-      "storedMetric": 1.8048120620446115e-30,
-      "recomputedMetric": 1.8048120620446115e-30,
+      "storedMetric": 1.7413642259567183e-30,
+      "recomputedMetric": 1.7413642259567183e-30,
       "metricDrift": 0,
       "storedLevel": 5,
       "recomputedLevel": 5,
@@ -448,10 +426,12 @@
       "speedup": 0.8181818181818182,
       "transcendental": 0,
       "provenance": "rewrite-of-law",
-      "holdout": 1.798433382068801e-30,
-      "overfitRatio": 0.9964657372864716,
+      "holdout": 1.7295621272575132e-30,
+      "overfitRatio": 0.9932224984737349,
       "ood": 0,
-      "r2": 1
+      "r2": 1,
+      "fastCost": 7,
+      "fastMetric": 0.0024722215921133767
     },
     {
       "id": "bs_d2_sigma",
@@ -609,8 +589,8 @@
       "id": "diffusion_beta",
       "hasTask": true,
       "issues": [],
-      "storedMetric": 4.416535812970087e-15,
-      "recomputedMetric": 4.416535812970087e-15,
+      "storedMetric": 4.386310140868417e-15,
+      "recomputedMetric": 4.386310140868417e-15,
       "metricDrift": 0,
       "storedLevel": 2,
       "recomputedLevel": 2,
@@ -619,12 +599,12 @@
       "speedup": 1.12,
       "transcendental": 1,
       "provenance": "search",
-      "holdout": 4.413133622752793e-15,
-      "overfitRatio": 0.9992296699582278,
+      "holdout": 4.382878233165499e-15,
+      "overfitRatio": 0.9992175866291483,
       "ood": 0,
-      "r2": 0.9999999999999638,
-      "fastCost": 24,
-      "fastMetric": 0.0005060200458450411
+      "r2": 0.999999999999964,
+      "fastCost": 14,
+      "fastMetric": 0.0000014721619370892027
     },
     {
       "id": "doppler_effect",
@@ -662,20 +642,20 @@
           "detail": "modelled ×0.89 vs measured ×1.35 (agreement 1.52) — cite the measured figure"
         }
       ],
-      "storedMetric": 3.325277645075658e-11,
-      "recomputedMetric": 3.325277645075658e-11,
+      "storedMetric": 3.315785752183914e-11,
+      "recomputedMetric": 3.315785752183914e-11,
       "metricDrift": 0,
       "storedLevel": 2,
       "recomputedLevel": 2,
-      "cost": 120,
-      "storedCost": 120,
-      "speedup": 0.8916666666666667,
+      "cost": 114,
+      "storedCost": 114,
+      "speedup": 0.9385964912280702,
       "transcendental": 6,
       "provenance": "search",
-      "holdout": 1.7913231060066527e-12,
-      "overfitRatio": 0.05386988087023019,
+      "holdout": 7.128741485367764e-13,
+      "overfitRatio": 0.02149940321286585,
       "ood": 0,
-      "r2": 0.9999999999545889,
+      "r2": 0.9999999999547186,
       "fastCost": 11,
       "fastMetric": 0.030848965408385668
     },
@@ -684,32 +664,27 @@
       "hasTask": true,
       "issues": [
         {
-          "code": "speedup-model-off",
-          "severity": "warn",
-          "detail": "modelled ×0.38 vs measured ×2.46 (agreement 6.47) — cite the measured figure"
-        },
-        {
-          "code": "ood-violation",
-          "severity": "warn",
-          "detail": "ood violation 2.01e+1 — extrapolates badly"
+          "code": "champion-equivalent-to-law",
+          "severity": "info",
+          "detail": "champion differs textually from the seeded law but is equally exact — an algebraic rewrite, not a new result (cost 121 vs 129)"
         }
       ],
-      "storedMetric": 0.0010426866886825285,
-      "recomputedMetric": 0.0010426866886825285,
+      "storedMetric": 3.765982518479849e-29,
+      "recomputedMetric": 3.765982518479849e-29,
       "metricDrift": 0,
-      "storedLevel": 2,
-      "recomputedLevel": 2,
-      "cost": 42,
-      "storedCost": 42,
-      "speedup": 0.38095238095238093,
-      "transcendental": 2,
-      "provenance": "search",
-      "holdout": 0.0009718726334056787,
-      "overfitRatio": 0.932085010727119,
-      "ood": 20.054170907505235,
-      "r2": 0.9950656039625979,
-      "fastCost": 8,
-      "fastMetric": 0.005535101499306599
+      "storedLevel": 3,
+      "recomputedLevel": 3,
+      "cost": 121,
+      "storedCost": 121,
+      "speedup": 0.1322314049586777,
+      "transcendental": 31,
+      "provenance": "rewrite-of-law",
+      "holdout": 4.353526120688459e-30,
+      "overfitRatio": 0.1156013364195268,
+      "ood": 0,
+      "r2": 1,
+      "fastCost": 42,
+      "fastMetric": 0.0010426866886825285
     },
     {
       "id": "ema_smooth",
@@ -764,7 +739,9 @@
       "provenance": "recovered-seed",
       "holdout": 0,
       "ood": 0,
-      "r2": 1
+      "r2": 1,
+      "fastCost": 7,
+      "fastMetric": 0.007081600351482861
     },
     {
       "id": "european_call",
@@ -783,7 +760,9 @@
       "holdout": 0.30038069359715264,
       "overfitRatio": 1.2887258941545592,
       "ood": 0,
-      "r2": 0.9950190838176941
+      "r2": 0.9950190838176941,
+      "fastCost": 2,
+      "fastMetric": 0.32994028054848007
     },
     {
       "id": "fast_exp_alu",
@@ -817,7 +796,9 @@
       "provenance": "recovered-seed",
       "holdout": 0,
       "ood": 828.9243552528318,
-      "r2": 1
+      "r2": 1,
+      "fastCost": 3,
+      "fastMetric": 0.000988971304494804
     },
     {
       "id": "fog_exp2",
@@ -841,7 +822,9 @@
       "provenance": "recovered-seed",
       "holdout": 0,
       "ood": 0,
-      "r2": 1
+      "r2": 1,
+      "fastCost": 22,
+      "fastMetric": 0.002558196493761146
     },
     {
       "id": "free_fall",
@@ -870,15 +853,10 @@
           "code": "champion-is-seeded-law",
           "severity": "info",
           "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
-        },
-        {
-          "code": "speedup-unmeasurable",
-          "severity": "warn",
-          "detail": "advertises ×1.33 but both kernels sit at the call-overhead floor (measured ×1.00) — the gain is not observable"
         }
       ],
-      "storedMetric": 1.1352153315947514e-33,
-      "recomputedMetric": 1.1352153315947514e-33,
+      "storedMetric": 1.1192060389320325e-33,
+      "recomputedMetric": 1.1192060389320325e-33,
       "metricDrift": 0,
       "storedLevel": 5,
       "recomputedLevel": 5,
@@ -887,12 +865,10 @@
       "speedup": 1.3333333333333333,
       "transcendental": 0,
       "provenance": "recovered-seed",
-      "holdout": 1.2133358649639586e-33,
-      "overfitRatio": 0.0012133358649639584,
+      "holdout": 1.3270861023043297e-33,
+      "overfitRatio": 0.0013270861023043296,
       "ood": 0,
-      "r2": 1,
-      "fastCost": 8,
-      "fastMetric": 0.0001697292959297894
+      "r2": 1
     },
     {
       "id": "gauss_shader",
@@ -921,7 +897,9 @@
       "provenance": "rewrite-of-law",
       "holdout": 0,
       "ood": 0,
-      "r2": 1
+      "r2": 1,
+      "fastCost": 7,
+      "fastMetric": 0.5036868977291588
     },
     {
       "id": "gaussian_cdf",
@@ -977,7 +955,9 @@
       "provenance": "recovered-seed",
       "holdout": 0,
       "ood": 0,
-      "r2": 1
+      "r2": 1,
+      "fastCost": 3,
+      "fastMetric": 0.005657377567763322
     },
     {
       "id": "gelu",
@@ -1112,68 +1092,70 @@
     {
       "id": "idm_following",
       "hasTask": true,
-      "issues": [],
-      "storedMetric": 0.002938652617546022,
-      "recomputedMetric": 0.002938652617546022,
+      "issues": [
+        {
+          "code": "champion-equivalent-to-law",
+          "severity": "info",
+          "detail": "champion differs textually from the seeded law but is equally exact — an algebraic rewrite, not a new result (cost 19 vs 38)"
+        }
+      ],
+      "storedMetric": 2.3253215925344832e-31,
+      "recomputedMetric": 2.3253215925344832e-31,
       "metricDrift": 0,
-      "storedLevel": 2,
-      "recomputedLevel": 2,
-      "cost": 20,
-      "storedCost": 20,
-      "speedup": 1.5,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 19,
+      "storedCost": 19,
+      "speedup": 1.5789473684210527,
       "transcendental": 0,
-      "provenance": "search",
-      "holdout": 0.002425005044156095,
-      "overfitRatio": 0.8252098358536647,
+      "provenance": "rewrite-of-law",
+      "holdout": 6.6412227458293935e-31,
+      "overfitRatio": 0.6641222745829393,
       "ood": 0,
-      "r2": 0.9998192150475046
+      "r2": 1
     },
     {
       "id": "ik_reach",
       "hasTask": true,
       "issues": [
         {
-          "code": "champion-equivalent-to-law",
+          "code": "champion-is-seeded-law",
           "severity": "info",
-          "detail": "champion differs textually from the seeded law but is equally exact — an algebraic rewrite, not a new result (cost 52 vs 31)"
+          "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
         }
       ],
-      "storedMetric": 4.0626336618882106e-32,
-      "recomputedMetric": 4.0626336618882106e-32,
+      "storedMetric": 2.6673359357785463e-32,
+      "recomputedMetric": 2.6673359357785463e-32,
       "metricDrift": 0,
       "storedLevel": 5,
       "recomputedLevel": 5,
-      "cost": 52,
-      "storedCost": 52,
-      "speedup": 0.5961538461538461,
-      "transcendental": 2,
-      "provenance": "rewrite-of-law",
-      "holdout": 3.192421475816282e-32,
-      "overfitRatio": 0.03192421475816282,
+      "cost": 31,
+      "storedCost": 31,
+      "speedup": 1,
+      "transcendental": 1,
+      "provenance": "recovered-seed",
+      "holdout": 2.2556491508663307e-32,
+      "overfitRatio": 0.022556491508663304,
       "ood": 0,
-      "r2": 1
+      "r2": 1,
+      "fastCost": 13,
+      "fastMetric": 0.0031665264727150544
     },
     {
       "id": "implied_vol",
       "hasTask": true,
-      "issues": [
-        {
-          "code": "low-r2",
-          "severity": "warn",
-          "detail": "r²=0.9523 < 0.98 — below deployable grade"
-        }
-      ],
-      "storedMetric": 0.003230719025237649,
-      "recomputedMetric": 0.003230719025237649,
+      "issues": [],
+      "storedMetric": 0.0002112424883270665,
+      "recomputedMetric": 0.0002112424883270665,
       "metricDrift": 0,
       "storedLevel": 2,
       "recomputedLevel": 2,
-      "cost": 41,
-      "transcendental": 2,
+      "cost": 546,
+      "transcendental": 28,
       "provenance": "search",
-      "holdout": 0.0041047555892528495,
-      "overfitRatio": 1.2705393310861834,
-      "r2": 0.9523362019825349
+      "holdout": 0.00021029417663384506,
+      "overfitRatio": 0.9955107909363708,
+      "r2": 0.9968834741685444
     },
     {
       "id": "kdv_soliton",
@@ -1229,8 +1211,8 @@
       "id": "kepler",
       "hasTask": true,
       "issues": [],
-      "storedMetric": 0.09573117786146322,
-      "recomputedMetric": 0.09573117786146322,
+      "storedMetric": 0.09573117786146278,
+      "recomputedMetric": 0.09573117786146278,
       "metricDrift": 0,
       "storedLevel": 5,
       "recomputedLevel": 5,
@@ -1239,8 +1221,8 @@
       "speedup": 0.6,
       "transcendental": 1,
       "provenance": "search",
-      "holdout": 0.23458775275830687,
-      "overfitRatio": 2.4504843458396497,
+      "holdout": 0.23458775275830465,
+      "overfitRatio": 2.450484345839638,
       "ood": 0,
       "r2": 0.9999621316109284,
       "fastCost": 3,
@@ -1249,29 +1231,21 @@
     {
       "id": "kepler_solver",
       "hasTask": true,
-      "issues": [
-        {
-          "code": "speedup-model-off",
-          "severity": "warn",
-          "detail": "modelled ×2.91 vs measured ×17.96 (agreement 6.17) — cite the measured figure"
-        }
-      ],
-      "storedMetric": 0.006134991867434414,
-      "recomputedMetric": 0.006134991867434414,
+      "issues": [],
+      "storedMetric": 6.02895734612664e-11,
+      "recomputedMetric": 6.02895734612664e-11,
       "metricDrift": 0,
-      "storedLevel": 1,
-      "recomputedLevel": 1,
-      "cost": 11,
-      "storedCost": 11,
-      "speedup": 2.909090909090909,
-      "transcendental": 0,
+      "storedLevel": 2,
+      "recomputedLevel": 2,
+      "cost": 5025,
+      "storedCost": 5025,
+      "speedup": 0.006368159203980099,
+      "transcendental": 219,
       "provenance": "search",
-      "holdout": 0.004641021324542897,
-      "overfitRatio": 0.7564836962829947,
+      "holdout": 7.654199283785913e-11,
+      "overfitRatio": 1.269572638244559,
       "ood": 0,
-      "r2": 0.9915868815707831,
-      "fastCost": 6,
-      "fastMetric": 0.012893357865503231
+      "r2": 0.9999999999173229
     },
     {
       "id": "kerr",
@@ -1290,7 +1264,9 @@
       "holdout": 1.5743727298205226e-23,
       "overfitRatio": 0.9241023273744886,
       "ood": 0,
-      "r2": 1
+      "r2": 1,
+      "fastCost": 7,
+      "fastMetric": 0.0014679448665524792
     },
     {
       "id": "kerr_spin",
@@ -1387,7 +1363,9 @@
       "provenance": "rewrite-of-law",
       "holdout": 0,
       "ood": 0,
-      "r2": 1
+      "r2": 1,
+      "fastCost": 3,
+      "fastMetric": 0.011194370036126207
     },
     {
       "id": "layernorm_scale",
@@ -1453,8 +1431,8 @@
           "detail": "champion is textually the seeded reference law — a recovery, not a discovery"
         }
       ],
-      "storedMetric": 1.6853372386857923e-31,
-      "recomputedMetric": 1.6853372386857923e-31,
+      "storedMetric": 1.6764908706907693e-31,
+      "recomputedMetric": 1.6764908706907693e-31,
       "metricDrift": 0,
       "storedLevel": 5,
       "recomputedLevel": 5,
@@ -1463,8 +1441,8 @@
       "speedup": 1,
       "transcendental": 0,
       "provenance": "recovered-seed",
-      "holdout": 1.0120972506342592e-32,
-      "overfitRatio": 0.01012097250634259,
+      "holdout": 6.241231772357577e-33,
+      "overfitRatio": 0.006241231772357576,
       "ood": 0,
       "r2": 1
     },
@@ -1478,8 +1456,8 @@
           "detail": "champion differs textually from the seeded law but is equally exact — an algebraic rewrite, not a new result (cost 12 vs 15)"
         }
       ],
-      "storedMetric": 1.5032920443487647e-36,
-      "recomputedMetric": 1.5032920443487647e-36,
+      "storedMetric": 1.1122418080286529e-36,
+      "recomputedMetric": 1.1122418080286529e-36,
       "metricDrift": 0,
       "storedLevel": 5,
       "recomputedLevel": 5,
@@ -1488,12 +1466,12 @@
       "speedup": 1.6666666666666667,
       "transcendental": 0,
       "provenance": "rewrite-of-law",
-      "holdout": 7.890505829894605e-37,
-      "overfitRatio": 7.890505829894605e-7,
+      "holdout": 9.050204475377717e-37,
+      "overfitRatio": 9.050204475377717e-7,
       "ood": 0,
       "r2": 1,
       "fastCost": 7,
-      "fastMetric": 0.000022254134884792464
+      "fastMetric": 0.000022254134884792508
     },
     {
       "id": "logistic_growth",
@@ -1605,32 +1583,23 @@
     {
       "id": "loschmidt_rate",
       "hasTask": true,
-      "issues": [
-        {
-          "code": "speedup-model-off",
-          "severity": "warn",
-          "detail": "modelled ×0.38 vs measured ×0.94 (agreement 2.46) — cite the measured figure"
-        },
-        {
-          "code": "low-r2",
-          "severity": "warn",
-          "detail": "r²=0.9677 < 0.98 — below deployable grade"
-        }
-      ],
-      "storedMetric": 0.052925894381018135,
-      "recomputedMetric": 0.052925894381018135,
+      "issues": [],
+      "storedMetric": 2.35598126531155e-11,
+      "recomputedMetric": 2.35598126531155e-11,
       "metricDrift": 0,
       "storedLevel": 2,
       "recomputedLevel": 2,
-      "cost": 47,
-      "storedCost": 47,
-      "speedup": 0.3829787234042553,
-      "transcendental": 2,
+      "cost": 69,
+      "storedCost": 69,
+      "speedup": 0.2608695652173913,
+      "transcendental": 3,
       "provenance": "search",
-      "holdout": 0.044550536457605115,
-      "overfitRatio": 0.8417531149664078,
+      "holdout": 1.7154903426993986e-11,
+      "overfitRatio": 0.728142607905053,
       "ood": 0,
-      "r2": 0.9677433054112933
+      "r2": 0.999999999985641,
+      "fastCost": 47,
+      "fastMetric": 0.052925894381018135
     },
     {
       "id": "mel_scale",
@@ -1786,32 +1755,27 @@
       "hasTask": true,
       "issues": [
         {
-          "code": "speedup-model-off",
-          "severity": "warn",
-          "detail": "modelled ×0.97 vs measured ×12.73 (agreement 13.19) — cite the measured figure"
-        },
-        {
           "code": "ood-violation",
           "severity": "warn",
-          "detail": "ood violation 1.45e-1 — extrapolates badly"
+          "detail": "ood violation 2.34e+2 — extrapolates badly"
         }
       ],
-      "storedMetric": 0.000019016893432652806,
-      "recomputedMetric": 0.000019016893432652806,
+      "storedMetric": 4.6766296554957844e-17,
+      "recomputedMetric": 4.6766296554957844e-17,
       "metricDrift": 0,
-      "storedLevel": 3,
-      "recomputedLevel": 3,
-      "cost": 29,
-      "storedCost": 29,
-      "speedup": 0.9655172413793104,
-      "transcendental": 3,
+      "storedLevel": 5,
+      "recomputedLevel": 5,
+      "cost": 959,
+      "storedCost": 959,
+      "speedup": 0.029197080291970802,
+      "transcendental": 4,
       "provenance": "search",
-      "holdout": 0.000018600294804992465,
-      "overfitRatio": 0.9780932343584035,
-      "ood": 0.14492804600491638,
-      "r2": 0.9999762728848401,
-      "fastCost": 5,
-      "fastMetric": 0.010600724117111038
+      "holdout": 2.622468007735258e-18,
+      "overfitRatio": 0.056076024849507605,
+      "ood": 233.51807593241242,
+      "r2": 0.9999999999999999,
+      "fastCost": 15,
+      "fastMetric": 0.0023566337143935464
     },
     {
       "id": "qfi_dephasing",
@@ -1876,7 +1840,9 @@
       "holdout": 0.0002844062080868289,
       "overfitRatio": 2.593485318671129,
       "ood": 0,
-      "r2": 0.9983486937017619
+      "r2": 0.9983486937017619,
+      "fastCost": 8,
+      "fastMetric": 0.0010246292124107812
     },
     {
       "id": "rl_distillation",
@@ -1905,26 +1871,34 @@
       "provenance": "recovered-seed",
       "holdout": 0,
       "ood": 0,
-      "r2": 1
+      "r2": 1,
+      "fastCost": 5,
+      "fastMetric": 0.010817185135812394
     },
     {
       "id": "rope_freq",
       "hasTask": true,
-      "issues": [],
-      "storedMetric": 8.450097215948882e-7,
-      "recomputedMetric": 8.450097215948882e-7,
+      "issues": [
+        {
+          "code": "champion-equivalent-to-law",
+          "severity": "info",
+          "detail": "champion differs textually from the seeded law but is equally exact — an algebraic rewrite, not a new result (cost 43 vs 47)"
+        }
+      ],
+      "storedMetric": 3.1966472337884372e-28,
+      "recomputedMetric": 3.1966472337884372e-28,
       "metricDrift": 0,
       "storedLevel": 5,
       "recomputedLevel": 5,
-      "cost": 46,
-      "storedCost": 46,
-      "speedup": 0.9347826086956522,
+      "cost": 43,
+      "storedCost": 43,
+      "speedup": 1,
       "transcendental": 2,
-      "provenance": "search",
-      "holdout": 7.946056930423871e-7,
-      "overfitRatio": 0.9403509483212009,
+      "provenance": "rewrite-of-law",
+      "holdout": 2.930304438630152e-28,
+      "overfitRatio": 0.9166805794699359,
       "ood": 0,
-      "r2": 0.9999983975093184
+      "r2": 1
     },
     {
       "id": "rope_rot",
@@ -1948,7 +1922,9 @@
       "provenance": "rewrite-of-law",
       "holdout": 0,
       "ood": 0,
-      "r2": 1
+      "r2": 1,
+      "fastCost": 43,
+      "fastMetric": 0
     },
     {
       "id": "rsi_momentum",
@@ -2088,7 +2064,9 @@
       "provenance": "recovered-seed",
       "holdout": 0,
       "ood": 0,
-      "r2": 1
+      "r2": 1,
+      "fastCost": 2,
+      "fastMetric": 0.0014500618683260635
     },
     {
       "id": "softplus",
@@ -2131,8 +2109,8 @@
           "detail": "modelled ×0.54 vs measured ×1.03 (agreement 1.92) — cite the measured figure"
         }
       ],
-      "storedMetric": 9.210454018549092e-34,
-      "recomputedMetric": 9.210454018549092e-34,
+      "storedMetric": 1.0597755994468644e-33,
+      "recomputedMetric": 1.0597755994468644e-33,
       "metricDrift": 0,
       "storedLevel": 5,
       "recomputedLevel": 5,
@@ -2141,12 +2119,12 @@
       "speedup": 0.5365853658536586,
       "transcendental": 2,
       "provenance": "recovered-seed",
-      "holdout": 7.455026039710738e-34,
-      "overfitRatio": 0.0007455026039710737,
+      "holdout": 1.1717274516244286e-33,
+      "overfitRatio": 0.0011717274516244284,
       "ood": 0,
       "r2": 1,
       "fastCost": 3,
-      "fastMetric": 0.0001304377643047932
+      "fastMetric": 0.0001304377643047933
     },
     {
       "id": "srgb_gamma",
@@ -2163,8 +2141,8 @@
           "detail": "modelled ×0.49 vs measured ×1.38 (agreement 2.82) — cite the measured figure"
         }
       ],
-      "storedMetric": 2.7231034629710704e-28,
-      "recomputedMetric": 2.7231034629710704e-28,
+      "storedMetric": 2.7231129963242954e-28,
+      "recomputedMetric": 2.7231129963242954e-28,
       "metricDrift": 0,
       "storedLevel": 5,
       "recomputedLevel": 5,
@@ -2173,12 +2151,12 @@
       "speedup": 0.4888888888888889,
       "transcendental": 2,
       "provenance": "rewrite-of-law",
-      "holdout": 2.0360738779067418e-30,
-      "overfitRatio": 0.007477034587900903,
+      "holdout": 2.036227952302293e-30,
+      "overfitRatio": 0.007477574213963315,
       "ood": 0,
       "r2": 1,
       "fastCost": 4,
-      "fastMetric": 0.00011551060259047263
+      "fastMetric": 0.00011551060259047266
     },
     {
       "id": "stefan_boltzmann",
@@ -2187,26 +2165,21 @@
         {
           "code": "champion-equivalent-to-law",
           "severity": "info",
-          "detail": "champion differs textually from the seeded law but is equally exact — an algebraic rewrite, not a new result (cost 5 vs 4)"
-        },
-        {
-          "code": "speedup-model-off",
-          "severity": "warn",
-          "detail": "modelled ×0.60 vs measured ×0.90 (agreement 1.50) — cite the measured figure"
+          "detail": "champion differs textually from the seeded law but is equally exact — an algebraic rewrite, not a new result (cost 4 vs 4)"
         }
       ],
-      "storedMetric": 2.382092673239445e-26,
-      "recomputedMetric": 2.382092673239445e-26,
+      "storedMetric": 2.1322035895929197e-26,
+      "recomputedMetric": 2.1322035895929197e-26,
       "metricDrift": 0,
       "storedLevel": 5,
       "recomputedLevel": 5,
-      "cost": 5,
-      "storedCost": 5,
-      "speedup": 0.6,
+      "cost": 4,
+      "storedCost": 4,
+      "speedup": 0.75,
       "transcendental": 0,
       "provenance": "rewrite-of-law",
-      "holdout": 2.0716209980018904e-26,
-      "overfitRatio": 0.8696643171252698,
+      "holdout": 1.812117330027826e-26,
+      "overfitRatio": 0.8498800672096211,
       "ood": 0,
       "r2": 1
     },
@@ -2232,7 +2205,9 @@
       "provenance": "recovered-seed",
       "holdout": 0,
       "ood": 0,
-      "r2": 1
+      "r2": 1,
+      "fastCost": 4,
+      "fastMetric": 0.0071993705979729195
     },
     {
       "id": "temperature_softmax",
@@ -2257,7 +2232,9 @@
       "holdout": 0,
       "overfitRatio": 0,
       "ood": 0,
-      "r2": 1
+      "r2": 1,
+      "fastCost": 8,
+      "fastMetric": 0.0012468930208583595
     },
     {
       "id": "temporal_grad",
@@ -2314,10 +2291,10 @@
   "missing": [],
   "summary": {
     "total": 89,
-    "clean": 54,
-    "warn": 35,
+    "clean": 64,
+    "warn": 25,
     "fail": 0,
-    "recoveredSeed": 45,
-    "searchFound": 44
+    "recoveredSeed": 46,
+    "searchFound": 43
   }
 }

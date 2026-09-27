@@ -47,13 +47,15 @@ npm install spear-kernels
 |---|---|
 | Registered tasks | **89** |
 | Exact solves (MSE < 1e-30) | **42** |
-| Validated fast slots (level ≥ 2) | **63** |
+| Validated fast slots (level ≥ 2) | **61** |
 | Max vs-iterative speedup | **×5111** (Gaussian CDF vs Monte-Carlo) |
 | MISRA-C lint pass | **100 %** |
 | WASM↔C parity (rel.) | **≤ 1e-6** |
 | Reproducibility | deterministic (one seed ⇒ same data, same formula) |
 
 **What shipped in the last release line (v1.11.0):** fast-slot coverage 42 → 63 (farm + Padé/Taylor substitution), `root-cause fix` on the fast-slot archive (shaped-node metric, was shipping fast-metric-drift records), `gauss_shader` recalibrated, numbered op-by-op unit tests (`scripts/test-operators.ts` — JS/WASM/C/torch parity, 20/20), `toPython` protected-division fix (was emitting invalid C ternary), audit abs-floor on cancellation-limited metrics.
+
+**Since (wall-assault campaign, PR #2):** 21 records re-derived — `implied_vol` L2 2.11e-4 (×15), `blackbody_g`/`_b` now L5 (×420 / ×650), `bessel_j0`/`_j2`/`_i0e` ×9/×18/×14, `probit_quantile` ×12 — plus 4 new scaffolds (two-regime blackbody G/B, gated Bessel J₀ + carrier, cross-task Bessel J₂ recurrence) and 3 walls proven to be noise floors. Fast-slot coverage is **61**, not 63: better champions left `blackbody_g`, `kepler_solver` and `fresnel_schlick` with nothing cheaper that passes the level-2 gate (`fill-fast-slots` says so explicitly), and `srgb_decode`/`srgb_gamma` records were re-measured — the old stored metrics no longer reproduce from their own ASTs (drift 1.4e-4 / 3.5e-6).
 
 ---
 
@@ -73,7 +75,7 @@ Five breakthroughs from three grounded-loop rounds. The pattern that worked: tas
 | **qfi_dephasing** | 1.47, L0 | **1.7e-31, L2 @28u** | `N²t²·e^(−N²γt)` skeleton seeded |
 | **kepler_solver** | 2.6e-2 | **6.1e-3 (−76 %)** | heritage loop, deep pass |
 
-Honest walls still standing: `implied_vol` (Newton inversion has no servable skeleton), `pendulum_hybrid`. Every record replayable from its seed.
+Honest walls still standing: `pendulum_hybrid`. `implied_vol` used to be one of them ("Newton inversion has no servable skeleton") — it fell to L2 2.11e-4 (holdout 2.10e-4, ×15 vs v1.11) by scaffolding a single unfolded Newton correction; `kepler` and `european_call` are now proven to sit on their noise floor (structure recovered, budget spent = 0). Every record replayable from its seed.
 
 **⚡ Speed column**: `cost(exact reference kernel) / cost(discovered formula)` in GPU ALU/SFU units (`mul/add` = 1, `div` = 4, `sqrt` = 2, `exp/sin/cos/log` ≈ 20).
 
@@ -165,8 +167,8 @@ The pmt discovery is the kind of surprise that justifies the whole method: nobod
 
 | Task | Use | Record | Cost |
 |---|---|---|---|
-| **blackbody_g** | green channel vs temperature | **1.3e-4, L2** — ln/power dual-regime composite | 74 |
-| **blackbody_b** | blue channel — hard-zero then ln growth | **2.3e-4, L2** — clean log form | 65 |
+| **blackbody_g** | green channel vs temperature | **3.09e-7, L5** — ln/power dual-regime composite (×420 vs v1.11) | 72 |
+| **blackbody_b** | blue channel — hard-zero then ln growth | **3.55e-7, L5** — hard-zero + ln-branch + 255 cap (×650 vs v1.11) | 31 |
 
 With `blackbody_r` (L4), the full PBR color-temperature trio is discovered and registry-complete. Methodology note: the probit reference was rebuilt on bisection over our own A&S erf after a hand-transcribed Acklam proved unreliable — poisoned-reference bugs are caught by refusing to accept walls.
 
@@ -248,7 +250,7 @@ Arithmetic is documented in [`src/lib/spear/benchmarks.ts`](./src/lib/spear/benc
 
 ### 🎚️ Two operating points per law: `precise` and `fast`
 
-One formula per task hides the accuracy/latency trade-off that real deployments live by. The ledger keeps **two validated forms per task**: the *precise* champion (lowest error ever found) and the *fast* variant (cheapest form that still passes the engine's level-2 validation gate). **63 of 89 tasks** have a genuinely cheaper second form; the rest have champions already at minimal algebraic cost (nothing cheaper passes the validation gate).
+One formula per task hides the accuracy/latency trade-off that real deployments live by. The ledger keeps **two validated forms per task**: the *precise* champion (lowest error ever found) and the *fast* variant (cheapest form that still passes the engine's level-2 validation gate). **61 of 89 tasks** have a genuinely cheaper second form; the rest have champions already at minimal algebraic cost (nothing cheaper passes the validation gate).
 
 Biggest fast-slot wins (cost = precise → fast, in ALU/SFU units):
 
