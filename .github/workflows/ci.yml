@@ -150,3 +150,37 @@ jobs:
             if (bad) { console.error(`::error::${bad} malformed measured-speed entries`); process.exit(1); }
             console.log("measured-speed blocks: all well-formed and authoritative where resolvable");
           '
+
+  # Second implementation of the same invariants, in another language. The
+  # TypeScript audit above re-derives costs from the ASTs; this one does it
+  # again in Rust and additionally proves the kernels it emits actually
+  # compile (rustc is invoked on the generated code, f64 and f32) and agree
+  # with the interpreter. The bug it was born from — backfill-fast trusting a
+  # stored formulaCost — is exactly the class of bug a second implementation
+  # catches, because it never reads the stored cost at all.
+  spear-rs:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: spear-rs
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Tests (VM parity, cost parity, emitted f64/f32 compiled by rustc)
+        run: cargo test --release
+
+      - name: Cost audit (independent re-derivation)
+        run: |
+          cargo build --release
+          ./target/release/spear audit --strict
+
+      # The committed laws.json is a transcription of the live TaskDefs. If it
+      # drifts, the Rust numbers quietly describe a different registry than the
+      # TypeScript one — so regenerate and fail on the diff.
+      - name: Exported laws are up to date
+        working-directory: .
+        run: |
+          npx tsx scripts/export-rust-data.ts
+          git diff --exit-code spear-rs/data/laws.json

@@ -35,6 +35,7 @@ npm install spear-kernels
 - [The MISRA-C export pipeline](#the-misra-c-export-pipeline)
 - [How it works](#how-it-works)
 - [Getting started](#getting-started)
+- [Rust port (spear-rs)](#rust-port-spear-rs)
 - [MCP Server](#-mcp-server--use-spear-from-claude-cursor--any-llm-agent)
 - [Reproducibility](#reproducibility)
 - [Project layout](#project-layout)
@@ -45,9 +46,9 @@ npm install spear-kernels
 
 | Metric | Value |
 |---|---|
-| Registered tasks | **89** |
+| Registered tasks | **90** |
 | Exact solves (MSE < 1e-30) | **42** |
-| Validated fast slots (level ≥ 2) | **61** |
+| Validated fast slots (level ≥ 2) | **65** |
 | Max vs-iterative speedup | **×5111** (Gaussian CDF vs Monte-Carlo) |
 | MISRA-C lint pass | **100 %** |
 | WASM↔C parity (rel.) | **≤ 1e-6** |
@@ -55,7 +56,11 @@ npm install spear-kernels
 
 **What shipped in the last release line (v1.11.0):** fast-slot coverage 42 → 63 (farm + Padé/Taylor substitution), `root-cause fix` on the fast-slot archive (shaped-node metric, was shipping fast-metric-drift records), `gauss_shader` recalibrated, numbered op-by-op unit tests (`scripts/test-operators.ts` — JS/WASM/C/torch parity, 20/20), `toPython` protected-division fix (was emitting invalid C ternary), audit abs-floor on cancellation-limited metrics.
 
-**Since (wall-assault campaign, PR #2):** 21 records re-derived — `implied_vol` L2 2.11e-4 (×15), `blackbody_g`/`_b` now L5 (×420 / ×650), `bessel_j0`/`_j2`/`_i0e` ×9/×18/×14, `probit_quantile` ×12 — plus 4 new scaffolds (two-regime blackbody G/B, gated Bessel J₀ + carrier, cross-task Bessel J₂ recurrence) and 3 walls proven to be noise floors. Fast-slot coverage is **61**, not 63: better champions left `blackbody_g`, `kepler_solver` and `fresnel_schlick` with nothing cheaper that passes the level-2 gate (`fill-fast-slots` says so explicitly), and `srgb_decode`/`srgb_gamma` records were re-measured — the old stored metrics no longer reproduce from their own ASTs (drift 1.4e-4 / 3.5e-6).
+**Since (wall-assault campaign, PR #2):** 21 records re-derived — `implied_vol` L2 2.11e-4 (×15), `blackbody_g`/`_b` now L5 (×420 / ×650), `bessel_j0`/`_j2`/`_i0e` ×9/×18/×14, `probit_quantile` ×12 — plus 4 new scaffolds (two-regime blackbody G/B, gated Bessel J₀ + carrier, cross-task Bessel J₂ recurrence) and 3 walls proven to be noise floors.
+
+**Fast-slot archaeology, round 2:** coverage went 61 → **65**, and the reason matters more than the number. `scripts/backfill-fast.ts` resurrects cheap forms from git history — but it compared **stored** costs, and an old revision (`e44f29b`) had priced a direct primitive call at 1 unit, so `erf(x)` looked 7× cheaper than a validated algebraic fast slot. One post-chain run therefore overwrote **7 good fast slots with the exact law** and `audit-champions --strict` went red. The script now re-derives cost, metric, level *and* text from the AST it is about to install, and refuses any candidate that is not strictly less accurate than the champion (a cheaper rewrite of the champion belongs in the champion slot, not in `fast`). Audit is back to **0 failures**.
+
+A second mechanism then *added* coverage: `fill-fast-slots.ts` can now donate a one-variable fast slot to any sister task with the same subtree shape. `swiglu_fused = u·silu(g)` inherits silu's 3-unit relu slot and lands at **4 units instead of the 23** a local Padé on `exp` costs; that kernel compiles to **1,39 ns/element** in Rust (`spear emit-bench swiglu_fused`).
 
 ---
 
@@ -411,6 +416,29 @@ Once connected, just ask your agent:
 
 → The agent calls `discover`, SPEAR evolves a kernel in seconds, and returns the verified formula with parity-checked WASM/C exports.
 
+## Rust port (spear-rs)
+
+[`spear-rs/`](spear-rs/) is a Rust port of the *execution* side of the engine: it reads
+the ledger, re-executes every champion with the exact same numerical rails, emits
+drop-in Rust kernels, and benchmarks them. The genetic search stays in TypeScript —
+Rust executes and measures, it does not search.
+
+```bash
+cd spear-rs && cargo build --release
+.\target\release\spear.exe list                     # ledger overview
+.\target\release\spear.exe emit silu --fast         # drop-in Rust kernel (relu, 3 ALU units)
+.\target\release\spear.exe audit --strict           # recompute costs from the ASTs
+.\target\release\spear.exe bench --md BENCH.md      # ns/element across all 90 tasks
+.\target\release\spear.exe emit-bench               # compile the emitted kernels with rustc -O and time them
+```
+
+Headline: SiLU champion 122 ns/elem → **4,6 ns/elem** for the fast slot when compiled
+(`×23` against the interpreter), and the emitted kernels land in the same range as the
+ledger's independent gcc measurements (2,73 ns TS vs 4,6 ns here; GELU fast 3,1 vs
+2,6). `cargo test` proves parity — including invoking `rustc` on the emitted code and
+comparing its output to the interpreter. Full methodology, tables and limits:
+[`spear-rs/README.md`](spear-rs/README.md) and [`spear-rs/BENCH.md`](spear-rs/BENCH.md).
+
 ## Reproducibility
 
 Every Hall of Fame record is replayable:
@@ -443,6 +471,14 @@ src/lib/spear/
 src/app/              # Next.js dashboard + API routes (Postgres/Drizzle)
 src/mcp/              # MCP stdio server (5 tools)
 scripts/              # hall-of-fame ledger, export audit, parallel farm
+spear-rs/             # Rust port: ledger reader, faithful kernels, emitter, bench
+  src/ir.rs           # the 22 NodeOps + OP_COST + ledger JSON deserializer
+  src/eval.rs         # rails-faithful eval (scalar recursion + postfix VM)
+  src/emit.rs         # Champion AST -> drop-in Rust kernel (scalar + fused slice)
+  src/measure.rs      # probe grid, error vs law, ns/elem timing, cost audit
+  src/bin/spear.rs    # CLI: list/show/emit/eval/verify/audit/bench/emit-bench
+  data/laws.json      # generating laws + domains exported from the live TaskDefs
+  tests/parity.rs     # VM==recursion, cost parity, emitted code compiled by rustc
 ```
 
 ## Honesty notes

@@ -14,6 +14,7 @@ import {
   refineConstants,
   serializeNode,
   nodeToString,
+  roundConst,
   ALGEBRAIC_OPS,
   type NodeOp,
   type SpearNode,
@@ -86,9 +87,78 @@ function hasTranscendental(node: SpearNode): boolean {
   return node.children.some(hasTranscendental);
 }
 
+// ------------------------------------------------ sister fast-slot donation
+// A fast slot learned on a one-variable task is reusable by any sister task
+// whose subtree has the SAME shape (variables renamed). silu owns a 3-unit
+// relu slot; swiglu_fused = u·silu(g) inherits it for 5 units instead of the
+// 23 a local Padé on exp costs. Same knowledge, no new search, no external
+// baseline: the donor is our own validated ledger entry.
+
+/** Canonical key with variables renamed to v0, v1… in first-encounter order. */
+function shapeKey(n: SpearNode, names = new Map<string, string>()): string {
+  if (n.op === "var") {
+    let slot = names.get(n.name);
+    if (slot === undefined) { slot = `v${names.size}`; names.set(n.name, slot); }
+    return `v:${slot}`;
+  }
+  if (n.op === "const") return `c:${roundConst(n.value)}`;
+  return `${n.op}(${n.children.map((c) => shapeKey(c, names)).join(",")})`;
+}
+
+function distinctVars(n: SpearNode, out = new Set<string>()): Set<string> {
+  if (n.op === "var") out.add(n.name);
+  n.children.forEach((c) => distinctVars(c, out));
+  return out;
+}
+
+function renameVar(n: SpearNode, from: string, to: string): SpearNode {
+  return makeNode(n.op, {
+    value: n.value,
+    name: n.op === "var" && n.name === from ? to : n.name,
+    children: n.children.map((c) => renameVar(c, from, to)),
+  });
+}
+
+/** Replaces every subtree whose shape key is in `donors`; null if none matched. */
+function donate(n: SpearNode, donors: Map<string, SpearNode>): SpearNode | null {
+  let hits = 0;
+  const walk = (node: SpearNode): SpearNode => {
+    const rep = donors.get(shapeKey(node));
+    if (rep && !hasTranscendental(rep)) {
+      hits++;
+      const targetVars = [...distinctVars(node)];
+      const donorVars = [...distinctVars(rep)];
+      if (targetVars.length !== 1 || donorVars.length !== 1) return rep;
+      return renameVar(rep, donorVars[0], targetVars[0]);
+    }
+    return makeNode(node.op, { value: node.value, name: node.name, children: node.children.map(walk) });
+  };
+  const out = walk(n);
+  return hits > 0 ? out : null;
+}
+
+/** shapeKey -> cheapest validated one-variable fast slot we already own. */
+function harvestDonors(led: Record<string, { tree?: unknown; fastTree?: unknown }>): Map<string, SpearNode> {
+  const donors = new Map<string, SpearNode>();
+  for (const e of Object.values(led)) {
+    if (!e.tree || !e.fastTree) continue;
+    try {
+      const champ = parseNode(e.tree as never);
+      const fast = parseNode(e.fastTree as never);
+      if (distinctVars(champ).size !== 1 || distinctVars(fast).size !== 1) continue;
+      if (hasTranscendental(fast)) continue;
+      if (estimateCost(fast) >= estimateCost(champ)) continue;
+      const key = shapeKey(champ);
+      const prev = donors.get(key);
+      if (!prev || estimateCost(fast) < estimateCost(prev)) donors.set(key, fast);
+    } catch { /* AST illisible : on l'ignore */ }
+  }
+  return donors;
+}
+
 async function main() {
   const led = loadLedger();
-  const defs = new Map((buildTasks() as unknown as { id: string; evaluate: (n: SpearNode) => { metric: number }; r2?: (n: SpearNode) => number | undefined; milestones: { level: number; test: (m: number) => boolean }[] }[]).map((t) => [t.id, t]));
+  const defs = new Map((buildTasks() as unknown as { id: string; variables: string[]; evaluate: (n: SpearNode) => { metric: number }; r2?: (n: SpearNode) => number | undefined; milestones: { level: number; test: (m: number) => boolean }[] }[]).map((t) => [t.id, t]));
   const levelOf = (t: { milestones: { level: number; test: (m: number) => boolean }[] }, m: number): number => {
     let l = 0;
     for (const ms of t.milestones) if (Number.isFinite(m) && ms.test(m)) l = Math.max(l, ms.level);
@@ -146,6 +216,42 @@ async function main() {
   console.log(`\nfast slots ajoutés: ${filled}`);
   console.log(`gaps honnêtes: ${gaps.length}`);
   for (const g of gaps) console.log(`  - ${g}`);
+
+  // ---- pass 2: un slot mieux qu'un slot existant, via donation entre sœurs
+  const donors = harvestDonors(led);
+  let upgraded = 0;
+  for (const [id, entry] of Object.entries(led)) {
+    if (!entry.tree) continue;
+    const t = defs.get(id);
+    if (!t) continue;
+    const champ = parseNode(entry.tree);
+    if (!hasTranscendental(champ)) continue;
+    const candidate = donate(champ, donors);
+    if (!candidate) continue;
+    // un candidat qui parle une variable inconnue ne peut que tomber à 1e9 :
+    // on le dit au lieu de le laisser dies dans le silence de la métrique
+    const known = new Set(t.variables as unknown as string[]);
+    const stray = [...distinctVars(candidate)].filter((v) => !known.has(v));
+    if (stray.length) { gaps.push(`${id} (donation : variable inconnue « ${stray.join(", ")} »)`); continue; }
+    const cost = estimateCost(candidate);
+    const current = entry.fastTree ? parseNode(entry.fastTree) : null;
+    const currentCost = current ? estimateCost(current) : estimateCost(champ);
+    if (cost >= currentCost) continue; // aucun gain réel
+    const score = scoreOf(t);
+    const metric = score(candidate);
+    const lvl = levelOf(t, metric);
+    const r2 = t.r2?.(candidate);
+    if (!(lvl >= 2 || (r2 !== undefined && Number.isFinite(r2) && r2 >= 0.98))) continue;
+    entry.fast = { formula: nodeToString(candidate), metric, level: Math.max(2, lvl), formulaCost: cost };
+    if (r2 !== undefined && Number.isFinite(r2) && r2 >= 0.98) entry.fast.deploy = true;
+    entry.fastTree = serializeNode(candidate);
+    upgraded++;
+    console.log(`↑ [${id}] fast ${currentCost} -> ${cost} u (donation) | metric ${metric.toExponential(3)} | L${entry.fast.level}${entry.fast.deploy ? " deploy" : ""}`);
+  }
+  if (upgraded) {
+    saveLedger(led);
+    console.log(`\nfast slots améliorés par donation: ${upgraded}`);
+  }
 }
 
 main().catch((e) => { console.error(e); process.exit(1); });

@@ -1,0 +1,20 @@
+[package]
+name = "spear"
+version = "0.1.0"
+edition = "2021"
+description = "Port Rust du moteur SPEAR : lecture du ledger, ré-exécution fidèle des kernels, émission de kernels Rust drop-in, benchmark"
+license = "MIT"
+publish = false
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[[bin]]
+name = "spear"
+path = "src/bin/spear.rs"
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1

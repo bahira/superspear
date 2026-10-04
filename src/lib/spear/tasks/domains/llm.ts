@@ -250,8 +250,71 @@ buildActivationTask({
       })(),
     }),
 
+    // SwiGLU fusé: le FFN Qwen/LLaMA/GLM calcule silu(gate)·up sur CHAQUE
+    // colonne de CHAQUE couche (le `_bsilu` des engines TensorFold). La cible
+    // est 2-variable: un approximant gagnant DOIT être bon sur les stats
+    // d'activations conjointes, pas sur des grilles diagonales.
+    // Données: marginales N(0,1) déterministes (Box-Muller sur 4 suites PHIs
+    // indépendantes — pas de RNG global, le check dataset-determinism passe).
+    buildRegressionTask({
+      id: "swiglu_fused",
+      title: "SwiGLU fusé — silu(gate)·up (FFN Qwen/LLaMA/GLM)",
+      subtitle: "silu(g)·u sur g,u ~ N(0,1) iid — le kernel 2-var appelé à chaque couche, chasse d'un approximant sans exp",
+      groundTruth: "y = u·silu(g) = u·g/(1+e⁻ᵍ)",
+      rows: 600,
+      varNames: ["g", "u"],
+      exactCost: 27, // mul + pdiv(4) + add + exp(20) + neg
+      build: () => {
+        const rows = 600;
+        const g = new Float64Array(rows), u = new Float64Array(rows), y = new Float64Array(rows);
+        for (let i = 0; i < rows; i++) {
+          const p1 = (i * 0.6180339887) % 1, p2 = (i * 0.7548776662) % 1;
+          const p3 = (i * 0.5698402909) % 1, p4 = (i * 0.4543574345) % 1;
+          g[i] = Math.sqrt(-2 * Math.log(Math.max(p1, 1e-12))) * Math.cos(2 * Math.PI * p2);
+          u[i] = Math.sqrt(-2 * Math.log(Math.max(p3, 1e-12))) * Math.cos(2 * Math.PI * p4);
+          y[i] = u[i] * (g[i] / (1 + Math.exp(-g[i])));
+        }
+        return { vars: { g, u }, y };
+      },
+      trueLaw: (v, i) => v.u[i] * (v.g[i] / (1 + Math.exp(-v.g[i]))),
+      exactLaw: simplify(makeNode("mul", {
+        children: [
+          makeNode("var", { name: "u" }),
+          makeNode("pdiv", {
+            children: [
+              makeNode("var", { name: "g" }),
+              makeNode("add", { children: [S.C(1), makeNode("exp", { children: [makeNode("neg", { children: [makeNode("var", { name: "g" })] })] })] }),
+            ],
+          }),
+        ],
+      })),
+      verify: (node) => {
+        const s = evaluateScalar(node, { g: 1.5, u: 2 });
+        if (!Number.isFinite(s)) return null;
+        return Math.abs(s - 2 * 1.5 / (1 + Math.exp(-1.5))) < 0.05 ? `swiglu(1.5,2) ≈ ${s.toFixed(4)} vs 2.6705` : null;
+      },
+      extraSeeds: [
+        // candidat de déploiement TensorFold: u · silu_alg(g) — la championne
+        // silu du ledger composée avec le facteur up (cultural bootstrap 2-var)
+        simplify(makeNode("mul", {
+          children: [
+            makeNode("var", { name: "u" }),
+            makeNode("add", { children: [
+              S.C(0.501),
+              makeNode("mul", { children: [S.C(0.587), makeNode("pdiv", { children: [
+                makeNode("var", { name: "g" }),
+                makeNode("add", { children: [S.C(0.815), makeNode("sqrt", { children: [makeNode("add", { children: [S.C(1), makeNode("sq", { children: [makeNode("var", { name: "g" })] })] })] })] }),
+              ] })] }),
+            ] }),
+          ],
+        })),
+        // coin brut: u·relu(g) — 3 unités, la borne basse de coût
+        simplify(makeNode("mul", { children: [makeNode("var", { name: "u" }), makeNode("relu", { children: [makeNode("var", { name: "g" })] })] })),
+      ],
+    }),
+
     // 25. city.ts traffic — IDM acceleration law as pure regression target
-buildRegressionTask({
+    buildRegressionTask({
       id: "idm_following",
       title: "Suivi IDM trafic urbain (city.ts)",
       subtitle: "a(v, gap, Δv) : loi d'accélération Intelligent-Driver-Model, cible 100% algébrique",
