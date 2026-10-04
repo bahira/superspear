@@ -42,7 +42,8 @@ function main(): void {
     join(OUT_DIR, "laws.json"),
     JSON.stringify(
       {
-        generatedAt: new Date().toISOString(),
+        // PAS de generatedAt : la CI régénère ce fichier puis exige un diff
+        // vide, donc toute timestamp ferait échouer le contrôle à chaque push.
         note: "Transcription des TaskDef vivantes (voir scripts/export-rust-data.ts). law = loi génératrice en AST; null = pas de forme close.",
         taskCount: entries.length,
         withLaw,

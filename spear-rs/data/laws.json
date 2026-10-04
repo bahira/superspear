@@ -1,5 +1,4 @@
 {
-  "generatedAt": "2026-10-04T17:40:37.369Z",
   "note": "Transcription des TaskDef vivantes (voir scripts/export-rust-data.ts). law = loi génératrice en AST; null = pas de forme close.",
   "taskCount": 90,
   "withLaw": 84,
