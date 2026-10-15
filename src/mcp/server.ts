@@ -58,19 +58,20 @@ const server = new McpServer({
 
 server.tool(
   "discover",
-  "Discover an optimized closed-form approximation of a target mathematical expression using genetic programming. Returns the discovered formula, its cost in ALU/SFU units, MSE, R², and MISRA-C/WASM exports.",
+  "Discover an optimized closed-form approximation of a target mathematical expression using genetic programming. Returns the discovered formula, its cost in ALU/SFU units, MSE, R², holdout R², and MISRA-C/WASM exports. Results scoring R² < 0.9 are rejected by a validity gate and returned WITHOUT exports — a formula that explains nothing must not ship as a discovery.",
   {
     formula: z.string().describe("Target expression in SPEAR syntax, e.g. 'sin(x) * exp(-x / 3)' or 'x^2.4'"),
     varName: z.string().optional().describe("Variable name (default: auto-detected)"),
     lo: z.number().optional().describe("Domain lower bound (default: -5)"),
     hi: z.number().optional().describe("Domain upper bound (default: 5)"),
+    domains: z.record(z.string(), z.tuple([z.number(), z.number()])).optional().describe("Per-variable domain override, e.g. {age: [0, 40], imp: [0, 1]}. One shared lo/hi pair is wrong for variables with different natural ranges and turns well-posed targets ill-posed."),
     rows: z.number().optional().describe("Number of sample points (default: 400)"),
     generations: z.number().optional().describe("Evolution generations (default: 60, range 5–200)"),
     populationSize: z.number().optional().describe("Population size (default: 120)"),
     transcendentals: z.boolean().optional().describe("Allow exp/sin/cos/log/atan/asin/tanh/acos/erf in search (default true)"),
     transcendentalCost: z.number().optional().describe("Cost in ALU/SFU units per transcendental op (default 20). Set to 1 for bandwidth-bound GPUs where SFU ops are effectively free — removes the anti-transcendental bias."),
   },
-  async ({ formula, varName, lo, hi, rows: rowsIn, generations, populationSize, transcendentals, transcendentalCost }) => {
+  async ({ formula, varName, lo, hi, domains, rows: rowsIn, generations, populationSize, transcendentals, transcendentalCost }) => {
     try {
       const target = parseFormula(formula);
       const vars = [...new Set(collectVarNames(target))];
@@ -88,13 +89,23 @@ server.tool(
       // dataset: quasi-uniform grids per variable over [lo,hi]; each variable
       // gets its own irrational multiplier so multi-var regressors aren't
       // correlated on the diagonal (single-var stays bit-identical to before).
+      // `domains` overrides the shared lo/hi per variable: age ∈ [0,40] and
+      // imp ∈ [0,1] sharing one range is how a well-posed target turns
+      // ill-posed, and ill-posed targets are where cold GP escapes by
+      // dropping a variable (see the validity gate below).
       const PHIS = [0.6180339887, 0.7548776662, 0.5698402909, 0.4543574345, 0.3786891456];
-      const varsMap: Record<string, Float64Array> = {};
-      vars.forEach((v, vi) => {
+      const rangeOf = (v: string): [number, number] => {
+        const d = (domains as Record<string, [number, number]> | undefined)?.[v];
+        return d ? [d[0], d[1]] : [loV, hiV];
+      };
+      const gridAt = (v: string, vi: number, phase: number): Float64Array => {
+        const [lv, hv] = rangeOf(v);
         const arr = new Float64Array(rows);
-        for (let i = 0; i < rows; i++) arr[i] = loV + ((hiV - loV) * ((i * PHIS[vi % PHIS.length]) % 1));
-        varsMap[v] = arr;
-      });
+        for (let i = 0; i < rows; i++) arr[i] = lv + ((hv - lv) * ((i * PHIS[vi % PHIS.length] + phase) % 1));
+        return arr;
+      };
+      const varsMap: Record<string, Float64Array> = {};
+      vars.forEach((v, vi) => { varsMap[v] = gridAt(v, vi, 0); });
       const ys = new Float64Array(rows);
       for (let i = 0; i < rows; i++) {
         const pt: Record<string, number> = {};
@@ -141,11 +152,43 @@ server.tool(
       const targetCost = estimateCost(target);
       const bestCost = estimateCost(best);
 
+      // Holdout: an independent phase-shifted sample of the same domains. A
+      // closed form cannot truly overfit the grid, but this number still
+      // catches conditioning accidents the training points hide, and it is
+      // the honest score to quote.
+      const varsMapHo: Record<string, Float64Array> = {};
+      vars.forEach((v, vi) => { varsMapHo[v] = gridAt(v, vi, 0.5); });
+      const ysHo = new Float64Array(rows);
+      for (let i = 0; i < rows; i++) {
+        const pt: Record<string, number> = {};
+        for (const v of vars) pt[v] = varsMapHo[v][i];
+        ysHo[i] = evaluateScalar(target, pt);
+      }
+      const r2Ho = r2Score(evaluateNode(best, varsMapHo, rows), ysHo);
+
+      // Validity gate. Cold GP on an ill-conditioned target escapes by
+      // ignoring a variable entirely: `imp * exp(-lam * age)` with both
+      // variables on one [-6,6] range "converged" to
+      // `acos(log(max(age, 1e-30)))` (R² 0.006, and 0.72 with three times the
+      // budget) — and the tool still shipped that as a discovery with WASM
+      // and Python exports attached. Exports for a formula that explains
+      // nothing are worse than no result: refuse them.
+      const MIN_R2 = 0.9;
+      if (!Number.isFinite(finalMse) || !Number.isFinite(finalR2) || finalR2 < MIN_R2) {
+        return err(
+          `découverte rejetée par le gate de validité — R² ${Number.isFinite(finalR2) ? finalR2.toFixed(4) : "NaN"} < ${MIN_R2} ` +
+          `(MSE ${finalMse}, R² holdout ${Number.isFinite(r2Ho) ? r2Ho.toFixed(4) : "NaN"}). ` +
+          `Formule candidate : ${nodeToString(best)}. ` +
+          `Pistes : domaines par variable via 'domains' (ex. {age: [0, 40]}), plus de generations, une autre seed (le GP est stochastique : le meme probleme peut passer ou non selon le tirage), ou une cible mieux conditionnée.`,
+        );
+      }
+
       return ok({
         discovered_formula: nodeToString(best),
         cost_units: bestCost,
         mse: finalMse,
         r2: finalR2,
+        r2_holdout: r2Ho,
         target_cost_units: targetCost,
         speedup_vs_target: +(targetCost / Math.max(1, bestCost)).toFixed(2),
         generations_used: result.history.length,
