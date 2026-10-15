@@ -48,7 +48,7 @@ npm install spear-kernels
 |---|---|
 | Registered tasks | **90** |
 | Exact solves (MSE < 1e-30) | **42** |
-| Validated fast slots (level ≥ 2) | **65** |
+| Validated fast slots (level ≥ 2) | **55** |
 | Max vs-iterative speedup | **×5111** (Gaussian CDF vs Monte-Carlo) |
 | MISRA-C lint pass | **100 %** |
 | WASM↔C parity (rel.) | **≤ 1e-6** |
@@ -61,6 +61,8 @@ npm install spear-kernels
 **Fast-slot archaeology, round 2:** coverage went 61 → **65**, and the reason matters more than the number. `scripts/backfill-fast.ts` resurrects cheap forms from git history — but it compared **stored** costs, and an old revision (`e44f29b`) had priced a direct primitive call at 1 unit, so `erf(x)` looked 7× cheaper than a validated algebraic fast slot. One post-chain run therefore overwrote **7 good fast slots with the exact law** and `audit-champions --strict` went red. The script now re-derives cost, metric, level *and* text from the AST it is about to install, and refuses any candidate that is not strictly less accurate than the champion (a cheaper rewrite of the champion belongs in the champion slot, not in `fast`). Audit is back to **0 failures**.
 
 A second mechanism then *added* coverage: `fill-fast-slots.ts` can now donate a one-variable fast slot to any sister task with the same subtree shape. `swiglu_fused = u·silu(g)` inherits silu's 3-unit relu slot and lands at **4 units instead of the 23** a local Padé on `exp` costs; that kernel compiles to **1,39 ns/element** in Rust (`spear emit-bench swiglu_fused`).
+
+**Measured speed becomes authoritative (round 3):** `write-measured-speed.ts` never actually ran on Windows — it spawned the `npx` shim without a shell and died with ENOENT before touching the ledger; fixed, and `repair-ledger.ts` now lets every resolvable wall-clock measurement override the cost-model prediction. **31 records** carry `speedupSource: "measured"`, and CI fails any record whose published number contradicts its own measurement. The honest price of that pass: **ten fast slots deleted** — `bessel_j0` (×0.37: on this box its champion is *slower than its exact law*), `fast_exp_alu` (×0.92), `gaussian_kernel` (×0.96), `fog_exp2` (×0.96), `asin_hard` (×0.96), `a_weighting` (×0.97), `european_call`, `gauss_shader`, `lambert_w`, `rc_circuit` — every one measured no faster than the thing it replaced. Validated fast slots read 65 → **55**, and the direction is the point: a "fast" slot that measures slower is not an approximation choice, it is a deceleration the ledger was advertising as a win.
 
 ---
 
@@ -357,6 +359,12 @@ npx tsx scripts/backfill-fast.ts
 # Give every champion without a fast slot the best honest algebraic approximant
 # (Padé/Taylor substitution + constant refinement, validation-gated)
 npx tsx scripts/fill-fast-slots.ts
+
+# Refresh wall-clock measurements, then make them authoritative: repair-ledger
+# flips speedupSource to "measured" where the hardware has answered and drops
+# any fast slot that measures slower than what it replaces. Run in this order.
+npx tsx scripts/write-measured-speed.ts
+npx tsx scripts/repair-ledger.ts
 
 # Numbered op-by-op unit tests: JS/WASM/C/torch parity, OP_COST, rails
 npx tsx scripts/test-operators.ts

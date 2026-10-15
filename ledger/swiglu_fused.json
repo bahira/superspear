@@ -51,14 +51,14 @@
   "speed": {
     "formulaCost": 27,
     "exactCost": 27,
-    "speedup": 1
+    "speedup": 1,
+    "costProfile": "cpu-transcendental-20"
   },
   "fast": {
     "formula": "(u * ((1.016356 * relu(g)) + -0.15849))",
     "metric": 0.009010906595106448,
     "level": 2,
-    "formulaCost": 4,
-    "deploy": true
+    "formulaCost": 4
   },
   "fastTree": {
     "o": "mul",

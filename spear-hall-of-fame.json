@@ -404,7 +404,15 @@
       "formulaCost": 5,
       "exactCost": 3,
       "speedup": 0.6,
-      "costProfile": "cpu-transcendental-20"
+      "costProfile": "cpu-transcendental-20",
+      "measured": {
+        "measuredSpeedup": 1.0904,
+        "nsFormula": 3.89,
+        "nsExact": 4.2419,
+        "agreement": 1.8174,
+        "resolvable": false,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      }
     },
     "tree": {
       "o": "add",
@@ -867,39 +875,6 @@
           ]
         }
       ]
-    },
-    "fast": {
-      "formula": "((2.800324 * (x)²) + 0.060825)",
-      "metric": 0.011194370036126207,
-      "level": 2,
-      "formulaCost": 3
-    },
-    "fastTree": {
-      "o": "add",
-      "c": [
-        {
-          "o": "mul",
-          "c": [
-            {
-              "o": "const",
-              "v": 2.800323692605901
-            },
-            {
-              "o": "sq",
-              "c": [
-                {
-                  "o": "var",
-                  "n": "x"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "o": "const",
-          "v": 0.06082470818924624
-        }
-      ]
     }
   },
   "rc_circuit": {
@@ -959,57 +934,6 @@
           "v": 1.002685
         }
       ]
-    },
-    "fast": {
-      "formula": "((1.251678 * (t / (1.182626 + |t|))) + 0.041128)",
-      "metric": 0.0010246292124107812,
-      "level": 2,
-      "formulaCost": 8
-    },
-    "fastTree": {
-      "o": "add",
-      "c": [
-        {
-          "o": "mul",
-          "c": [
-            {
-              "o": "const",
-              "v": 1.2516775022273208
-            },
-            {
-              "o": "pdiv",
-              "c": [
-                {
-                  "o": "var",
-                  "n": "t"
-                },
-                {
-                  "o": "add",
-                  "c": [
-                    {
-                      "o": "const",
-                      "v": 1.182626
-                    },
-                    {
-                      "o": "abs",
-                      "c": [
-                        {
-                          "o": "var",
-                          "n": "t"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "o": "const",
-          "v": 0.04112788021578424
-        }
-      ]
     }
   },
   "gaussian_kernel": {
@@ -1065,39 +989,6 @@
           ]
         }
       ]
-    },
-    "fast": {
-      "formula": "((-0.391942 * |x|) + 1.005482)",
-      "metric": 0.005657377567763322,
-      "level": 2,
-      "formulaCost": 3
-    },
-    "fastTree": {
-      "o": "add",
-      "c": [
-        {
-          "o": "mul",
-          "c": [
-            {
-              "o": "const",
-              "v": -0.39194197324444907
-            },
-            {
-              "o": "abs",
-              "c": [
-                {
-                  "o": "var",
-                  "n": "x"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "o": "const",
-          "v": 1.0054822682182918
-        }
-      ]
     }
   },
   "diffusion_beta": {
@@ -1114,7 +1005,15 @@
       "formulaCost": 25,
       "exactCost": 28,
       "speedup": 1.12,
-      "costProfile": "cpu-transcendental-20"
+      "costProfile": "cpu-transcendental-20",
+      "measured": {
+        "measuredSpeedup": 0.99,
+        "nsFormula": 25.6606,
+        "nsExact": 25.403,
+        "agreement": 0.8839,
+        "resolvable": false,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      }
     },
     "tree": {
       "o": "add",
@@ -1170,8 +1069,7 @@
       "formula": "((0.739812 - (((1 - ((((t + 0.008) * 1.55933))² * 0.5)) + (((((t + 0.008) * 1.55833))²)² * 0.041667)))²) + 0.261188)",
       "metric": 0.0000014721619370892027,
       "level": 2,
-      "formulaCost": 14,
-      "deploy": true
+      "formulaCost": 14
     },
     "fastTree": {
       "o": "add",
@@ -1303,10 +1201,10 @@
       "speedup": 0.5,
       "costProfile": "cpu-transcendental-20",
       "measured": {
-        "measuredSpeedup": 1.0024,
-        "nsFormula": 2.725,
-        "nsExact": 2.7316,
-        "agreement": 2.0048,
+        "measuredSpeedup": 1.4395,
+        "nsFormula": 2.97,
+        "nsExact": 4.2754,
+        "agreement": 2.879,
         "resolvable": false,
         "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
       }
@@ -1370,13 +1268,13 @@
     "speed": {
       "formulaCost": 62,
       "exactCost": 4,
-      "speedup": 0.0459,
+      "speedup": 0.0251,
       "costProfile": "cpu-transcendental-20",
       "measured": {
-        "measuredSpeedup": 0.0459,
-        "nsFormula": 59.3315,
-        "nsExact": 2.724,
-        "agreement": 0.7116,
+        "measuredSpeedup": 0.0251,
+        "nsFormula": 128.2535,
+        "nsExact": 3.2252,
+        "agreement": 0.3898,
         "resolvable": true,
         "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
       },
@@ -1417,34 +1315,6 @@
         {
           "o": "const",
           "v": -38.50237204488785
-        }
-      ]
-    },
-    "fast": {
-      "formula": "((47.949899 * sigma) + -0.667061)",
-      "metric": 0.32994028054848007,
-      "level": 4,
-      "formulaCost": 2
-    },
-    "fastTree": {
-      "o": "add",
-      "c": [
-        {
-          "o": "mul",
-          "c": [
-            {
-              "o": "const",
-              "v": 47.94989936783262
-            },
-            {
-              "o": "var",
-              "n": "sigma"
-            }
-          ]
-        },
-        {
-          "o": "const",
-          "v": -0.667061351071402
         }
       ]
     }
@@ -1792,7 +1662,16 @@
     "speed": {
       "formulaCost": 17,
       "exactCost": 17,
-      "speedup": 1
+      "speedup": 1,
+      "measured": {
+        "measuredSpeedup": 1.0955,
+        "nsFormula": 46.5279,
+        "nsExact": 50.9725,
+        "agreement": 1.0955,
+        "resolvable": false,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      },
+      "costProfile": "cpu-transcendental-20"
     },
     "tree": {
       "o": "mul",
@@ -3821,16 +3700,16 @@
       "formulaCost": 114,
       "costProfile": "cpu-transcendental-20",
       "measured": {
-        "measuredSpeedup": 1.3516,
-        "nsFormula": 52.1558,
-        "nsExact": 70.4939,
-        "agreement": 1.5158,
+        "measuredSpeedup": 1.7293,
+        "nsFormula": 171.8203,
+        "nsExact": 297.1331,
+        "agreement": 1.8425,
         "resolvable": true,
         "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
       },
       "exactCost": 107,
-      "speedup": 1.3516,
-      "speedupModelled": 0.8916666666666667,
+      "speedup": 1.7293,
+      "speedupModelled": 0.9385964912280702,
       "speedupSource": "measured",
       "vsSolverContext": {
         "label": "Jacobi · 4 balayages",
@@ -3854,7 +3733,16 @@
     "speed": {
       "formulaCost": 31,
       "exactCost": 31,
-      "speedup": 1
+      "speedup": 1,
+      "measured": {
+        "measuredSpeedup": 1.0215,
+        "nsFormula": 174.6705,
+        "nsExact": 178.4287,
+        "agreement": 1.0215,
+        "resolvable": false,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      },
+      "costProfile": "cpu-transcendental-20"
     },
     "tree": {
       "o": "acos",
@@ -4027,7 +3915,18 @@
     "speed": {
       "formulaCost": 19,
       "exactCost": 30,
-      "speedup": 1.5789473684210527
+      "speedup": 1.5512,
+      "measured": {
+        "measuredSpeedup": 1.5512,
+        "nsFormula": 166.9399,
+        "nsExact": 258.9514,
+        "agreement": 0.9824,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      },
+      "costProfile": "cpu-transcendental-20",
+      "speedupModelled": 1.5789473684210527,
+      "speedupSource": "measured"
     },
     "tree": {
       "o": "max",
@@ -4181,10 +4080,10 @@
       "exactCost": 7,
       "speedup": 1,
       "measured": {
-        "measuredSpeedup": 1.0006,
-        "nsFormula": 2.7382,
-        "nsExact": 2.7399,
-        "agreement": 1.0006,
+        "measuredSpeedup": 0.4994,
+        "nsFormula": 11.4732,
+        "nsExact": 5.7295,
+        "agreement": 0.4994,
         "resolvable": false,
         "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
       },
@@ -4430,44 +4329,6 @@
             {
               "o": "const",
               "v": 0.5
-            }
-          ]
-        }
-      ]
-    },
-    "fast": {
-      "formula": "((x)² / ((x)² + 1.489797))",
-      "metric": 0.5036868977291588,
-      "level": 2,
-      "formulaCost": 7
-    },
-    "fastTree": {
-      "o": "pdiv",
-      "c": [
-        {
-          "o": "sq",
-          "c": [
-            {
-              "o": "var",
-              "n": "x"
-            }
-          ]
-        },
-        {
-          "o": "add",
-          "c": [
-            {
-              "o": "sq",
-              "c": [
-                {
-                  "o": "var",
-                  "n": "x"
-                }
-              ]
-            },
-            {
-              "o": "const",
-              "v": 1.489797
             }
           ]
         }
@@ -5105,10 +4966,10 @@
       "exactCost": 5,
       "speedup": 0.5555555555555556,
       "measured": {
-        "measuredSpeedup": 0.793,
-        "nsFormula": 5.2782,
-        "nsExact": 4.1857,
-        "agreement": 1.4274,
+        "measuredSpeedup": 0.9306,
+        "nsFormula": 25.8216,
+        "nsExact": 24.0289,
+        "agreement": 1.675,
         "resolvable": false,
         "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
       },
@@ -5240,13 +5101,13 @@
     "speed": {
       "formulaCost": 43,
       "exactCost": 44,
-      "speedup": 1.3231,
+      "speedup": 1.0232558139534884,
       "measured": {
-        "measuredSpeedup": 1.3231,
-        "nsFormula": 16.3423,
-        "nsExact": 21.6227,
-        "agreement": 1.293,
-        "resolvable": true,
+        "measuredSpeedup": 1.1224,
+        "nsFormula": 92.6265,
+        "nsExact": 103.9668,
+        "agreement": 1.0969,
+        "resolvable": false,
         "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
       },
       "costProfile": "cpu-transcendental-20",
@@ -5345,7 +5206,18 @@
     "speed": {
       "formulaCost": 67,
       "exactCost": 40,
-      "speedup": 0.5970149253731343
+      "speedup": 0.369,
+      "measured": {
+        "measuredSpeedup": 0.369,
+        "nsFormula": 97.849,
+        "nsExact": 36.1086,
+        "agreement": 0.6181,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      },
+      "costProfile": "cpu-transcendental-20",
+      "speedupModelled": 0.5970149253731343,
+      "speedupSource": "measured"
     },
     "tree": {
       "o": "add",
@@ -5702,106 +5574,6 @@
           "v": -0.0004050439337046363
         }
       ]
-    },
-    "fast": {
-      "formula": "((-0.616201 * (((3.154708 + min(3.154708, x)) + (min(3.396868, x) * min(2.050039, x))) / max(4.359564, x))) + 1.486538)",
-      "metric": 0.00026389864276618125,
-      "level": 2,
-      "formulaCost": 13
-    },
-    "fastTree": {
-      "o": "add",
-      "c": [
-        {
-          "o": "mul",
-          "c": [
-            {
-              "o": "const",
-              "v": -0.6162005993906633
-            },
-            {
-              "o": "pdiv",
-              "c": [
-                {
-                  "o": "add",
-                  "c": [
-                    {
-                      "o": "add",
-                      "c": [
-                        {
-                          "o": "const",
-                          "v": 3.154708
-                        },
-                        {
-                          "o": "min",
-                          "c": [
-                            {
-                              "o": "const",
-                              "v": 3.154708
-                            },
-                            {
-                              "o": "var",
-                              "n": "x"
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "o": "mul",
-                      "c": [
-                        {
-                          "o": "min",
-                          "c": [
-                            {
-                              "o": "const",
-                              "v": 3.396868
-                            },
-                            {
-                              "o": "var",
-                              "n": "x"
-                            }
-                          ]
-                        },
-                        {
-                          "o": "min",
-                          "c": [
-                            {
-                              "o": "const",
-                              "v": 2.050039
-                            },
-                            {
-                              "o": "var",
-                              "n": "x"
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "o": "max",
-                  "c": [
-                    {
-                      "o": "const",
-                      "v": 4.359564
-                    },
-                    {
-                      "o": "var",
-                      "n": "x"
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "o": "const",
-          "v": 1.48653822658716
-        }
-      ]
     }
   },
   "bessel_j1": {
@@ -5816,13 +5588,13 @@
     "speed": {
       "formulaCost": 48,
       "exactCost": 40,
-      "speedup": 0.8518,
+      "speedup": 0.5928,
       "costProfile": "cpu-transcendental-20",
       "measured": {
-        "measuredSpeedup": 0.8518,
-        "nsFormula": 18.0982,
-        "nsExact": 15.4167,
-        "agreement": 1.0222,
+        "measuredSpeedup": 0.5928,
+        "nsFormula": 67.5882,
+        "nsExact": 40.0681,
+        "agreement": 0.7114,
         "resolvable": true,
         "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
       },
@@ -5929,8 +5701,18 @@
     "speed": {
       "formulaCost": 47,
       "exactCost": 25,
-      "speedup": 0.5319148936170213,
-      "costProfile": "cpu-transcendental-20"
+      "speedup": 1.4931,
+      "costProfile": "cpu-transcendental-20",
+      "measured": {
+        "measuredSpeedup": 1.4931,
+        "nsFormula": 103.5138,
+        "nsExact": 154.5603,
+        "agreement": 2.8071,
+        "resolvable": true,
+        "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+      },
+      "speedupModelled": 0.5319148936170213,
+      "speedupSource": "measured"
     },
     "tree": {
       "o": "mul",
@@ -6431,7 +6213,8 @@
     "speed": {
       "formulaCost": 959,
       "exactCost": 28,
-      "speedup": 0.029197080291970802
+      "speedup": 0.029197080291970802,
+      "costProfile": "cpu-transcendental-20"
     },
     "tree": {
       "o": "sub",
@@ -13433,7 +13216,8 @@
     "speed": {
       "formulaCost": 72,
       "exactCost": 25,
-      "speedup": 0.3472222222222222
+      "speedup": 0.3472222222222222,
+      "costProfile": "cpu-transcendental-20"
     },
     "tree": {
       "o": "add",
@@ -13576,7 +13360,8 @@
     "speed": {
       "formulaCost": 31,
       "exactCost": 25,
-      "speedup": 0.8064516129032258
+      "speedup": 0.8064516129032258,
+      "costProfile": "cpu-transcendental-20"
     },
     "tree": {
       "o": "add",
@@ -13690,8 +13475,7 @@
       "formula": "((1.000253 * (min(254.93, max(0.05, ((138.5 * log(max(((x * 0.01) - 10), 1e-30))) + -305))) * 0.003922)) + -0.000088)",
       "metric": 3.5310241292332687e-7,
       "level": 5,
-      "formulaCost": 29,
-      "deploy": true
+      "formulaCost": 29
     },
     "fastTree": {
       "o": "add",
@@ -13797,7 +13581,8 @@
     "speed": {
       "formulaCost": 154,
       "exactCost": 40,
-      "speedup": 0.2597402597402597
+      "speedup": 0.2597402597402597,
+      "costProfile": "cpu-transcendental-20"
     },
     "tree": {
       "o": "add",
@@ -17351,7 +17136,8 @@
     "speed": {
       "formulaCost": 4,
       "exactCost": 3,
-      "speedup": 0.75
+      "speedup": 0.75,
+      "costProfile": "cpu-transcendental-20"
     },
     "tree": {
       "o": "mul",
@@ -17910,27 +17696,7 @@
       "speedupModelled": 1.4,
       "speedupSource": "measured"
     },
-    "holdout": 0,
-    "fast": {
-      "formula": "(1.143333 * x)",
-      "metric": 0.002170494475091841,
-      "level": 2,
-      "formulaCost": 1,
-      "deploy": true
-    },
-    "fastTree": {
-      "o": "mul",
-      "c": [
-        {
-          "o": "const",
-          "v": 1.14333278826324
-        },
-        {
-          "o": "var",
-          "n": "x"
-        }
-      ]
-    }
+    "holdout": 0
   },
   "qfi_dephasing": {
     "taskId": "qfi_dephasing",
@@ -18590,7 +18356,8 @@
     "speed": {
       "formulaCost": 69,
       "exactCost": 18,
-      "speedup": 0.2608695652173913
+      "speedup": 0.2608695652173913,
+      "costProfile": "cpu-transcendental-20"
     },
     "tree": {
       "o": "add",
@@ -18777,7 +18544,8 @@
     "speed": {
       "formulaCost": 65,
       "exactCost": 24,
-      "speedup": 0.36923076923076925
+      "speedup": 0.36923076923076925,
+      "costProfile": "cpu-transcendental-20"
     },
     "tree": {
       "o": "add",
@@ -26534,44 +26302,7 @@
       "speedupModelled": 1.7,
       "speedupSource": "measured"
     },
-    "holdout": 0,
-    "fast": {
-      "formula": "((0.366908 * max(-2.199254, x)) + 0.814196)",
-      "metric": 0.000988971304494804,
-      "level": 2,
-      "formulaCost": 3
-    },
-    "fastTree": {
-      "o": "add",
-      "c": [
-        {
-          "o": "mul",
-          "c": [
-            {
-              "o": "const",
-              "v": 0.3669077958441258
-            },
-            {
-              "o": "max",
-              "c": [
-                {
-                  "o": "const",
-                  "v": -2.199254
-                },
-                {
-                  "o": "var",
-                  "n": "x"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "o": "const",
-          "v": 0.8141959256763748
-        }
-      ]
-    }
+    "holdout": 0
   },
   "fresnel_schlick": {
     "taskId": "fresnel_schlick",
@@ -27030,80 +26761,6 @@
               ]
             }
           ]
-        }
-      ]
-    },
-    "fast": {
-      "formula": "((-0.127494 * ((-1.929961 * min(1.668613, x)) + (-4.722092 * min(1.135005, x)))) + -0.0965)",
-      "metric": 0.0003272787409612414,
-      "level": 2,
-      "formulaCost": 7,
-      "seed": 990101
-    },
-    "fastTree": {
-      "o": "add",
-      "c": [
-        {
-          "o": "mul",
-          "c": [
-            {
-              "o": "const",
-              "v": -0.1274940863656017
-            },
-            {
-              "o": "add",
-              "c": [
-                {
-                  "o": "mul",
-                  "c": [
-                    {
-                      "o": "const",
-                      "v": -1.929961
-                    },
-                    {
-                      "o": "min",
-                      "c": [
-                        {
-                          "o": "const",
-                          "v": 1.668613
-                        },
-                        {
-                          "o": "var",
-                          "n": "x"
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "o": "mul",
-                  "c": [
-                    {
-                      "o": "const",
-                      "v": -4.722092
-                    },
-                    {
-                      "o": "min",
-                      "c": [
-                        {
-                          "o": "const",
-                          "v": 1.135005
-                        },
-                        {
-                          "o": "var",
-                          "n": "x"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "o": "const",
-          "v": -0.09650001036725882
         }
       ]
     }
@@ -27749,7 +27406,8 @@
     "speed": {
       "formulaCost": 43,
       "exactCost": 43,
-      "speedup": 1
+      "speedup": 1,
+      "costProfile": "cpu-transcendental-20"
     },
     "tree": {
       "o": "cos",
@@ -28428,164 +28086,6 @@
           "v": 0.057610571673754406
         }
       ]
-    },
-    "fast": {
-      "formula": "((8.68589 * log(max((((148691236 * (x)²) * (x)²) / (((x)² + 424.36) * (sqrt(|(((x)² + 11599.29) * ((x)² + 544496.41))|) * ((x)² + 148691236.246267)))), 1e-30))) + 2)",
-      "metric": 1.1237237499428525e-16,
-      "level": 5,
-      "formulaCost": 43
-    },
-    "fastTree": {
-      "o": "add",
-      "c": [
-        {
-          "o": "mul",
-          "c": [
-            {
-              "o": "const",
-              "v": 8.68588964
-            },
-            {
-              "o": "log",
-              "c": [
-                {
-                  "o": "pdiv",
-                  "c": [
-                    {
-                      "o": "mul",
-                      "c": [
-                        {
-                          "o": "mul",
-                          "c": [
-                            {
-                              "o": "const",
-                              "v": 148691236
-                            },
-                            {
-                              "o": "sq",
-                              "c": [
-                                {
-                                  "o": "var",
-                                  "n": "x"
-                                }
-                              ]
-                            }
-                          ]
-                        },
-                        {
-                          "o": "sq",
-                          "c": [
-                            {
-                              "o": "var",
-                              "n": "x"
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "o": "mul",
-                      "c": [
-                        {
-                          "o": "add",
-                          "c": [
-                            {
-                              "o": "sq",
-                              "c": [
-                                {
-                                  "o": "var",
-                                  "n": "x"
-                                }
-                              ]
-                            },
-                            {
-                              "o": "const",
-                              "v": 424.36
-                            }
-                          ]
-                        },
-                        {
-                          "o": "mul",
-                          "c": [
-                            {
-                              "o": "sqrt",
-                              "c": [
-                                {
-                                  "o": "mul",
-                                  "c": [
-                                    {
-                                      "o": "add",
-                                      "c": [
-                                        {
-                                          "o": "sq",
-                                          "c": [
-                                            {
-                                              "o": "var",
-                                              "n": "x"
-                                            }
-                                          ]
-                                        },
-                                        {
-                                          "o": "const",
-                                          "v": 11599.29
-                                        }
-                                      ]
-                                    },
-                                    {
-                                      "o": "add",
-                                      "c": [
-                                        {
-                                          "o": "sq",
-                                          "c": [
-                                            {
-                                              "o": "var",
-                                              "n": "x"
-                                            }
-                                          ]
-                                        },
-                                        {
-                                          "o": "const",
-                                          "v": 544496.41
-                                        }
-                                      ]
-                                    }
-                                  ]
-                                }
-                              ]
-                            },
-                            {
-                              "o": "add",
-                              "c": [
-                                {
-                                  "o": "sq",
-                                  "c": [
-                                    {
-                                      "o": "var",
-                                      "n": "x"
-                                    }
-                                  ]
-                                },
-                                {
-                                  "o": "const",
-                                  "v": 148691236.246267
-                                }
-                              ]
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "o": "const",
-          "v": 2
-        }
-      ]
     }
   },
   "layernorm_scale": {
@@ -28684,14 +28184,14 @@
     "speed": {
       "formulaCost": 27,
       "exactCost": 27,
-      "speedup": 1
+      "speedup": 1,
+      "costProfile": "cpu-transcendental-20"
     },
     "fast": {
       "formula": "(u * ((1.016356 * relu(g)) + -0.15849))",
       "metric": 0.009010906595106448,
       "level": 2,
-      "formulaCost": 4,
-      "deploy": true
+      "formulaCost": 4
     },
     "fastTree": {
       "o": "mul",

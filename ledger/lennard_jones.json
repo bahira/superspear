@@ -11,7 +11,16 @@
   "speed": {
     "formulaCost": 17,
     "exactCost": 17,
-    "speedup": 1
+    "speedup": 1,
+    "measured": {
+      "measuredSpeedup": 1.0955,
+      "nsFormula": 46.5279,
+      "nsExact": 50.9725,
+      "agreement": 1.0955,
+      "resolvable": false,
+      "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
+    },
+    "costProfile": "cpu-transcendental-20"
   },
   "tree": {
     "o": "mul",

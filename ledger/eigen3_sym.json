@@ -569,16 +569,16 @@
     "formulaCost": 114,
     "costProfile": "cpu-transcendental-20",
     "measured": {
-      "measuredSpeedup": 1.3516,
-      "nsFormula": 52.1558,
-      "nsExact": 70.4939,
-      "agreement": 1.5158,
+      "measuredSpeedup": 1.7293,
+      "nsFormula": 171.8203,
+      "nsExact": 297.1331,
+      "agreement": 1.8425,
       "resolvable": true,
       "harness": "gcc -O2 · scalar x86-64 · median of 9×40 passes"
     },
     "exactCost": 107,
-    "speedup": 1.3516,
-    "speedupModelled": 0.8916666666666667,
+    "speedup": 1.7293,
+    "speedupModelled": 0.9385964912280702,
     "speedupSource": "measured",
     "vsSolverContext": {
       "label": "Jacobi · 4 balayages",

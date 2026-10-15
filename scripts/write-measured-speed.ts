@@ -31,10 +31,19 @@ interface Measured {
 function main(): void {
   const dry = process.argv.includes("--dry");
 
-  const raw = execFileSync("npx", ["tsx", "scripts/bench-wallclock.ts", "--json"], {
+  // On Windows `npx` is a .cmd shim: execFileSync does not resolve it without a
+// shell, so the documented refresh command died with ENOENT before touching the
+// ledger. Resolve the shim by platform instead of asking for a shell.
+const NPX = process.platform === "win32" ? "npx.cmd" : "npx";
+// Node >=18.20 refuses to spawn a .cmd without a shell (CVE-2024-27980). The argument
+// list below is made of literals, so the shell cannot be given anything to inject.
+const SHELL = process.platform === "win32";
+
+const raw = execFileSync(NPX, ["tsx", "scripts/bench-wallclock.ts", "--json"], {
     encoding: "utf8",
     cwd: process.cwd(),
     maxBuffer: 1 << 24,
+    shell: SHELL,
   });
   const rows: {
     id: string;
@@ -55,8 +64,8 @@ function main(): void {
   let fastRows: { id: string; measured: number; bound: boolean; nsChamp: number; nsFast: number; modelled: number }[] = [];
   try {
     fastRows = JSON.parse(
-      execFileSync("npx", ["tsx", "scripts/bench-fast-slots.ts", "--json"], {
-        encoding: "utf8", cwd: process.cwd(), maxBuffer: 1 << 24,
+      execFileSync(NPX, ["tsx", "scripts/bench-fast-slots.ts", "--json"], {
+        encoding: "utf8", cwd: process.cwd(), maxBuffer: 1 << 24, shell: SHELL,
       }),
     ).rows;
   } catch {
