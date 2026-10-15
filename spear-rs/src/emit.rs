@@ -50,13 +50,13 @@ impl Float {
 /// `spear_pdiv` ne compilerait pas.
 pub fn preamble(fl: Float) -> String {
     let ty = fl.ty();
-    let lit = |v: f64| format!("{:.*}{}", fl.prec(), v, fl.suffix());
+    let lit = |v: f64| fmt_const(v, fl);
     format!(
         r##"// ── rails SPEAR (fidèles à src/lib/spear/engine.ts) ─────────────────────
 #[inline(always)]
 #[allow(dead_code)]
 fn spear_pdiv(a: {ty}, b: {ty}) -> {ty} {{
-    let d = if b > {eps4} && b < {neps4} {{ if b >= {zero} {{ {eps4} }} else {{ {neps4} }} }} else {{ b }};
+    let d = if b > {neps4} && b < {eps4} {{ if b >= {zero} {{ {eps4} }} else {{ {neps4} }} }} else {{ b }};
     (a / d).clamp({n1e4}, {p1e4})
 }}
 #[inline(always)]
@@ -117,6 +117,13 @@ fn fmt_const(v: f64, fl: Float) -> String {
         // Une constante non finie ne peut pas venir d'un champion validé ; on
         // l'émet quand même, sans crasher la compilation du kernel.
         return format!("0.0{}", fl.suffix());
+    }
+    // La notation fixe à 9 décimales imprime 1e-30 comme 0.000000000 : le rail
+    // `log` devenait `max(x, 0.0)` et ln(0) partait à -inf, en f64 comme en
+    // f32 (17 décimales perdent tout ce qui est plus petit que ~1e-17). La
+    // notation exponentielle ne perd rien, quelle que soit la magnitude.
+    if v != 0.0 && (v.abs() < 1e-4 || v.abs() >= 1e7) {
+        return format!("{:e}{}", v, fl.suffix());
     }
     format!("{:.*}{}", fl.prec(), v, fl.suffix())
 }
@@ -207,4 +214,154 @@ pub fn emit_kernel_flavor(node: &Node, id: &str, formula: &str, fl: Float) -> St
         body_args.join(", "),
         pre = preamble(fl),
     )
+}
+
+// ─── Triton (Python, GPU NVIDIA) ────────────────────────────────────────────
+
+/// Littéral Python : `{:?}` donne la forme la plus courte qui round-trip en
+/// f64, donc rien ne se perd en passant par la source générée (1e-30 reste
+/// 1e-30, une constante `log` ne devient pas 0).
+fn fmt_py(v: f64) -> String {
+    if !v.is_finite() {
+        return "0.0".to_string();
+    }
+    format!("{:?}", v)
+}
+
+/// Rails SPEAR transcrits en Triton, mêmes bornages que le moteur TS et que
+/// la VM Rust (voir `eval.rs`) : le rail `pdiv` garde la condition ORIGINALE
+/// `b > -1e-4 && b < 1e-4`, pas la version inversée qui a vécu un moment dans
+/// le préambule Rust émis.
+const TRITON_RAILS: &str = r#"import triton
+import triton.language as tl
+
+try:  # triton >= 3.2
+    from triton.language.extra import libdevice
+except ImportError:  # triton plus ancien
+    from triton.language.extra.cuda import libdevice
+
+
+@triton.jit
+def _spear_pdiv(a, b):
+    d = tl.where((b > -1e-4) & (b < 1e-4), tl.where(b >= 0.0, 1e-4, -1e-4), b)
+    return tl.minimum(tl.maximum(a / d, -1e4), 1e4)
+
+
+@triton.jit
+def _spear_exp(x):
+    return tl.exp(tl.minimum(tl.maximum(x, -50.0), 50.0))
+
+
+@triton.jit
+def _spear_log(x):
+    return tl.log(tl.maximum(x, 1e-30))
+
+
+@triton.jit
+def _spear_sqrt(x):
+    return tl.sqrt(tl.abs(x))
+
+
+@triton.jit
+def _spear_asin(x):
+    return libdevice.asin(tl.minimum(tl.maximum(x, -1.0), 1.0))
+
+
+@triton.jit
+def _spear_acos(x):
+    return libdevice.acos(tl.minimum(tl.maximum(x, -1.0), 1.0))
+
+
+@triton.jit
+def _spear_erf(x):
+    # Abramowitz & Stegun 7.1.26 — mêmes constantes que math-utils.ts
+    sign = tl.where(x < 0.0, -1.0, 1.0)
+    ax = tl.abs(x)
+    t = 1.0 / (1.0 + 0.3275911 * ax)
+    poly = ((((1.061405429 * t + -1.453152027) * t + 1.421413741) * t + -0.284496736) * t + 0.254829592) * t
+    return sign * (1.0 - poly * tl.exp(-ax * ax))
+
+"#;
+
+fn walk_triton(n: &Node) -> String {
+    use Op::*;
+    let a = |k: usize| walk_triton(&n.children[k]);
+    match n.op {
+        Var => n.name.clone(),
+        Const => fmt_py(n.value),
+        Add => format!("({} + {})", a(0), a(1)),
+        Sub => format!("({} - {})", a(0), a(1)),
+        Mul => format!("({} * {})", a(0), a(1)),
+        Pdiv => format!("_spear_pdiv({}, {})", a(0), a(1)),
+        Max => format!("tl.maximum({}, {})", a(0), a(1)),
+        Min => format!("tl.minimum({}, {})", a(0), a(1)),
+        Relu => format!("tl.maximum({}, 0.0)", a(0)),
+        Abs => format!("tl.abs({})", a(0)),
+        Neg => format!("(-{})", a(0)),
+        Sq => {
+            let w = a(0);
+            format!("({w} * {w})")
+        }
+        Cube => {
+            let w = a(0);
+            format!("({w} * {w} * {w})")
+        }
+        Sqrt => format!("_spear_sqrt({})", a(0)),
+        Exp => format!("_spear_exp({})", a(0)),
+        Sin => format!("tl.sin({})", a(0)),
+        Cos => format!("tl.cos({})", a(0)),
+        Log => format!("_spear_log({})", a(0)),
+        Atan => format!("libdevice.atan({})", a(0)),
+        Asin => format!("_spear_asin({})", a(0)),
+        Tanh => format!("libdevice.tanh({})", a(0)),
+        Acos => format!("_spear_acos({})", a(0)),
+        Erf => format!("_spear_erf({})", a(0)),
+    }
+}
+
+/// Kernel Triton (Python) — même arbre, mêmes bornages que le moteur TS.
+///
+/// Deux objets sont émis : `spear_<id>`, la fonction élémentaire sur tenseurs
+/// (utilisable dans n'importe quel `@triton.jit`), et `spear_<id>_kernel`, un
+/// kernel de lancement complet (chargement masqué, calcul, stockage masqué).
+/// Cible f32 — c'est le type par défaut des tenseurs Triton.
+///
+/// La sortie est du Python valide par construction ; la compilation/le run
+/// GPU ne sont pas vérifiés ici (pas de triton dans l'environnement de test,
+/// et pas de GPU) — le contrat testé est la génération, pas l'exécution.
+pub fn emit_triton(node: &Node, id: &str, formula: &str) -> String {
+    let vars = var_names(node);
+    let fname = format!("spear_{}", sanitize_id(id));
+    let safe_formula = formula.replace("*/", "* /");
+    let scalar_params = vars.join(", ");
+    let mut kernel_params: Vec<String> = vars.iter().map(|v| format!("{}_ptr", v)).collect();
+    kernel_params.push("out_ptr".to_string());
+    let loads: Vec<String> = vars
+        .iter()
+        .map(|v| format!("    {} = tl.load({}_ptr + offs, mask=m)", v, v))
+        .collect();
+    let call = format!("{}({})", fname, scalar_params);
+
+    let mut out = String::new();
+    out.push_str(&format!("# {fname} — kernel Triton SPEAR « {id} » [f32]\n"));
+    out.push_str(&format!("# formule : {safe_formula}\n"));
+    out.push_str(&format!(
+        "# généré par spear-rs : `spear emit {id} --triton` (passe `--fast` pour le slot rapide)\n"
+    ));
+    out.push_str("# bornages identiques au moteur TS : voir _spear_pdiv/_spear_exp/_spear_log/_spear_erf\n");
+    out.push_str(TRITON_RAILS);
+    out.push_str(&format!(
+        "@triton.jit\ndef {fname}({scalar_params}):\n    return {}\n\n\n",
+        walk_triton(node)
+    ));
+    out.push_str(&format!(
+        "@triton.jit\ndef {fname}_kernel({}, n, BLOCK: tl.constexpr):\n    \
+         pid = tl.program_id(0)\n    \
+         offs = pid * BLOCK + tl.arange(0, BLOCK)\n    \
+         m = offs < n\n{}\n    \
+         tl.store(out_ptr + offs, {call}, mask=m)\n",
+        kernel_params.join(", "),
+        loads.join("\n"),
+    ));
+    out
 }

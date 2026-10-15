@@ -18,6 +18,7 @@ cargo build --release
 | `spear list [--fast]` | vue d'ensemble du ledger : variables, coût champion, coût fast, gain modèle, mesure déjà enregistrée |
 | `spear show <id> [--fast]` | formule, coût détaillé par op, métriques ledger, mesure GCC, **et** le kernel Rust émis |
 | `spear emit <id> [--fast] [--f32]` | kernel Rust drop-in sur stdout : scalaire `#[inline(always)]` + passe fusionnée `*_into` |
+| `spear emit <id> [--fast] --triton` | kernel **Triton** (Python, GPU NVIDIA) : fonction élémentaire `@triton.jit` + kernel de lancement masqué |
 | `spear eval <id> --set g=1.5 --set u=2` | valeur ponctuelle ; sans `--set`, échantillonne la grille |
 | `spear verify [<id>...]` | RMSE / erreur max de chaque champion **contre sa loi génératrice** |
 | `spear audit [--strict]` | recalcule les coûts depuis les AST et signale les fast slots qui ne sont pas moins chers (exit 1) |
@@ -29,6 +30,17 @@ backends GPU/Metal, donc le format à viser pour TensorFold/MLX. Les constantes
 sont arrondies à 9 décimales (précision f32), la structure de l'arbre est
 inchangée, et `emitted_f32_rust_compiles_and_tracks_vm` le compile avec `rustc`
 pour vérifier qu'il suit la VM à la précision f32 près.
+
+`--triton` émet la même formule pour GPU NVIDIA : `spear_<id>` (fonction
+élémentaire réutilisable dans n'importe quel `@triton.jit`) plus
+`spear_<id>_kernel`, un kernel de lancement complet (chargements masqués,
+calcul, stockage masqué). Les bornages sont transcrits en rails `@triton.jit`
+(`_spear_pdiv`, `_spear_exp`, `_spear_log`, `_spear_erf`…), avec `libdevice`
+pour `atan/asin/acos/tanh/erf`. Triton n'étant installé nulle part dans
+l'environnement de test, le contrat vérifié par `emitted_triton_parses_as_python`
+est la **génération** : les 145 kernels du registre (champions + fast slots)
+sont émis puis passés à `ast.parse`. L'exécution GPU demande une machine
+NVIDIA — c'est testé, pas supposé, et pas revendiqué.
 
 ## Le kernel émis
 

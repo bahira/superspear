@@ -339,3 +339,127 @@ fn exported_laws_cover_most_tasks() {
         }
     }
 }
+
+/// Régression : le rail `pdiv` des kernels émis protège la division au
+/// voisinage de zéro. Sa transcription Rust portait `b > 1e-4 && b < -1e-4`
+/// (jamais vraie) au lieu de `b > -1e-4 && b < 1e-4`, donc le dénominateur
+/// n'était pas flooré et le kernel émis divergeait de la VM (et du moteur TS)
+/// dans la zone gardée — zone que le champion de `gaussian_cdf` exploite.
+#[test]
+fn emitted_pdiv_rail_floors_tiny_denominators() {
+    use spear::emit::emit_kernel;
+    use spear::ir::{Node, Op};
+    let node = Node {
+        op: Op::Pdiv,
+        value: 0.0,
+        name: String::new(),
+        children: vec![
+            Node { op: Op::Const, value: 1e-6, name: String::new(), children: vec![] },
+            Node::var("x"),
+        ],
+    };
+    let code = emit_kernel(&node, "rail_probe", "1e-6 / x");
+    let dir = std::env::temp_dir().join("spear-rs-pdiv-rail");
+    std::fs::create_dir_all(&dir).expect("répertoire temporaire");
+    let main = dir.join("main.rs");
+    std::fs::write(
+        &main,
+        format!(
+            "#![allow(dead_code, unused_imports, unused_variables, unused_mut)]\n{}\n\
+             fn main() {{\n    for x in [1e-5f64, 1e-6, 0.0, -1e-5, -1e-6] {{\n        \
+             println!(\"{{:.17}}\", spear_rail_probe(x));\n    }}\n}}\n",
+            code
+        ),
+    )
+    .expect("écriture main.rs");
+    let exe = dir.join("rail.exe");
+    let out = Command::new("rustc")
+        .args(["--edition", "2021", "-O", "--crate-name", "rail"])
+        .arg(&main)
+        .arg("-o")
+        .arg(&exe)
+        .output()
+        .expect("rustc disponible");
+    assert!(out.status.success(), "rustc a échoué :\n{}", String::from_utf8_lossy(&out.stderr));
+    let run = Command::new(&exe).output().expect("exécution");
+    let got: Vec<f64> = String::from_utf8_lossy(&run.stdout)
+        .lines()
+        .map(|l| l.trim().parse().expect("sortie numérique"))
+        .collect();
+    let prog = Program::compile(&node);
+    for (i, x) in [1e-5f64, 1e-6, 0.0, -1e-5, -1e-6].iter().enumerate() {
+        let want = prog.eval(&[*x]);
+        assert!(
+            close(got[i], want),
+            "rail pdiv : x={} kernel émis={} VM={} (le dénominateur doit être flooré à ±1e-4)",
+            x,
+            got[i],
+            want
+        );
+    }
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+/// Les kernels Triton émis sont du Python valide (`ast.parse`) pour **tout**
+/// le registre, champions et slots rapides. triton n'est installé nulle part
+/// dans l'environnement de test : le contrat vérifiable ici est la génération
+/// (structure, opérateurs, littéraux), pas l'exécution GPU — celle-ci demande
+/// une machine NVIDIA.
+#[test]
+fn emitted_triton_parses_as_python() {
+    use spear::emit::emit_triton;
+    let (led, _) = load();
+    let mut src = String::new();
+    let mut count = 0usize;
+    for (id, e) in &led {
+        let mut variants: Vec<(&spear::ir::Node, String)> = Vec::new();
+        if let Some(t) = e.tree.as_ref() {
+            variants.push((t, e.formula.clone().unwrap_or_default()));
+        }
+        if let Some(t) = e.fast_tree.as_ref() {
+            variants.push((t, e.fast.as_ref().and_then(|f| f.formula.clone()).unwrap_or_default()));
+        }
+        for (tree, formula) in variants {
+            let code = emit_triton(tree, id, &formula);
+            assert!(code.contains("@triton.jit"), "{}: pas de @triton.jit", id);
+            assert!(code.contains("_spear_pdiv"), "{}: rails absents", id);
+            src.push_str(&code);
+            src.push_str("\n\n\n");
+            count += 1;
+        }
+    }
+    assert!(count >= 100, "seulement {} kernels Triton émis", count);
+    let py = match find_python() {
+        Some(p) => p,
+        None => {
+            eprintln!("python introuvable — test Triton sauté");
+            return;
+        }
+    };
+    let dir = std::env::temp_dir().join("spear-rs-triton-parse");
+    std::fs::create_dir_all(&dir).expect("répertoire temporaire");
+    let file = dir.join("all_kernels.py");
+    std::fs::write(&file, &src).expect("écriture all_kernels.py");
+    let out = Command::new(&py)
+        .args(["-c", "import ast, sys; ast.parse(open(sys.argv[1], encoding='utf-8').read()); print('ok')"])
+        .arg(&file)
+        .output()
+        .expect("python");
+    assert!(out.status.success(), "ast.parse a échoué :\n{}", String::from_utf8_lossy(&out.stderr));
+    assert_eq!(String::from_utf8_lossy(&out.stdout).trim(), "ok");
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+fn find_python() -> Option<String> {
+    for cand in ["python", "python3", "py"] {
+        let ok = Command::new(cand)
+            .arg("--version")
+            .output()
+            .map(|o| o.status.success())
+            .unwrap_or(false);
+        if ok {
+            return Some(cand.to_string());
+        }
+    }
+    None
+}

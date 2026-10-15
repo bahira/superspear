@@ -15,7 +15,7 @@ use std::collections::BTreeMap;
 use std::path::PathBuf;
 use std::process::ExitCode;
 
-use spear::emit::{emit_kernel_flavor, Float};
+use spear::emit::{emit_kernel_flavor, emit_triton, Float};
 use spear::eval::Program;
 use spear::ir::{cost, op_histogram};
 use spear::ledger::{self, Entry, Laws};
@@ -155,7 +155,10 @@ fn usage() {
 USAGE
   spear list [--fast]                 vue d'ensemble du ledger
   spear show <id> [--fast]            formule, coût par op, mesure enregistrée
-  spear emit <id> [--fast] [--f32]   kernel Rust drop-in sur stdout (f64 par défaut)
+  spear emit <id> [--fast] [--f32] [--triton]
+                                      kernel drop-in sur stdout — Rust (f64 par
+                                      défaut, --f32 pour GPU/Metal) ou Triton
+                                      Python (--triton)
   spear eval <id> --set x=0.5 [...]   valeur(s) du kernel
   spear verify [<id>...]              erreur du champion contre la loi génératrice
   spear audit [--strict]               recalcul des coûts (exit 1 si échec)
@@ -273,7 +276,11 @@ fn cmd_emit(ctx: &Ctx, o: &Opts) -> Result<i32, String> {
     } else {
         e.formula.clone().unwrap_or_default()
     };
-    let code = emit_kernel_flavor(tree, id, &formula, flavor(o));
+    let code = if o.has("triton") {
+        emit_triton(tree, id, &formula)
+    } else {
+        emit_kernel_flavor(tree, id, &formula, flavor(o))
+    };
     match o.get("fn") {
         // --fn NAME : n'émet que le corps de la fonction scalaire (usage rapide)
         Some(_) => {
