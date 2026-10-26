@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "browser-bot": {
+      "command": "node",
+      "args": ["/absolute/path/to/superspear/packages/browser-bot/bin/browser-bot.mjs"],
+      "env": {
+        "BROWSER_BOT_ROOT": "/absolute/path/to/browser-bot/integrations",
+        "BROWSER_BOT_POMERADO": "npx -y -p pomerado pomerado-mcp",
+        "OPENAI_API_KEY": "sk-..."
+      }
+    }
+  }
+}

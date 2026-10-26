@@ -1,0 +1,35 @@
+name: browser-bot
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "packages/browser-bot/**"
+      - ".github/workflows/browser-bot.yml"
+  pull_request:
+    paths:
+      - "packages/browser-bot/**"
+      - ".github/workflows/browser-bot.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/browser-bot
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: packages/browser-bot/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      # The suite drives the real MCP server over stdio against a stand-in for pomerado-mcp.
+      # No browser, model key or network is needed, so it runs on every pull request.
+      - name: Test
+        run: npm test

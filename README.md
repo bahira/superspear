@@ -37,6 +37,7 @@ npm install spear-kernels
 - [Getting started](#getting-started)
 - [Rust port (spear-rs)](#rust-port-spear-rs)
 - [MCP Server](#-mcp-server--use-spear-from-claude-cursor--any-llm-agent)
+- [Browser bot — do any task on any website](#-browser-bot--do-any-task-on-any-website)
 - [Reproducibility](#reproducibility)
 - [Project layout](#project-layout)
 - [Honesty notes](#honesty-notes)
@@ -423,6 +424,31 @@ Once connected, just ask your agent:
 > *"Discover a fast approximation of sin(x)·exp(-x/3) on [-2,8]"*
 
 → The agent calls `discover`, SPEAR evolves a kernel in seconds, and returns the verified formula with parity-checked WASM/C exports.
+
+## 🌐 Browser bot — do any task on any website
+
+[`packages/browser-bot`](./packages/browser-bot) is a second, independent MCP server in this repo:
+an agent-facing bot that performs real tasks on real websites through
+[Pomerado](https://github.com/Pomerado/pomerado), the MIT-licensed integration minter.
+
+Give it a URL and a task in plain language. The first call explores the site in Chromium and saves
+a deterministic integration (asking you for a login, a one-time code or a choice when it needs
+one); every later call replays that integration, with no model and no key. Writes need an explicit
+`approved_by_user` flag, results are typed JSON, and a failed action is never retried behind your
+back.
+
+```bash
+cd packages/browser-bot && npm install && node bin/browser-bot.mjs doctor
+```
+
+> *"Read the price of the first result on https://books.example.com/search?q=rust"*
+> → the agent calls `browser_do`, answers the job's questions with `provide_input`, and gets
+> `{ "title": "Programming Rust", "price": "€39.90" }` back.
+
+Tools: `browser_do`, `browser_mint`, `browser_run`, `browser_list`, `browser_describe`,
+`browser_forget`, `browser_doctor`, `get_job`, `provide_input`, `cancel_job`. Setup for Claude Code,
+Codex, Cursor, VS Code and the command line, plus the limits (bot protection, 20-minute mints,
+per-site integrations), are in the [package README](./packages/browser-bot/README.md).
 
 ## Rust port (spear-rs)
 

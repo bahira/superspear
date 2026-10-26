@@ -1,0 +1,27 @@
+{
+  "name": "@superspear/browser-bot",
+  "version": "0.1.0",
+  "description": "An MCP bot that does any browser task on any site: it mints a Pomerado integration from a URL + plain-language task, then replays it deterministically.",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "browser-bot": "./bin/browser-bot.mjs"
+  },
+  "exports": {
+    ".": "./src/server.mjs",
+    "./tools": "./src/tools.mjs",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "start": "node bin/browser-bot.mjs",
+    "test": "node --test test/*.test.mjs",
+    "doctor": "node bin/browser-bot.mjs doctor"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0"
+  }
+}
